@@ -1,0 +1,35 @@
+# <type>(<scope>): <subject>
+#
+# <body>
+#
+# <footer>
+
+# Type 类型 (必填):
+# feat:     新功能
+# fix:      修复bug
+# docs:     文档变动
+# style:    代码格式（不影响代码运行）
+# refactor: 重构
+# perf:     性能优化
+# test:     测试相关
+# chore:    其他（构建、工具等）
+# ci:       CI/CD 配置
+# build:    构建系统
+# revert:   回滚
+# wip:      开发中
+
+# Scope 范围 (可选):
+# api, ui, auth, utils, config, etc.
+
+# Subject 主题 (必填):
+# - 使用祈使句，首字母小写
+# - 不超过 100 字符
+# - 末尾不加句号
+
+# Body 正文 (可选):
+# - 解释为什么做这个变更
+# - 每行不超过 100 字符
+
+# Footer 页脚 (可选):
+# - 破坏性变更：BREAKING CHANGE: 描述
+# - 关闭 issue：Closes #123
