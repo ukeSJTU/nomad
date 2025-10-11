@@ -78,6 +78,11 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 | `pnpm format`       | 格式化所有代码文件                    |
 | `pnpm format:check` | 检查代码格式是否符合规范              |
 | `pnpm prepare`      | 安装 Husky Git 钩子                   |
+| `pnpm e2e`          | 运行所有 E2E 测试（无头模式）         |
+| `pnpm e2e:ui`       | 打开 Playwright UI 界面运行测试       |
+| `pnpm e2e:headed`   | 显示浏览器窗口运行测试                |
+| `pnpm e2e:report`   | 查看测试报告                          |
+| `pnpm e2e:debug`    | 调试模式运行测试                      |
 
 ## Development
 
