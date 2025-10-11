@@ -15,7 +15,7 @@
 1. Fork 并 clone 项目
 
 ```bash
-git clone https://github.com/your-username/nomad.git
+git clone git@github.com/ukeSJTU/nomad.git
 cd nomad
 ```
 
