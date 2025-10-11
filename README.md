@@ -2,6 +2,10 @@
 
 A modern Next.js full-stack application with TypeScript, Tailwind CSS, and comprehensive development tooling.
 
+[![Scc Count Badge](https://sloc.xyz/github/ukeSJTU/nomad/?category=code)](https://github.com/ukeSJTU/nomad)
+[![Scc Count Badge](https://sloc.xyz/github/ukeSJTU/nomad/?category=blanks)](https://github.com/ukeSJTU/nomad)
+[![Scc Count Badge](https://sloc.xyz/github/ukeSJTU/nomad/?category=lines)](https://github.com/ukeSJTU/nomad)
+
 ## Features
 
 - **Next.js 15** with App Router
@@ -19,17 +23,37 @@ A modern Next.js full-stack application with TypeScript, Tailwind CSS, and compr
 
 - Node.js 20.15.0+
 - pnpm 10.0.0+
+- postgresql 15
 
-### Installation
+### Clone the repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/ukeSJTU/nomad.git
 cd nomad
 
 # Install dependencies
 pnpm install
+```
 
+### Create Database
+
+If using postgresql (recommended):
+
+```bash
+createdb nomad
+```
+
+### Create config file
+
+```bash
+cp .env.example .env
+```
+
+Then you **must** configure the `.env` file based on your actual environment such as `DATABASE_URL`.
+
+### Start the server
+
+```bash
 # Start development server
 pnpm dev
 ```
