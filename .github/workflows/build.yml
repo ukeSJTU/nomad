@@ -1,0 +1,44 @@
+name: PR Build Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run build
+        run: pnpm build
+        env:
+          # Disable Next.js telemetry in CI
+          NEXT_TELEMETRY_DISABLED: 1
+          # Add configured GitHub Secrets and Variables here
+          # NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+
+      - name: Build status
+        if: success()
+        run: echo "Build completed successfully!"
+
+      - name: Build failed
+        if: failure()
+        run: echo "Build failed! Please fix the issues before merging."
