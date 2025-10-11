@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Production builds
+.next/
+out/
+build/
+dist/
+
+# Environment files
+.env*
+
+# Logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+.pnp
+.pnp.js
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Package lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Auto-generated files
+next-env.d.ts
