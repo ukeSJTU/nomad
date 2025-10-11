@@ -6,6 +6,16 @@ const isDevelopment = process.env.NODE_ENV === "development";
 const isProduction = process.env.NODE_ENV === "production";
 const isTest = process.env.NODE_ENV === "test";
 
+const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
+  "fatal",
+  "error",
+  "warn",
+  "info",
+  "debug",
+  "trace",
+  "silent",
+];
+
 /**
  * Determines the appropriate log level based on the current environment.
  *
@@ -20,7 +30,12 @@ const isTest = process.env.NODE_ENV === "test";
 const getLogLevel = (): pino.LevelWithSilent => {
   if (isTest) return "silent";
   if (process.env.LOG_LEVEL) {
-    return process.env.LOG_LEVEL as pino.LevelWithSilent;
+    const envLevel = process.env.LOG_LEVEL as pino.LevelWithSilent;
+    // Validate the environment variable
+    if (VALID_LOG_LEVELS.includes(envLevel)) {
+      return envLevel;
+    }
+    console.warn(`Invalid LOG_LEVEL: ${process.env.LOG_LEVEL}, using default`);
   }
   return isDevelopment ? "debug" : "info";
 };
