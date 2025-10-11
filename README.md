@@ -62,16 +62,22 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## Available Scripts
 
-```bash
-pnpm dev          # Start development server
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint
-pnpm lint:fix     # Fix ESLint issues
-pnpm format       # Format code with Prettier
-pnpm format:check # Check code formatting
-pnpm type-check   # Run TypeScript type checking
-```
+| 命令                | 作用说明                              |
+| ------------------- | ------------------------------------- |
+| `pnpm dev`          | 启动开发服务器（使用 Turbopack 加速） |
+| `pnpm build`        | 构建生产版本（使用 Turbopack 加速）   |
+| `pnpm start`        | 启动生产服务器                        |
+| `pnpm test`         | 运行测试（监听模式）                  |
+| `pnpm test:run`     | 运行测试一次后退出                    |
+| `pnpm test:ui`      | 运行测试并打开 UI 界面                |
+| `pnpm db:push`      | 推送数据库架构变更到数据库            |
+| `pnpm db:generate`  | 生成数据库迁移文件                    |
+| `pnpm db:migrate`   | 执行数据库迁移                        |
+| `pnpm lint`         | 检查代码规范问题                      |
+| `pnpm lint:fix`     | 自动修复代码规范问题                  |
+| `pnpm format`       | 格式化所有代码文件                    |
+| `pnpm format:check` | 检查代码格式是否符合规范              |
+| `pnpm prepare`      | 安装 Husky Git 钩子                   |
 
 ## Development
 
