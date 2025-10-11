@@ -1,4 +1,5 @@
 import pino from "pino";
+import pretty from "pino-pretty";
 
 // Environment detection flags for conditional logger configuration
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -50,30 +51,37 @@ const pinoOptions: pino.LoggerOptions = {
   }),
 };
 
-// Configure pretty printing for development environment (excluding tests)
-// This makes logs more readable during local development
-if (isDevelopment && !isTest) {
-  pinoOptions.transport = {
-    target: "pino-pretty",
-    options: {
+/**
+ * Creates the appropriate stream for the logger based on environment.
+ * Uses pino-pretty stream in development for better readability.
+ * Uses standard process.stdout in production for structured logging.
+ */
+const createLoggerStream = () => {
+  if (isDevelopment && !isTest) {
+    // Development: Use pino-pretty stream for enhanced readability
+    return pretty({
       colorize: true, // Add colors to log levels
       ignore: "pid,hostname", // Hide process ID and hostname for cleaner output
       translateTime: "yyyy-mm-dd HH:MM:ss", // Human-readable timestamp format
       singleLine: false, // Multi-line formatting for better readability
       hideObject: false, // Show log objects in full detail
-    },
-  };
-}
+    });
+  }
+
+  // Production/Test: Use standard output for structured logging
+  return process.stdout;
+};
 
 /**
  * Configured pino logger instance.
  *
  * Features:
  * - Environment-aware log levels (debug in dev, info in prod, silent in test)
- * - Pretty printing in development for enhanced readability
+ * - Pretty printing in development using streams (avoids worker thread issues)
  * - Structured logging in production with ISO timestamps
  * - Built-in serializers for HTTP requests, responses, and errors
  * - Configurable via LOG_LEVEL environment variable
+ * - Stream-based approach prevents pnpm/ESM module resolution issues
  *
  * Usage:
  * ```typescript
@@ -84,6 +92,6 @@ if (isDevelopment && !isTest) {
  * logger.debug({ req, res }, 'Request processed');
  * ```
  */
-const logger = pino(pinoOptions);
+const logger = pino(pinoOptions, createLoggerStream());
 
 export default logger;
