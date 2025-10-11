@@ -32,8 +32,10 @@ assignees: ""
 ## 环境信息
 
 - 操作系统: [例如 macOS, Windows, Linux]
-- 浏览器: [例如 Chrome, Safari, Firefox
-- Node.js 版本: [例如 18.17.0]
+- 浏览器: [例如 Chrome, Safari, Firefox]
+- 版本: [例如 22]
+- Node.js 版本: [例如 20.15.0]
+- pnpm 版本: [例如 10.17.1]
 
 ## 附加信息
 
