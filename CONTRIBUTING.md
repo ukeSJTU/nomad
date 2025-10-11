@@ -44,9 +44,16 @@ git checkout -b fix/your-bug-fix
 ### 2. 开发和测试
 
 - 编写代码
-- 运行测试：`pnpm test`（如果有）
+- 运行单元测试：`pnpm test`
+- 运行端到端测试：`pnpm e2e`（首次运行需要安装浏览器：`pnpm exec playwright install`）
 - 检查代码质量：`pnpm lint`
 - 格式化代码：`pnpm format`
+
+**测试框架说明：**
+
+- 单元测试：使用 Vitest + React Testing Library
+- 端到端测试：使用 Playwright
+- 详细测试指南请参考：[docs/testing.md](docs/testing.md)
 
 ### 3. 提交代码
 
@@ -102,9 +109,17 @@ git push origin feat/your-feature-name
 ### 运行测试
 
 ```bash
-pnpm test          # 运行所有测试
-pnpm test:watch    # 监听模式
-pnpm test:coverage # 生成覆盖率报告
+# 单元测试
+pnpm test          # 运行所有单元测试
+pnpm test:run      # 运行单元测试（非监听模式）
+pnpm test:ui       # 启动 Vitest UI 界面
+
+# 端到端测试
+pnpm e2e           # 运行 Playwright 测试
+pnpm e2e:ui        # 启动 Playwright UI 模式
+pnpm e2e:headed    # 有界面模式运行测试
+pnpm e2e:debug     # 调试模式运行测试
+pnpm e2e:report    # 查看测试报告
 ```
 
 ### 测试要求
@@ -112,6 +127,7 @@ pnpm test:coverage # 生成覆盖率报告
 - 新功能需要相应的测试
 - Bug 修复需要回归测试
 - 保持测试覆盖率 > 80%
+- 详细测试指南请参考：[docs/testing.md](docs/testing.md)
 
 ## 文档
 
