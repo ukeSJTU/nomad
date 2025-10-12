@@ -3,9 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import SignUpModal, { PhoneVerificationForm } from "@/components/auth";
+import SignUpModal, {
+  PasswordSetupForm,
+  PhoneVerificationForm,
+} from "@/components/auth";
 import { Stepper, type StepperStep } from "@/components/common";
-import type { OtpStepData, PhoneNumberStepData } from "@/types/auth";
+import type { PasswordSetupData, PhoneVerificationData } from "@/types/auth";
 
 const signUpSteps: StepperStep[] = [
   {
@@ -14,9 +17,9 @@ const signUpSteps: StepperStep[] = [
     description: "输入手机号码",
   },
   {
-    id: "verify-otp",
-    label: "验证验证码",
-    description: "输入验证码",
+    id: "set-password",
+    label: "设置密码",
+    description: "设置初始密码",
   },
   {
     id: "complete",
@@ -30,11 +33,11 @@ export default function SignUpPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showAgreementModal, setShowAgreementModal] = useState(true); // Show modal by default
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [formStep, setFormStep] = useState<"phone" | "otp">("phone");
   const [isLoading, setIsLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [phoneData, setPhoneData] = useState<PhoneNumberStepData | null>(null);
+  const [phoneData, setPhoneData] = useState<PhoneVerificationData | null>(
+    null
+  );
 
   // Countdown timer effect
   useEffect(() => {
@@ -61,43 +64,37 @@ export default function SignUpPage() {
   };
 
   // Form handlers
-  const handlePhoneSubmit = (data: PhoneNumberStepData) => {
+  const handlePhoneVerificationSubmit = (data: PhoneVerificationData) => {
     setPhoneData(data);
     setIsLoading(true);
 
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      setFormStep("otp");
       setCurrentStep(2);
-      setOtpSent(true);
-      setCountdown(60);
+      console.log("Phone verified successfully", data);
     }, 1000);
   };
 
-  const handleOtpSubmit = (data: OtpStepData) => {
+  const handlePasswordSetupSubmit = (data: PasswordSetupData) => {
     setIsLoading(true);
 
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
       setCurrentStep(3);
-      // Handle successful verification
-      console.log("Phone verified successfully", { phoneData, otp: data.otp });
+      console.log("Registration completed", { phoneData, passwordData: data });
     }, 1000);
   };
 
   const handleSendOtp = () => {
-    if (phoneData) {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      // Simulate API call
-      setTimeout(() => {
-        setIsLoading(false);
-        setOtpSent(true);
-        setCountdown(60);
-      }, 1000);
-    }
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      setCountdown(60);
+    }, 1000);
   };
 
   // Don't render anything if user hasn't agreed to terms
@@ -130,15 +127,17 @@ export default function SignUpPage() {
         />
 
         {/* Form Content */}
-        {currentStep < 3 ? (
+        {currentStep === 1 ? (
           <PhoneVerificationForm
-            currentStep={formStep}
-            onPhoneSubmit={handlePhoneSubmit}
-            onOtpSubmit={handleOtpSubmit}
+            onSubmit={handlePhoneVerificationSubmit}
             onSendOtp={handleSendOtp}
             isLoading={isLoading}
-            otpSent={otpSent}
             countdown={countdown}
+          />
+        ) : currentStep === 2 ? (
+          <PasswordSetupForm
+            onSubmit={handlePasswordSetupSubmit}
+            isLoading={isLoading}
           />
         ) : (
           <div className="text-center py-8">

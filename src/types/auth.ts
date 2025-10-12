@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Phone verification schemas
+// Phone verification schema - complete form for step 1
 export const phoneVerificationSchema = z.object({
   countryCode: z.string().min(1, "请选择国家/地区"),
   phoneNumber: z
@@ -19,20 +19,25 @@ export const phoneVerificationSchema = z.object({
   }),
 });
 
-// Step-specific schemas
-export const phoneNumberStepSchema = phoneVerificationSchema.pick({
-  countryCode: true,
-  phoneNumber: true,
-});
-
-export const otpStepSchema = phoneVerificationSchema.pick({
-  otp: true,
-});
+// Password setup schema for step 2
+export const passwordSetupSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "密码至少8位")
+      .regex(/[A-Z]/, "密码必须包含至少一个大写字母")
+      .regex(/[a-z]/, "密码必须包含至少一个小写字母")
+      .regex(/[0-9]/, "密码必须包含至少一个数字"),
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "两次输入的密码不一致",
+    path: ["confirmPassword"],
+  });
 
 // Types
 export type PhoneVerificationData = z.infer<typeof phoneVerificationSchema>;
-export type PhoneNumberStepData = z.infer<typeof phoneNumberStepSchema>;
-export type OtpStepData = z.infer<typeof otpStepSchema>;
+export type PasswordSetupData = z.infer<typeof passwordSetupSchema>;
 
 // Country codes data
 export const countryCodes = [
