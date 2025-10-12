@@ -55,3 +55,4 @@ node_modules/
 /coverage/
 /public/coverage/
 /public/playwright/
+public/index.html
