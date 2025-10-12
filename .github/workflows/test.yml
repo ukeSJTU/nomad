@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "lts/*"
           cache: "pnpm"
 
       - name: Install dependencies
@@ -56,4 +56,12 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           recreate: true
-          path: coverage/coverage-summary.json
+          message: |
+            ## 📊 Test Coverage Report
+
+            Coverage data will be available after the test run completes.
+
+            📋 [View detailed coverage report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            🧪 **Unit Tests**: ${{ job.status }}
+            📈 **Coverage**: Check artifacts for detailed report

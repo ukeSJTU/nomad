@@ -114,9 +114,18 @@ pnpm test:coverage
 # 运行 E2E 测试
 pnpm e2e
 
+# 查看 Playwright 报告
+pnpm e2e:report
+
+# 🎯 一键生成完整测试报告（推荐）
+pnpm test:report
+
 # 查看测试 UI
 pnpm test:ui
 pnpm e2e:ui
+
+# 生成测试仪表板
+node scripts/generate-dashboard.js
 ```
 
 ### CI/CD 触发
@@ -133,6 +142,37 @@ pnpm e2e:ui
 
 ## 配置说明
 
+### GitHub Workflow 文件
+
+项目包含 4 个 GitHub Actions 工作流文件：
+
+#### 1. `.github/workflows/build.yml` - PR 构建检查
+
+- **触发条件**: Pull Request 到 main/develop 分支
+- **功能**: 验证代码能够成功构建
+- **Node.js 版本**: LTS
+- **缓存策略**: pnpm 依赖缓存
+
+#### 2. `.github/workflows/test.yml` - 单元测试
+
+- **触发条件**: Push 和 PR 到 main/develop 分支
+- **功能**: 运行 Vitest 单元测试和覆盖率收集
+- **超时时间**: 30 分钟
+- **集成**: Codecov 覆盖率上传，PR 评论
+
+#### 3. `.github/workflows/playwright.yml` - E2E 测试
+
+- **触发条件**: Push 和 PR 到 main/develop 分支
+- **功能**: 4 分片并行 Playwright 测试
+- **超时时间**: 60 分钟
+- **优化**: 浏览器缓存，报告合并
+
+#### 4. `.github/workflows/deploy-pages.yml` - 测试报告部署
+
+- **触发条件**: 其他测试工作流完成后
+- **功能**: 收集测试报告，生成仪表板，部署到 GitHub Pages
+- **权限**: pages:write, contents:read, id-token:write
+
 ### 环境变量
 
 无需额外环境变量，所有配置都在代码中管理。
@@ -143,6 +183,30 @@ pnpm e2e:ui
 
 - GitHub Actions
 - GitHub Pages (Source: GitHub Actions)
+- Actions permissions: Read and write permissions
+
+### 文件组织和 Git 追踪
+
+#### 源代码文件 (Git 追踪 ✅)
+
+- `scripts/generate-dashboard.js` - 仪表板生成脚本
+- `.github/workflows/*.yml` - CI/CD 工作流配置
+- `playwright.config.ts` - Playwright 配置
+- `vitest.config.mts` - Vitest 配置
+
+#### 生成文件 (Git 忽略 ❌)
+
+- `public/index.html` - 生成的测试仪表板
+- `coverage/` - Vitest 覆盖率报告
+- `playwright-report/` - Playwright 测试报告
+- `reports/` - CI 中的临时报告目录
+
+#### 一键命令
+
+```bash
+# 运行所有测试并生成仪表板
+pnpm test:report
+```
 
 ### 依赖项
 

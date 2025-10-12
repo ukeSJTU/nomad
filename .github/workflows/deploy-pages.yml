@@ -34,7 +34,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "lts/*"
           cache: "pnpm"
 
       - name: Install dependencies
@@ -46,6 +46,7 @@ jobs:
         with:
           name: playwright-report-merged
           path: ./reports/playwright
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download test coverage reports
         uses: actions/download-artifact@v4
@@ -53,13 +54,20 @@ jobs:
         with:
           name: test-results
           path: ./reports/coverage
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create reports directory structure
         run: |
           mkdir -p reports/playwright reports/coverage public
+          echo "Created directory structure"
+          ls -la reports/ || echo "Reports directory not found"
 
       - name: Generate test dashboard
-        run: node scripts/generate-dashboard.js
+        run: |
+          echo "Generating test dashboard..."
+          node scripts/generate-dashboard.js
+          echo "Dashboard generated successfully"
+          ls -la public/ || echo "Public directory not found"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
