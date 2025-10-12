@@ -32,6 +32,11 @@ jobs:
         env:
           # Disable Next.js telemetry in CI
           NEXT_TELEMETRY_DISABLED: 1
+          # Dummy DATABASE_URL for build process (not used for actual DB operations)
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+          # Dummy auth secret for build process
+          BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
+          BETTER_AUTH_URL: "http://localhost:3000"
           # Add configured GitHub Secrets and Variables here
           # NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
 

@@ -35,6 +35,7 @@ export default defineConfig({
         "**/.next/**",
         "**/playwright-report/**",
         "**/test-results/**",
+        "src/lib/auth.ts", // Better Auth configuration
       ],
       include: ["src/**/*.{ts,tsx,js,jsx}"],
       thresholds: {
