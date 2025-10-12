@@ -1,10 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -15,12 +25,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import {
   countryCodes,
   type PhoneVerificationData,
@@ -40,6 +49,8 @@ export default function PhoneVerificationForm({
   onSendOtp,
   countdown = 0,
 }: PhoneVerificationFormProps) {
+  const [open, setOpen] = useState(false);
+
   const form = useForm<PhoneVerificationData>({
     resolver: zodResolver(phoneVerificationSchema),
     defaultValues: {
@@ -75,30 +86,56 @@ export default function PhoneVerificationForm({
                 control={form.control}
                 name="countryCode"
                 render={({ field }) => (
-                  <FormItem className="w-32">
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger className="h-12">
-                          <SelectValue placeholder="选择" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {countryCodes.map(country => (
-                            <SelectItem key={country.code} value={country.code}>
-                              <span className="flex items-center gap-2">
-                                <span>{country.flag}</span>
-                                <span>{country.name}</span>
-                                <span className="text-gray-500">
-                                  {country.code}
-                                </span>
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                  <FormItem className="w-40">
+                    <Popover open={open} onOpenChange={setOpen}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full justify-between h-12"
+                          >
+                            {field.value
+                              ? countryCodes.find(
+                                  region => region.value === field.value
+                                )?.label
+                              : "选择区号"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="搜索区号或国家..." />
+                          <CommandList>
+                            <CommandEmpty>未找到匹配的区号</CommandEmpty>
+                            <CommandGroup>
+                              {countryCodes.map(region => (
+                                <CommandItem
+                                  key={region.value}
+                                  value={region.searchTerms.join(" ")}
+                                  onSelect={() => {
+                                    field.onChange(region.value);
+                                    setOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === region.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {region.label}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
