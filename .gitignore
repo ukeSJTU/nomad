@@ -48,3 +48,11 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Test Reports and Generated Files
+/reports/
+/public/index.html
+/coverage/
+/public/coverage/
+/public/playwright/
+public/index.html

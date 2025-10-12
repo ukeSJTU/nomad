@@ -1,0 +1,89 @@
+name: Deploy Test Reports to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Playwright Tests", "Unit Tests"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  collect-reports:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download Playwright reports
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: playwright-report-merged
+          path: ./reports/playwright
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download test coverage reports
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: test-results
+          path: ./reports/coverage
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create reports directory structure
+        run: |
+          mkdir -p reports/playwright reports/coverage
+          echo "Created directory structure"
+          ls -la reports/ || echo "Reports directory not found"
+
+      - name: Generate test dashboard
+        run: |
+          echo "Generating test dashboard..."
+          node scripts/generate-dashboard.js
+          echo "Dashboard generated successfully"
+          ls -la public/ || echo "Public directory not found"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./public"
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: collect-reports
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
