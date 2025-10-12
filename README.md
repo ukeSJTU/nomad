@@ -68,7 +68,7 @@ This project includes automatic OpenAPI 3.0 documentation generation for all API
 
 ### Accessing API Documentation
 
-> These are only served in developmnent mode for safety concerns.
+> These are only served in development mode for safety concerns.
 > TODO: we'll add a sanitized online API document later.
 
 - **Scalar UI**: Visit [http://localhost:3000/docs/api](http://localhost:3000/docs/api) to view the interactive API documentation
