@@ -5,6 +5,7 @@ on:
     workflows: ["Playwright Tests", "Unit Tests"]
     types:
       - completed
+    branches: ["**"]
   workflow_dispatch:
 
 permissions:
