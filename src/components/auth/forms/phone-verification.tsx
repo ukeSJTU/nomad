@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,7 @@ interface PhoneVerificationFormProps {
   isLoading?: boolean;
   onSendOtp?: () => void;
   countdown?: number;
+  onPhoneChange?: (phoneNumber: string, countryCode: string) => void;
 }
 
 export default function PhoneVerificationForm({
@@ -48,6 +49,7 @@ export default function PhoneVerificationForm({
   isLoading = false,
   onSendOtp,
   countdown = 0,
+  onPhoneChange,
 }: PhoneVerificationFormProps) {
   const [open, setOpen] = useState(false);
 
@@ -60,6 +62,16 @@ export default function PhoneVerificationForm({
       agreedToTerms: false,
     },
   });
+
+  // Watch for changes in phoneNumber and countryCode
+  const watchedValues = form.watch(["phoneNumber", "countryCode"]);
+
+  useEffect(() => {
+    const [phoneNumber, countryCode] = watchedValues;
+    if (onPhoneChange && phoneNumber && countryCode) {
+      onPhoneChange(phoneNumber, countryCode);
+    }
+  }, [watchedValues, onPhoneChange]);
 
   const handleSubmit = (data: PhoneVerificationData) => {
     onSubmit(data);

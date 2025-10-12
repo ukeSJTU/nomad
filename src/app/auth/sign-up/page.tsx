@@ -8,6 +8,7 @@ import SignUpModal, {
   PhoneVerificationForm,
 } from "@/components/auth";
 import { Stepper, type StepperStep } from "@/components/common";
+import { authClient } from "@/lib/auth/client";
 import type { PasswordSetupData, PhoneVerificationData } from "@/types/auth";
 
 const signUpSteps: StepperStep[] = [
@@ -38,6 +39,8 @@ export default function SignUpPage() {
   const [phoneData, setPhoneData] = useState<PhoneVerificationData | null>(
     null
   );
+  const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
+  const [currentCountryCode, setCurrentCountryCode] = useState("+86");
 
   // Countdown timer effect
   useEffect(() => {
@@ -64,16 +67,29 @@ export default function SignUpPage() {
   };
 
   // Form handlers
-  const handlePhoneVerificationSubmit = (data: PhoneVerificationData) => {
+  const handlePhoneVerificationSubmit = async (data: PhoneVerificationData) => {
     setPhoneData(data);
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
+
+    try {
+      const { error } = await authClient.phoneNumber.verify({
+        phoneNumber: fullPhoneNumber,
+        code: data.otp,
+      });
+
+      if (error) {
+        console.error("验证码验证失败:", error);
+      } else {
+        console.log("手机验证成功", data);
+        setCurrentStep(2);
+      }
+    } catch (error) {
+      console.error("验证码验证异常:", error);
+    } finally {
       setIsLoading(false);
-      setCurrentStep(2);
-      console.log("Phone verified successfully", data);
-    }, 1000);
+    }
   };
 
   const handlePasswordSetupSubmit = (data: PasswordSetupData) => {
@@ -87,14 +103,32 @@ export default function SignUpPage() {
     }, 1000);
   };
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
+    if (!currentPhoneNumber || !currentCountryCode) {
+      console.error("手机号或国家代码为空");
+      return;
+    }
+
+    const fullPhoneNumber = `${currentCountryCode}${currentPhoneNumber}`;
+
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const { error } = await authClient.phoneNumber.sendOtp({
+        phoneNumber: fullPhoneNumber,
+      });
+
+      if (error) {
+        console.error("发送验证码失败:", error);
+      } else {
+        console.log("验证码发送成功");
+        setCountdown(60);
+      }
+    } catch (error) {
+      console.error("发送验证码异常:", error);
+    } finally {
       setIsLoading(false);
-      setCountdown(60);
-    }, 1000);
+    }
   };
 
   // Don't render anything if user hasn't agreed to terms
@@ -131,6 +165,10 @@ export default function SignUpPage() {
           <PhoneVerificationForm
             onSubmit={handlePhoneVerificationSubmit}
             onSendOtp={handleSendOtp}
+            onPhoneChange={(phoneNumber, countryCode) => {
+              setCurrentPhoneNumber(phoneNumber);
+              setCurrentCountryCode(countryCode);
+            }}
             isLoading={isLoading}
             countdown={countdown}
           />
