@@ -56,3 +56,6 @@ node_modules/
 /public/coverage/
 /public/playwright/
 public/index.html
+
+# next-openapi-gen 
+openapi.json
