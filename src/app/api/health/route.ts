@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 
-import {
-  type HealthResponse,
-  healthResponseSchema,
-} from "@/lib/validations/api/health";
+import { type HealthResponse, healthResponseSchema } from "@/lib/validations";
 
 /**
  * Check health status of the server
