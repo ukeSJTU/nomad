@@ -57,11 +57,11 @@ jobs:
         with:
           recreate: true
           message: |
-            ## 📊 Test Coverage Report
+            ## Test Coverage Report
 
             Coverage data will be available after the test run completes.
 
-            📋 [View detailed coverage report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [View detailed coverage report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
-            🧪 **Unit Tests**: ${{ job.status }}
-            📈 **Coverage**: Check artifacts for detailed report
+            **Unit Tests**: ${{ job.status }}
+            **Coverage**: Check artifacts for detailed report

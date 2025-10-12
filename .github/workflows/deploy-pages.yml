@@ -58,7 +58,7 @@ jobs:
 
       - name: Create reports directory structure
         run: |
-          mkdir -p reports/playwright reports/coverage public
+          mkdir -p reports/playwright reports/coverage
           echo "Created directory structure"
           ls -la reports/ || echo "Reports directory not found"
 
