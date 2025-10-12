@@ -54,7 +54,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.shard }}
-          path: playwright-report/
+          path: blob-report/
           retention-days: 30
 
   merge-reports:
@@ -85,8 +85,10 @@ jobs:
 
       - name: Merge reports
         run: |
-          mkdir -p merged-report
-          pnpm exec playwright merge-reports --reporter html all-reports/playwright-report-*/
+          # List downloaded artifacts for debugging
+          ls -la all-reports/
+          # Merge all blob reports into a single HTML report
+          pnpm exec playwright merge-reports --reporter=html all-reports/playwright-report-*
 
       - name: Upload merged report
         uses: actions/upload-artifact@v4
