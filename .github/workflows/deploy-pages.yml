@@ -48,10 +48,13 @@ jobs:
             const fs = require('fs');
 
             // Get artifacts from the triggering workflow run
+            const runId = ${{ github.event.workflow_run.id }};
+            console.log('Downloading artifacts from run ID:', runId);
+
             const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              run_id: ${{ github.event.workflow_run.id }}
+              run_id: runId
             });
 
             console.log('Available artifacts:', artifacts.data.artifacts.map(a => a.name));
