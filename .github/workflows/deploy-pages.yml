@@ -41,42 +41,75 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Download Playwright reports
-        uses: actions/download-artifact@v4
-        continue-on-error: true
+      - name: Download artifacts from workflow run
+        uses: actions/github-script@v7
         with:
-          name: playwright-report-merged
-          path: ./public/playwright-report
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
 
-      - name: Download test coverage reports
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-        with:
-          name: test-results
-          path: ./public/coverage
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+            // Get artifacts from the triggering workflow run
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{ github.event.workflow_run.id }}
+            });
 
-      - name: Create reports directory structure and debug
+            console.log('Available artifacts:', artifacts.data.artifacts.map(a => a.name));
+
+            // Download Playwright report if available
+            const playwrightArtifact = artifacts.data.artifacts.find(a => a.name === 'playwright-report-merged');
+            if (playwrightArtifact) {
+              const download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: playwrightArtifact.id,
+                archive_format: 'zip'
+              });
+
+              fs.writeFileSync('playwright-report.zip', Buffer.from(download.data));
+              console.log('Downloaded Playwright report');
+            } else {
+              console.log('No Playwright report artifact found');
+            }
+
+            // Download test results if available
+            const testArtifact = artifacts.data.artifacts.find(a => a.name === 'test-results');
+            if (testArtifact) {
+              const download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: testArtifact.id,
+                archive_format: 'zip'
+              });
+
+              fs.writeFileSync('test-results.zip', Buffer.from(download.data));
+              console.log('Downloaded test results');
+            } else {
+              console.log('No test results artifact found');
+            }
+
+      - name: Extract and organize artifacts
         run: |
-          mkdir -p reports/playwright reports/coverage public
-          echo "=== Directory structure ==="
-          ls -la public/ || echo "Public directory not found"
-          echo "=== Playwright reports ==="
-          ls -la public/playwright-report/ || echo "No Playwright reports"
-          echo "=== Coverage reports ==="
-          ls -la public/coverage/ || echo "No coverage reports"
+          mkdir -p public/playwright-report public/coverage reports/playwright reports/coverage
 
-      - name: Copy reports to expected locations
-        run: |
-          # Copy to reports directory for dashboard generation
-          if [ -d "public/playwright-report" ]; then
-            cp -r public/playwright-report/* reports/playwright/ 2>/dev/null || echo "No Playwright files to copy"
+          # Extract Playwright report if exists
+          if [ -f "playwright-report.zip" ]; then
+            echo "Extracting Playwright report..."
+            unzip -q playwright-report.zip -d public/playwright-report/
+            cp -r public/playwright-report/* reports/playwright/ 2>/dev/null || true
+            ls -la public/playwright-report/
+          else
+            echo "No Playwright report to extract"
           fi
-          if [ -d "public/coverage" ]; then
-            cp -r public/coverage/* reports/coverage/ 2>/dev/null || echo "No coverage files to copy"
+
+          # Extract test results if exists
+          if [ -f "test-results.zip" ]; then
+            echo "Extracting test results..."
+            unzip -q test-results.zip -d public/coverage/
+            cp -r public/coverage/* reports/coverage/ 2>/dev/null || true
+            ls -la public/coverage/
+          else
+            echo "No test results to extract"
           fi
 
       - name: Generate test dashboard
