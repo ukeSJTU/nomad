@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { phoneNumber } from "better-auth/plugins";
@@ -25,9 +26,10 @@ export const auth = betterAuth({
         getTempEmail: phoneNumber => {
           return `${phoneNumber}@nomad.com`;
         },
-        //optionally, you can also pass `getTempName` function to generate a temporary name for the user
+        // Use faker to generate random temporary name with last four digits
         getTempName: phoneNumber => {
-          return phoneNumber; //by default, it will use the phone number as the name
+          const lastFour = phoneNumber.slice(-4);
+          return `${faker.person.firstName()}${lastFour}`;
         },
       },
     }),
