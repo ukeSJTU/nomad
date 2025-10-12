@@ -24,6 +24,7 @@
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "api:generate": "next-openapi-gen generate",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",

@@ -73,6 +73,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 | `pnpm db:push`      | 推送数据库架构变更到数据库            |
 | `pnpm db:generate`  | 生成数据库迁移文件                    |
 | `pnpm db:migrate`   | 执行数据库迁移                        |
+| `pnpm api:generate` | 生成OpenAPI文件                       |
 | `pnpm lint`         | 检查代码规范问题                      |
 | `pnpm lint:fix`     | 自动修复代码规范问题                  |
 | `pnpm format`       | 格式化所有代码文件                    |
