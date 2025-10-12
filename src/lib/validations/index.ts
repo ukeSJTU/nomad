@@ -1,4 +1,4 @@
-// Export all validation schemas and utilities from common.ts
+// Export all validation schemas and utilities from example.ts
 export * from "./example";
 
 // Future module exports can be added here:
