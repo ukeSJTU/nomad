@@ -53,3 +53,5 @@ node_modules/
 /reports/
 /public/index.html
 /coverage/
+/public/coverage/
+/public/playwright/
