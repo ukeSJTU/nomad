@@ -11,6 +11,8 @@ A modern Next.js full-stack application with TypeScript, Tailwind CSS, and compr
 - **Next.js 15** with App Router
 - **TypeScript** for type safety
 - **Tailwind CSS** for styling
+- **OpenAPI 3.0** with automatic documentation generation
+- **Zod** for runtime type validation
 - **ESLint & Prettier** for code quality
 - **Husky & lint-staged** for Git hooks
 - **Conventional Commits** with commitlint
@@ -60,6 +62,18 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
 
+## API Documentation
+
+This project includes automatic OpenAPI 3.0 documentation generation for all API endpoints.
+
+### Accessing API Documentation
+
+> These are only served in developmnent mode for safety concerns.
+> TODO: we'll add a sanitized online API document later.
+
+- **Scalar UI**: Visit [http://localhost:3000/docs/api](http://localhost:3000/docs/api) to view the interactive API documentation
+- **OpenAPI Spec**: The raw OpenAPI specification is available at `/public/openapi.json`
+
 ## Available Scripts
 
 | 命令                | 作用说明                              |
@@ -73,7 +87,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 | `pnpm db:push`      | 推送数据库架构变更到数据库            |
 | `pnpm db:generate`  | 生成数据库迁移文件                    |
 | `pnpm db:migrate`   | 执行数据库迁移                        |
-| `pnpm api:generate` | 生成OpenAPI文件                       |
+| `pnpm api:generate` | 生成 OpenAPI 文档规范                 |
 | `pnpm lint`         | 检查代码规范问题                      |
 | `pnpm lint:fix`     | 自动修复代码规范问题                  |
 | `pnpm format`       | 格式化所有代码文件                    |
@@ -131,6 +145,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 For detailed information about the project structure, file organization, and development conventions, please see:
 
 - [Project Structure and Conventions](docs/conventions.md) - Comprehensive guide to file organization, naming conventions, and best practices
+- [API Documentation Guide](docs/api.md) - Complete guide for developing and documenting APIs
 
 ## Contributing
 
