@@ -125,6 +125,12 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 - `test`: Adding tests
 - `chore`: Maintenance
 
+## Project Structure
+
+For detailed information about the project structure, file organization, and development conventions, please see:
+
+- [Project Structure and Conventions](docs/conventions.md) - Comprehensive guide to file organization, naming conventions, and best practices
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
