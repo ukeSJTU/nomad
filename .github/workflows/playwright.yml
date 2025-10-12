@@ -87,8 +87,22 @@ jobs:
         run: |
           # List downloaded artifacts for debugging
           ls -la all-reports/
+          ls -la all-reports/*/
+          # Create a directory to collect all blob reports
+          mkdir -p blob-reports
+          # Copy all blob report files to a single directory
+          find all-reports -name "*.zip" -exec cp {} blob-reports/ \; || true
+          find all-reports -name "*.jsonl" -exec cp {} blob-reports/ \; || true
+          # List what we have
+          ls -la blob-reports/
           # Merge all blob reports into a single HTML report
-          pnpm exec playwright merge-reports --reporter=html all-reports
+          if [ "$(ls -A blob-reports/)" ]; then
+            pnpm exec playwright merge-reports --reporter=html blob-reports
+          else
+            echo "No blob reports found, creating empty report"
+            mkdir -p playwright-report
+            echo "<html><body><h1>No test reports available</h1></body></html>" > playwright-report/index.html
+          fi
 
       - name: Upload merged report
         uses: actions/upload-artifact@v4
