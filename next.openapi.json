@@ -86,7 +86,7 @@
     }
   },
   "apiDir": "./src/app/api",
-  "schemaDir": "./src/lib/validations/api",
+  "schemaDir": "./src/types/api",
   "schemaType": "zod",
   "docsUrl": "docs/apis",
   "ui": "scalar",

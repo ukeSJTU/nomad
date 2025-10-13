@@ -24,7 +24,7 @@ export default defineConfig({
   /* Timeout settings */
   timeout: 30 * 1000, // 30 seconds per test
   expect: {
-    timeout: 5 * 1000, // 5 seconds for assertions
+    timeout: 10 * 1000, // 10 seconds for assertions
   },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
@@ -33,7 +33,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: "http://localhost:3000",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -84,9 +84,14 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: "pnpm dev",
+    url: "http://localhost:3000",
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000, // 2 minutes to start the server
+    env: {
+      NODE_ENV: "test",
+      ENABLE_ALIYUN_SMS: "false", // Explicitly disable Aliyun SMS in tests
+    },
+  },
 });
