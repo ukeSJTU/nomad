@@ -183,13 +183,7 @@ async function seed() {
     // Seed Flights
     console.log("[SEED] Seeding flights...");
     const flightData = [];
-    const statuses = [
-      "SCHEDULED",
-      "DELAYED",
-      "BOARDING",
-      "DEPARTED",
-      "ARRIVED",
-    ];
+    const statuses = ["SCHEDULED", "DELAYED", "CANCELLED", "COMPLETED"];
     const aircraftTypes = [
       "Boeing 737",
       "Airbus A320",
