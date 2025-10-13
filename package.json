@@ -30,7 +30,8 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "setup:dev": "node scripts/setup-dev.mjs"
   },
   "dependencies": {
     "@alicloud/credentials": "^2.4.4",
