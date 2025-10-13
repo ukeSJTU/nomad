@@ -1,5 +1,7 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   index,
   pgTable,
   timestamp,
@@ -21,5 +23,8 @@ export const airlines = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  table => [index("idx_airlines_is_deleted").on(table.is_deleted)]
+  table => [
+    index("idx_airlines_is_deleted").on(table.is_deleted),
+    check("airlines_iata_code_format", sql`${table.iata_code} ~ '^[A-Z]{2}$'`),
+  ]
 );

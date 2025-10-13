@@ -1,5 +1,7 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   index,
   pgTable,
   timestamp,
@@ -24,8 +26,8 @@ export const flights = pgTable(
     arrival_airport_id: uuid()
       .notNull()
       .references(() => airports.id),
-    departure_datetime: timestamp({ mode: "date" }).notNull(),
-    arrival_datetime: timestamp({ mode: "date" }).notNull(),
+    departure_datetime: timestamp({ withTimezone: true }).notNull(),
+    arrival_datetime: timestamp({ withTimezone: true }).notNull(),
     aircraft_type: varchar({ length: 50 }),
     status: varchar({ length: 20 }).notNull().default("SCHEDULED"),
     is_deleted: boolean().notNull().default(false),
@@ -48,6 +50,18 @@ export const flights = pgTable(
       table.arrival_airport_id,
       table.departure_datetime,
       table.is_deleted
+    ),
+    check(
+      "flights_flight_number_format",
+      sql`${table.flight_number} ~ '^[A-Z]{2}[0-9]{1,4}$'`
+    ),
+    check(
+      "flights_arrival_after_departure",
+      sql`${table.arrival_datetime} > ${table.departure_datetime}`
+    ),
+    check(
+      "flights_status_valid",
+      sql`${table.status} IN ('SCHEDULED', 'DELAYED', 'CANCELLED', 'COMPLETED')`
     ),
   ]
 );

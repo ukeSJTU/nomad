@@ -1,5 +1,7 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   index,
   pgTable,
   timestamp,
@@ -27,5 +29,6 @@ export const airports = pgTable(
     index("idx_airports_city").on(table.city),
     index("idx_airports_country").on(table.country),
     index("idx_airports_is_deleted").on(table.is_deleted),
+    check("airports_iata_code_format", sql`${table.iata_code} ~ '^[A-Z]{3}$'`),
   ]
 );

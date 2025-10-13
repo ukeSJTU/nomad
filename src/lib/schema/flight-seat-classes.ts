@@ -1,4 +1,6 @@
+import { sql } from "drizzle-orm";
 import {
+  check,
   index,
   integer,
   numeric,
@@ -35,5 +37,20 @@ export const flightSeatClasses = pgTable(
       table.flight_id,
       table.class_type
     ),
+    // CHECK constraints as specified in documentation
+    check(
+      "seat_classes_class_type_valid",
+      sql`${table.class_type} IN ('ECONOMY', 'BUSINESS', 'FIRST')`
+    ),
+    check(
+      "seat_classes_available_seats_non_negative",
+      sql`${table.available_seats} >= 0`
+    ),
+    check(
+      "seat_classes_available_seats_not_exceed_total",
+      sql`${table.available_seats} <= ${table.total_seats}`
+    ),
+    check("seat_classes_total_seats_positive", sql`${table.total_seats} > 0`),
+    check("seat_classes_price_positive", sql`${table.price} > 0`),
   ]
 );
