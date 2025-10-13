@@ -189,3 +189,486 @@ pnpm api:generate
 - 访问: [http://localhost:3000/api/health](http://localhost:3000/api/health)
 
 可以参考这个示例来理解完整的 API 开发流程。
+
+## API 响应规范
+
+本节定义了项目中所有 API 接口应遵循的统一响应格式、错误码体系和最佳实践。统一的响应格式能够：
+
+- 提供一致的前后端交互体验
+- 简化错误处理逻辑
+- 提高代码可维护性
+- 便于 API 监控和日志追踪
+
+### 响应格式标准
+
+#### 成功响应
+
+所有成功的 API 响应应遵循以下格式：
+
+```typescript
+{
+  "success": true,
+  "data": {
+    // 业务数据
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_abc123"  // 可选，用于请求追踪
+  }
+}
+```
+
+**字段说明：**
+
+- `success`: 布尔值，固定为 `true`，用于快速判断请求是否成功
+- `data`: 业务数据，可以是对象、数组或基本类型
+- `meta`: 元数据对象（可选）
+  - `timestamp`: ISO 8601 格式的响应时间
+  - `requestId`: 请求唯一标识符（可选，用于日志追踪和问题排查）
+
+**示例：**
+
+```typescript
+// 获取单个资源
+{
+  "success": true,
+  "data": {
+    "id": "flight_123",
+    "flightNumber": "CA1234",
+    "departure": "PEK",
+    "arrival": "SHA",
+    "departureTime": "2025-10-14T08:00:00Z"
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z"
+  }
+}
+
+// 简单操作结果
+{
+  "success": true,
+  "data": {
+    "message": "操作成功"
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z"
+  }
+}
+```
+
+#### 错误响应
+
+所有失败的 API 响应应遵循以下格式：
+
+```typescript
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "用户友好的错误描述",
+    "details": [  // 可选，用于详细错误信息（如验证错误）
+      {
+        "field": "email",
+        "message": "邮箱格式不正确"
+      }
+    ]
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_abc123"
+  }
+}
+```
+
+**字段说明：**
+
+- `success`: 布尔值，固定为 `false`
+- `error`: 错误信息对象
+  - `code`: 业务错误码（见下文错误码体系）
+  - `message`: 用户友好的错误描述信息
+  - `details`: 详细错误信息数组（可选），主要用于验证错误
+    - `field`: 出错的字段名
+    - `message`: 该字段的错误描述
+- `meta`: 元数据对象，与成功响应相同
+
+**示例：**
+
+```typescript
+// 验证错误
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "请求参数验证失败",
+    "details": [
+      {
+        "field": "email",
+        "message": "邮箱格式不正确"
+      },
+      {
+        "field": "password",
+        "message": "密码长度必须至少8个字符"
+      }
+    ]
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_abc123"
+  }
+}
+
+// 业务错误
+{
+  "success": false,
+  "error": {
+    "code": "BUSINESS_FLIGHT_NOT_FOUND",
+    "message": "未找到指定的航班信息"
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z"
+  }
+}
+
+// 认证错误
+{
+  "success": false,
+  "error": {
+    "code": "AUTH_UNAUTHORIZED",
+    "message": "未授权，请先登录"
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z"
+  }
+}
+```
+
+#### 分页响应
+
+对于返回列表数据的 API，应包含分页信息：
+
+```typescript
+{
+  "success": true,
+  "data": {
+    "items": [
+      // 列表项数据
+    ],
+    "pagination": {
+      "page": 1,
+      "pageSize": 20,
+      "totalPages": 5,
+      "totalItems": 100
+    }
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z"
+  }
+}
+```
+
+**分页参数说明：**
+
+- `items`: 当前页的数据列表
+- `pagination`: 分页信息对象
+  - `page`: 当前页码（从 1 开始）
+  - `pageSize`: 每页数据量
+  - `totalPages`: 总页数
+  - `totalItems`: 总数据量
+
+**请求参数规范：**
+
+分页接口应接受以下查询参数：
+
+- `page`: 页码（默认 1）
+- `pageSize`: 每页数量（默认 20，最大 100）
+
+**示例：**
+
+```typescript
+// GET /api/flights?page=2&pageSize=10
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "flight_123",
+        "flightNumber": "CA1234",
+        "departure": "PEK",
+        "arrival": "SHA"
+      }
+      // ... 更多航班数据
+    ],
+    "pagination": {
+      "page": 2,
+      "pageSize": 10,
+      "totalPages": 10,
+      "totalItems": 95
+    }
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z"
+  }
+}
+
+// 空列表
+{
+  "success": true,
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 20,
+      "totalPages": 0,
+      "totalItems": 0
+    }
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:00:00Z"
+  }
+}
+```
+
+### 错误码体系
+
+项目采用语义化的错误码命名规范，格式为 `模块_具体错误`，便于快速识别错误类型和来源。
+
+#### 错误码分类
+
+##### 1. 认证相关错误 (AUTH_xxx)
+
+| 错误码                       | HTTP 状态码 | 说明             |
+| ---------------------------- | ----------- | ---------------- |
+| `AUTH_UNAUTHORIZED`          | 401         | 未授权，需要登录 |
+| `AUTH_TOKEN_EXPIRED`         | 401         | 访问令牌已过期   |
+| `AUTH_TOKEN_INVALID`         | 401         | 访问令牌无效     |
+| `AUTH_REFRESH_TOKEN_EXPIRED` | 401         | 刷新令牌已过期   |
+| `AUTH_INVALID_CREDENTIALS`   | 401         | 用户名或密码错误 |
+| `AUTH_SESSION_EXPIRED`       | 401         | 会话已过期       |
+| `AUTH_FORBIDDEN`             | 403         | 无权限访问该资源 |
+| `AUTH_ACCOUNT_LOCKED`        | 403         | 账号已被锁定     |
+| `AUTH_ACCOUNT_DISABLED`      | 403         | 账号已被禁用     |
+
+##### 2. 验证相关错误 (VALIDATION_xxx)
+
+| 错误码                      | HTTP 状态码 | 说明               |
+| --------------------------- | ----------- | ------------------ |
+| `VALIDATION_ERROR`          | 400         | 通用验证错误       |
+| `VALIDATION_REQUIRED_FIELD` | 400         | 必填字段缺失       |
+| `VALIDATION_INVALID_FORMAT` | 400         | 字段格式不正确     |
+| `VALIDATION_INVALID_TYPE`   | 400         | 字段类型不正确     |
+| `VALIDATION_OUT_OF_RANGE`   | 400         | 字段值超出有效范围 |
+| `VALIDATION_INVALID_LENGTH` | 400         | 字段长度不符合要求 |
+| `VALIDATION_INVALID_EMAIL`  | 400         | 邮箱格式不正确     |
+| `VALIDATION_INVALID_PHONE`  | 400         | 手机号格式不正确   |
+| `VALIDATION_INVALID_DATE`   | 400         | 日期格式不正确     |
+
+##### 3. 业务逻辑错误 (BUSINESS_xxx)
+
+根据具体业务模块划分：
+
+**通用业务错误：**
+
+| 错误码                       | HTTP 状态码 | 说明           |
+| ---------------------------- | ----------- | -------------- |
+| `BUSINESS_NOT_FOUND`         | 404         | 资源未找到     |
+| `BUSINESS_ALREADY_EXISTS`    | 409         | 资源已存在     |
+| `BUSINESS_CONFLICT`          | 409         | 操作冲突       |
+| `BUSINESS_OPERATION_FAILED`  | 422         | 业务操作失败   |
+| `BUSINESS_INVALID_OPERATION` | 422         | 无效的业务操作 |
+
+**机票业务错误：**
+
+| 错误码                            | HTTP 状态码 | 说明                   |
+| --------------------------------- | ----------- | ---------------------- |
+| `BUSINESS_FLIGHT_NOT_FOUND`       | 404         | 航班未找到             |
+| `BUSINESS_FLIGHT_FULL`            | 422         | 航班已满               |
+| `BUSINESS_FLIGHT_CANCELLED`       | 422         | 航班已取消             |
+| `BUSINESS_INSUFFICIENT_SEATS`     | 422         | 座位不足               |
+| `BUSINESS_BOOKING_EXPIRED`        | 422         | 订单已过期             |
+| `BUSINESS_BOOKING_CANCELLED`      | 422         | 订单已取消             |
+| `BUSINESS_INVALID_PASSENGER_INFO` | 400         | 乘客信息不完整或不正确 |
+
+**酒店业务错误：**
+
+| 错误码                            | HTTP 状态码 | 说明         |
+| --------------------------------- | ----------- | ------------ |
+| `BUSINESS_HOTEL_NOT_FOUND`        | 404         | 酒店未找到   |
+| `BUSINESS_HOTEL_UNAVAILABLE`      | 422         | 酒店不可预订 |
+| `BUSINESS_ROOM_UNAVAILABLE`       | 422         | 房间不可用   |
+| `BUSINESS_INSUFFICIENT_ROOMS`     | 422         | 房间数量不足 |
+| `BUSINESS_CHECK_IN_DATE_INVALID`  | 400         | 入住日期无效 |
+| `BUSINESS_CHECK_OUT_DATE_INVALID` | 400         | 退房日期无效 |
+
+**支付相关错误：**
+
+| 错误码                          | HTTP 状态码 | 说明       |
+| ------------------------------- | ----------- | ---------- |
+| `BUSINESS_PAYMENT_FAILED`       | 422         | 支付失败   |
+| `BUSINESS_PAYMENT_TIMEOUT`      | 422         | 支付超时   |
+| `BUSINESS_PAYMENT_CANCELLED`    | 422         | 支付已取消 |
+| `BUSINESS_INSUFFICIENT_BALANCE` | 422         | 余额不足   |
+| `BUSINESS_REFUND_FAILED`        | 422         | 退款失败   |
+
+##### 4. 系统错误 (SYSTEM_xxx)
+
+| 错误码                       | HTTP 状态码 | 说明           |
+| ---------------------------- | ----------- | -------------- |
+| `SYSTEM_INTERNAL_ERROR`      | 500         | 服务器内部错误 |
+| `SYSTEM_DATABASE_ERROR`      | 500         | 数据库错误     |
+| `SYSTEM_NETWORK_ERROR`       | 500         | 网络错误       |
+| `SYSTEM_TIMEOUT`             | 504         | 请求超时       |
+| `SYSTEM_SERVICE_UNAVAILABLE` | 503         | 服务暂时不可用 |
+| `SYSTEM_THIRD_PARTY_ERROR`   | 502         | 第三方服务错误 |
+| `SYSTEM_RATE_LIMIT_EXCEEDED` | 429         | 请求频率超限   |
+| `SYSTEM_MAINTENANCE`         | 503         | 系统维护中     |
+
+#### 错误码使用规范
+
+1. **选择合适的错误码**：根据实际错误类型选择最匹配的错误码
+2. **提供清晰的错误信息**：`message` 字段应该是用户友好的描述
+3. **使用正确的 HTTP 状态码**：确保 HTTP 状态码与错误类型匹配
+4. **验证错误使用 details**：对于表单验证错误，应在 `details` 中提供字段级错误信息
+5. **敏感信息保护**：错误信息中不应包含敏感的系统内部信息
+
+### HTTP 状态码规范
+
+项目遵循 RESTful API 标准，使用语义化的 HTTP 状态码：
+
+#### 成功响应 (2xx)
+
+| 状态码 | 说明       | 使用场景                       |
+| ------ | ---------- | ------------------------------ |
+| 200    | OK         | 请求成功（GET、PUT、PATCH）    |
+| 201    | Created    | 资源创建成功（POST）           |
+| 204    | No Content | 请求成功但无返回内容（DELETE） |
+
+#### 客户端错误 (4xx)
+
+| 状态码 | 说明                 | 使用场景               |
+| ------ | -------------------- | ---------------------- |
+| 400    | Bad Request          | 请求参数错误、验证失败 |
+| 401    | Unauthorized         | 未授权，需要认证       |
+| 403    | Forbidden            | 已认证但无权限         |
+| 404    | Not Found            | 资源不存在             |
+| 409    | Conflict             | 资源冲突（如重复创建） |
+| 422    | Unprocessable Entity | 业务逻辑错误           |
+| 429    | Too Many Requests    | 请求频率超限           |
+
+#### 服务器错误 (5xx)
+
+| 状态码 | 说明                  | 使用场景       |
+| ------ | --------------------- | -------------- |
+| 500    | Internal Server Error | 服务器内部错误 |
+| 502    | Bad Gateway           | 第三方服务错误 |
+| 503    | Service Unavailable   | 服务暂时不可用 |
+| 504    | Gateway Timeout       | 请求超时       |
+
+### 日期时间格式规范
+
+项目统一使用 **ISO 8601** 格式表示日期时间：
+
+- **完整格式**：`2025-10-14T10:30:00Z`（UTC 时间）
+- **带时区格式**：`2025-10-14T10:30:00+08:00`（东八区时间）
+
+**规范要求：**
+
+1. 所有 API 响应中的时间字段必须使用 ISO 8601 格式
+2. 推荐使用 UTC 时间（以 `Z` 结尾）
+3. 如需表示本地时间，必须包含时区信息
+4. 使用 Zod 的 `z.iso.datetime()` 进行验证
+
+**示例：**
+
+```typescript
+// Zod Schema 定义
+const flightSchema = z.object({
+  departureTime: z.iso.datetime(),
+  arrivalTime: z.iso.datetime(),
+  bookingTime: z.iso.datetime(),
+});
+
+// API 响应示例
+{
+  "success": true,
+  "data": {
+    "departureTime": "2025-10-14T08:00:00Z",
+    "arrivalTime": "2025-10-14T10:30:00Z",
+    "bookingTime": "2025-10-13T15:20:00Z"
+  }
+}
+```
+
+### 响应工具函数使用
+
+项目提供了 `ApiResponse` 工具类来简化响应构建，详细实现见 `src/lib/utils/api-response.ts`。
+
+#### 基本使用
+
+```typescript
+import { ApiResponse } from "@/lib/utils/api-response";
+
+// 成功响应
+export async function GET() {
+  const data = { id: 1, name: "示例" };
+  return ApiResponse.success(data);
+}
+
+// 错误响应
+export async function POST(request: NextRequest) {
+  try {
+    // 业务逻辑
+  } catch (error) {
+    return ApiResponse.error(
+      "BUSINESS_OPERATION_FAILED",
+      "操作失败，请稍后重试"
+    );
+  }
+}
+
+// 分页响应
+export async function GET(request: NextRequest) {
+  const items = await fetchItems();
+  const pagination = {
+    page: 1,
+    pageSize: 20,
+    totalPages: 5,
+    totalItems: 100,
+  };
+  return ApiResponse.paginated(items, pagination);
+}
+```
+
+#### 高级用法
+
+```typescript
+// 带自定义 HTTP 状态码
+return ApiResponse.success(data, 201); // Created
+
+// 带请求 ID
+return ApiResponse.success(data, 200, { requestId: "req_123" });
+
+// 验证错误（带详细信息）
+return ApiResponse.validationError([
+  { field: "email", message: "邮箱格式不正确" },
+  { field: "password", message: "密码长度不足" },
+]);
+
+// 资源未找到
+return ApiResponse.notFound("BUSINESS_FLIGHT_NOT_FOUND", "航班未找到");
+
+// 未授权
+return ApiResponse.unauthorized("AUTH_TOKEN_EXPIRED", "登录已过期");
+```
+
+### 最佳实践总结
+
+1. **始终使用统一的响应格式**：所有 API 返回都应遵循标准格式
+2. **选择合适的错误码**：使用语义化的错误码，便于前端处理
+3. **提供友好的错误信息**：错误信息应面向用户，避免暴露技术细节
+4. **使用工具函数**：使用 `ApiResponse` 工具类构建响应，确保格式一致
+5. **验证响应数据**：使用 Zod Schema 验证响应数据的正确性
+6. **添加完整的 JSDoc**：为 OpenAPI 文档生成提供必要的注释
+7. **记录请求 ID**：在日志中记录 `requestId`，便于问题追踪
+8. **合理使用分页**：列表接口应支持分页，避免数据量过大
+9. **保护敏感信息**：错误响应中不应包含系统内部信息或敏感数据
+10. **统一时间格式**：所有时间字段使用 ISO 8601 格式
