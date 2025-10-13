@@ -86,12 +86,17 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm dev",
-    url: "http://localhost:3000",
+    // url: "http://localhost:3000",
+    port: 3000,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes to start the server
+    stdout: "pipe",
+    stderr: "pipe",
+
     env: {
       NODE_ENV: "test",
       ENABLE_ALIYUN_SMS: "false", // Explicitly disable Aliyun SMS in tests
+      DEBUG: "next:*",
     },
   },
 });
