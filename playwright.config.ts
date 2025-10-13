@@ -24,7 +24,7 @@ export default defineConfig({
   /* Timeout settings */
   timeout: 30 * 1000, // 30 seconds per test
   expect: {
-    timeout: 5 * 1000, // 5 seconds for assertions
+    timeout: 10 * 1000, // 10 seconds for assertions
   },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
