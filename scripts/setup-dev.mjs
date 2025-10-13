@@ -221,7 +221,7 @@ async function setupGitHooks() {
 
   try {
     logInfo("正在配置 Husky...");
-    execCommand("pnpm exec husky install");
+    execCommand("pnpm run prepare");
     logSuccess("Git hooks 设置完成");
   } catch (error) {
     logWarning("Git hooks 设置失败，但不影响基本开发");
