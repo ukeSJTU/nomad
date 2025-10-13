@@ -142,7 +142,17 @@ test.describe("Phone Sign-Up Flow", () => {
    */
   test.describe("Phone Verification", () => {
     // Helper function to agree to terms and get to phone verification step
-    async function agreeToTerms(page: any) {
+    async function agreeToTerms(page: Page) {
+      // Mock the send OTP API endpoint for all tests in this suite
+      // This prevents database dependency in CI environments
+      await page.route("**/api/auth/phone-number/send-otp", async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ error: null }),
+        });
+      });
+
       await page.goto("/auth/sign-up");
       const agreeButton = page.getByRole("button", { name: "同意并继续" });
       await agreeButton.click();
