@@ -95,6 +95,21 @@ Then push the database schema:
 pnpm db:push
 ```
 
+### Seed Database (Optional)
+
+Populate the database with sample data for development:
+
+```bash
+pnpm db:seed
+```
+
+This will create sample data for:
+
+- Airports (12 major international airports)
+- Airlines (10 major carriers)
+- Flights (50 flights with various statuses)
+- Flight Seat Classes (economy, premium economy, business, first class)
+
 ### Start Development
 
 ```bash
@@ -129,6 +144,7 @@ This project includes automatic OpenAPI 3.0 documentation generation for all API
 | `pnpm db:push`      | 推送数据库架构变更到数据库            |
 | `pnpm db:generate`  | 生成数据库迁移文件                    |
 | `pnpm db:migrate`   | 执行数据库迁移                        |
+| `pnpm db:seed`      | 使用示例数据填充数据库                |
 | `pnpm api:generate` | 生成 OpenAPI 文档规范                 |
 | `pnpm lint`         | 检查代码规范问题                      |
 | `pnpm lint:fix`     | 自动修复代码规范问题                  |
