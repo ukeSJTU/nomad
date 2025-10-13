@@ -41,10 +41,10 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
                         "border-primary bg-primary text-primary-foreground":
                           isCompleted,
                         // Active state
-                        "border-primary bg-primary text-primary-foreground":
+                        "border-primary bg-accent text-accent-foreground ring-2 ring-primary/20":
                           isActive,
                         // Inactive state
-                        "border-muted-foreground/30 text-muted-foreground":
+                        "border-muted-foreground/30 bg-muted text-muted-foreground":
                           !isActive && !isCompleted,
                       }
                     )}
