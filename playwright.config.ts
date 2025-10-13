@@ -90,13 +90,17 @@ export default defineConfig({
     port: 3000,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes to start the server
-    stdout: "pipe",
-    stderr: "pipe",
+    // Show output in CI for debugging, ignore in local development
+    stdout: process.env.CI ? "pipe" : "ignore",
+    stderr: process.env.CI ? "pipe" : "ignore",
 
     env: {
       NODE_ENV: "test",
       ENABLE_ALIYUN_SMS: "false", // Explicitly disable Aliyun SMS in tests
-      DEBUG: "next:*",
+      // Only enable Next.js debug logs in CI or when explicitly requested
+      ...(process.env.CI || process.env.DEBUG
+        ? { DEBUG: process.env.DEBUG || "next:error,next:router" }
+        : {}),
     },
   },
 });
