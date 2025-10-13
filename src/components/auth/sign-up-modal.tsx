@@ -19,7 +19,7 @@ export interface SignUpModalProps {
 
 const agreementTerms = [
   { id: 1, text: "总则" },
-  { id: 2, text: "服务商介" },
+  { id: 2, text: "服务商介绍" },
   { id: 3, text: "服务条款的修改" },
   { id: 4, text: "服务变更、中断、终止" },
   { id: 5, text: "使用规则" },
