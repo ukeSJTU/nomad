@@ -216,8 +216,8 @@ INDEX idx_flights_search (departure_airport_id, arrival_airport_id, departure_da
 #### 约束规则
 
 ```sql
--- 航班号格式检查（2-3位字母 + 数字）
-CHECK (flight_number REGEXP '^[A-Z]{2,3}[0-9]{1,4}$')
+-- 航班号格式检查（2位航司IATA代码 + 1-4位数字）
+CHECK (flight_number REGEXP '^[A-Z]{2}[0-9]{1,4}$')
 
 -- 时间逻辑检查
 CHECK (arrival_datetime > departure_datetime)
@@ -237,7 +237,7 @@ FOREIGN KEY (arrival_airport_id) REFERENCES airports(id)
 
 #### 业务规则
 
-1. **航班号格式**：2-3位航司代码（大写字母）+ 1-4位数字（如：CA1234, CZ123）
+1. **航班号格式**：2位航司IATA代码（大写字母）+ 1-4位数字（如：CA1234, MU5678），航司代码部分应与airlines表的iata_code对应
 2. **时间存储**：所有时间使用UTC时区存储，显示时根据机场时区转换为本地时间
 3. **航班状态**：
    - `SCHEDULED`：已排期，正常
