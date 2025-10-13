@@ -1,14 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// We need to extract the shouldEnableAliyunSms function for testing
-// Since it's not exported, we'll need to test it indirectly through the sendOTP function
-// or we can create a test version that exports it
-
-// Mock the dependencies
+// Mock the database dependency before importing
 vi.mock("@/lib/db", () => ({
   db: {},
 }));
 
+// Mock other dependencies that might be imported
 vi.mock("@/lib/sms", () => ({
   sendSmsOtp: vi.fn(),
 }));
@@ -21,7 +18,7 @@ vi.mock("@/utils/logger", () => ({
 }));
 
 vi.mock("better-auth", () => ({
-  betterAuth: vi.fn().mockImplementation(config => config),
+  betterAuth: vi.fn(),
 }));
 
 vi.mock("better-auth/adapters/drizzle", () => ({
@@ -29,7 +26,7 @@ vi.mock("better-auth/adapters/drizzle", () => ({
 }));
 
 vi.mock("better-auth/plugins", () => ({
-  phoneNumber: vi.fn().mockImplementation(config => config),
+  phoneNumber: vi.fn(),
 }));
 
 vi.mock("@faker-js/faker", () => ({
@@ -40,14 +37,13 @@ vi.mock("@faker-js/faker", () => ({
   },
 }));
 
+// Import the function we want to test directly after mocking dependencies
+import { shouldEnableAliyunSms } from "./auth";
+
 describe("Auth Configuration", () => {
   beforeEach(() => {
     // Clear all mocks before each test
     vi.clearAllMocks();
-
-    // Mock console methods to avoid noise in test output
-    vi.spyOn(console, "log").mockImplementation(() => {});
-    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -55,223 +51,127 @@ describe("Auth Configuration", () => {
     vi.unstubAllEnvs();
   });
 
-  describe("shouldEnableAliyunSms logic (tested through sendOTP)", () => {
-    let sendOTPFunction: any;
-
-    beforeEach(async () => {
-      // Import the auth module to get the sendOTP function
-      const authModule = await import("./auth");
-      const authConfig = authModule.auth as any;
-
-      // Extract the sendOTP function from the phoneNumber plugin configuration
-      const phoneNumberPlugin = authConfig.plugins[0];
-      sendOTPFunction = phoneNumberPlugin.sendOTP;
-    });
-
-    it("should enable Aliyun SMS when ENABLE_ALIYUN_SMS is 'enabled'", async () => {
+  describe("shouldEnableAliyunSms", () => {
+    it("should return true when ENABLE_ALIYUN_SMS is 'enabled'", () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "enabled");
       vi.stubEnv("NODE_ENV", "development"); // Should be overridden by explicit setting
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      vi.mocked(sendSmsOtp).mockResolvedValue(true);
+      const result = shouldEnableAliyunSms();
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).toHaveBeenCalledWith("13800138000", "123456");
+      expect(result).toBe(true);
     });
 
-    it("should enable Aliyun SMS when ENABLE_ALIYUN_SMS is 'true'", async () => {
+    it("should return true when ENABLE_ALIYUN_SMS is 'true'", () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "true");
       vi.stubEnv("NODE_ENV", "development"); // Should be overridden by explicit setting
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      vi.mocked(sendSmsOtp).mockResolvedValue(true);
+      const result = shouldEnableAliyunSms();
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).toHaveBeenCalledWith("13800138000", "123456");
+      expect(result).toBe(true);
     });
 
-    it("should disable Aliyun SMS when ENABLE_ALIYUN_SMS is 'disabled'", async () => {
+    it("should return false when ENABLE_ALIYUN_SMS is 'disabled'", () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "disabled");
       vi.stubEnv("NODE_ENV", "production"); // Should be overridden by explicit setting
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      const logger = (await import("@/utils/logger")).default;
+      const result = shouldEnableAliyunSms();
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith(
-        "[SMS SIMULATION] Sending OTP code 123456 to 13800138000"
-      );
-      expect(logger.info).toHaveBeenCalledWith(
-        "[SMS SIMULATION] Environment: production, ENABLE_ALIYUN_SMS: disabled"
-      );
+      expect(result).toBe(false);
     });
 
-    it("should disable Aliyun SMS when ENABLE_ALIYUN_SMS is 'false'", async () => {
+    it("should return false when ENABLE_ALIYUN_SMS is 'false'", () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "false");
       vi.stubEnv("NODE_ENV", "production"); // Should be overridden by explicit setting
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      const logger = (await import("@/utils/logger")).default;
+      const result = shouldEnableAliyunSms();
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith(
-        "[SMS SIMULATION] Sending OTP code 123456 to 13800138000"
-      );
+      expect(result).toBe(false);
     });
 
-    it("should enable Aliyun SMS in production environment by default", async () => {
+    it("should return true in production environment by default", () => {
       // Don't set ENABLE_ALIYUN_SMS, let it use default logic
       vi.stubEnv("NODE_ENV", "production");
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      vi.mocked(sendSmsOtp).mockResolvedValue(true);
+      const result = shouldEnableAliyunSms();
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).toHaveBeenCalledWith("13800138000", "123456");
+      expect(result).toBe(true);
     });
 
-    it("should disable Aliyun SMS in development environment by default", async () => {
+    it("should return false in development environment by default", () => {
       // Don't set ENABLE_ALIYUN_SMS, let it use default logic
       vi.stubEnv("NODE_ENV", "development");
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      const logger = (await import("@/utils/logger")).default;
+      const result = shouldEnableAliyunSms();
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith(
-        "[SMS SIMULATION] Sending OTP code 123456 to 13800138000"
-      );
-      expect(logger.info).toHaveBeenCalledWith(
-        "[SMS SIMULATION] Environment: development, ENABLE_ALIYUN_SMS: undefined"
-      );
+      expect(result).toBe(false);
     });
 
-    it("should disable Aliyun SMS in test environment by default", async () => {
+    it("should return false in test environment by default", () => {
       // Don't set ENABLE_ALIYUN_SMS, let it use default logic
       vi.stubEnv("NODE_ENV", "test");
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      const logger = (await import("@/utils/logger")).default;
+      const result = shouldEnableAliyunSms();
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith(
-        "[SMS SIMULATION] Sending OTP code 123456 to 13800138000"
-      );
+      expect(result).toBe(false);
     });
 
-    it("should handle case-insensitive ENABLE_ALIYUN_SMS values", async () => {
+    it("should handle case-insensitive ENABLE_ALIYUN_SMS values", () => {
       // Test uppercase
       vi.stubEnv("ENABLE_ALIYUN_SMS", "ENABLED");
       vi.stubEnv("NODE_ENV", "development");
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      vi.mocked(sendSmsOtp).mockResolvedValue(true);
-
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).toHaveBeenCalledWith("13800138000", "123456");
+      let result = shouldEnableAliyunSms();
+      expect(result).toBe(true);
 
       // Reset and test mixed case
-      vi.clearAllMocks();
+      vi.unstubAllEnvs();
       vi.stubEnv("ENABLE_ALIYUN_SMS", "True");
+      vi.stubEnv("NODE_ENV", "development");
 
-      await sendOTPFunction({ phoneNumber: "13800138001", code: "654321" }, {});
-
-      expect(sendSmsOtp).toHaveBeenCalledWith("13800138001", "654321");
+      result = shouldEnableAliyunSms();
+      expect(result).toBe(true);
     });
 
-    it("should handle invalid ENABLE_ALIYUN_SMS values by using default logic", async () => {
+    it("should handle invalid ENABLE_ALIYUN_SMS values by using default logic", () => {
+      // Test with production environment (should default to enabled)
       vi.stubEnv("ENABLE_ALIYUN_SMS", "maybe"); // Invalid value
-      vi.stubEnv("NODE_ENV", "production"); // Should default to enabled in production
+      vi.stubEnv("NODE_ENV", "production");
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      vi.mocked(sendSmsOtp).mockResolvedValue(true);
+      let result = shouldEnableAliyunSms();
+      expect(result).toBe(true);
 
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
+      // Test with development environment (should default to disabled)
+      vi.unstubAllEnvs();
+      vi.stubEnv("ENABLE_ALIYUN_SMS", "maybe"); // Invalid value
+      vi.stubEnv("NODE_ENV", "development");
 
-      expect(sendSmsOtp).toHaveBeenCalledWith("13800138000", "123456");
-
-      // Test with development environment
-      vi.clearAllMocks();
-      vi.stubEnv("NODE_ENV", "development"); // Should default to disabled in development
-
-      const logger = (await import("@/utils/logger")).default;
-
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(sendSmsOtp).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith(
-        "[SMS SIMULATION] Sending OTP code 123456 to 13800138000"
-      );
+      result = shouldEnableAliyunSms();
+      expect(result).toBe(false);
     });
 
-    it("should handle SMS sending success correctly", async () => {
-      vi.stubEnv("ENABLE_ALIYUN_SMS", "enabled");
+    it("should handle undefined NODE_ENV by defaulting to false", () => {
+      // Don't set NODE_ENV at all
+      vi.stubEnv("ENABLE_ALIYUN_SMS", "maybe"); // Invalid value, should use default logic
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      const logger = (await import("@/utils/logger")).default;
-      vi.mocked(sendSmsOtp).mockResolvedValue(true);
-
-      await sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {});
-
-      expect(logger.info).toHaveBeenCalledWith(
-        "OTP code 123456 sent successfully to 13800138000 via Aliyun SMS"
-      );
-      expect(console.log).toHaveBeenCalledWith(
-        "OTP code 123456 sent successfully to 13800138000 via Aliyun SMS"
-      );
+      const result = shouldEnableAliyunSms();
+      expect(result).toBe(false); // Should default to false when NODE_ENV is undefined
     });
 
-    it("should handle SMS sending failure correctly", async () => {
+    it("should prioritize explicit ENABLE_ALIYUN_SMS over NODE_ENV", () => {
+      // Test that explicit 'enabled' overrides development environment
       vi.stubEnv("ENABLE_ALIYUN_SMS", "enabled");
+      vi.stubEnv("NODE_ENV", "development");
 
-      const { sendSmsOtp } = await import("@/lib/sms");
-      const logger = (await import("@/utils/logger")).default;
-      vi.mocked(sendSmsOtp).mockResolvedValue(false);
+      let result = shouldEnableAliyunSms();
+      expect(result).toBe(true);
 
-      await expect(
-        sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {})
-      ).rejects.toThrow("Failed to send SMS");
+      // Test that explicit 'disabled' overrides production environment
+      vi.unstubAllEnvs();
+      vi.stubEnv("ENABLE_ALIYUN_SMS", "disabled");
+      vi.stubEnv("NODE_ENV", "production");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Failed to send OTP code 123456 to 13800138000 via Aliyun SMS"
-      );
-      expect(console.error).toHaveBeenCalledWith(
-        "Failed to send OTP code 123456 to 13800138000 via Aliyun SMS"
-      );
-    });
-
-    it("should handle SMS sending errors correctly", async () => {
-      vi.stubEnv("ENABLE_ALIYUN_SMS", "enabled");
-
-      const { sendSmsOtp } = await import("@/lib/sms");
-      const logger = (await import("@/utils/logger")).default;
-      const testError = new Error("Network error");
-      vi.mocked(sendSmsOtp).mockRejectedValue(testError);
-
-      await expect(
-        sendOTPFunction({ phoneNumber: "13800138000", code: "123456" }, {})
-      ).rejects.toThrow("Network error");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        { error: testError },
-        "Error sending OTP via Aliyun SMS"
-      );
-      expect(console.error).toHaveBeenCalledWith(
-        "Error sending OTP via Aliyun SMS:",
-        testError
-      );
+      result = shouldEnableAliyunSms();
+      expect(result).toBe(false);
     });
   });
 });

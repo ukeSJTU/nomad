@@ -11,7 +11,7 @@ import logger from "@/utils/logger";
  * Determine whether Aliyun SMS service should be enabled
  * @returns boolean
  */
-function shouldEnableAliyunSms(): boolean {
+export function shouldEnableAliyunSms(): boolean {
   const enableSms = process.env.ENABLE_ALIYUN_SMS?.toLowerCase();
   const isProduction = process.env.NODE_ENV === "production";
 
