@@ -97,3 +97,68 @@ NOT NULL: iata_code, name, city, country, timezone, is_deleted
 - 机票显示：显示机场名称和IATA代码
 - 时间计算：根据机场时区计算本地起降时间
 - 国际化显示：前端根据用户语言偏好翻译城市和国家名称
+
+---
+
+### 表名：airlines（航空公司表）
+
+#### 业务描述
+
+存储OTA平台支持的航空公司基础信息，用于航班展示和品牌识别。
+
+#### 表结构
+
+| 字段名     | 数据类型     | 约束                                          | 描述                      | 示例                                                              |
+| ---------- | ------------ | --------------------------------------------- | ------------------------- | ----------------------------------------------------------------- |
+| id         | UUID         | PRIMARY KEY                                   | 主键，唯一标识            | 550e8400-e29b-41d4-a716-446655440000                              |
+| iata_code  | VARCHAR(2)   | NOT NULL, UNIQUE                              | IATA航司代码，2位大写字母 | MU, CA, AA                                                        |
+| name       | VARCHAR(255) | NOT NULL                                      | 航空公司名称（英文）      | China Eastern Airlines                                            |
+| logo_url   | VARCHAR(500) | NULL                                          | 航司Logo URL              | https://example.com/logos/mu.png 或 /mu.png(直接从public目录读取) |
+| is_deleted | BOOLEAN      | NOT NULL, DEFAULT FALSE                       | 软删除标记                | FALSE                                                             |
+| created_at | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP           | 创建时间                  | 2024-01-01 10:00:00                                               |
+| updated_at | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP ON UPDATE | 更新时间                  | 2024-01-01 10:00:00                                               |
+
+#### 索引设计
+
+```sql
+-- 主键索引（自动创建）
+PRIMARY KEY (id)
+
+-- 唯一索引
+UNIQUE INDEX uk_airlines_iata (iata_code)
+
+-- 查询索引
+INDEX idx_airlines_is_deleted (is_deleted)
+```
+
+**索引说明**：
+
+- `idx_airlines_is_deleted`：用于软删除过滤查询（WHERE is_deleted = FALSE），提高查询效率
+
+#### 约束规则
+
+```sql
+-- IATA代码格式检查
+CHECK (iata_code REGEXP '^[A-Z]{2}$')
+
+-- 非空约束
+NOT NULL: iata_code, name, is_deleted
+```
+
+#### 业务规则
+
+1. **IATA代码**：必须是2位大写英文字母，全局唯一
+2. **语言规范**：name字段统一使用英文存储，前端通过国际化（i18n）实现多语言显示
+3. **Logo URL**：可选字段，允许为空；前端可使用默认Logo或第三方服务作为降级方案
+4. **软删除策略**：
+   - 使用 `is_deleted` 字段标记删除状态，不物理删除数据
+   - 删除操作：SET is_deleted = TRUE, updated_at = CURRENT_TIMESTAMP
+   - 查询时必须过滤：WHERE is_deleted = FALSE
+   - 已删除的数据可用于历史记录和数据恢复
+
+#### 使用场景
+
+- 航班列表：显示航空公司名称和Logo
+- 航班筛选：按航空公司过滤航班
+- 品牌展示：展示航司品牌标识
+- 国际化显示：前端根据用户语言偏好翻译航司名称
