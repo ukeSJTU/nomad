@@ -2,34 +2,6 @@
 
 ## 数据表设计
 
-### 表名：examples（模版表）
-
-#### 业务描述
-
-一句话描述相关业务
-
-#### 表结构
-
-markdown表格记录字段名，数据类型，约束，描述，示例
-
-#### 索引设计
-
-```sql
-TODO
-```
-
-TODO: 我觉得有必要解释为什么建立这个索引
-
-#### 约束规则
-
-```sql
--- IATA代码格式检查
-CHECK (iata_code REGEXP '^[A-Z]{3}$')
-
--- 非空约束
-NOT NULL: iata_code, name, city, country, timezone
-```
-
 ### 表名：airports（机场表）
 
 #### 业务描述
