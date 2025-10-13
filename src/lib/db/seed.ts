@@ -244,7 +244,6 @@ async function seed() {
     const seatClassData = [];
     const classTypes = [
       { type: "ECONOMY", basePrice: 200, baseSeats: 150 },
-      { type: "PREMIUM_ECONOMY", basePrice: 500, baseSeats: 40 },
       { type: "BUSINESS", basePrice: 1500, baseSeats: 30 },
       { type: "FIRST", basePrice: 5000, baseSeats: 12 },
     ];
