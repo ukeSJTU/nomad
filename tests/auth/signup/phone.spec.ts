@@ -1,4 +1,38 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+
+/**
+ * Helper function to mock better-auth API endpoints for testing
+ * This allows tests to bypass actual OTP sending and verification
+ */
+async function mockBetterAuthApis(page: Page) {
+  // Mock the send OTP endpoint to return success
+  await page.route("**/api/auth/phone-number/send-otp", async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ error: null }),
+    });
+  });
+
+  // Mock the verify OTP endpoint to return success
+  // This is the critical mock that allows advancing to step 2
+  await page.route("**/api/auth/phone-number/verify", async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ error: null }),
+    });
+  });
+
+  // Mock the set initial password endpoint to return success
+  await page.route("**/api/auth/set-initial-password", async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ message: "Password set successfully" }),
+    });
+  });
+}
 
 /**
  * Test suite for phone-based sign-up flow
@@ -234,9 +268,11 @@ test.describe("Phone Sign-Up Flow", () => {
    */
   test.describe("Password Setup", () => {
     // Helper function to complete phone verification and get to password setup
-    async function goToPasswordSetup(page: any) {
-      // Note: This is a simplified helper. In real tests, you'd need to mock
-      // the OTP verification API or use a test OTP code
+    async function goToPasswordSetup(page: Page) {
+      // Set up API mocks before navigation
+      await mockBetterAuthApis(page);
+
+      // Navigate to sign-up page
       await page.goto("/auth/sign-up");
 
       // Agree to terms
@@ -244,12 +280,33 @@ test.describe("Phone Sign-Up Flow", () => {
       await agreeButton.click();
       await expect(page.getByRole("dialog")).not.toBeVisible();
 
-      // For now, we'll use page evaluation to manually set the step
-      // In production tests, you'd want to go through the actual flow
-      await page.evaluate(() => {
-        // This is a workaround for testing - simulate completing phone verification
-        // In real tests with proper backend mocking, you'd complete the actual flow
+      // Complete phone verification flow to advance to step 2
+      // Fill in phone number
+      const phoneInput = page.getByPlaceholder("请输入手机号");
+      await phoneInput.fill("13800138000");
+
+      // Send OTP (mocked to succeed)
+      const sendOtpButton = page.getByRole("button", { name: "发送验证码" });
+      await sendOtpButton.click();
+
+      // Fill in OTP code (any 6-digit code will work with mocked API)
+      const otpInput = page.getByPlaceholder("6位数字");
+      await otpInput.fill("123456");
+
+      // Check terms agreement
+      const termsCheckbox = page.getByRole("checkbox");
+      await termsCheckbox.check();
+
+      // Submit phone verification form
+      const submitButton = page.getByRole("button", {
+        name: "下一步，设置密码",
       });
+      await submitButton.click();
+
+      // Wait for step 2 (password setup) to be visible
+      // Use more specific selectors to avoid strict mode violations
+      await expect(page.getByPlaceholder("请输入密码")).toBeVisible();
+      await expect(page.getByText("密码要求：")).toBeVisible();
     }
 
     test("should display all password requirements", async ({ page }) => {
@@ -415,6 +472,9 @@ test.describe("Phone Sign-Up Flow", () => {
     test("should complete full registration flow successfully", async ({
       page,
     }) => {
+      // Set up API mocks before starting the flow
+      await mockBetterAuthApis(page);
+
       // Step 1: Navigate to sign-up page
       await page.goto("/auth/sign-up");
 
@@ -438,14 +498,9 @@ test.describe("Phone Sign-Up Flow", () => {
       // Verify OTP was sent (countdown started)
       await expect(page.getByRole("button", { name: /\d+s/ })).toBeVisible();
 
-      // Step 5: Enter OTP code
-      // Note: In development/test environment, the OTP is logged to console
-      // For automated tests, you might need to either:
-      // - Use a fixed test OTP code
-      // - Read from console logs
-      // - Mock the better-auth verification
+      // Step 5: Enter OTP code (mocked API will accept any valid format)
       const otpInput = page.getByPlaceholder("6位数字");
-      await otpInput.fill("123456"); // Using example OTP
+      await otpInput.fill("123456");
 
       // Step 6: Agree to terms
       const termsCheckbox = page.getByRole("checkbox");
@@ -457,29 +512,25 @@ test.describe("Phone Sign-Up Flow", () => {
       });
       await submitButton.click();
 
-      // Note: The following steps would complete if:
-      // 1. The OTP code is valid (123456 is mocked/configured)
-      // 2. The better-auth API is properly mocked for testing
-      // 3. Or you're using a test-specific OTP bypass
-
-      // Step 8: Verify we're on password setup step (if OTP is valid)
-      // await expect(page.getByText("设置密码")).toBeVisible();
-      // await expect(page.getByText("密码要求：")).toBeVisible();
+      // Step 8: Verify we're on password setup step
+      // Use specific selectors to avoid strict mode violations
+      await expect(page.getByPlaceholder("请输入密码")).toBeVisible();
+      await expect(page.getByText("密码要求：")).toBeVisible();
 
       // Step 9: Set password
-      // const passwordInput = page.getByPlaceholder("请输入密码");
-      // await passwordInput.fill("Password123");
+      const passwordInput = page.getByPlaceholder("请输入密码");
+      await passwordInput.fill("Password123");
 
-      // const confirmPasswordInput = page.getByPlaceholder("请再次输入密码");
-      // await confirmPasswordInput.fill("Password123");
+      const confirmPasswordInput = page.getByPlaceholder("请再次输入密码");
+      await confirmPasswordInput.fill("Password123");
 
       // Step 10: Complete registration
-      // const completeButton = page.getByRole("button", { name: "完成注册" });
-      // await completeButton.click();
+      const completeButton = page.getByRole("button", { name: "完成注册" });
+      await completeButton.click();
 
       // Step 11: Verify registration success
-      // await expect(page.getByText("注册成功！")).toBeVisible();
-      // await expect(page.getByText("欢迎使用 Nomad")).toBeVisible();
+      await expect(page.getByText("注册成功！")).toBeVisible();
+      await expect(page.getByText("欢迎使用 Nomad")).toBeVisible();
     });
 
     test("should maintain state when navigating back and forth", async ({
