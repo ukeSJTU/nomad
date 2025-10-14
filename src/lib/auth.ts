@@ -1,9 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { phoneNumber } from "better-auth/plugins";
+import { emailOTP, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@/lib/db";
+import { sendEmailOtp } from "@/lib/email";
 import { sendSmsOtp } from "@/lib/sms";
 import logger from "@/utils/logger";
 
@@ -22,6 +23,28 @@ export function shouldEnableAliyunSms(): boolean {
 
   // If explicitly set to disable
   if (enableSms === "disabled" || enableSms === "false") {
+    return false;
+  }
+
+  // Default logic: enable in production, disable in development
+  return isProduction;
+}
+
+/**
+ * Determine whether Resend email service should be enabled
+ * @returns boolean
+ */
+export function shouldEnableResend(): boolean {
+  const enableEmail = process.env.ENABLE_RESEND?.toLowerCase();
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // If explicitly set to enable
+  if (enableEmail === "enabled" || enableEmail === "true") {
+    return true;
+  }
+
+  // If explicitly set to disable
+  if (enableEmail === "disabled" || enableEmail === "false") {
     return false;
   }
 
@@ -49,34 +72,25 @@ export const auth = betterAuth({
 
             if (success) {
               logger.info(
-                `OTP code ${code} sent successfully to ${phoneNumber} via Aliyun SMS`
-              );
-              console.log(
-                `OTP code ${code} sent successfully to ${phoneNumber} via Aliyun SMS`
+                `OTP sent successfully to ${phoneNumber} via Aliyun SMS`
               );
             } else {
               logger.error(
-                `Failed to send OTP code ${code} to ${phoneNumber} via Aliyun SMS`
-              );
-              console.error(
-                `Failed to send OTP code ${code} to ${phoneNumber} via Aliyun SMS`
+                `Failed to send OTP to ${phoneNumber} via Aliyun SMS`
               );
               throw new Error("Failed to send SMS");
             }
           } catch (error) {
             logger.error({ error }, "Error sending OTP via Aliyun SMS");
-            console.error("Error sending OTP via Aliyun SMS:", error);
             throw error;
           }
         } else {
           // Use console.log simulation (development environment or explicitly disabled)
-          const simulationMessage = `[SMS SIMULATION] Sending OTP code ${code} to ${phoneNumber}`;
+          const simulationMessage = `[SMS SIMULATION] Sending OTP to ${phoneNumber}`;
           const environmentMessage = `[SMS SIMULATION] Environment: ${process.env.NODE_ENV}, ENABLE_ALIYUN_SMS: ${process.env.ENABLE_ALIYUN_SMS}`;
 
           logger.info(simulationMessage);
           logger.info(environmentMessage);
-          console.log(simulationMessage);
-          console.log(environmentMessage);
 
           // Simulate successful sending
           return Promise.resolve();
@@ -92,6 +106,38 @@ export const auth = betterAuth({
           const lastFour = phoneNumber.slice(-4);
           return `${faker.person.firstName()}${lastFour}`;
         },
+      },
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        const useResend = shouldEnableResend();
+
+        if (useResend) {
+          try {
+            // Use Resend service to send OTP
+            const success = await sendEmailOtp(email, otp);
+
+            if (success) {
+              logger.info(`OTP sent successfully to ${email} via Resend`);
+            } else {
+              logger.error(`Failed to send OTP to ${email} via Resend`);
+              throw new Error("Failed to send email");
+            }
+          } catch (error) {
+            logger.error({ error }, "Error sending OTP via Resend");
+            throw error;
+          }
+        } else {
+          // Use console.log simulation (development environment or explicitly disabled)
+          const simulationMessage = `[EMAIL SIMULATION] Sending OTP to ${email} (type: ${type})`;
+          const environmentMessage = `[EMAIL SIMULATION] Environment: ${process.env.NODE_ENV}, ENABLE_RESEND: ${process.env.ENABLE_RESEND}`;
+
+          logger.info(simulationMessage);
+          logger.info(environmentMessage);
+
+          // Simulate successful sending
+          return Promise.resolve();
+        }
       },
     }),
   ],
