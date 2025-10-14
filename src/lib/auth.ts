@@ -72,34 +72,25 @@ export const auth = betterAuth({
 
             if (success) {
               logger.info(
-                `OTP code ${code} sent successfully to ${phoneNumber} via Aliyun SMS`
-              );
-              console.log(
-                `OTP code ${code} sent successfully to ${phoneNumber} via Aliyun SMS`
+                `OTP sent successfully to ${phoneNumber} via Aliyun SMS`
               );
             } else {
               logger.error(
-                `Failed to send OTP code ${code} to ${phoneNumber} via Aliyun SMS`
-              );
-              console.error(
-                `Failed to send OTP code ${code} to ${phoneNumber} via Aliyun SMS`
+                `Failed to send OTP to ${phoneNumber} via Aliyun SMS`
               );
               throw new Error("Failed to send SMS");
             }
           } catch (error) {
             logger.error({ error }, "Error sending OTP via Aliyun SMS");
-            console.error("Error sending OTP via Aliyun SMS:", error);
             throw error;
           }
         } else {
           // Use console.log simulation (development environment or explicitly disabled)
-          const simulationMessage = `[SMS SIMULATION] Sending OTP code ${code} to ${phoneNumber}`;
+          const simulationMessage = `[SMS SIMULATION] Sending OTP to ${phoneNumber}`;
           const environmentMessage = `[SMS SIMULATION] Environment: ${process.env.NODE_ENV}, ENABLE_ALIYUN_SMS: ${process.env.ENABLE_ALIYUN_SMS}`;
 
           logger.info(simulationMessage);
           logger.info(environmentMessage);
-          console.log(simulationMessage);
-          console.log(environmentMessage);
 
           // Simulate successful sending
           return Promise.resolve();
@@ -127,35 +118,22 @@ export const auth = betterAuth({
             const success = await sendEmailOtp(email, otp);
 
             if (success) {
-              logger.info(
-                `OTP code ${otp} sent successfully to ${email} via Resend`
-              );
-              console.log(
-                `OTP code ${otp} sent successfully to ${email} via Resend`
-              );
+              logger.info(`OTP sent successfully to ${email} via Resend`);
             } else {
-              logger.error(
-                `Failed to send OTP code ${otp} to ${email} via Resend`
-              );
-              console.error(
-                `Failed to send OTP code ${otp} to ${email} via Resend`
-              );
+              logger.error(`Failed to send OTP to ${email} via Resend`);
               throw new Error("Failed to send email");
             }
           } catch (error) {
             logger.error({ error }, "Error sending OTP via Resend");
-            console.error("Error sending OTP via Resend:", error);
             throw error;
           }
         } else {
           // Use console.log simulation (development environment or explicitly disabled)
-          const simulationMessage = `[EMAIL SIMULATION] Sending OTP code ${otp} to ${email} (type: ${type})`;
+          const simulationMessage = `[EMAIL SIMULATION] Sending OTP to ${email} (type: ${type})`;
           const environmentMessage = `[EMAIL SIMULATION] Environment: ${process.env.NODE_ENV}, ENABLE_RESEND: ${process.env.ENABLE_RESEND}`;
 
           logger.info(simulationMessage);
           logger.info(environmentMessage);
-          console.log(simulationMessage);
-          console.log(environmentMessage);
 
           // Simulate successful sending
           return Promise.resolve();
