@@ -794,11 +794,11 @@ const flightSchema = z.object({
 
 **核心特性：**
 
-- ✅ 自动生成 `requestId`（无需手动传入）
-- ✅ 自动添加 `timestamp`
-- ✅ 统一的响应格式
-- ✅ 类型安全
-- ✅ 支持自定义 `requestId`（用于请求链路追踪）
+- 自动生成 `requestId`（无需手动传入）
+- 自动添加 `timestamp`
+- 统一的响应格式
+- 类型安全
+- 支持自定义 `requestId`（用于请求链路追踪）
 
 #### 基本使用
 
