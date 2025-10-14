@@ -1,11 +1,10 @@
 "use client";
 
-import { Moon, Search, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useState } from "react";
-import { toast } from "sonner";
 
+import SearchBar from "@/components/common/search-bar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,22 +12,12 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/client";
 
 export default function Header() {
-  const [searchQuery, setSearchQuery] = useState("");
   const { theme, setTheme } = useTheme();
   const { data: session, isPending } = authClient.useSession();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      toast.success(`Searching for: ${searchQuery}`);
-      // TODO: Implement actual search functionality
-    }
-  };
 
   const getInitials = (name?: string) => {
     if (!name) return "U";
@@ -52,25 +41,7 @@ export default function Header() {
         </Link>
 
         {/* Center section: Search bar */}
-        <form
-          onSubmit={handleSearch}
-          className="flex flex-1 max-w-md items-center gap-2"
-        >
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          <Button type="submit" size="icon" variant="outline">
-            <Search className="size-4" />
-            <span className="sr-only">Search</span>
-          </Button>
-        </form>
+        <SearchBar />
 
         {/* Right section: Auth, Orders, Contact, Theme */}
         <div className="flex items-center gap-3">
