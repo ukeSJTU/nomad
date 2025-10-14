@@ -42,11 +42,11 @@ export default function UserMenu() {
   if (!session) {
     return (
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/auth/signin">Sign In</Link>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/auth/sign-in">Sign In</Link>
         </Button>
-        <Button size="sm" asChild>
-          <Link href="/auth/signup">Sign Up</Link>
+        <Button variant="secondary" size="sm" asChild>
+          <Link href="/auth/sign-up">Sign Up</Link>
         </Button>
       </div>
     );
