@@ -105,14 +105,14 @@ export default function Header() {
             </div>
           )}
 
-          <Separator orientation="vertical" className="h-6" />
+          <Separator orientation="vertical" className="h-6!" />
 
           {/* My Orders */}
           <Button variant="ghost" size="sm" asChild>
             <Link href="/orders">My Orders</Link>
           </Button>
 
-          <Separator orientation="vertical" className="h-6" />
+          <Separator orientation="vertical" className="h-6!" />
 
           {/* Contact Service */}
           <HoverCard openDelay={200} closeDelay={100}>
@@ -149,7 +149,7 @@ export default function Header() {
             </HoverCardContent>
           </HoverCard>
 
-          <Separator orientation="vertical" className="h-6" />
+          <Separator orientation="vertical" className="h-6!" />
 
           {/* Theme Toggle */}
           <Button
