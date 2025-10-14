@@ -173,6 +173,7 @@ export default function SignUpPage() {
   /**
    * Handles email verification form submission
    * Verifies the OTP code using better-auth and proceeds to password setup
+   * Uses signIn.emailOtp which will create the user if they don't exist
    */
   const handleEmailVerificationSubmit = async (data: EmailVerificationData) => {
     setEmailData(data); // Store verified email data for later use
@@ -180,8 +181,9 @@ export default function SignUpPage() {
     setError(null); // Clear previous errors
 
     try {
-      // Call better-auth to verify the OTP code
-      const { error: verifyError } = await authClient.emailOtp.verifyEmail({
+      // Call better-auth to verify the OTP code and sign in/sign up the user
+      // This will create the user if they don't exist (similar to phone sign-up)
+      const { error: verifyError } = await authClient.signIn.emailOtp({
         email: data.email,
         otp: data.otp,
       });
@@ -241,6 +243,7 @@ export default function SignUpPage() {
   /**
    * Handles OTP sending functionality for email
    * Sends verification code to the user's email using better-auth
+   * Uses "sign-in" type which allows user creation on verification
    */
   const handleSendEmailOtp = async () => {
     // Validate that email is entered
@@ -254,10 +257,11 @@ export default function SignUpPage() {
 
     try {
       // Call better-auth client instance to send OTP
+      // Use "sign-in" type to allow user creation on verification (similar to phone)
       const { error: sendError } =
         await authClient.emailOtp.sendVerificationOtp({
           email: currentEmail,
-          type: "email-verification",
+          type: "sign-in",
         });
 
       if (sendError) {
