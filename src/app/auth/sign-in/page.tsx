@@ -35,13 +35,14 @@ export default function SignInPage() {
     setError(null);
 
     const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
-    const tempEmail = `${fullPhoneNumber}@nomad.com`;
+    // const tempEmail = `${fullPhoneNumber}@nomad.com`;
 
     try {
-      // Use email/password sign in with the temp email format
-      const { error: signInError } = await authClient.signIn.email({
-        email: tempEmail,
+      // Use phone number + password to sign in
+      const { error: signInError } = await authClient.signIn.phoneNumber({
+        phoneNumber: fullPhoneNumber,
         password: data.password,
+        rememberMe: true,
       });
 
       if (signInError) {
