@@ -209,10 +209,6 @@ pnpm api:generate
   - Schema: `src/types/api/health.ts`
   - 访问: [http://localhost:3000/api/health](http://localhost:3000/api/health)
 
-- **认证 API**:
-  - 路由: `src/app/api/auth/set-initial-password/route.ts`
-  - 功能: 设置初始密码
-
 可以参考这些示例来理解完整的 API 开发流程。
 
 ## API 响应规范
