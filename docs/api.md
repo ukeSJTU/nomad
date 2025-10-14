@@ -201,6 +201,114 @@ pnpm api:generate
 
 ### 响应格式标准
 
+项目定义了三种标准响应格式：**成功响应**、**错误响应** 和 **分页响应**。所有 API 接口都必须使用这些标准格式之一。
+
+#### 类型定义与 Schema
+
+项目使用 **Zod Schema** 定义响应格式，既提供运行时验证，又能自动推导 TypeScript 类型。
+
+**核心 Schema 定义位置**：`src/types/api/response.ts`
+
+```typescript
+import { z } from "zod";
+
+// 响应元数据 Schema
+export const responseMetaSchema = z.object({
+  timestamp: z.string().datetime(),
+  requestId: z.string(), // 必填，用于请求追踪
+});
+
+// 错误详情 Schema
+export const errorDetailSchema = z.object({
+  field: z.string(),
+  message: z.string(),
+});
+
+// 成功响应 Schema（泛型）
+export function createSuccessResponseSchema<T extends z.ZodTypeAny>(
+  dataSchema: T
+) {
+  return z.object({
+    success: z.literal(true),
+    data: dataSchema,
+    meta: responseMetaSchema,
+  });
+}
+
+// 错误响应 Schema
+export const errorResponseSchema = z.object({
+  success: z.literal(false),
+  error: z.object({
+    code: z.string(),
+    message: z.string(),
+    details: z.array(errorDetailSchema).optional(),
+  }),
+  meta: responseMetaSchema,
+});
+
+// 分页信息 Schema
+export const paginationMetaSchema = z.object({
+  page: z.number().int().positive(),
+  pageSize: z.number().int().positive(),
+  totalPages: z.number().int().nonnegative(),
+  totalItems: z.number().int().nonnegative(),
+});
+
+// 分页响应 Schema（泛型）
+export function createPaginatedResponseSchema<T extends z.ZodTypeAny>(
+  itemSchema: T
+) {
+  return z.object({
+    success: z.literal(true),
+    data: z.object({
+      items: z.array(itemSchema),
+      pagination: paginationMetaSchema,
+    }),
+    meta: responseMetaSchema,
+  });
+}
+
+// TypeScript 类型推导
+export type ResponseMeta = z.infer<typeof responseMetaSchema>;
+export type ErrorDetail = z.infer<typeof errorDetailSchema>;
+export type ErrorResponse = z.infer<typeof errorResponseSchema>;
+export type PaginationMeta = z.infer<typeof paginationMetaSchema>;
+
+// 泛型类型
+export type SuccessResponse<T> = {
+  success: true;
+  data: T;
+  meta: ResponseMeta;
+};
+
+export type PaginatedResponse<T> = {
+  success: true;
+  data: {
+    items: T[];
+    pagination: PaginationMeta;
+  };
+  meta: ResponseMeta;
+};
+```
+
+**使用示例：**
+
+```typescript
+// 在 API Schema 定义中使用
+import { createSuccessResponseSchema } from "@/types/api/response";
+
+const flightSchema = z.object({
+  id: z.string(),
+  flightNumber: z.string(),
+});
+
+// 创建特定响应的 Schema
+const flightResponseSchema = createSuccessResponseSchema(flightSchema);
+
+// 推导类型
+type FlightResponse = z.infer<typeof flightResponseSchema>;
+```
+
 #### 成功响应
 
 所有成功的 API 响应应遵循以下格式：
@@ -213,7 +321,7 @@ pnpm api:generate
   },
   "meta": {
     "timestamp": "2025-10-14T10:00:00Z",
-    "requestId": "req_abc123"  // 可选，用于请求追踪
+    "requestId": "req_k8pQxJ2mN5vL9wRt"
   }
 }
 ```
@@ -222,9 +330,26 @@ pnpm api:generate
 
 - `success`: 布尔值，固定为 `true`，用于快速判断请求是否成功
 - `data`: 业务数据，可以是对象、数组或基本类型
-- `meta`: 元数据对象（可选）
-  - `timestamp`: ISO 8601 格式的响应时间
-  - `requestId`: 请求唯一标识符（可选，用于日志追踪和问题排查）
+- `meta`: 元数据对象（**必填**）
+  - `timestamp`: ISO 8601 格式的响应时间（**必填**）
+  - `requestId`: 请求唯一标识符（**必填**，格式：`req_` + 16位随机字符串）
+
+**自动生成机制：**
+
+`requestId` 由 `ApiResponse` 工具类**自动生成**，开发者无需手动传入：
+
+```typescript
+// 自动生成 requestId
+// 响应中会自动包含：requestId: "req_k8pQxJ2mN5vL9wRt"
+return ApiResponse.success(data);
+```
+
+生成规则：
+
+- 格式：`req_` + 16 位 nanoid
+- 示例：`req_k8pQxJ2mN5vL9wRt`
+- URL 安全，无特殊字符
+- 碰撞概率极低
 
 **示例：**
 
@@ -240,7 +365,8 @@ pnpm api:generate
     "departureTime": "2025-10-14T08:00:00Z"
   },
   "meta": {
-    "timestamp": "2025-10-14T10:00:00Z"
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_k8pQxJ2mN5vL9wRt"
   }
 }
 
@@ -251,7 +377,8 @@ pnpm api:generate
     "message": "操作成功"
   },
   "meta": {
-    "timestamp": "2025-10-14T10:00:00Z"
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_m3nH7vK2pL9xQ5wT"
   }
 }
 ```
@@ -275,7 +402,7 @@ pnpm api:generate
   },
   "meta": {
     "timestamp": "2025-10-14T10:00:00Z",
-    "requestId": "req_abc123"
+    "requestId": "req_m3nH7vK2pL9xQ5wT"
   }
 }
 ```
@@ -313,7 +440,7 @@ pnpm api:generate
   },
   "meta": {
     "timestamp": "2025-10-14T10:00:00Z",
-    "requestId": "req_abc123"
+    "requestId": "req_m3nH7vK2pL9xQ5wT"
   }
 }
 
@@ -325,7 +452,8 @@ pnpm api:generate
     "message": "未找到指定的航班信息"
   },
   "meta": {
-    "timestamp": "2025-10-14T10:00:00Z"
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_p9xQ2mN5vL7wRtK8"
   }
 }
 
@@ -337,7 +465,8 @@ pnpm api:generate
     "message": "未授权，请先登录"
   },
   "meta": {
-    "timestamp": "2025-10-14T10:00:00Z"
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_n5vL9wRtK8pQxJ2m"
   }
 }
 ```
@@ -361,8 +490,46 @@ pnpm api:generate
     }
   },
   "meta": {
-    "timestamp": "2025-10-14T10:00:00Z"
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_m3nH7vK2pL9xQ5wT"
   }
+}
+```
+
+**Schema 使用示例：**
+
+```typescript
+import { createPaginatedResponseSchema } from "@/types/api/response";
+
+// 定义列表项的 Schema
+const flightSchema = z.object({
+  id: z.string(),
+  flightNumber: z.string(),
+  departure: z.string(),
+  arrival: z.string(),
+});
+
+// 创建分页响应 Schema
+const flightListResponseSchema = createPaginatedResponseSchema(flightSchema);
+
+// 在 API 路由中使用
+export async function GET(request: NextRequest) {
+  const items = await getFlights();
+  const pagination = {
+    page: 1,
+    pageSize: 20,
+    totalPages: 5,
+    totalItems: 100,
+  };
+
+  // 验证响应数据
+  const response = flightListResponseSchema.parse({
+    success: true,
+    data: { items, pagination },
+    meta: { timestamp: new Date().toISOString() },
+  });
+
+  return NextResponse.json(response);
 }
 ```
 
@@ -379,8 +546,29 @@ pnpm api:generate
 
 分页接口应接受以下查询参数：
 
-- `page`: 页码（默认 1）
-- `pageSize`: 每页数量（默认 20，最大 100）
+- `page`: 页码（默认 1，最小 1）
+- `pageSize`: 每页数量（默认 20，最小 1，最大 100）
+
+**查询参数验证 Schema：**
+
+```typescript
+// 可重用的分页参数 Schema
+export const paginationQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(100).default(20),
+});
+
+// 在 API 中使用
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const query = paginationQuerySchema.parse({
+    page: searchParams.get("page"),
+    pageSize: searchParams.get("pageSize"),
+  });
+
+  // query.page 和 query.pageSize 已经是验证过的数字
+}
+```
 
 **示例：**
 
@@ -406,7 +594,8 @@ pnpm api:generate
     }
   },
   "meta": {
-    "timestamp": "2025-10-14T10:00:00Z"
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_v7wRtK8pQ9xJ2mN5"
   }
 }
 
@@ -423,7 +612,8 @@ pnpm api:generate
     }
   },
   "meta": {
-    "timestamp": "2025-10-14T10:00:00Z"
+    "timestamp": "2025-10-14T10:00:00Z",
+    "requestId": "req_L9wRtK8pQ2xJ5mN7"
   }
 }
 ```
@@ -602,18 +792,35 @@ const flightSchema = z.object({
 
 项目提供了 `ApiResponse` 工具类来简化响应构建，详细实现见 `src/lib/utils/api-response.ts`。
 
+**核心特性：**
+
+- ✅ 自动生成 `requestId`（无需手动传入）
+- ✅ 自动添加 `timestamp`
+- ✅ 统一的响应格式
+- ✅ 类型安全
+- ✅ 支持自定义 `requestId`（用于请求链路追踪）
+
 #### 基本使用
 
 ```typescript
 import { ApiResponse } from "@/lib/utils/api-response";
 
-// 成功响应
+// 成功响应（自动生成 requestId 和 timestamp）
 export async function GET() {
   const data = { id: 1, name: "示例" };
   return ApiResponse.success(data);
+  // 响应：
+  // {
+  //   "success": true,
+  //   "data": { "id": 1, "name": "示例" },
+  //   "meta": {
+  //     "timestamp": "2025-10-14T10:00:00Z",
+  //     "requestId": "req_k8pQxJ2mN5vL9wRt"  // 自动生成
+  //   }
+  // }
 }
 
-// 错误响应
+// 错误响应（同样自动生成 meta）
 export async function POST(request: NextRequest) {
   try {
     // 业务逻辑
@@ -622,6 +829,7 @@ export async function POST(request: NextRequest) {
       "BUSINESS_OPERATION_FAILED",
       "操作失败，请稍后重试"
     );
+    // 响应中自动包含 meta.requestId 和 meta.timestamp
   }
 }
 
@@ -635,6 +843,7 @@ export async function GET(request: NextRequest) {
     totalItems: 100,
   };
   return ApiResponse.paginated(items, pagination);
+  // 响应中自动包含 meta.requestId 和 meta.timestamp
 }
 ```
 
@@ -644,8 +853,12 @@ export async function GET(request: NextRequest) {
 // 带自定义 HTTP 状态码
 return ApiResponse.success(data, 201); // Created
 
-// 带请求 ID
-return ApiResponse.success(data, 200, { requestId: "req_123" });
+// 传入自定义 requestId（用于微服务调用链追踪）
+const incomingRequestId = request.headers.get("x-request-id");
+return ApiResponse.success(data, 200, {
+  requestId: incomingRequestId || undefined,
+});
+// 如果提供了 requestId，使用自定义值；否则自动生成
 
 // 验证错误（带详细信息）
 return ApiResponse.validationError([
@@ -660,15 +873,72 @@ return ApiResponse.notFound("BUSINESS_FLIGHT_NOT_FOUND", "航班未找到");
 return ApiResponse.unauthorized("AUTH_TOKEN_EXPIRED", "登录已过期");
 ```
 
+#### requestId 生成与追踪
+
+**自动生成：**
+
+```typescript
+// 默认行为：自动生成唯一的 requestId
+return ApiResponse.success(data);
+// requestId: "req_k8pQxJ2mN5vL9wRt"
+```
+
+**微服务链路追踪：**
+
+```typescript
+// 从上游服务传递 requestId
+export async function POST(request: NextRequest) {
+  const upstreamRequestId = request.headers.get("x-request-id");
+
+  // 业务逻辑...
+
+  // 使用上游的 requestId，保持调用链一致
+  return ApiResponse.success(data, 200, {
+    requestId: upstreamRequestId || undefined,
+  });
+}
+```
+
+**日志记录最佳实践：**
+
+```typescript
+import { logger } from "@/utils/logger";
+
+export async function POST(request: NextRequest) {
+  // 生成或获取 requestId
+  const requestId = request.headers.get("x-request-id") || `req_${nanoid(16)}`;
+
+  // 在日志中记录 requestId
+  logger.info("Processing request", { requestId, userId: "123" });
+
+  try {
+    // 业务逻辑
+    const result = await processData();
+
+    logger.info("Request completed", { requestId, result });
+
+    return ApiResponse.success(result, 200, { requestId });
+  } catch (error) {
+    logger.error("Request failed", { requestId, error });
+
+    return ApiResponse.error("BUSINESS_OPERATION_FAILED", "操作失败", 500, {
+      requestId,
+    });
+  }
+}
+```
+
 ### 最佳实践总结
 
 1. **始终使用统一的响应格式**：所有 API 返回都应遵循标准格式
-2. **选择合适的错误码**：使用语义化的错误码，便于前端处理
-3. **提供友好的错误信息**：错误信息应面向用户，避免暴露技术细节
-4. **使用工具函数**：使用 `ApiResponse` 工具类构建响应，确保格式一致
+2. **使用 ApiResponse 工具类**：自动处理 `requestId` 和 `timestamp`，确保格式一致
+3. **选择合适的错误码**：使用语义化的错误码，便于前端处理
+4. **提供友好的错误信息**：错误信息应面向用户，避免暴露技术细节
 5. **验证响应数据**：使用 Zod Schema 验证响应数据的正确性
 6. **添加完整的 JSDoc**：为 OpenAPI 文档生成提供必要的注释
-7. **记录请求 ID**：在日志中记录 `requestId`，便于问题追踪
-8. **合理使用分页**：列表接口应支持分页，避免数据量过大
-9. **保护敏感信息**：错误响应中不应包含系统内部信息或敏感数据
-10. **统一时间格式**：所有时间字段使用 ISO 8601 格式
+7. **记录 requestId**：在所有相关日志中记录 `requestId`，便于问题追踪和调用链分析
+8. **微服务链路追踪**：跨服务调用时传递 `requestId`，保持调用链一致性
+9. **合理使用分页**：列表接口应支持分页，避免数据量过大
+10. **保护敏感信息**：错误响应中不应包含系统内部信息或敏感数据
+11. **统一时间格式**：所有时间字段使用 ISO 8601 格式
+12. **requestId 格式规范**：使用 `req_` 前缀 + 16位 nanoid，确保唯一性和可读性
