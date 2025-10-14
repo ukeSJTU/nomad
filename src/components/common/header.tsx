@@ -8,6 +8,14 @@ import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/client";
@@ -110,9 +118,41 @@ export default function Header() {
           <Separator orientation="vertical" className="h-6" />
 
           {/* Contact Service */}
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/contact">Contact</Link>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                联系客服
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/contact"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer"
+                >
+                  访问客服中心
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="font-normal">
+                <div className="space-y-1 text-sm">
+                  <p className="font-medium">境内：</p>
+                  <p>95010</p>
+                  <p>或 400-830-6666</p>
+                  <p className="font-medium mt-2">中国香港：</p>
+                  <p>+852-3008-3295</p>
+                  <p className="font-medium mt-2">中国澳门：</p>
+                  <p>+86-21 3406-4888</p>
+                  <p className="font-medium mt-2">中国台湾：</p>
+                  <p>+86-21 3406-4888</p>
+                  <p className="font-medium mt-2">其他国家和地区：</p>
+                  <p>+86-21-3406-4888</p>
+                </div>
+              </DropdownMenuLabel>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Separator orientation="vertical" className="h-6" />
 
