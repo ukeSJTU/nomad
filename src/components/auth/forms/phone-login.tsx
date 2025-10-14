@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -52,6 +53,7 @@ export default function PhoneLoginForm({
       countryCode: "+86",
       phoneNumber: "",
       password: "",
+      agreedToTerms: false,
     },
   });
 
@@ -168,6 +170,42 @@ export default function PhoneLoginForm({
                   />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Terms Agreement Checkbox */}
+          <FormField
+            control={form.control}
+            name="agreedToTerms"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel className="text-sm text-gray-600">
+                    同意《
+                    <button
+                      type="button"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      服务协议
+                    </button>
+                    》和《
+                    <button
+                      type="button"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      隐私政策
+                    </button>
+                    》
+                  </FormLabel>
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
