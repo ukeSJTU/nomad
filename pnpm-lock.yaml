@@ -106,7 +106,7 @@ importers:
         version: 0.5.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@scalar/api-reference-react':
         specifier: ^0.8.0
-        version: 0.8.0(react@19.1.0)(tailwindcss@4.1.14)(typescript@5.9.3)
+        version: 0.8.0(change-case@5.4.4)(react@19.1.0)(tailwindcss@4.1.14)(typescript@5.9.3)
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -3116,6 +3116,9 @@ packages:
   chalk@5.6.2:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+
+  change-case@5.4.4:
+    resolution: {integrity: sha512-HRQyTk2/YPEkt9TnUPbOpr64Uw3KOicFWPVBb+xiHvd6eBx/qPr9xqfBFDT8P2vWsvvz4jbEkfDe71W3VyNu2w==}
 
   character-entities-html4@2.1.0:
     resolution: {integrity: sha512-1v7fgQRj6hnSwFpq1Eu0ynr/CDEw0rXo2B61qXrLNdHZmPKgb7fqS1a2JwF0rISo9q77jDI8VMEHoApn8qDoZA==}
@@ -8178,7 +8181,7 @@ snapshots:
     dependencies:
       zod: 3.24.1
 
-  '@scalar/api-client@2.8.0(tailwindcss@4.1.14)(typescript@5.9.3)':
+  '@scalar/api-client@2.8.0(change-case@5.4.4)(tailwindcss@4.1.14)(typescript@5.9.3)':
     dependencies:
       '@headlessui/tailwindcss': 0.2.2(tailwindcss@4.1.14)
       '@headlessui/vue': 1.7.23(vue@3.5.22(typescript@5.9.3))
@@ -8203,7 +8206,7 @@ snapshots:
       '@scalar/workspace-store': 0.17.0(typescript@5.9.3)
       '@types/har-format': 1.2.16
       '@vueuse/core': 13.9.0(vue@3.5.22(typescript@5.9.3))
-      '@vueuse/integrations': 13.9.0(focus-trap@7.6.5)(fuse.js@7.1.0)(vue@3.5.22(typescript@5.9.3))
+      '@vueuse/integrations': 13.9.0(change-case@5.4.4)(focus-trap@7.6.5)(fuse.js@7.1.0)(vue@3.5.22(typescript@5.9.3))
       focus-trap: 7.6.5
       fuse.js: 7.1.0
       js-base64: 3.7.8
@@ -8234,9 +8237,9 @@ snapshots:
       - typescript
       - universal-cookie
 
-  '@scalar/api-reference-react@0.8.0(react@19.1.0)(tailwindcss@4.1.14)(typescript@5.9.3)':
+  '@scalar/api-reference-react@0.8.0(change-case@5.4.4)(react@19.1.0)(tailwindcss@4.1.14)(typescript@5.9.3)':
     dependencies:
-      '@scalar/api-reference': 1.38.0(tailwindcss@4.1.14)(typescript@5.9.3)
+      '@scalar/api-reference': 1.38.0(change-case@5.4.4)(tailwindcss@4.1.14)(typescript@5.9.3)
       '@scalar/types': 0.3.1
       react: 19.1.0
     transitivePeerDependencies:
@@ -8255,11 +8258,11 @@ snapshots:
       - typescript
       - universal-cookie
 
-  '@scalar/api-reference@1.38.0(tailwindcss@4.1.14)(typescript@5.9.3)':
+  '@scalar/api-reference@1.38.0(change-case@5.4.4)(tailwindcss@4.1.14)(typescript@5.9.3)':
     dependencies:
       '@floating-ui/vue': 1.1.9(vue@3.5.22(typescript@5.9.3))
       '@headlessui/vue': 1.7.23(vue@3.5.22(typescript@5.9.3))
-      '@scalar/api-client': 2.8.0(tailwindcss@4.1.14)(typescript@5.9.3)
+      '@scalar/api-client': 2.8.0(change-case@5.4.4)(tailwindcss@4.1.14)(typescript@5.9.3)
       '@scalar/code-highlight': 0.2.0
       '@scalar/components': 0.15.0(typescript@5.9.3)
       '@scalar/helpers': 0.0.11
@@ -9092,12 +9095,13 @@ snapshots:
       '@vueuse/shared': 13.9.0(vue@3.5.22(typescript@5.9.3))
       vue: 3.5.22(typescript@5.9.3)
 
-  '@vueuse/integrations@13.9.0(focus-trap@7.6.5)(fuse.js@7.1.0)(vue@3.5.22(typescript@5.9.3))':
+  '@vueuse/integrations@13.9.0(change-case@5.4.4)(focus-trap@7.6.5)(fuse.js@7.1.0)(vue@3.5.22(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 13.9.0(vue@3.5.22(typescript@5.9.3))
       '@vueuse/shared': 13.9.0(vue@3.5.22(typescript@5.9.3))
       vue: 3.5.22(typescript@5.9.3)
     optionalDependencies:
+      change-case: 5.4.4
       focus-trap: 7.6.5
       fuse.js: 7.1.0
 
@@ -9375,6 +9379,9 @@ snapshots:
       supports-color: 7.2.0
 
   chalk@5.6.2: {}
+
+  change-case@5.4.4:
+    optional: true
 
   character-entities-html4@2.1.0: {}
 
