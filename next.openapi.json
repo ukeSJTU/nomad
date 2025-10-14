@@ -76,6 +76,13 @@
           "ERROR_CODE": "CONFLICT"
         }
       },
+      "422": {
+        "description": "Unprocessable Entity",
+        "variables": {
+          "ERROR_MESSAGE": "Business logic error",
+          "ERROR_CODE": "BUSINESS_ERROR"
+        }
+      },
       "500": {
         "description": "Internal Server Error",
         "variables": {

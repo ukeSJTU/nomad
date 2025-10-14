@@ -87,12 +87,16 @@ test.describe("Phone Sign-Up Flow", () => {
       // Modal should be closed
       await expect(modal).not.toBeVisible();
 
-      // Should show the registration form with stepper
-      // Verify we're on step 1 (phone verification) by checking the stepper
-      await expect(page.getByText("验证手机")).toBeVisible();
-
+      // Should show the registration form with tabs
       // Verify the page header is visible
       await expect(page.getByText("注册账户")).toBeVisible();
+
+      // Verify tabs are visible
+      await expect(page.getByRole("tab", { name: "手机注册" })).toBeVisible();
+      await expect(page.getByRole("tab", { name: "邮箱注册" })).toBeVisible();
+
+      // Verify we're on phone tab by default (stepper shows "验证手机")
+      await expect(page.getByText("验证手机")).toBeVisible();
 
       // Should see phone number input
       await expect(page.getByPlaceholder(/手机号|phone number/i)).toBeVisible();
@@ -142,7 +146,17 @@ test.describe("Phone Sign-Up Flow", () => {
    */
   test.describe("Phone Verification", () => {
     // Helper function to agree to terms and get to phone verification step
-    async function agreeToTerms(page: any) {
+    async function agreeToTerms(page: Page) {
+      // Mock the send OTP API endpoint for all tests in this suite
+      // This prevents database dependency in CI environments
+      await page.route("**/api/auth/phone-number/send-otp", async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ error: null }),
+        });
+      });
+
       await page.goto("/auth/sign-up");
       const agreeButton = page.getByRole("button", { name: "同意并继续" });
       await agreeButton.click();

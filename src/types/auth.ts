@@ -35,9 +35,83 @@ export const passwordSetupSchema = z
     path: ["confirmPassword"],
   });
 
+// Phone login schema - for password-based login
+export const phoneLoginSchema = z.object({
+  countryCode: z.string().min(1, "请选择国家/地区"),
+  phoneNumber: z
+    .string()
+    .min(1, "请输入手机号码")
+    .regex(/^[0-9]+$/, "手机号码只能包含数字")
+    .min(11, "手机号码至少11位")
+    .max(11, "手机号码最多11位"),
+  password: z.string().min(1, "请输入密码"),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "请同意服务协议和隐私政策",
+  }),
+});
+
+// Phone OTP login schema - for OTP-based login
+export const phoneOtpLoginSchema = z.object({
+  countryCode: z.string().min(1, "请选择国家/地区"),
+  phoneNumber: z
+    .string()
+    .min(1, "请输入手机号码")
+    .regex(/^[0-9]+$/, "手机号码只能包含数字")
+    .min(11, "手机号码至少11位")
+    .max(11, "手机号码最多11位"),
+  otp: z
+    .string()
+    .min(6, "验证码必须是6位数字")
+    .max(6, "验证码必须是6位数字")
+    .regex(/^[0-9]{6}$/, "验证码只能包含数字"),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "请同意服务协议和隐私政策",
+  }),
+});
+
+// Email verification schema - complete form for step 1 (email sign-up)
+export const emailVerificationSchema = z.object({
+  email: z.string().min(1, "请输入邮箱地址").email("请输入有效的邮箱地址"),
+  otp: z
+    .string()
+    .min(6, "验证码必须是6位数字")
+    .max(6, "验证码必须是6位数字")
+    .regex(/^[0-9]{6}$/, "验证码只能包含数字"),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "请同意服务协议和隐私政策",
+  }),
+});
+
+// Email login schema - for password-based login
+export const emailLoginSchema = z.object({
+  email: z.string().min(1, "请输入邮箱地址").email("请输入有效的邮箱地址"),
+  password: z.string().min(1, "请输入密码"),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "请同意服务协议和隐私政策",
+  }),
+});
+
+// Email OTP login schema - for OTP-based login
+export const emailOtpLoginSchema = z.object({
+  email: z.string().min(1, "请输入邮箱地址").email("请输入有效的邮箱地址"),
+  otp: z
+    .string()
+    .min(6, "验证码必须是6位数字")
+    .max(6, "验证码必须是6位数字")
+    .regex(/^[0-9]{6}$/, "验证码只能包含数字"),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "请同意服务协议和隐私政策",
+  }),
+});
+
 // Types
 export type PhoneVerificationData = z.infer<typeof phoneVerificationSchema>;
+export type EmailVerificationData = z.infer<typeof emailVerificationSchema>;
 export type PasswordSetupData = z.infer<typeof passwordSetupSchema>;
+export type PhoneLoginData = z.infer<typeof phoneLoginSchema>;
+export type PhoneOtpLoginData = z.infer<typeof phoneOtpLoginSchema>;
+export type EmailLoginData = z.infer<typeof emailLoginSchema>;
+export type EmailOtpLoginData = z.infer<typeof emailOtpLoginSchema>;
 
 // Country codes data with search functionality
 export const countryCodes = [

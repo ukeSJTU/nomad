@@ -25,38 +25,95 @@ A modern Next.js full-stack application with TypeScript, Tailwind CSS, and compr
 
 - Node.js 20.15.0+
 - pnpm 10.0.0+
-- postgresql 15
+- PostgreSQL 15+ (for database)
 
-### Clone the repository
+### One-Command Setup (Recommended)
+
+For new developers or a quick start, use our automated setup script:
 
 ```bash
 git clone https://github.com/ukeSJTU/nomad.git
 cd nomad
 
-# Install dependencies
+# Run the automated setup script
+pnpm setup:dev
+```
+
+This command will automatically:
+
+- Verify Node.js and pnpm versions
+- Install all project dependencies
+- Configure Playwright test browsers
+- Set up Git hooks
+- Create `.env` file from template
+- Verify the development environment
+
+After setup completes, follow the post-installation steps shown in the terminal.
+
+### Manual Setup (Alternative)
+
+If you prefer to set up manually or need more control:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/ukeSJTU/nomad.git
+cd nomad
+
+# 2. Install dependencies
 pnpm install
+
+# 3. Install Playwright browsers
+pnpm exec playwright install
+
+# 4. Set up Git hooks
+pnpm prepare
+
+# 5. Create environment file
+cp .env.example .env
+```
+
+### Configure Environment
+
+After setup, you **must** configure the `.env` file:
+
+```bash
+# Edit .env and set required variables
+# Most importantly: DATABASE_URL
 ```
 
 ### Create Database
 
-If using postgresql (recommended):
+If using PostgreSQL (recommended):
 
 ```bash
 createdb nomad
 ```
 
-### Create config file
+Then push the database schema:
 
 ```bash
-cp .env.example .env
+pnpm db:push
 ```
 
-Then you **must** configure the `.env` file based on your actual environment such as `DATABASE_URL`.
+### Seed Database (Optional)
 
-### Start the server
+Populate the database with sample data for development:
 
 ```bash
-# Start development server
+pnpm db:seed
+```
+
+This will create sample data for:
+
+- Airports (12 major international airports)
+- Airlines (10 major carriers)
+- Flights (50 flights with various statuses)
+- Flight Seat Classes (economy, premium economy, business, first class)
+
+### Start Development
+
+```bash
+# Start the development server
 pnpm dev
 ```
 
@@ -87,6 +144,7 @@ This project includes automatic OpenAPI 3.0 documentation generation for all API
 | `pnpm db:push`      | 推送数据库架构变更到数据库            |
 | `pnpm db:generate`  | 生成数据库迁移文件                    |
 | `pnpm db:migrate`   | 执行数据库迁移                        |
+| `pnpm db:seed`      | 使用示例数据填充数据库                |
 | `pnpm api:generate` | 生成 OpenAPI 文档规范                 |
 | `pnpm lint`         | 检查代码规范问题                      |
 | `pnpm lint:fix`     | 自动修复代码规范问题                  |
