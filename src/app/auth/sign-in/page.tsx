@@ -1,5 +1,6 @@
 "use client";
 
+import { Github } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -8,6 +9,7 @@ import EmailLoginForm from "@/components/auth/forms/email-login";
 import EmailOtpLoginForm from "@/components/auth/forms/email-otp-login";
 import PhoneLoginForm from "@/components/auth/forms/phone-login";
 import PhoneOtpLoginForm from "@/components/auth/forms/phone-otp-login";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth/client";
 import type {
@@ -227,6 +229,29 @@ export default function SignInPage() {
     }
   };
 
+  /**
+   * Handles GitHub social sign-in
+   * Redirects user to GitHub OAuth flow
+   */
+  const handleGitHubSignIn = async () => {
+    setIsLoading(true);
+
+    try {
+      const data = await authClient.signIn.social({
+        provider: "github",
+      });
+
+      if (data.error) {
+        console.error("GitHub登录失败:", data.error);
+      }
+      // The authClient will handle the redirect to GitHub
+    } catch (error) {
+      console.error("GitHub登录异常:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -332,6 +357,32 @@ export default function SignInPage() {
               </Tabs>
             </TabsContent>
           </Tabs>
+
+          {/* Social Sign In Section */}
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">或</span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={handleGitHubSignIn}
+                disabled={isLoading}
+              >
+                <Github className="size-5" />
+                {/* Here using english text instead of Chinese text "使用GitHub 登录" is beccause “登录” interfere with the original “登录” button and failing the e2e tests for sign-in process */}
+                Login With GitHub
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
