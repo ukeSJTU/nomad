@@ -55,7 +55,7 @@ export default function UserMenu() {
   return (
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
-        <div>
+        <div className="flex items-center gap-2 cursor-pointer">
           <Avatar className="size-8">
             <AvatarImage
               src={session.user.image || undefined}
@@ -68,25 +68,25 @@ export default function UserMenu() {
           </span>
         </div>
       </HoverCardTrigger>
-      <HoverCardContent align="end" className="w-48 p-2">
+      <HoverCardContent align="end" className="w-52 p-2">
         <div className="flex flex-col gap-1">
-          <div className="px-2 py-1.5 text-sm font-medium">
-            <Avatar className="size-8">
+          <div className="flex items-center gap-3 px-2 py-1.5">
+            <Avatar className="size-10">
               <AvatarImage
                 src={session.user.image || undefined}
                 alt={session.user.name || "User"}
               />
               <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
             </Avatar>
-            <Link
-              href="/profile"
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <span className="hidden text-sm font-medium md:inline-block">
+            <div className="flex flex-col gap-1">
+              <Link
+                href="/profile"
+                className="text-sm font-medium hover:underline cursor-pointer"
+              >
                 尊敬的{session.user.name}
-              </span>
-            </Link>
-            <Badge>贵宾</Badge>
+              </Link>
+              <Badge className="w-fit">贵宾</Badge>
+            </div>
           </div>
 
           <Separator className="my-1" />
