@@ -8,7 +8,7 @@
   },
   "packageManager": "pnpm@10.17.1",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
     "test": "vitest",
