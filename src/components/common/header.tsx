@@ -79,9 +79,50 @@ export default function Header() {
           <Separator orientation="vertical" className="h-6!" />
 
           {/* My Orders */}
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/orders">My Orders</Link>
-          </Button>
+          <HoverCard openDelay={200} closeDelay={100}>
+            <HoverCardTrigger asChild>
+              <Button variant="ghost" size="sm" className="cursor-pointer">
+                我的订单
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent align="center" className="w-40 p-2">
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="justify-start"
+                >
+                  <Link href="#">机票订单</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="justify-start"
+                >
+                  <Link href="#">酒店订单</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="justify-start"
+                >
+                  <Link href="#">全部订单</Link>
+                </Button>
+                <Separator className="my-1" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="justify-start"
+                >
+                  <Link href="#">手机号查订单</Link>
+                </Button>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
 
           <Separator orientation="vertical" className="h-6!" />
 
