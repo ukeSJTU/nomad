@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 
 import SearchBar from "@/components/common/search-bar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import UserMenu from "@/components/common/user-menu";
 import { Button } from "@/components/ui/button";
 import {
   HoverCard,
@@ -13,21 +13,9 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-import { authClient } from "@/lib/auth/client";
-
-export const getInitials = (name?: string) => {
-  if (!name) return "A";
-  return name
-    .split(" ")
-    .map(n => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-};
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
-  const { data: session, isPending } = authClient.useSession();
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -46,35 +34,7 @@ export default function Header() {
         {/* Right section: Auth, Orders, Contact, Theme */}
         <div className="flex items-center gap-3">
           {/* Auth Section */}
-          {isPending ? (
-            <div className="flex items-center gap-2">
-              <div className="size-8 animate-pulse rounded-full bg-muted" />
-            </div>
-          ) : session ? (
-            <Link href="/profile" className="flex items-center gap-2">
-              <Avatar className="size-8">
-                <AvatarImage
-                  src={session.user.image || undefined}
-                  alt={session.user.name || "User"}
-                />
-                <AvatarFallback>
-                  {getInitials(session.user.name)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden text-sm font-medium md:inline-block">
-                {session.user.name}
-              </span>
-            </Link>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/auth/signin">Sign In</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/auth/signup">Sign Up</Link>
-              </Button>
-            </div>
-          )}
+          <UserMenu />
 
           <Separator orientation="vertical" className="h-6!" />
 
