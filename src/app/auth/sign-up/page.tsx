@@ -18,14 +18,15 @@ import type {
 } from "@/types/auth";
 
 /**
- * Configuration for the registration stepper component
- * Defines the three main steps of the registration process
+ * Get stepper steps based on sign-up method
+ * @param method - "phone" or "email"
+ * @returns Array of stepper steps
  */
-const signUpSteps: StepperStep[] = [
+const getSignUpSteps = (method: "phone" | "email"): StepperStep[] => [
   {
     id: "verify",
-    label: "验证身份", // Verify Identity
-    description: "验证手机或邮箱", // Verify phone or email
+    label: method === "phone" ? "验证手机" : "验证邮箱", // Verify Phone / Verify Email
+    description: method === "phone" ? "输入手机号码" : "输入邮箱地址", // Enter phone number / Enter email address
   },
   {
     id: "set-password",
@@ -58,7 +59,7 @@ export default function SignUpPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false); // Whether user agreed to terms
   const [isLoading, setIsLoading] = useState(false); // Global loading state for API calls
   const [countdown, setCountdown] = useState(0); // OTP resend countdown timer
-  const [_signUpMethod, setSignUpMethod] = useState<"phone" | "email">("phone"); // Sign-up method selection
+  const [signUpMethod, setSignUpMethod] = useState<"phone" | "email">("phone"); // Sign-up method selection
   const [_phoneData, setPhoneData] = useState<PhoneVerificationData | null>(
     null
   ); // Store verified phone data
@@ -307,9 +308,9 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        {/* Progress Stepper */}
+        {/* Progress Stepper - Updates based on sign-up method */}
         <Stepper
-          steps={signUpSteps}
+          steps={getSignUpSteps(signUpMethod)}
           currentStep={currentStep}
           variant="compact"
           className="mb-6"
