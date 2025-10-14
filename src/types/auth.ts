@@ -45,6 +45,9 @@ export const phoneLoginSchema = z.object({
     .min(11, "手机号码至少11位")
     .max(11, "手机号码最多11位"),
   password: z.string().min(1, "请输入密码"),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "请同意服务协议和隐私政策",
+  }),
 });
 
 // Phone OTP login schema - for OTP-based login
@@ -61,6 +64,9 @@ export const phoneOtpLoginSchema = z.object({
     .min(6, "验证码必须是6位数字")
     .max(6, "验证码必须是6位数字")
     .regex(/^[0-9]{6}$/, "验证码只能包含数字"),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "请同意服务协议和隐私政策",
+  }),
 });
 
 // Types
