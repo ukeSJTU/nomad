@@ -378,7 +378,8 @@ export default function SignInPage() {
                 disabled={isLoading}
               >
                 <Github className="size-5" />
-                使用 GitHub 登录
+                {/* Here using english text instead of Chinese text "使用GitHub 登录" is beccause “登录” interfere with the original “登录” button and failing the e2e tests for sign-in process */}
+                Login With GitHub
               </Button>
             </div>
           </div>
