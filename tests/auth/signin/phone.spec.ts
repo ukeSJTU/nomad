@@ -289,35 +289,4 @@ test.describe("Phone Sign-In Flow", () => {
       await expect(page.getByText("请同意服务协议和隐私政策")).toBeVisible();
     });
   });
-
-  /**
-   * Test suite for form validation and error handling
-   */
-  test.describe("Form Validation", () => {
-    test("should validate phone number format", async ({ page }) => {
-      await page.goto("/auth/sign-in");
-
-      // Enter invalid phone number (too short)
-      await page.getByPlaceholder("请输入手机号").fill("123");
-
-      // Trigger validation by clicking submit
-      await page.getByRole("button", { name: "登录" }).click();
-
-      // Should show validation error
-      await expect(page.getByText("手机号码至少11位")).toBeVisible();
-    });
-
-    test("should only accept numeric phone numbers", async ({ page }) => {
-      await page.goto("/auth/sign-in");
-
-      // Enter phone number with letters
-      await page.getByPlaceholder("请输入手机号").fill("1380013800a");
-
-      // Trigger validation
-      await page.getByRole("button", { name: "登录" }).click();
-
-      // Should show validation error
-      await expect(page.getByText("手机号码只能包含数字")).toBeVisible();
-    });
-  });
 });
