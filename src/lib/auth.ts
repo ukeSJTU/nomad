@@ -1,9 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { phoneNumber, emailOTP } from "better-auth/plugins";
+import { emailOTP, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@/lib/db";
+import { sendEmailOtp } from "@/lib/email";
 import { sendSmsOtp } from "@/lib/sms";
 import logger from "@/utils/logger";
 
@@ -22,6 +23,28 @@ export function shouldEnableAliyunSms(): boolean {
 
   // If explicitly set to disable
   if (enableSms === "disabled" || enableSms === "false") {
+    return false;
+  }
+
+  // Default logic: enable in production, disable in development
+  return isProduction;
+}
+
+/**
+ * Determine whether Resend email service should be enabled
+ * @returns boolean
+ */
+export function shouldEnableResend(): boolean {
+  const enableEmail = process.env.ENABLE_RESEND?.toLowerCase();
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // If explicitly set to enable
+  if (enableEmail === "enabled" || enableEmail === "true") {
+    return true;
+  }
+
+  // If explicitly set to disable
+  if (enableEmail === "disabled" || enableEmail === "false") {
     return false;
   }
 
@@ -96,12 +119,46 @@ export const auth = betterAuth({
     }),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        if (type === "sign-in") {
-          // Send the OTP for sign in
-        } else if (type === "email-verification") {
-          // Send the OTP for email verification
+        const useResend = shouldEnableResend();
+
+        if (useResend) {
+          try {
+            // Use Resend service to send OTP
+            const success = await sendEmailOtp(email, otp);
+
+            if (success) {
+              logger.info(
+                `OTP code ${otp} sent successfully to ${email} via Resend`
+              );
+              console.log(
+                `OTP code ${otp} sent successfully to ${email} via Resend`
+              );
+            } else {
+              logger.error(
+                `Failed to send OTP code ${otp} to ${email} via Resend`
+              );
+              console.error(
+                `Failed to send OTP code ${otp} to ${email} via Resend`
+              );
+              throw new Error("Failed to send email");
+            }
+          } catch (error) {
+            logger.error({ error }, "Error sending OTP via Resend");
+            console.error("Error sending OTP via Resend:", error);
+            throw error;
+          }
         } else {
-          // Send the OTP for password reset
+          // Use console.log simulation (development environment or explicitly disabled)
+          const simulationMessage = `[EMAIL SIMULATION] Sending OTP code ${otp} to ${email} (type: ${type})`;
+          const environmentMessage = `[EMAIL SIMULATION] Environment: ${process.env.NODE_ENV}, ENABLE_RESEND: ${process.env.ENABLE_RESEND}`;
+
+          logger.info(simulationMessage);
+          logger.info(environmentMessage);
+          console.log(simulationMessage);
+          console.log(environmentMessage);
+
+          // Simulate successful sending
+          return Promise.resolve();
         }
       },
     }),
