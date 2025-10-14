@@ -755,27 +755,40 @@ export async function GET(request: NextRequest) {
 
 ### 日期时间格式规范
 
-项目统一使用 **ISO 8601** 格式表示日期时间：
+项目**强制统一**使用 **ISO 8601 UTC 时间**格式表示所有日期时间字段。
 
-- **完整格式**：`2025-10-14T10:30:00Z`（UTC 时间）
-- **带时区格式**：`2025-10-14T10:30:00+08:00`（东八区时间）
+#### 标准格式
 
-**规范要求：**
+所有 API 响应中的时间字段必须使用以下格式：
 
-1. 所有 API 响应中的时间字段必须使用 ISO 8601 格式
-2. 推荐使用 UTC 时间（以 `Z` 结尾）
-3. 如需表示本地时间，必须包含时区信息
-4. 使用 Zod 的 `z.iso.datetime()` 进行验证
+```
+2025-10-14T10:30:00Z
+```
 
-**示例：**
+- **ISO 8601 标准格式**
+- **必须以 `Z` 结尾**（表示 UTC/零时区）
+- 可选包含毫秒：`2025-10-14T10:30:00.123Z`
+
+#### 规范要求
+
+1. **后端响应**：所有 API 响应中的时间字段必须使用 UTC 格式（以 `Z` 结尾）
+2. **数据库存储**：数据库中存储 UTC 时间
+3. **前端处理**：前端负责将 UTC 时间转换为用户本地时区
+4. **Zod 验证**：使用 `z.string().datetime()` 进行验证
+
+#### 后端实现
 
 ```typescript
 // Zod Schema 定义
 const flightSchema = z.object({
-  departureTime: z.iso.datetime(),
-  arrivalTime: z.iso.datetime(),
-  bookingTime: z.iso.datetime(),
+  departureTime: z.string().datetime(), // 验证 ISO 8601 格式
+  arrivalTime: z.string().datetime(),
+  bookingTime: z.string().datetime(),
 });
+
+// 生成 UTC 时间
+const timestamp = new Date().toISOString(); // 自动生成 UTC 格式
+// "2025-10-14T10:30:00.123Z"
 
 // API 响应示例
 {
@@ -784,8 +797,40 @@ const flightSchema = z.object({
     "departureTime": "2025-10-14T08:00:00Z",
     "arrivalTime": "2025-10-14T10:30:00Z",
     "bookingTime": "2025-10-13T15:20:00Z"
+  },
+  "meta": {
+    "timestamp": "2025-10-14T10:30:00Z",
+    "requestId": "req_k8pQxJ2mN5vL9wRt"
   }
 }
+```
+
+#### 前端时区转换
+
+前端接收 UTC 时间后，可以轻松转换为任意时区：
+
+```typescript
+// 1. 转换为用户本地时区
+const utcTime = "2025-10-14T08:00:00Z";
+const localTime = new Date(utcTime).toLocaleString();
+// "2025/10/14 16:00:00"（假设用户在东八区）
+
+// 2. 转换为指定时区（使用 Intl API）
+const tokyoTime = new Date(utcTime).toLocaleString("ja-JP", {
+  timeZone: "Asia/Tokyo",
+});
+// "2025/10/14 17:00:00"
+
+// 3. 格式化显示
+const formatted = new Date(utcTime).toLocaleString("zh-CN", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+// "2025/10/14 16:00"
 ```
 
 ### 响应工具函数使用
