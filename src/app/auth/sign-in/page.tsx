@@ -28,14 +28,13 @@ export default function SignInPage() {
 
   /**
    * Handles phone + password login
-   * Uses email/password authentication with constructed temp email
+   * Uses phone number/password authentication
    */
   const handlePhonePasswordLogin = async (data: PhoneLoginData) => {
     setIsLoading(true);
     setError(null);
 
     const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
-    // const tempEmail = `${fullPhoneNumber}@nomad.com`;
 
     try {
       // Use phone number + password to sign in
