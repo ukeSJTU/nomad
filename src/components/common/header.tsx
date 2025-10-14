@@ -105,17 +105,13 @@ export default function Header() {
                 </Link>
                 <Separator />
                 <div className="space-y-1 text-sm">
-                  <p className="font-medium">境内：</p>
-                  <p>95010</p>
-                  <p>或 400-830-6666</p>
-                  <p className="font-medium mt-2">中国香港：</p>
-                  <p>+852-3008-3295</p>
-                  <p className="font-medium mt-2">中国澳门：</p>
-                  <p>+86-21 3406-4888</p>
-                  <p className="font-medium mt-2">中国台湾：</p>
-                  <p>+86-21 3406-4888</p>
-                  <p className="font-medium mt-2">其他国家和地区：</p>
-                  <p>+86-21-3406-4888</p>
+                  <p className="font-medium">境内：95010 或 400-830-6666</p>
+                  <p className="font-medium mt-2">中国香港：+852-3008-3295</p>
+                  <p className="font-medium mt-2">中国澳门：+86-21 3406-4888</p>
+                  <p className="font-medium mt-2">中国台湾：+86-21 3406-4888</p>
+                  <p className="font-medium mt-2">
+                    其他国家和地区：+86-21-3406-4888
+                  </p>
                 </div>
               </div>
             </HoverCardContent>
