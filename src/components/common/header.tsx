@@ -9,13 +9,10 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/client";
@@ -118,25 +115,23 @@ export default function Header() {
           <Separator orientation="vertical" className="h-6" />
 
           {/* Contact Service */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <HoverCard openDelay={200} closeDelay={100}>
+            <HoverCardTrigger asChild>
               <Button variant="ghost" size="sm">
                 联系客服
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64">
-              <DropdownMenuItem asChild>
+            </HoverCardTrigger>
+            <HoverCardContent align="end" className="w-64">
+              <div className="space-y-3">
                 <Link
                   href="/contact"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cursor-pointer"
+                  className="block text-sm font-medium text-primary hover:underline"
                 >
-                  访问客服中心
+                  访问客服中心 →
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="font-normal">
+                <Separator />
                 <div className="space-y-1 text-sm">
                   <p className="font-medium">境内：</p>
                   <p>95010</p>
@@ -150,9 +145,9 @@ export default function Header() {
                   <p className="font-medium mt-2">其他国家和地区：</p>
                   <p>+86-21-3406-4888</p>
                 </div>
-              </DropdownMenuLabel>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
 
           <Separator orientation="vertical" className="h-6" />
 
