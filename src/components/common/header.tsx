@@ -1,0 +1,134 @@
+"use client";
+
+import { Moon, Search, Sun } from "lucide-react";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { authClient } from "@/lib/auth/client";
+
+export default function Header() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const { theme, setTheme } = useTheme();
+  const { data: session, isPending } = authClient.useSession();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      toast.success(`Searching for: ${searchQuery}`);
+      // TODO: Implement actual search functionality
+    }
+  };
+
+  const getInitials = (name?: string) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map(n => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  return (
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center justify-between gap-4 px-4">
+        {/* Left section: Favicon/Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-semibold">
+            N
+          </div>
+          <span className="hidden font-semibold sm:inline-block">Nomad</span>
+        </Link>
+
+        {/* Center section: Search bar */}
+        <form
+          onSubmit={handleSearch}
+          className="flex flex-1 max-w-md items-center gap-2"
+        >
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Button type="submit" size="icon" variant="outline">
+            <Search className="size-4" />
+            <span className="sr-only">Search</span>
+          </Button>
+        </form>
+
+        {/* Right section: Auth, Orders, Contact, Theme */}
+        <div className="flex items-center gap-3">
+          {/* Auth Section */}
+          {isPending ? (
+            <div className="flex items-center gap-2">
+              <div className="size-8 animate-pulse rounded-full bg-muted" />
+            </div>
+          ) : session ? (
+            <Link href="/profile" className="flex items-center gap-2">
+              <Avatar className="size-8">
+                <AvatarImage
+                  src={session.user.image || undefined}
+                  alt={session.user.name || "User"}
+                />
+                <AvatarFallback>
+                  {getInitials(session.user.name)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden text-sm font-medium md:inline-block">
+                {session.user.name}
+              </span>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/auth/signin">Sign In</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/auth/signup">Sign Up</Link>
+              </Button>
+            </div>
+          )}
+
+          <Separator orientation="vertical" className="h-6" />
+
+          {/* My Orders */}
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/orders">My Orders</Link>
+          </Button>
+
+          <Separator orientation="vertical" className="h-6" />
+
+          {/* Contact Service */}
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/contact">Contact</Link>
+          </Button>
+
+          <Separator orientation="vertical" className="h-6" />
+
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-label="Toggle theme"
+          >
+            <Sun className="size-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute size-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}
