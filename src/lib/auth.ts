@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { phoneNumber } from "better-auth/plugins";
+import { phoneNumber, emailOTP } from "better-auth/plugins";
 
 import { db } from "@/lib/db";
 import { sendSmsOtp } from "@/lib/sms";
@@ -92,6 +92,17 @@ export const auth = betterAuth({
           const lastFour = phoneNumber.slice(-4);
           return `${faker.person.firstName()}${lastFour}`;
         },
+      },
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "sign-in") {
+          // Send the OTP for sign in
+        } else if (type === "email-verification") {
+          // Send the OTP for email verification
+        } else {
+          // Send the OTP for password reset
+        }
       },
     }),
   ],
