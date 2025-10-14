@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createSuccessResponseSchema } from "./response";
+import { responseMetaSchema } from "./response";
 
 /**
  * Health check API validation schemas
@@ -14,9 +14,12 @@ export const healthDataSchema = z.object({
   message: z.string(),
 });
 
-// Health check response schema (using standard format)
-export const healthResponseSchema =
-  createSuccessResponseSchema(healthDataSchema);
+// Health check response schema (explicit definition for OpenAPI generation)
+export const healthResponseSchema = z.object({
+  success: z.literal(true),
+  data: healthDataSchema,
+  meta: responseMetaSchema,
+});
 
 // TypeScript types
 export type HealthData = z.infer<typeof healthDataSchema>;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createSuccessResponseSchema, messageResponseSchema } from "./response";
+import { messageResponseSchema, responseMetaSchema } from "./response";
 
 /**
  * Authentication API validation schemas
@@ -14,10 +14,12 @@ export const setInitialPasswordRequestSchema = z.object({
     .max(128, "Password must not exceed 128 characters"),
 });
 
-// Set initial password response schema (using standard message format)
-export const setInitialPasswordResponseSchema = createSuccessResponseSchema(
-  messageResponseSchema
-);
+// Set initial password response schema (explicit definition for OpenAPI generation)
+export const setInitialPasswordResponseSchema = z.object({
+  success: z.literal(true),
+  data: messageResponseSchema,
+  meta: responseMetaSchema,
+});
 
 // TypeScript types
 export type SetInitialPasswordRequest = z.infer<
