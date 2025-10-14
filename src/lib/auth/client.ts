@@ -1,4 +1,4 @@
-import { phoneNumberClient, emailOTPClient } from "better-auth/client/plugins";
+import { emailOTPClient, phoneNumberClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
