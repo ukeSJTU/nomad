@@ -11,12 +11,13 @@ export const setInitialPasswordRequestSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be at least 8 characters long")
-    .max(128, "Password must not exceed 128 characters"),
+    .max(128, "Password must not exceed 128 characters")
+    .describe("User password"),
 });
 
 // Set initial password response schema (explicit definition for OpenAPI generation)
 export const setInitialPasswordResponseSchema = z.object({
-  success: z.literal(true),
+  success: z.literal(true).describe("Request success indicator"),
   data: messageResponseSchema,
   meta: responseMetaSchema,
 });

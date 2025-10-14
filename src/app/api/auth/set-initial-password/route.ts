@@ -6,32 +6,16 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { account } from "@/lib/schema";
 import { ApiResponse } from "@/lib/utils/api-response";
-
-// Define schemas in the same file for next-openapi-gen
-export const SetInitialPasswordRequest = z.object({
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .max(128, "Password must not exceed 128 characters")
-    .describe("User password"),
-});
-
-export const SetInitialPasswordResponse = z.object({
-  success: z.literal(true).describe("Request success indicator"),
-  data: z.object({
-    message: z.string().describe("Success message"),
-  }),
-  meta: z.object({
-    timestamp: z.string().describe("Response timestamp in ISO format"),
-    requestId: z.string().describe("Unique request identifier"),
-  }),
-});
+import {
+  setInitialPasswordRequestSchema,
+  setInitialPasswordResponseSchema, // eslint-disable-line @typescript-eslint/no-unused-vars
+} from "@/types/api/auth";
 
 /**
  * Set initial password for users who registered via phone verification
  * @description This endpoint is called after successful phone verification to complete the registration process
- * @body SetInitialPasswordRequest
- * @response SetInitialPasswordResponse
+ * @body setInitialPasswordRequestSchema
+ * @response setInitialPasswordResponseSchema
  * @responseSet auth
  * @add 422
  * @openapi
@@ -40,7 +24,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse and validate request body
     const body = await request.json();
-    const validatedData = SetInitialPasswordRequest.parse(body);
+    const validatedData = setInitialPasswordRequestSchema.parse(body);
 
     // Get current user session (should exist after phone verification)
     const session = await auth.api.getSession({

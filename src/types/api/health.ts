@@ -8,15 +8,15 @@ import { responseMetaSchema } from "./response";
 
 // Health check data schema (business data)
 export const healthDataSchema = z.object({
-  status: z.literal("ok"),
+  status: z.literal("ok").describe("Service status"),
   timestamp: z.string().datetime(),
-  uptime: z.number().nonnegative(),
-  message: z.string(),
+  uptime: z.number().nonnegative().describe("Server uptime in seconds"),
+  message: z.string().describe("Status message"),
 });
 
 // Health check response schema (explicit definition for OpenAPI generation)
 export const healthResponseSchema = z.object({
-  success: z.literal(true),
+  success: z.literal(true).describe("Request success indicator"),
   data: healthDataSchema,
   meta: responseMetaSchema,
 });
