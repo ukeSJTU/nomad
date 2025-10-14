@@ -1,34 +1,30 @@
 import { and, eq } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { z } from "zod";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { account } from "@/lib/schema";
+import { ApiResponse } from "@/lib/utils/api-response";
+import {
+  setInitialPasswordRequestSchema,
+  setInitialPasswordResponseSchema, // eslint-disable-line @typescript-eslint/no-unused-vars
+} from "@/types/api/auth";
 
 /**
- * API endpoint to set initial password for users who registered via phone verification
- * This endpoint is called after successful phone verification to complete the registration process
+ * Set initial password for users who registered via phone verification
+ * @description This endpoint is called after successful phone verification to complete the registration process
+ * @body setInitialPasswordRequestSchema
+ * @response setInitialPasswordResponseSchema
+ * @responseSet auth
+ * @add 422
+ * @openapi
  */
 export async function POST(request: NextRequest) {
   try {
-    // Parse request body to extract password
-    const { password } = await request.json();
-
-    // Validate password input
-    if (!password || typeof password !== "string") {
-      return NextResponse.json(
-        { error: "Password is required" },
-        { status: 400 }
-      );
-    }
-
-    // Validate minimum password length (additional validation on top of frontend)
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: "Password must be at least 8 characters long" },
-        { status: 400 }
-      );
-    }
+    // Parse and validate request body
+    const body = await request.json();
+    const validatedData = setInitialPasswordRequestSchema.parse(body);
 
     // Get current user session (should exist after phone verification)
     const session = await auth.api.getSession({
@@ -36,7 +32,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return ApiResponse.unauthorized(
+        "AUTH_UNAUTHORIZED",
+        "Authentication required. Please log in first."
+      );
     }
 
     // Check if user has already set a password
@@ -53,9 +52,9 @@ export async function POST(request: NextRequest) {
 
     // Prevent users from setting password multiple times
     if (existingAccounts.length > 0) {
-      return NextResponse.json(
-        { error: "Password already set" },
-        { status: 400 }
+      return ApiResponse.businessError(
+        "BUSINESS_PASSWORD_ALREADY_SET",
+        "Password has already been set for this account"
       );
     }
 
@@ -63,20 +62,23 @@ export async function POST(request: NextRequest) {
     // This creates a credential account for the user
     await auth.api.setPassword({
       body: {
-        newPassword: password,
+        newPassword: validatedData.password,
       },
       headers: request.headers,
     });
 
-    return NextResponse.json(
-      { message: "Password set successfully" },
-      { status: 200 }
-    );
+    return ApiResponse.success({ message: "Password set successfully" });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      // Data format/type errors → 400
+      const details = error.issues.map(issue => ({
+        field: issue.path.join("."),
+        message: issue.message,
+      }));
+      return ApiResponse.validationError(details);
+    }
+
     console.error("Set password error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return ApiResponse.internalError("An unexpected error occurred");
   }
 }

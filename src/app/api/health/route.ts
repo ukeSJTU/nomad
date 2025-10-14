@@ -1,6 +1,9 @@
-import { NextResponse } from "next/server";
-
-import { type HealthResponse, healthResponseSchema } from "@/types";
+import { ApiResponse } from "@/lib/utils/api-response";
+import {
+  type HealthData,
+  healthDataSchema,
+  healthResponseSchema, // eslint-disable-line @typescript-eslint/no-unused-vars
+} from "@/types/api/health";
 
 /**
  * Check health status of the server
@@ -8,16 +11,17 @@ import { type HealthResponse, healthResponseSchema } from "@/types";
  * @response healthResponseSchema
  * @openapi
  */
-export async function GET(): Promise<NextResponse<HealthResponse>> {
-  const response: HealthResponse = {
+export async function GET() {
+  const healthData: HealthData = {
     status: "ok",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     message: "Service is healthy",
   };
 
-  // Validate the response against the schema
-  const validatedResponse = healthResponseSchema.parse(response);
+  // Validate the response data against the schema
+  const validatedData = healthDataSchema.parse(healthData);
 
-  return NextResponse.json(validatedResponse);
+  // Return using standard response format
+  return ApiResponse.success(validatedData);
 }
