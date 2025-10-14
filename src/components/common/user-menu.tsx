@@ -64,7 +64,7 @@ export default function UserMenu() {
             <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
           </Avatar>
           <span className="hidden text-sm font-medium md:inline-block">
-            {session.user.name}
+            {session.user.name || "Anonymous"}
           </span>
         </div>
       </HoverCardTrigger>
@@ -83,7 +83,7 @@ export default function UserMenu() {
                 href="/profile"
                 className="text-sm font-medium hover:underline cursor-pointer"
               >
-                尊敬的{session.user.name}
+                尊敬的{session.user.name || "Anonymous"}
               </Link>
               <Badge className="w-fit">贵宾</Badge>
             </div>
