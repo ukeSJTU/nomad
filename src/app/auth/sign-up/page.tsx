@@ -4,12 +4,18 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import SignUpModal, {
+  EmailVerificationForm,
   PasswordSetupForm,
   PhoneVerificationForm,
 } from "@/components/auth";
 import { Stepper, type StepperStep } from "@/components/common";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth/client";
-import type { PasswordSetupData, PhoneVerificationData } from "@/types/auth";
+import type {
+  EmailVerificationData,
+  PasswordSetupData,
+  PhoneVerificationData,
+} from "@/types/auth";
 
 /**
  * Configuration for the registration stepper component
@@ -17,9 +23,9 @@ import type { PasswordSetupData, PhoneVerificationData } from "@/types/auth";
  */
 const signUpSteps: StepperStep[] = [
   {
-    id: "verify-phone",
-    label: "验证手机", // Verify Phone
-    description: "输入手机号码", // Enter phone number
+    id: "verify",
+    label: "验证身份", // Verify Identity
+    description: "验证手机或邮箱", // Verify phone or email
   },
   {
     id: "set-password",
@@ -52,11 +58,16 @@ export default function SignUpPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false); // Whether user agreed to terms
   const [isLoading, setIsLoading] = useState(false); // Global loading state for API calls
   const [countdown, setCountdown] = useState(0); // OTP resend countdown timer
+  const [_signUpMethod, setSignUpMethod] = useState<"phone" | "email">("phone"); // Sign-up method selection
   const [_phoneData, setPhoneData] = useState<PhoneVerificationData | null>(
     null
   ); // Store verified phone data
+  const [_emailData, setEmailData] = useState<EmailVerificationData | null>(
+    null
+  ); // Store verified email data
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState(""); // Current phone number input
   const [currentCountryCode, setCurrentCountryCode] = useState("+86"); // Current country code selection
+  const [currentEmail, setCurrentEmail] = useState(""); // Current email input
   const [error, setError] = useState<string | null>(null); // Error message display
 
   // Countdown timer effect for OTP resend functionality
@@ -160,10 +171,41 @@ export default function SignUpPage() {
   };
 
   /**
-   * Handles OTP sending functionality
+   * Handles email verification form submission
+   * Verifies the OTP code using better-auth and proceeds to password setup
+   */
+  const handleEmailVerificationSubmit = async (data: EmailVerificationData) => {
+    setEmailData(data); // Store verified email data for later use
+    setIsLoading(true);
+    setError(null); // Clear previous errors
+
+    try {
+      // Call better-auth to verify the OTP code
+      const { error: verifyError } = await authClient.emailOtp.verifyEmail({
+        email: data.email,
+        otp: data.otp,
+      });
+
+      if (verifyError) {
+        console.error("验证码验证失败:", verifyError);
+        setError("验证码错误，请重试"); // OTP verification failed, please try again
+      } else {
+        console.log("邮箱验证成功", data);
+        setCurrentStep(2); // Proceed to password setup step
+      }
+    } catch (error) {
+      console.error("验证码验证异常:", error);
+      setError("网络错误，请稍后重试"); // Network error, please try again later
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Handles OTP sending functionality for phone
    * Sends verification code to the user's phone number using better-auth
    */
-  const handleSendOtp = async () => {
+  const handleSendPhoneOtp = async () => {
     // Validate that phone number is entered
     if (!currentPhoneNumber || !currentCountryCode) {
       setError("请先输入手机号"); // Please enter phone number first
@@ -180,6 +222,43 @@ export default function SignUpPage() {
       const { error: sendError } = await authClient.phoneNumber.sendOtp({
         phoneNumber: fullPhoneNumber,
       });
+
+      if (sendError) {
+        console.error("发送验证码失败:", sendError);
+        setError("发送验证码失败，请重试"); // Failed to send OTP, please try again
+      } else {
+        console.log("验证码发送成功");
+        setCountdown(60); // Start 60-second countdown for resend
+      }
+    } catch (error) {
+      console.error("发送验证码异常:", error);
+      setError("网络错误，请稍后重试"); // Network error, please try again later
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Handles OTP sending functionality for email
+   * Sends verification code to the user's email using better-auth
+   */
+  const handleSendEmailOtp = async () => {
+    // Validate that email is entered
+    if (!currentEmail) {
+      setError("请先输入邮箱地址"); // Please enter email first
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null); // Clear previous errors
+
+    try {
+      // Call better-auth client instance to send OTP
+      const { error: sendError } =
+        await authClient.emailOtp.sendVerificationOtp({
+          email: currentEmail,
+          type: "email-verification",
+        });
 
       if (sendError) {
         console.error("发送验证码失败:", sendError);
@@ -241,18 +320,46 @@ export default function SignUpPage() {
 
         {/* Dynamic Form Content Based on Current Step */}
         {currentStep === 1 ? (
-          // Step 1: Phone Verification Form
-          <PhoneVerificationForm
-            onSubmit={handlePhoneVerificationSubmit}
-            onSendOtp={handleSendOtp}
-            onPhoneChange={(phoneNumber, countryCode) => {
-              // Update parent state when phone number changes
-              setCurrentPhoneNumber(phoneNumber);
-              setCurrentCountryCode(countryCode);
-            }}
-            isLoading={isLoading}
-            countdown={countdown}
-          />
+          // Step 1: Phone or Email Verification with Tabs
+          <Tabs
+            defaultValue="phone"
+            className="w-full"
+            onValueChange={value => setSignUpMethod(value as "phone" | "email")}
+          >
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="phone">手机注册</TabsTrigger>
+              <TabsTrigger value="email">邮箱注册</TabsTrigger>
+            </TabsList>
+
+            {/* Phone Verification Tab */}
+            <TabsContent value="phone">
+              <PhoneVerificationForm
+                onSubmit={handlePhoneVerificationSubmit}
+                onSendOtp={handleSendPhoneOtp}
+                onPhoneChange={(phoneNumber, countryCode) => {
+                  // Update parent state when phone number changes
+                  setCurrentPhoneNumber(phoneNumber);
+                  setCurrentCountryCode(countryCode);
+                }}
+                isLoading={isLoading}
+                countdown={countdown}
+              />
+            </TabsContent>
+
+            {/* Email Verification Tab */}
+            <TabsContent value="email">
+              <EmailVerificationForm
+                onSubmit={handleEmailVerificationSubmit}
+                onSendOtp={handleSendEmailOtp}
+                onEmailChange={email => {
+                  // Update parent state when email changes
+                  setCurrentEmail(email);
+                }}
+                isLoading={isLoading}
+                countdown={countdown}
+              />
+            </TabsContent>
+          </Tabs>
         ) : currentStep === 2 ? (
           // Step 2: Password Setup Form
           <PasswordSetupForm
