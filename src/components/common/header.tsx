@@ -15,19 +15,19 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/client";
 
+export const getInitials = (name?: string) => {
+  if (!name) return "A";
+  return name
+    .split(" ")
+    .map(n => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const { data: session, isPending } = authClient.useSession();
-
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map(n => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
