@@ -61,7 +61,7 @@ export default async function PassengerDetailPage({
           查看常用旅客信息
         </h2>
         <Link
-          href="/home/passenger"
+          href="/home/passengers"
           className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
         >
           查看所有旅客信息
