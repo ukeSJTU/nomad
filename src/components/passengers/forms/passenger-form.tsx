@@ -77,7 +77,7 @@ const passengerFormSchema = z
       message: "请选择证件类型",
     }),
     documentNumber: z.string().min(1, "请输入证件号码"),
-    documentExpiryDate: z.date({ message: "请选择证件有效期" }),
+    documentExpiryDate: z.date({ message: "请选择证件有效期" }).optional(),
   })
   .refine(
     data => data.chineseName || (data.englishFirstName && data.englishLastName),
@@ -105,6 +105,10 @@ export default function PassengerForm({
   const [countryCodeOpen, setCountryCodeOpen] = useState(false);
   const [dobOpen, setDobOpen] = useState(false);
   const [expiryOpen, setExpiryOpen] = useState(false);
+  const [dobCaptionLayout] =
+    useState<React.ComponentProps<typeof Calendar>["captionLayout"]>(
+      "dropdown"
+    );
 
   const form = useForm<PassengerFormData>({
     resolver: zodResolver(passengerFormSchema),
@@ -306,12 +310,15 @@ export default function PassengerForm({
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      defaultMonth={field.value}
                       selected={field.value}
                       onSelect={date => {
                         field.onChange(date);
                         setDobOpen(false);
                       }}
                       disabled={date => date > new Date()}
+                      captionLayout={dobCaptionLayout}
+                      className="rounded-lg border shadow-sm"
                     />
                   </PopoverContent>
                 </Popover>
@@ -533,9 +540,7 @@ export default function PassengerForm({
               name="documentExpiryDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    <span className="text-red-500">*</span> 有效期
-                  </FormLabel>
+                  <FormLabel>有效期</FormLabel>
                   <Popover open={expiryOpen} onOpenChange={setExpiryOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -555,12 +560,16 @@ export default function PassengerForm({
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
+                        defaultMonth={field.value}
                         selected={field.value}
                         onSelect={date => {
                           field.onChange(date);
                           setExpiryOpen(false);
+                          setDobOpen(false);
                         }}
                         disabled={date => date < new Date()}
+                        captionLayout={dobCaptionLayout}
+                        className="rounded-lg border shadow-sm"
                       />
                     </PopoverContent>
                   </Popover>
