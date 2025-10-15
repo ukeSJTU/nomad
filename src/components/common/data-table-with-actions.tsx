@@ -168,15 +168,26 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
 
   // Toggle all rows selection
   const toggleAllRows = () => {
-    if (selectedRows.size === data.length) {
-      handleSelectionChange(new Set());
+    const visibleKeys = data.map(keyExtractor);
+    const allVisibleSelected = visibleKeys.every(key => selectedRows.has(key));
+
+    if (allVisibleSelected) {
+      // Deselect all visible rows
+      const newSelection = new Set(selectedRows);
+      visibleKeys.forEach(key => newSelection.delete(key));
+      handleSelectionChange(newSelection);
     } else {
-      handleSelectionChange(new Set(data.map(keyExtractor)));
+      // Select all visible rows
+      const newSelection = new Set(selectedRows);
+      visibleKeys.forEach(key => newSelection.add(key));
+      handleSelectionChange(newSelection);
     }
   };
 
-  // Check if all rows are selected
-  const allRowsSelected = data.length > 0 && selectedRows.size === data.length;
+  // Check if all visible rows are selected
+  const visibleKeys = data.map(keyExtractor);
+  const allRowsSelected =
+    data.length > 0 && visibleKeys.every(key => selectedRows.has(key));
   const someRowsSelected = selectedRows.size > 0 && !allRowsSelected;
 
   // Get selected row data
