@@ -2,10 +2,13 @@ import { faker } from "@faker-js/faker";
 import { sql } from "drizzle-orm";
 
 import {
+  account,
   airlines,
   airports,
   flights,
   flightSeatClasses,
+  passengers,
+  user,
 } from "../schema/index";
 import { db } from "./index";
 
@@ -23,6 +26,9 @@ async function seed() {
     await db.delete(flights);
     await db.delete(airlines);
     await db.delete(airports);
+    await db.delete(passengers);
+    await db.delete(account);
+    await db.delete(user);
 
     // Seed Airports
     console.log("[SEED] Seeding airports...");
@@ -281,8 +287,151 @@ async function seed() {
       `[SEED] Seeded ${insertedSeatClasses.length} flight seat classes`
     );
 
+    // Seed Users
+    console.log("[SEED] Seeding users...");
+    const numberOfUsers = 10;
+    const userData = [];
+
+    for (let i = 0; i < numberOfUsers; i++) {
+      const firstName = faker.person.firstName();
+      const lastName = faker.person.lastName();
+
+      userData.push({
+        id: faker.string.uuid(),
+        name: `${firstName} ${lastName}`,
+        email: faker.internet.email({
+          firstName: firstName.toLowerCase(),
+          lastName: lastName.toLowerCase(),
+        }),
+        emailVerified: faker.datatype.boolean(),
+        phoneNumber: faker.helpers.maybe(
+          () => faker.phone.number({ style: "national" }),
+          { probability: 0.7 }
+        ),
+        phoneNumberVerified: faker.helpers.maybe(
+          () => faker.datatype.boolean(),
+          {
+            probability: 0.7,
+          }
+        ),
+        image: faker.helpers.maybe(() => faker.image.avatar(), {
+          probability: 0.5,
+        }),
+      });
+    }
+
+    const insertedUsers = await db.insert(user).values(userData).returning();
+    console.log(`[SEED] Seeded ${insertedUsers.length} users`);
+
+    // Seed Passengers for each user
+    console.log("[SEED] Seeding passengers...");
+    const passengerData = [];
+
+    for (const currentUser of insertedUsers) {
+      // Each user gets 1-5 passengers
+      const numberOfPassengers = faker.number.int({ min: 1, max: 5 });
+
+      for (let i = 0; i < numberOfPassengers; i++) {
+        const hasChineseName = faker.datatype.boolean();
+        const gender = faker.helpers.arrayElement([
+          "male",
+          "female",
+          "other",
+        ] as const);
+
+        // Generate document number based on type
+        const documentType = faker.helpers.arrayElement([
+          "id_card",
+          "passport",
+          "other",
+        ] as const);
+
+        let documentNumber: string;
+        if (documentType === "id_card") {
+          // Chinese ID card format: 18 digits
+          documentNumber = faker.string.numeric(18);
+        } else if (documentType === "passport") {
+          // Passport format: 1 letter + 8 digits
+          documentNumber = `E${faker.string.numeric(8)}`;
+        } else {
+          documentNumber = faker.string.alphanumeric(10);
+        }
+
+        const passenger = {
+          userId: currentUser.id,
+          chineseName: hasChineseName
+            ? faker.person.fullName({
+                sex: gender === "male" ? "male" : "female",
+              })
+            : null,
+          englishFirstName: !hasChineseName
+            ? faker.person.firstName(gender === "male" ? "male" : "female")
+            : faker.helpers.maybe(
+                () =>
+                  faker.person.firstName(gender === "male" ? "male" : "female"),
+                { probability: 0.5 }
+              ),
+          englishLastName: !hasChineseName
+            ? faker.person.lastName()
+            : faker.helpers.maybe(() => faker.person.lastName(), {
+                probability: 0.5,
+              }),
+          nationality: faker.helpers.arrayElement([
+            "中国大陆",
+            "United States",
+            "United Kingdom",
+            "Canada",
+            "Australia",
+            "Japan",
+            "South Korea",
+            "Singapore",
+          ]),
+          gender,
+          dateOfBirth: faker.date
+            .birthdate({ min: 1, max: 80, mode: "age" })
+            .toISOString()
+            .split("T")[0],
+          placeOfBirth: faker.helpers.maybe(() => faker.location.city(), {
+            probability: 0.6,
+          }),
+          phone: faker.helpers.maybe(
+            () => faker.string.numeric({ length: { min: 10, max: 15 } }),
+            {
+              probability: 0.5,
+            }
+          ),
+          fax: faker.helpers.maybe(
+            () => faker.string.numeric({ length: { min: 10, max: 15 } }),
+            {
+              probability: 0.2,
+            }
+          ),
+          email: faker.helpers.maybe(
+            () => faker.internet.email().toLowerCase(),
+            { probability: 0.6 }
+          ),
+          documentType,
+          documentNumber,
+          documentExpiryDate: faker.date
+            .future({ years: faker.number.int({ min: 1, max: 10 }) })
+            .toISOString()
+            .split("T")[0],
+        };
+
+        passengerData.push(passenger);
+      }
+    }
+
+    const insertedPassengers = await db
+      .insert(passengers)
+      .values(passengerData)
+      .returning();
+    console.log(`[SEED] Seeded ${insertedPassengers.length} passengers`);
+
     console.log("[SEED] Database seeding completed successfully!");
     console.log("\n[SEED] Summary:");
+    console.log(`   - Users: ${insertedUsers.length}`);
+    console.log(`   - Passengers: ${insertedPassengers.length}`);
     console.log(`   - Airports: ${insertedAirports.length}`);
     console.log(`   - Airlines: ${insertedAirlines.length}`);
     console.log(`   - Flights: ${insertedFlights.length}`);
