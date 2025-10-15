@@ -16,10 +16,13 @@ import {
   index,
   pgEnum,
   pgTable,
+  text,
   timestamp,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+
+import { user } from "../../../auth-schema";
 
 // Gender enum type
 export const genderEnum = pgEnum("gender", ["male", "female", "other"]);
@@ -36,6 +39,10 @@ export const passengers = pgTable(
   "passengers",
   {
     id: uuid().primaryKey().defaultRandom(),
+    // User who owns this passenger
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
     // At least one of Chinese name or English name is required
     chineseName: varchar("chinese_name", { length: 100 }),
     englishFirstName: varchar("english_first_name", { length: 100 }),
@@ -68,6 +75,7 @@ export const passengers = pgTable(
   },
   table => [
     // Indexes
+    index("idx_passengers_user_id").on(table.userId),
     index("idx_passengers_is_deleted").on(table.isDeleted),
     index("idx_passengers_email").on(table.email),
     index("idx_passengers_phone").on(table.phone),
