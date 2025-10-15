@@ -82,7 +82,7 @@ const passengerFormSchema = z
   .refine(
     data => data.chineseName || (data.englishFirstName && data.englishLastName),
     {
-      message: "中文名与英文名必填一项",
+      message: "中文名与英文名两者必填一项",
       path: ["chineseName"],
     }
   );
