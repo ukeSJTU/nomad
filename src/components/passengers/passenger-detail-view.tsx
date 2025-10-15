@@ -1,44 +1,24 @@
-"use client";
-
 import { Separator } from "@/components/ui/separator";
 
-interface PassengerDetailData {
+export interface PassengerDetailData {
   chineseName?: string;
   englishLastName?: string;
   englishFirstName?: string;
   nationality: string;
   gender: "male" | "female" | "other";
-  dateOfBirth: Date;
+  dateOfBirth: Date | string;
   placeOfBirth?: string;
   phone?: string;
   fax?: string;
   email?: string;
   documentType: "id_card" | "passport" | "other";
   documentNumber: string;
-  documentExpiryDate?: Date;
+  documentExpiryDate?: Date | string | null;
 }
 
 interface PassengerDetailViewProps {
-  passenger?: PassengerDetailData;
-  onEdit?: () => void;
+  passenger: PassengerDetailData;
 }
-
-// Mock data for demonstration
-const mockPassenger: PassengerDetailData = {
-  chineseName: "测试用户",
-  englishLastName: "未设置",
-  englishFirstName: "",
-  nationality: "中国大陆",
-  gender: "male",
-  dateOfBirth: new Date("2004-09-12"),
-  placeOfBirth: "提瓦特",
-  phone: "未设置",
-  fax: "未设置",
-  email: "未设置",
-  documentType: "id_card",
-  documentNumber: "3101**************876",
-  documentExpiryDate: undefined,
-};
 
 const genderLabels = {
   male: "男",
@@ -53,31 +33,16 @@ const documentTypeLabels = {
 };
 
 export default function PassengerDetailView({
-  passenger = mockPassenger,
-  onEdit,
+  passenger,
 }: PassengerDetailViewProps) {
-  const formatDate = (date?: Date) => {
+  const formatDate = (date?: Date | string | null) => {
     if (!date) return "未设置";
+    if (typeof date === "string") return date;
     return date.toISOString().split("T")[0];
   };
 
   return (
     <div className="space-y-6 bg-white">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-800">
-          查看常用旅客信息
-        </h2>
-        {onEdit && (
-          <button
-            onClick={onEdit}
-            className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
-          >
-            查看所有旅客信息
-          </button>
-        )}
-      </div>
-
       {/* Passenger Information Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
