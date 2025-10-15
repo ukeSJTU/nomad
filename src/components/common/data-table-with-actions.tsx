@@ -2,6 +2,16 @@
 
 import { useState } from "react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -128,6 +138,14 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
   >(new Set());
 
   const selectedRows = controlledSelectedRows ?? internalSelectedRows;
+
+  // Alert dialog state
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertConfig, setAlertConfig] = useState<{
+    title: string;
+    description: string;
+    onConfirm: () => void;
+  } | null>(null);
 
   const handleSelectionChange = (newSelection: Set<string | number>) => {
     if (onSelectionChange) {
@@ -362,8 +380,8 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
       {/* Footer Section */}
       {(enableSelection || pagination) && (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          {/* Batch Actions */}
-          {enableSelection && selectedRows.size > 0 && (
+          {/* Batch Actions - Always show when selection is enabled */}
+          {enableSelection && (
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -381,16 +399,41 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
                     action.variant === "danger" ? "destructive" : "ghost"
                   }
                   size="sm"
-                  onClick={() => action.onClick(getSelectedRowsData())}
+                  onClick={() => {
+                    // Check if any rows are selected
+                    if (selectedRows.size === 0) {
+                      setAlertConfig({
+                        title: "提示",
+                        description: "请先选择要删除的选项",
+                        onConfirm: () => {
+                          setShowAlert(false);
+                        },
+                      });
+                      setShowAlert(true);
+                    } else {
+                      // Show confirmation dialog
+                      setAlertConfig({
+                        title: "确认删除",
+                        description: "您确认要删除所选记录吗？",
+                        onConfirm: () => {
+                          action.onClick(getSelectedRowsData());
+                          setShowAlert(false);
+                        },
+                      });
+                      setShowAlert(true);
+                    }
+                  }}
                 >
                   {action.icon}
                   {action.label}
                 </Button>
               ))}
 
-              <span className="text-sm text-muted-foreground">
-                已选择 {selectedRows.size} 项
-              </span>
+              {selectedRows.size > 0 && (
+                <span className="text-sm text-muted-foreground">
+                  已选择 {selectedRows.size} 项
+                </span>
+              )}
             </div>
           )}
 
@@ -424,6 +467,26 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
           )}
         </div>
       )}
+
+      {/* Alert Dialog */}
+      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{alertConfig?.title}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {alertConfig?.description}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            {alertConfig?.title !== "提示" && (
+              <AlertDialogAction onClick={alertConfig?.onConfirm}>
+                确认
+              </AlertDialogAction>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

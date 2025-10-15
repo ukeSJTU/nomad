@@ -6,6 +6,16 @@ import { toast } from "sonner";
 import PassengerForm from "@/components/passengers/forms/passenger-form";
 import { PassengersDataTable } from "@/components/passengers/passengers-data-table";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -25,6 +35,10 @@ export function PassengersPageClient({
   const [isLoading, setIsLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPassenger, setEditingPassenger] = useState<Passenger | null>(
+    null
+  );
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [passengerToDelete, setPassengerToDelete] = useState<string | null>(
     null
   );
 
@@ -115,13 +129,19 @@ export function PassengersPageClient({
     }
   };
 
-  // Handle delete passenger
-  const handleDelete = async (passengerId: string) => {
-    if (!confirm("确定要删除这位旅客吗？")) return;
+  // Handle delete passenger - show confirmation dialog
+  const handleDelete = (passengerId: string) => {
+    setPassengerToDelete(passengerId);
+    setDeleteAlertOpen(true);
+  };
+
+  // Confirm delete passenger
+  const confirmDelete = async () => {
+    if (!passengerToDelete) return;
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/passengers/${passengerId}`, {
+      const response = await fetch(`/api/passengers/${passengerToDelete}`, {
         method: "DELETE",
       });
 
@@ -138,13 +158,13 @@ export function PassengersPageClient({
       toast.error("删除失败");
     } finally {
       setIsLoading(false);
+      setDeleteAlertOpen(false);
+      setPassengerToDelete(null);
     }
   };
 
-  // Handle batch delete
+  // Handle batch delete - no confirmation needed here as it's handled in data-table
   const handleBatchDelete = async (passengerIds: string[]) => {
-    if (!confirm(`确定要删除选中的 ${passengerIds.length} 位旅客吗？`)) return;
-
     setIsLoading(true);
     try {
       const response = await fetch("/api/passengers/batch-delete", {
@@ -282,6 +302,22 @@ export function PassengersPageClient({
           />
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认删除</AlertDialogTitle>
+            <AlertDialogDescription>
+              您确认要删除这位旅客吗？此操作无法撤销。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>确认</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
