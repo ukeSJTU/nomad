@@ -15,7 +15,6 @@ import type { Passenger } from "@/types/api/passengers";
 interface PassengersDataTableProps {
   initialData: Passenger[];
   onAdd: () => void;
-  onEdit: (passenger: Passenger) => void;
   onDelete: (passengerId: string) => void;
   onBatchDelete: (passengerIds: string[]) => void;
 }
@@ -66,7 +65,6 @@ const getGenderDisplay = (gender: string | null) => {
 export function PassengersDataTable({
   initialData,
   onAdd,
-  onEdit,
   onDelete,
   onBatchDelete,
 }: PassengersDataTableProps) {
@@ -151,7 +149,7 @@ export function PassengersDataTable({
     {
       label: "编辑",
       onClick: row => {
-        onEdit(row);
+        router.push(`/home/passengers/${row.id}/edit`);
       },
       variant: "link",
       className: "text-blue-600 h-auto p-0",
