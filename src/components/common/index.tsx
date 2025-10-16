@@ -1,4 +1,12 @@
 import { Stepper, type StepperStep } from "@/components/common/stepper";
 
 export { Stepper, type StepperStep };
+export {
+  type BatchAction,
+  type Column,
+  type ColumnDefinition,
+  DataTableWithActions,
+  type PaginationConfig,
+  type RowAction,
+} from "./data-table-with-actions";
 export { default as Header } from "./header";
