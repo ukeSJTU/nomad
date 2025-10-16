@@ -378,6 +378,14 @@ export default function SignUpPage() {
                 : signUpMethod === "email" && emailData
                   ? maskEmail(emailData.email)
                   : undefined;
+            console.log(
+              "Rendering step 2 - signUpMethod:",
+              signUpMethod,
+              "phoneData:",
+              phoneData,
+              "maskedId:",
+              maskedId
+            );
             return (
               <PasswordSetupForm
                 onSubmit={handlePasswordSetupSubmit}
