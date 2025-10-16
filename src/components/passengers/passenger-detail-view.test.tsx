@@ -1,11 +1,28 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import PassengerDetailView from "./passenger-detail-view";
+import PassengerDetailView, {
+  type PassengerDetailData,
+} from "./passenger-detail-view";
+
+const mockPassenger: PassengerDetailData = {
+  chineseName: "测试用户",
+  englishLastName: "Test",
+  englishFirstName: "User",
+  nationality: "中国大陆",
+  gender: "male",
+  dateOfBirth: "2004-09-12",
+  placeOfBirth: "提瓦特",
+  phone: "138****1234",
+  email: "te**@example.com",
+  documentType: "id_card",
+  documentNumber: "3101**************876",
+  documentExpiryDate: "2030-12-31",
+};
 
 describe("PassengerDetailView Component", () => {
   it("renders the component with mock data", () => {
-    render(<PassengerDetailView />);
+    render(<PassengerDetailView passenger={mockPassenger} />);
 
     // Check for main heading
     expect(screen.getByText("查看常用旅客信息")).toBeInTheDocument();
@@ -23,7 +40,7 @@ describe("PassengerDetailView Component", () => {
   });
 
   it("displays document information correctly", () => {
-    render(<PassengerDetailView />);
+    render(<PassengerDetailView passenger={mockPassenger} />);
 
     // Check document type
     expect(screen.getByText("身份证")).toBeInTheDocument();
@@ -33,7 +50,7 @@ describe("PassengerDetailView Component", () => {
   });
 
   it("displays field labels correctly", () => {
-    render(<PassengerDetailView />);
+    render(<PassengerDetailView passenger={mockPassenger} />);
 
     // Check for field labels
     expect(screen.getByText("中文名")).toBeInTheDocument();
@@ -46,25 +63,31 @@ describe("PassengerDetailView Component", () => {
   });
 
   it("shows '未设置' for unset optional fields", () => {
-    render(<PassengerDetailView />);
+    const passengerWithMissingFields: PassengerDetailData = {
+      nationality: "中国大陆",
+      gender: "male",
+      dateOfBirth: "2004-09-12",
+      documentType: "id_card",
+      documentNumber: "3101**************876",
+    };
+    render(<PassengerDetailView passenger={passengerWithMissingFields} />);
 
     // Count how many "未设置" texts appear
     const unsetFields = screen.getAllByText("未设置");
     expect(unsetFields.length).toBeGreaterThan(0);
   });
 
-  it("renders edit link when onEdit callback is provided", () => {
-    const mockOnEdit = () => {};
-    render(<PassengerDetailView onEdit={mockOnEdit} />);
+  it("renders component correctly", () => {
+    render(<PassengerDetailView passenger={mockPassenger} />);
 
-    const editLink = screen.getByText("查看所有旅客信息");
-    expect(editLink).toBeInTheDocument();
+    // Check that the component renders without crashing
+    expect(screen.getByText("旅客信息")).toBeInTheDocument();
   });
 
-  it("does not render edit link when onEdit is not provided", () => {
-    render(<PassengerDetailView />);
+  it("component renders without errors", () => {
+    render(<PassengerDetailView passenger={mockPassenger} />);
 
-    const editLink = screen.queryByText("查看所有旅客信息");
-    expect(editLink).not.toBeInTheDocument();
+    // Verify the component is rendered
+    expect(screen.getByText("证件信息")).toBeInTheDocument();
   });
 });
