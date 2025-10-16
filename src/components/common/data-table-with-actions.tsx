@@ -31,7 +31,8 @@ import { cn } from "@/lib/utils";
 
 export interface ColumnDefinition<T> {
   key: keyof T | string;
-  header: string;
+  header: string | (() => React.ReactNode);
+  cell?: (props: { row: T; value: unknown }) => React.ReactNode;
   render?: (value: unknown, row: T) => React.ReactNode;
   sortable?: boolean;
   width?: string;
@@ -198,6 +199,11 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
   // Render cell value
   const renderCellValue = (column: ColumnDefinition<T>, row: T) => {
     const value = row[column.key as keyof T];
+
+    // Priority: cell > render > default
+    if (column.cell) {
+      return column.cell({ row, value });
+    }
     if (column.render) {
       return column.render(value, row);
     }
@@ -276,7 +282,9 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
                   style={{ width: column.width }}
                   className={cn(column.className)}
                 >
-                  {column.header}
+                  {typeof column.header === "function"
+                    ? column.header()
+                    : column.header}
                 </TableHead>
               ))}
               {rowActions.length > 0 && (

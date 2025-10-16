@@ -59,7 +59,9 @@ const getGenderDisplay = (gender: string | null) => {
     female: "女",
     other: "未知",
   };
-  return genderMap[gender] || gender;
+  return (
+    <div className="text-right font-bold">{genderMap[gender] || gender}</div>
+  );
 };
 
 export function PassengersDataTable({
@@ -95,43 +97,61 @@ export function PassengersDataTable({
     {
       key: "chineseName",
       header: "姓名",
-      render: (_, row) => getDisplayName(row),
+      cell: ({ row }) => (
+        <div className="text-center">{getDisplayName(row)}</div>
+      ),
       width: "150px",
     },
     {
       key: "phone",
       header: "手机/电话",
-      render: value => maskPhone(value as string | null),
+      cell: ({ value }) => (
+        <div className="text-center">{maskPhone(value as string | null)}</div>
+      ),
       width: "130px",
     },
     {
       key: "documentType",
-      header: "证件类型",
-      render: value => getDocumentTypeDisplay(value as string),
+      header: () => <div className="text-center">证件类型</div>,
+      cell: ({ value }) => (
+        <div className="text-center">
+          {getDocumentTypeDisplay(value as string)}
+        </div>
+      ),
       width: "100px",
     },
     {
       key: "documentNumber",
       header: "证件号码",
-      render: value => maskDocumentNumber(value as string),
+      cell: ({ value }) => (
+        <div className="font-mono text-center">
+          {maskDocumentNumber(value as string)}
+        </div>
+      ),
       width: "180px",
     },
     {
       key: "nationality",
       header: "国籍(国家/地区)",
-      render: value => (value as string | null) || "-",
+      cell: ({ value }) => (
+        <div className="text-center">{(value as string | null) || "-"}</div>
+      ),
       width: "150px",
     },
     {
       key: "gender",
-      header: "性别",
-      render: value => getGenderDisplay(value as string | null),
+      header: () => <div className="text-center">性别</div>,
+      cell: ({ value }) => (
+        <div className="text-center">
+          {getGenderDisplay(value as string | null)}
+        </div>
+      ),
       width: "80px",
     },
     {
       key: "frequentFlyerCard",
-      header: "常旅客卡",
-      render: () => "无",
+      header: () => <div className="text-center">常旅客卡</div>,
+      cell: () => <div className="text-center">无</div>,
       width: "100px",
     },
   ];
