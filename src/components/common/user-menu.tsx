@@ -80,7 +80,7 @@ export default function UserMenu() {
             </Avatar>
             <div className="flex flex-col gap-1">
               <Link
-                href="/profile"
+                href="/home"
                 className="text-sm font-medium hover:underline cursor-pointer"
               >
                 尊敬的{session.user.name || "Anonymous"}
@@ -109,7 +109,7 @@ export default function UserMenu() {
             asChild
             className="justify-start gap-2"
           >
-            <Link href="/profile/info">
+            <Link href="/home/passengers">
               <User className="size-4" />
               常用信息
             </Link>
