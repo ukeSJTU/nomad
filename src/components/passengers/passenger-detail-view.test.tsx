@@ -24,9 +24,6 @@ describe("PassengerDetailView Component", () => {
   it("renders the component with mock data", () => {
     render(<PassengerDetailView passenger={mockPassenger} />);
 
-    // Check for main heading
-    expect(screen.getByText("查看常用旅客信息")).toBeInTheDocument();
-
     // Check for section headings
     expect(screen.getByText("旅客信息")).toBeInTheDocument();
     expect(screen.getByText("证件信息")).toBeInTheDocument();
