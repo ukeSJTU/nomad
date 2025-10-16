@@ -49,7 +49,6 @@ export default function PasswordSetupForm({
     },
   });
 
-  console.log("PasswordSetupForm - maskedIdentifier:", maskedIdentifier);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
