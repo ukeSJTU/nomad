@@ -16,6 +16,7 @@ import type {
   PasswordSetupData,
   PhoneVerificationData,
 } from "@/types/auth";
+import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
 
 /**
  * Get stepper steps based on sign-up method
@@ -60,10 +61,10 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false); // Global loading state for API calls
   const [countdown, setCountdown] = useState(0); // OTP resend countdown timer
   const [signUpMethod, setSignUpMethod] = useState<"phone" | "email">("phone"); // Sign-up method selection
-  const [_phoneData, setPhoneData] = useState<PhoneVerificationData | null>(
+  const [phoneData, setPhoneData] = useState<PhoneVerificationData | null>(
     null
   ); // Store verified phone data
-  const [_emailData, setEmailData] = useState<EmailVerificationData | null>(
+  const [emailData, setEmailData] = useState<EmailVerificationData | null>(
     null
   ); // Store verified email data
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState(""); // Current phone number input
@@ -78,6 +79,11 @@ export default function SignUpPage() {
       return () => clearTimeout(timer);
     }
   }, [countdown]);
+
+  // Debug: Log phoneData changes
+  useEffect(() => {
+    console.log("phoneData updated:", phoneData);
+  }, [phoneData]);
 
   // Modal handlers for user agreement
   const handleAgreeToTerms = () => {
@@ -102,7 +108,6 @@ export default function SignUpPage() {
    * Verifies the OTP code using better-auth and proceeds to password setup
    */
   const handlePhoneVerificationSubmit = async (data: PhoneVerificationData) => {
-    setPhoneData(data); // Store verified phone data for later use
     setIsLoading(true);
     setError(null); // Clear previous errors
 
@@ -120,6 +125,8 @@ export default function SignUpPage() {
         setError("验证码错误，请重试"); // OTP verification failed, please try again
       } else {
         console.log("手机验证成功", data);
+        // Store verified phone data BEFORE proceeding to next step
+        setPhoneData(data);
         setCurrentStep(2); // Proceed to password setup step
       }
     } catch (error) {
@@ -367,10 +374,31 @@ export default function SignUpPage() {
           </Tabs>
         ) : currentStep === 2 ? (
           // Step 2: Password Setup Form
-          <PasswordSetupForm
-            onSubmit={handlePasswordSetupSubmit}
-            isLoading={isLoading}
-          />
+          (() => {
+            const maskedId =
+              signUpMethod === "phone" && phoneData
+                ? maskPhoneNumber(
+                    `${phoneData.countryCode}${phoneData.phoneNumber}`
+                  )
+                : signUpMethod === "email" && emailData
+                  ? maskEmail(emailData.email)
+                  : undefined;
+            console.log(
+              "Rendering step 2 - signUpMethod:",
+              signUpMethod,
+              "phoneData:",
+              phoneData,
+              "maskedId:",
+              maskedId
+            );
+            return (
+              <PasswordSetupForm
+                onSubmit={handlePasswordSetupSubmit}
+                isLoading={isLoading}
+                maskedIdentifier={maskedId}
+              />
+            );
+          })()
         ) : (
           // Step 3: Registration Success
           <div className="text-center py-8">

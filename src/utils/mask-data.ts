@@ -19,24 +19,22 @@ export function maskDocumentNumber(documentNumber: string): string {
 }
 
 /**
- * Masks a phone number by showing only first 3 and last 4 digits
- * Example: "13812345678" -> "138****5678"
+ * Masks a phone number by showing only first 5 and last 4 characters
+ * Example: "13812345678" -> "13812**5678"
+ * Example: "+8613812345678" -> "+8613*****5678"
  */
 export function maskPhoneNumber(phone: string): string {
   if (!phone || phone.length <= 7) {
     return phone;
   }
 
-  // Remove country code if present
-  const cleanPhone = phone.replace(/^\+\d+\s*/, "");
-
-  if (cleanPhone.length <= 7) {
-    return cleanPhone;
+  if (phone.length <= 7) {
+    return phone;
   }
 
-  const firstPart = cleanPhone.slice(0, 3);
-  const lastPart = cleanPhone.slice(-4);
-  const maskedMiddle = "*".repeat(cleanPhone.length - 7);
+  const firstPart = phone.slice(0, 5);
+  const lastPart = phone.slice(-4);
+  const maskedMiddle = "*".repeat(phone.length - 9);
 
   return `${firstPart}${maskedMiddle}${lastPart}`;
 }
