@@ -110,8 +110,6 @@ export default function PassengerList({
 
   const allSelected =
     passengers.length > 0 && selectedIds.size === passengers.length;
-  const someSelected =
-    selectedIds.size > 0 && selectedIds.size < passengers.length;
 
   return (
     <div className="space-y-4">
@@ -163,7 +161,6 @@ export default function PassengerList({
               <TableHead className="w-12">
                 <Checkbox
                   checked={allSelected}
-                  indeterminate={someSelected}
                   onCheckedChange={handleSelectAll}
                   aria-label="全选"
                 />
