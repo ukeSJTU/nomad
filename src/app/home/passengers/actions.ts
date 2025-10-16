@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -29,7 +29,7 @@ export async function createPassengerAction(formData: unknown) {
 
     // Convert form data to database format
     const data = formData as any;
-    const passengerData = {
+    const passengerData: any = {
       userId: session.user.id,
       chineseName: data.chineseName || null,
       englishFirstName: data.englishFirstName || null,
@@ -48,11 +48,14 @@ export async function createPassengerAction(formData: unknown) {
       email: data.email || null,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      documentExpiryDate: data.documentExpiryDate
-        ? new Date(data.documentExpiryDate).toISOString().split("T")[0]
-        : null,
       isDeleted: false,
     };
+
+    if (data.documentExpiryDate) {
+      passengerData.documentExpiryDate = new Date(data.documentExpiryDate)
+        .toISOString()
+        .split("T")[0];
+    }
 
     // Insert into database
     const [newPassenger] = await db
@@ -189,9 +192,116 @@ export async function getPassengerAction(id: string) {
       return null;
     }
 
-    return passenger as Passenger;
+    return {
+      ...passenger,
+      createdAt: passenger.createdAt?.toISOString() ?? new Date().toISOString(),
+      updatedAt: passenger.updatedAt?.toISOString() ?? new Date().toISOString(),
+    } as Passenger;
   } catch (error) {
     console.error("Failed to get passenger:", error);
     return null;
+  }
+}
+
+/**
+ * Server action to delete a passenger (soft delete)
+ */
+export async function deletePassengerAction(id: string) {
+  try {
+    // Check authentication
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "Authentication required. Please log in first.",
+      };
+    }
+
+    // Check if passenger exists and belongs to user
+    const [existingPassenger] = await db
+      .select()
+      .from(passengers)
+      .where(
+        and(
+          eq(passengers.id, id),
+          eq(passengers.userId, session.user.id),
+          eq(passengers.isDeleted, false)
+        )
+      );
+
+    if (!existingPassenger) {
+      return {
+        success: false,
+        error: "Passenger not found",
+      };
+    }
+
+    // Soft delete
+    await db
+      .update(passengers)
+      .set({ isDeleted: true, updatedAt: new Date() })
+      .where(eq(passengers.id, id));
+
+    return {
+      success: true,
+      message: "Passenger deleted successfully",
+    };
+  } catch (error) {
+    console.error("Failed to delete passenger:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Failed to delete passenger",
+    };
+  }
+}
+
+/**
+ * Server action to batch delete passengers (soft delete)
+ */
+export async function batchDeletePassengersAction(ids: string[]) {
+  try {
+    // Check authentication
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "Authentication required. Please log in first.",
+      };
+    }
+
+    // Soft delete passengers (only those belonging to the user)
+    await db
+      .update(passengers)
+      .set({ isDeleted: true, updatedAt: new Date() })
+      .where(
+        and(
+          inArray(passengers.id, ids),
+          eq(passengers.userId, session.user.id),
+          eq(passengers.isDeleted, false)
+        )
+      );
+
+    return {
+      success: true,
+      message: `Successfully deleted ${ids.length} passenger(s)`,
+    };
+  } catch (error) {
+    console.error("Failed to batch delete passengers:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to batch delete passengers",
+    };
   }
 }
