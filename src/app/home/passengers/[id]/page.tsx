@@ -10,7 +10,7 @@ import {
   maskDocumentNumber,
   maskEmail,
   maskPhoneNumber,
-} from "@/lib/utils/mask-data";
+} from "@/utils/mask-data";
 
 async function getPassengerById(id: string) {
   const [passenger] = await db
