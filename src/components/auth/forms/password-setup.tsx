@@ -61,9 +61,9 @@ export default function PasswordSetupForm({
   // Watch password field for real-time validation feedback
   const password = form.watch("password");
 
-  // Calculate password strength using zxcvbn
-  const result = zxcvbn(password);
-  const strengthScore = result.score;
+  // Calculate password strength using zxcvbn only when password is non-empty
+  const result = password ? zxcvbn(password) : undefined;
+  const strengthScore = result ? result.score : undefined;
 
   // Define password requirements with real-time validation
   // Each requirement shows a check/x icon based on current password input
