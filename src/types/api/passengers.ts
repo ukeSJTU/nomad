@@ -79,9 +79,7 @@ export const updatePassengerRequestSchema = z
   })
   .refine(
     data =>
-      !data.chineseName ||
-      data.chineseName ||
-      (data.englishFirstName && data.englishLastName),
+      !!data.chineseName || (!!data.englishFirstName && !!data.englishLastName),
     {
       message:
         "Either Chinese name or both English first and last names are required",
