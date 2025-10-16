@@ -80,6 +80,11 @@ export default function SignUpPage() {
     }
   }, [countdown]);
 
+  // Debug: Log phoneData changes
+  useEffect(() => {
+    console.log("phoneData updated:", phoneData);
+  }, [phoneData]);
+
   // Modal handlers for user agreement
   const handleAgreeToTerms = () => {
     setShowAgreementModal(false);
