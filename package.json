@@ -32,6 +32,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
+    "postinstall": "fumadocs-mdx",
     "setup:dev": "node scripts/setup-dev.mjs"
   },
   "dependencies": {
