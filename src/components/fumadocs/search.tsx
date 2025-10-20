@@ -18,7 +18,7 @@ import { RemoveScroll } from "react-remove-scroll";
 import type { z } from "zod";
 
 import { Markdown } from "@/components/fumadocs/markdown";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import type { ProvideLinksToolSchema } from "@/lib/fumadocs/inkeep-qa-schema";
 import { cn } from "@/lib/utils";
 
@@ -41,34 +41,26 @@ function SearchAIActions() {
   return (
     <>
       {!isLoading && messages.at(-1)?.role === "assistant" && (
-        <button
+        <Button
           type="button"
-          className={cn(
-            buttonVariants({
-              color: "secondary",
-              size: "sm",
-              className: "rounded-full gap-1.5",
-            })
-          )}
+          variant="secondary"
+          size="sm"
+          className="rounded-full gap-1.5"
           onClick={() => regenerate()}
         >
           <RefreshCw className="size-4" />
           Retry
-        </button>
+        </Button>
       )}
-      <button
+      <Button
         type="button"
-        className={cn(
-          buttonVariants({
-            color: "secondary",
-            size: "sm",
-            className: "rounded-full",
-          })
-        )}
+        variant="secondary"
+        size="sm"
+        className="rounded-full"
         onClick={() => setMessages([])}
       >
         Clear Chat
-      </button>
+      </Button>
     </>
   );
 }
@@ -109,34 +101,26 @@ function SearchAIInput(props: ComponentProps<"form">) {
         }}
       />
       {isLoading ? (
-        <button
+        <Button
           key="bn"
           type="button"
-          className={cn(
-            buttonVariants({
-              color: "secondary",
-              className: "transition-all rounded-full mt-2 gap-2",
-            })
-          )}
+          variant="secondary"
+          className="transition-all rounded-full mt-2 gap-2"
           onClick={stop}
         >
           <Loader2 className="size-4 animate-spin text-fd-muted-foreground" />
           Abort Answer
-        </button>
+        </Button>
       ) : (
-        <button
+        <Button
           key="bn"
           type="submit"
-          className={cn(
-            buttonVariants({
-              color: "secondary",
-              className: "transition-all rounded-full mt-2",
-            })
-          )}
+          variant="secondary"
+          className="transition-all rounded-full mt-2"
           disabled={input.length === 0}
         >
           <Send className="size-4" />
-        </button>
+        </Button>
       )}
     </form>
   );
@@ -309,20 +293,16 @@ export function AISearchTrigger() {
               <p className="text-xs flex-1 text-fd-muted-foreground">
                 Powered by Inkeep AI
               </p>
-              <button
+              <Button
                 aria-label="Close"
                 tabIndex={-1}
-                className={cn(
-                  buttonVariants({
-                    size: "icon-sm",
-                    color: "secondary",
-                    className: "rounded-full",
-                  })
-                )}
+                variant="secondary"
+                size="icon-sm"
+                className="rounded-full"
                 onClick={() => setOpen(false)}
               >
                 <X />
-              </button>
+              </Button>
             </div>
             <List
               className="py-10 pr-2 w-full max-w-[600px] overscroll-contain"
