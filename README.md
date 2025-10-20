@@ -171,32 +171,17 @@ This project uses several tools to maintain code quality:
 
 ### Git Workflow
 
-1. Create a feature branch: `git checkout -b feat/your-feature`
-2. Make your changes
-3. Commit using conventional commits: `git commit -m "feat: add new feature"`
-4. Push and create a Pull Request
+> 📖 **完整的 Git 工作流程文档**：[Git 工作流](http://localhost:3000/docs/04-git-workflow)
+>
+> 包含详细的分支策略、提交规范、Git Hooks、CI/CD 流程、代码审查指南以及高级场景处理。
 
-### Commit Message Format
+**快速参考**：
 
-We use [Conventional Commits](https://www.conventionalcommits.org/):
+1. 创建功能分支：`git checkout -b feat/your-feature`
+2. 开发并提交：`git commit -m "feat: add new feature"`
+3. 推送并创建 PR：`git push origin feat/your-feature`
 
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
-```
-
-**Types:**
-
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `style`: Formatting
-- `refactor`: Code refactoring
-- `test`: Adding tests
-- `chore`: Maintenance
+详细的工作流程、提交规范和最佳实践请参考 [完整文档](http://localhost:3000/docs/04-git-workflow)。
 
 ## Project Structure
 
