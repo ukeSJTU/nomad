@@ -1,0 +1,525 @@
+---
+title: 中期汇报-需求
+description: 第一次中期汇报，项目需求相关。
+icon: Flag
+---
+
+import { Card, Cards } from "fumadocs-ui/components/card";
+import { Step, Steps } from "fumadocs-ui/components/steps";
+
+汇报日期：2025-10-20
+
+## 1. 项目选择
+
+第三组，组名：TODO。
+
+> Software has no finish line, only the next **TODO**.
+
+我们小组选择完成“携程平台”这个项目。
+
+小组成员：
+
+- 杜卓轩：[GitHub](https://github.com/dzx0902)
+- 吕明熹：[GitHub](https://github.com/ukeSJTU)
+- 张润宇：[GitHub](https://github.com/Wilfrid-Hervey)
+
+## 2. 需求提取方法
+
+> 如何从网站行为中提取需求，特别是一些深层需求和异常情况；
+
+### 竞品分析
+
+我们小组花费一段时间深入研究携程、Expedia等成熟OTA平台的核心功能，重点分析其主干流程，如机票的搜索、筛选、预订和支付。这帮助我们快速构建了产品功能的基本框架。
+
+通过竞品分析，我们明确了OTA平台的核心价值链：**搜索 → 筛选 → 预订 → 支付 → 订单管理**，并以此为基础构建了我们的产品架构。
+
+### 用户画像构建 (Persona)
+
+为了使产品设计更具同理心和用户中心化的导向，我们构建了具象化的用户画像。我们的主要目标用户是**小王**，21岁的在校大学生，他的核心痛点包括：
+
+<Callout title="主要用户痛点" type="warn">
+  - **信息过载**：很多旅行App一打开就是各种广告、优惠券弹窗、酒店推荐 -
+  **价格不透明**：到最后支付页面才冒出来一堆'燃油附加费'、'保险费' -
+  **流程繁琐**：注册登录要填一大堆信息，或者强制要求用App -
+  **体验复杂**：筛选条件藏得很深，排序逻辑也不清晰
+</Callout>
+
+基于这些痛点，我们确立了产品愿景：**打造一个简洁直观、价格透明、无干扰的在线旅行助手**。
+
+### 用户旅程地图 (User Journey Map)
+
+我们绘制了核心用户的操作路径，例如“一个大学生从产生旅游想法到预订机票成功”的完整旅程。这帮助我们识别出流程中的关键节点和潜在的用户痛点，挖掘出深层需求。
+
+完整的用户旅程包括以下关键触点：
+
+<Cards>
+  <Card title="产生旅行想法" description="看到折扣机票或假期临近" />
+  <Card title="搜索航班" description="输入出发地、目的地、日期" />
+  <Card title="筛选比较" description="根据价格、时间、航司筛选" />
+  <Card title="选择航班" description="确认航班详情和价格" />
+  <Card title="填写信息" description="登录并填写旅客信息" />
+  <Card title="完成支付" description="确认订单并支付" />
+  <Card title="订单管理" description="查看、取消或退款" />
+</Cards>
+
+### 用例分析与场景分解
+
+我们识别出系统的主要参与者（访客、注册用户），并分析其与系统的交互（用例）。
+
+针对异常情况，我们采用“What-if”分析法进行头脑风暴，例如：
+
+<Steps>
+<Step>
+**What if... 搜索结果为空？**
+
+系统应提示"未找到符合条件的航班"，并建议用户调整搜索条件或查看邻近日期。
+
+</Step>
+
+<Step>
+**What if... 用户在预订过程中未登录？**
+
+系统应在用户点击"预订"时提示登录/注册，并在登录成功后自动返回预订流程。
+
+</Step>
+
+<Step>
+**What if... 用户输入的搜索日期不合法（返程早于出发）？**
+
+系统应在前端实时校验，并提示"返程日期不能早于出发日期"。
+
+</Step>
+
+<Step>
+**What if... 支付超时？**
+
+系统应自动取消订单，并提示用户"订单已超时取消"。
+
+</Step>
+</Steps>
+
+这些思考都被转化为具体的需求场景和验收标准，以确保系统的鲁棒性。
+
+## 3. 需求管理
+
+> 从该项目中整理出多少需求，如何管理需求（如需求分解，场景描述）；
+
+随着需求提取的深入，我们获得的需求数量快速增长。为了有序地管理它们，我们建立了以下体系：
+
+### 需求分解结构
+
+我们将整个项目分解为 **史诗(Epic) → 用户故事(User Story) → 验收标准(AC)** 三个层次。
+
+<Callout title="需求统计" type="info">
+  目前，我们已经识别出 **4 个主要史诗**（用户、机票、订单、支付），并将其分解为
+  **超过 20 个具体的用户故事**，每个用户故事都配有详细的验收标准。
+</Callout>
+
+需求分解层次结构如下：
+
+![需求分解层次结构](/requirement-breakdown.png)
+
+以用户模块为例，我们识别出以下用户故事：
+
+<Cards>
+  <Card
+    title="用户注册"
+    description="US-01: 手机号/邮箱注册 | US-02: GitHub OAuth注册"
+  />
+  <Card
+    title="用户登录"
+    description="US-01: 密码登录 | US-02: 验证码登录 | US-03: GitHub登录"
+  />
+  <Card
+    title="个人信息管理"
+    description="US-01: 查看个人信息 | US-02: 修改个人信息"
+  />
+  <Card
+    title="常用旅客管理"
+    description="US-01: 添加旅客 | US-02: 编辑旅客 | US-03: 删除旅客"
+  />
+</Cards>
+
+各模块需求统计如下：
+
+| 模块     | 功能点数 | 用户故事数 | 验收标准数 | MoSCoW分布              |
+| -------- | -------- | ---------- | ---------- | ----------------------- |
+| 用户模块 | 6        | 16         | 34         | Must: 4, Should: 2      |
+| 机票模块 | 3        | 11         | 15         | Must: 3                 |
+| 订单模块 | 2        | 5          | 9          | Must: 2                 |
+| 支付模块 | 2        | 2          | 5          | Must: 1, Should: 1      |
+| **总计** | **13**   | **34**     | **63**     | **Must: 10, Should: 3** |
+
+### 优先级管理 - MoSCoW法则
+
+为了应对有限的开发时间，我们引入了 **MoSCoW 方法**对所有需求进行优先级排序：
+
+- **Must Have (必须实现)**：用户注册/登录、机票搜索/预订、订单管理、模拟支付
+- **Should Have (应该实现)**：密码修改、搜索历史、深色模式、国际化支持
+- **Could Have (可以实现)**：站内信息系统、机票选座
+- **Won't Have (本次不做)**：完整的后台管理系统、真实支付网关、UGC内容
+
+这确保了我们能首先集中精力交付产品的核心价值。完整内容请看[项目范围](/docss/introduction/scope)
+
+### 场景描述 - BDD & Gherkin语法
+
+为了消除需求描述的模糊性，我们采用 **行为驱动开发（BDD）** 的思想。对于关键的用户故事，我们使用 **Gherkin 语法 (Given/When/Then)** 来编写清晰、无歧义、可测试的验收标准。
+
+例如，对于"用户注册"功能，我们编写了如下验收标准：
+
+<Callout title="验收标准示例" type="info">
+**场景：用户成功完成两步注册 (Happy Path)**
+
+- **Given** 用户位于注册流程第一步（手机/邮箱验证页），且未登录
+- **And** 用户输入了有效的、未被注册的手机号/邮箱地址，并通过了人机验证
+- **When** 用户获取并输入了正确的验证码，并点击"下一步"
+- **Then** 系统应验证通过，并将用户引导至注册流程第二步（设置密码页）
+  </Callout>
+
+更多例子请看每一个功能需求的`4. 验收标准(Acceptance Criteria)`部分，例如[这里](/docs/functional-requirements/user-module#4-验收标准-acceptance-criteria)
+
+### 文档化
+
+所有需求都已在我们的 **Fumadocs 文档系统**，也就是本网站中进行结构化管理，包括：
+
+- 项目目标与范围
+- 用户画像与业务流程
+- 功能需求详细说明（用户模块、机票模块、订单模块、支付模块）
+- 非功能需求（性能、安全、兼容性、可用性）
+- 技术设计文档（架构设计、数据库设计、开发规范、Git工作流）
+
+这确保了团队成员之间的信息同步，也为后续的开发和测试提供了清晰的指导。
+
+## 4. AI辅助实现
+
+> 如何借助AI来实现需求，提示词、实现流程是什么（计划或已经开始实践）
+
+我们在项目中深度集成了AI工具，显著提升了开发效率和代码质量：
+
+<Cards>
+  <Card
+    title="GitHub Issue助手"
+    description="自动创建规范的Issue，包含完整的需求描述和验收标准"
+  />
+  <Card
+    title="PR创建助手"
+    description="自动生成PR描述，关联相关Issue，提升代码审查效率"
+  />
+  <Card
+    title="Commit Message生成"
+    description="基于代码变更自动生成符合Conventional Commits规范的提交信息"
+  />
+  <Card
+    title="代码编写、补全与重构"
+    description="使用Trae / Augment Code / Cursor等工具辅助编码，提升开发速度"
+  />
+</Cards>
+
+### GitHub Issue 创建助手
+
+这是我们单独配置的一个 **Trae智能体**，添加了 `GitHub MCP`。通过明确的提示词，让智能体创建清晰的Issue内容：
+
+<Steps>
+<Step>
+#### 第一步：初步评估
+1. 仔细分析用户描述的想法（如新功能需求、bug 报告等）
+2. 判断这个想法是否适合作为 GitHub Issue 提出
+3. 如果不适合，详细说明原因并停止流程
+4. 如果适合，继续下一步
+</Step>
+
+<Step>
+  #### 第二步：模板分析 1. 在当前仓库中查找 Issue 模板，通常位于
+  `.github/ISSUE_TEMPLATE/` 目录 2. 根据用户的想法类型（功能请求、bug
+  报告等）选择最合适的模板 3. 仔细阅读模板内容，理解创建该类型 Issue
+  需要哪些具体信息 4. 如果没有找到合适的模板，使用通用的 Issue 创建格式
+</Step>
+
+<Step>
+  #### 第三步：信息收集与完善 1. 基于模板要求，分析当前已有的信息是否充足 2.
+  查看仓库代码、文档等相关内容，尽可能补充缺失的信息 3.
+  如果仍有关键信息缺失，向用户提出具体的问题 4.
+  根据用户回答继续完善，直到所有必要信息都已明确
+</Step>
+
+<Step>
+#### 第四步：创建 Issue
+1. 使用收集到的信息，按照模板格式创建 Issue
+2. 运行`git remote -v`获取owner/repo等信息
+3. 使用 GitHub MCP 工具创建 Issue
+</Step>
+</Steps>
+
+### GitHub Pull Request 创建助手
+
+这是我们单独配置的一个Trae智能体，添加了`GitHub MCP`。通过明确的提示词，让智能体创建清晰的Pull Request内容：
+
+<Steps>
+<Step>
+#### 第一步：分支状态检查
+1. 使用 `git branch --show-current` 命令获取当前分支名称
+2. 使用 `git status` 检查工作区状态
+3. 使用 `git log --oneline origin/develop..HEAD` 或类似命令检查当前分支是否已推送到远程
+4. 如果分支未推送到远程，提示用户运行 `git push --set-upstream origin <branch-name>` 并暂停流程
+5. 确认分支已推送后继续下一步
+</Step>
+
+<Step>
+  #### 第二步：获取代码差异 优先使用 GitHub MCP 工具获取分支差异： 1.
+  首先尝试使用 `mcp_GitHub_get_pull_request_files` 或相关接口获取文件变更 2.
+  如果 MCP 工具无法获取差异，则使用 Git 命令获取文件变更 3.
+  分析代码变更的性质（功能添加、bug 修复、重构等）
+</Step>
+
+<Step>
+  #### 第三步：搜索相关 Issue 1. 使用 `mcp_GitHub_search_issues` 搜索可能相关的
+  Issue 2. 根据分支名称、提交信息、代码变更内容进行智能匹配 3. 如果找到相关
+  Issue，记录 Issue 编号用于 PR 描述中引用
+</Step>
+
+<Step>
+  #### 第四步：读取 PR 模板 1. 读取 `.github/pull_request_template.md` 文件 2.
+  如果没有找到模板文件，使用通用的 PR 格式 3.
+  分析模板要求的各个部分（描述、测试、检查清单等）
+</Step>
+
+<Step>#### 第五步：生成 PR 内容</Step>
+
+<Step>
+  #### 第六步：用户确认与调整 1. 向用户展示生成的 PR 内容 2.
+  询问用户是否需要修改，根据用户反馈进行调整，直到用户满意 3.
+  等用户满意后，询问用户希望创建正式 PR 还是 Draft PR
+</Step>
+
+<Step>
+#### 第七步：创建 Pull Request
+1. 使用 `mcp_GitHub_create_pull_request` 创建 PR
+2. 根据用户选择设置 `draft` 参数
+3. 设置正确的 `head` 分支（当前分支）和 `base` 分支（通常是 develop 除非用户额外要求）
+4. 创建成功后向用户报告 PR 链接
+</Step>
+</Steps>
+
+### 自动生成commit message
+
+我们的小组项目通过`pre-commit` hook来确保commit message符合conventional commit的规范，进而提高code review的效率，方便reviewer快速了解其他人对代码的修改。但是每次手写commit message有时候非常烦人，因此借助vscode-copilot插件，并在项目的`.vscode/settings.json`中进行如下配置：
+
+```json
+// VSCode integrated Copilot Commit Message Templates
+"github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+        "text": "Use conventional commit format: type(scope): description"
+    },
+    {
+        "text": "Type must be one of: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
+    },
+    {
+        "text": "Type must be in lowercase"
+    },
+    {
+        "text": "Subject must start with lowercase, avoid sentence-case, start-case, pascal-case, or upper-case"
+    },
+    {
+        "text": "Subject cannot be empty"
+    },
+    {
+        "text": "Subject must not end with a period (.)"
+    },
+    {
+        "text": "Header (type + scope + subject) must not exceed 100 characters"
+    },
+    {
+        "text": "Use imperative mood: 'add feature' not 'added feature'"
+    },
+    {
+        "text": "If body exists, there must be a blank line between subject and body"
+    },
+    {
+        "text": "Body lines must not exceed 100 characters each"
+    },
+    {
+        "text": "If footer exists, there must be a blank line between body and footer"
+    },
+    {
+        "text": "Footer lines must not exceed 100 characters each"
+    },
+    {
+        "text": "Scope is optional, use when relevant (e.g., api, ui, auth)"
+    },
+    {
+        "text": "For breaking changes, use 'BREAKING CHANGE:' in footer"
+    },
+    {
+        "text": "Generate commit messages in English only"
+    }
+]
+```
+
+## 5. 问题与解决方案
+
+> 上述过程中有哪些问题或困难，计划如何解决？
+
+在需求分析阶段，我们主要遇到了以下挑战：
+
+#### 问题1：需求范围蔓延的巨大诱惑
+
+**描述**：在分析竞品时，我们发现了很多很酷的功能（如酒店预订、选座、i18n），初期非常希望全部实现，导致范围定义模糊。
+
+**解决方案**：我们通过引入 **MoSCoW法则**，强制团队对每个功能进行价值和成本的评估，并严格遵守。我们将所有非核心功能明确放入“Could Have”或“Won't Have”，确保了项目范围的可控性。
+
+<Callout title="经验总结" type="info">
+  通过MoSCoW方法，我们成功将需求从最初的"想做的一切"收敛到"必须做的核心"，避免了范围蔓延的陷阱。
+</Callout>
+
+#### 问题2：需求描述的模糊性与二义性
+
+**描述**：团队成员在讨论“预订功能”时，对具体流程的理解出现了偏差，导致了不必要的争论。
+
+**解决方案**：我们决定采用 **BDD和Gherkin语法**。通过将需求转化为具体的行为场景（Given/When/Then），我们为团队提供了统一、无歧义的沟通语言，确保了开发和测试的“一个标准”。
+
+#### 问题3：架构选型：前后端分离 vs. 一体化全栈
+
+**描述**：在项目启动时，我们面临的第一个关键架构决策是：选择传统的前后端分离架构（例如 React + FastAPI）还是一体化的全栈框架（例如 Next.js）？
+
+**解决方案**：经过深入的调研和团队讨论，我们最终决定采用 Next.js 一体化全栈的开发模式。我们认为，对于我们这个规模和周期的项目，其带来的优势远大于挑战。做出这个决策的关键理由如下：
+
+1. **极致的开发效率与集成度**:
+   - 在分离架构中，我们需要花费大量时间设计、编写、维护一个独立的API层（如RESTful或GraphQL），并处理跨语言、跨仓库的协作问题。
+   - 而Next.js通过 Server Actions，几乎完全消除了编写API样板代码的需要，让我们可以直接在后端调用函数，极大地提升了开发速度，使我们能更专注于业务逻辑的实现。
+2. **端到端类型安全**:
+   - 这是我们做出选择的决定性因素之一。在分离架构中（如TS+Python），要保证前后端数据类型的一致性非常困难，是常见的Bug来源。
+   - 而在Next.js的全栈TypeScript环境中，我们可以轻松地在数据库（Drizzle的Schema）、后端服务逻辑（Server Actions）和前端UI组件之间共享类型定义。这为我们带来了从数据库到用户界面的、无缝的类型安全保障，能让AI和编译器在编码阶段就发现大量潜在的集成错误。
+3. **显著的性能优势**:
+   - Next.js 15 的 Server Components 允许我们在服务器上直接获取数据并渲染成HTML，发送到客户端的JavaScript极少。这能带来更快的初始页面加载速度（FCP/LCP），直接有助于我们达成在非功能需求中定义的性能指标。
+4. **与AI辅助开发的协同效应**:
+   - 这一点与本课程的特色高度契合。一个统一、单体的全栈代码库，为AI编程助手提供了更完整、更丰富的上下文。当我们需要AI辅助编写或重构一个功能时，AI可以同时“看到”数据库的结构、后端的逻辑和前端的UI，从而给出更精准、更符合项目实际的代码建议。我们发现，Next.js作为国外最热门的框架之一，主流AI模型的知识库对其支持也最全面。
+
+## 6. 进度与规划
+
+> 目前实现的效果（如果有），未来进度规划。
+
+### 项目进度
+
+我们小组目前已经实现了以下功能，欢迎点击下面的链接体验。
+
+#### 体验链接
+
+<Callout title="在线体验" type="info">
+**部署链接**：[https://nomad.ukehome.top](https://nomad.ukehome.top)
+
+**源代码**：[https://github.com/ukeSJTU/nomad](https://github.com/ukeSJTU/nomad)
+
+**文档系统**：[https://github.com/ukeSJTU/nomad-docs](https://github.com/ukeSJTU/nomad-docs)
+
+</Callout>
+
+<Callout title="请注意" type="warn">
+  短信发送和邮件发送都是付费的，因此中期汇报暂时没有启用，请直接用 **GitHub
+  OAuth** 登录体验。
+</Callout>
+
+#### 已实现功能
+
+<Cards>
+  <Card
+    title="用户认证"
+    description="✅ 手机号/邮箱注册登录 | ✅ GitHub OAuth登录 | ✅ 密码加密存储"
+  />
+  <Card
+    title="个人信息管理"
+    description="✅ 查看/编辑个人信息 | ✅ 常用旅客管理（增删改查）"
+  />
+  <Card
+    title="技术基础设施"
+    description="✅ Next.js 15 + React 19 | ✅ PostgreSQL + Drizzle ORM | ✅ 响应式UI设计"
+  />
+</Cards>
+
+#### 技术栈亮点
+
+我们采用了现代化的技术栈来确保项目的可维护性和可扩展性：
+
+- **全栈框架**：Next.js 15 (App Router) + TypeScript
+- **UI组件库**：shadcn/ui + Tailwind CSS，支持深色模式
+- **数据库**：PostgreSQL + Drizzle ORM
+- **认证方案**：Better-Auth (支持多种登录方式)
+- **部署平台**：Vercel (前端) + Neon (数据库)
+- **开发规范**：ESLint + Prettier + Conventional Commits
+
+### 需求文档体系
+
+我们建立了完整的需求文档体系，所有文档都托管在 Fumadocs 系统中，包括：
+
+<Cards>
+  <Card
+    title="引言部分"
+    description="项目目标 | 项目范围 | 目标用户 | 术语定义"
+    href="/docs/introduction
+  "
+  />
+  <Card
+    title="总体描述"
+    description="产品愿景 | 用户特征 | 业务流程图 | 假设与约束"
+    href="/docs/overall-description"
+  />
+  <Card
+    title="功能需求"
+    description="用户模块 | 机票模块 | 订单模块 | 支付模块"
+    href="/docs/functional-requirements"
+  />
+  <Card
+    title="非功能需求"
+    description="性能 | 安全 | 兼容性 | 可用性"
+    href="/docs/non-functional-requirements"
+  />
+  <Card
+    title="技术设计"
+    description="架构设计 | 数据库设计 | 开发规范 | Git工作流"
+    href="/docs/01-architecture"
+  />
+</Cards>
+
+### 项目规划
+
+<Steps>
+<Step>
+#### 节点1: 2025-10-17
+明确并制定完整需求文档。
+</Step>
+
+<Step>#### 节点2: 2025-10-20 中期汇报-需求</Step>
+
+<Step>#### 节点3: 2025-11-17 中期汇报-协作与进展</Step>
+
+<Step>#### 节点4: 2025-11-24 实现所有 Must have 需求</Step>
+
+<Step>
+  #### 节点5: 2025-12-22 实现所有 Should have 以及部分 Could have 需求
+</Step>
+
+<Step>
+#### 节点6: 2025-12-29
+项目期末汇报
+</Step>
+</Steps>
+
+<Mermaid
+  chart="gantt
+    title Nomad 项目进度规划
+    dateFormat YYYY-MM-DD
+    
+    section 需求阶段
+    明确并制定完整需求文档           :milestone, m1, 2025-10-17, 0d
+    中期汇报-需求                    :milestone, m2, 2025-10-20, 0d
+    
+    section 开发阶段
+    中期汇报-协作与进展               :milestone, m3, 2025-11-17, 0d
+    实现所有 Must have 需求          :crit, active, dev1, 2025-10-20, 2025-11-24
+    
+    section 完善阶段
+    实现所有 Should have 需求        :dev2, 2025-11-24, 2025-12-15
+    实现部分 Could have 需求         :dev3, 2025-12-15, 2025-12-22
+    
+    section 结束阶段
+    项目期末汇报                     :milestone, m4, 2025-12-29, 0d"
+/>

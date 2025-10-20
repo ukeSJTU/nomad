@@ -1,0 +1,5 @@
+{
+  "title": "3. 功能需求",
+  "icon": "Package",
+  "pages": ["user-module", "flight-module", "order-module", "payment-module"]
+}

@@ -1,0 +1,10 @@
+{
+  "title": "2. 整体描述",
+  "icon": "LayoutGrid",
+  "pages": [
+    "product-vision",
+    "user-characteristics",
+    "business-process-flow",
+    "assumptions-constraints"
+  ]
+}
