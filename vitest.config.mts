@@ -17,6 +17,7 @@ export default defineConfig({
       "**/tests/**", // Exclude Playwright tests
       "**/test-results/**",
       "**/playwright-report/**",
+      "src/lib/fumadocs/**", // These are fumadocs configuration files
     ],
     coverage: {
       provider: "v8",
