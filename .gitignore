@@ -59,3 +59,8 @@ public/index.html
 
 # next-openapi-gen 
 openapi.json
+
+# Fumadocs generated content
+.contentlayer
+.content-collections
+.source
