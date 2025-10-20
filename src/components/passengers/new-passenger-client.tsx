@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { createPassengerAction } from "@/app/home/passengers/actions";
+import { createPassengerAction } from "@/app/(frontend)/home/passengers/actions";
 import PassengerForm from "@/components/passengers/forms/passenger-form";
 
 export function NewPassengerClient() {

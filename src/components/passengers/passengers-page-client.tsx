@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import {
   batchDeletePassengersAction,
   deletePassengerAction,
-} from "@/app/home/passengers/actions";
+} from "@/app/(frontend)/home/passengers/actions";
 import { PassengersDataTable } from "@/components/passengers/passengers-data-table";
 import {
   AlertDialog,
