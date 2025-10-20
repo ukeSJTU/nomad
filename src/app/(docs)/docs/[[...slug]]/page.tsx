@@ -8,7 +8,7 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { LLMCopyButton, ViewOptions } from "@/components/docs/page-actions";
+import { LLMCopyButton, ViewOptions } from "@/components/fumadocs/page-actions";
 import { getPageImage, source } from "@/lib/fumadocs/source";
 import { getMDXComponents } from "@/mdx-components";
 
