@@ -28,6 +28,7 @@ const eslintConfig = [
       "pnpm-lock.yaml",
       "package-lock.json",
       "yarn.lock",
+      ".source/**", // Fumadocs auto-generated files
     ],
   },
 
