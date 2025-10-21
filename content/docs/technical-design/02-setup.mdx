@@ -13,10 +13,10 @@ icon: Settings
 
 在开始之前，请确保你的系统中已安装以下软件。我们强烈建议使用与规定版本相匹配的工具，以避免不必要的兼容性问题。
 
--   **Node.js:** `v20.15.0` 或更高版本
--   **pnpm:** `v10.0.0` 或更高版本
--   **Git:** 最新稳定版
--   **PostgreSQL:** `v15` 或更高版本的数据库实例（推荐使用 [Docker](https://www.docker.com/) 在本地快速启动）
+- **Node.js:** `v20.15.0` 或更高版本
+- **pnpm:** `v10.0.0` 或更高版本
+- **Git:** 最新稳定版
+- **PostgreSQL:** `v15` 或更高版本的数据库实例（推荐使用 [Docker](https://www.docker.com/) 在本地快速启动）
 
 ### 3. 首次安装与配置 (First-Time Installation & Setup)
 
@@ -37,11 +37,11 @@ pnpm setup:dev
 
 该脚本会自动执行以下任务：
 
--   检查 Node.js 和 pnpm 版本。
--   安装所有项目依赖。
--   安装 Playwright E2E 测试所需的浏览器。
--   使用 Husky 配置 Git 钩子。
--   从 `.env.example` 模板创建 `.env` 文件。
+- 检查 Node.js 和 pnpm 版本。
+- 安装所有项目依赖。
+- 安装 Playwright E2E 测试所需的浏览器。
+- 使用 Husky 配置 Git 钩子。
+- 从 `.env.example` 模板创建 `.env` 文件。
 
 #### 3.2 手动分步安装 (Alternative)
 
@@ -99,11 +99,11 @@ pnpm dev
 
 为确保你的环境已完全配置成功，请检查以下几点：
 
--   [ ] `pnpm dev` 命令无错误运行。
--   [ ] 浏览器成功打开 `http://localhost:3000` 并显示首页。
--   [ ] 能够成功注册一个新用户并登录。
--   [ ] 机票搜索功能可以返回 `db:seed` 生成的示例航班数据。
--   [ ] **(开发模式下)** 访问 [http://localhost:3000/docs/api](http://localhost:3000/docs/api) 可以看到自动生成的 API 文档。
+- [ ] `pnpm dev` 命令无错误运行。
+- [ ] 浏览器成功打开 `http://localhost:3000` 并显示首页。
+- [ ] 能够成功注册一个新用户并登录。
+- [ ] 机票搜索功能可以返回 `db:seed` 生成的示例航班数据。
+- [ ] **(开发模式下)** 访问 [http://localhost:3000/docs/api](http://localhost:3000/docs/api) 可以看到自动生成的 API 文档。
 
 ### 7. 常用开发命令 (Common Development Scripts)
 

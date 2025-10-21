@@ -11,10 +11,10 @@
     "functional-requirements",
     "non-functional-requirements",
     "---技术文档说明---",
-    "...(technical-design)",
+    "...technical-design",
     "---项目汇报---",
     "reports",
     "---附录---",
-    "...(appendix)"
+    "...appendix"
   ]
 }
