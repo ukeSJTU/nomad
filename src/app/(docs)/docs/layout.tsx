@@ -11,7 +11,7 @@ const docsOptions: DocsLayoutProps = {
     {
       type: "custom",
       children: (
-        <GithubInfo owner="ukeSJTU" repo="nomad" className="lg: -mx-2" />
+        <GithubInfo owner="ukeSJTU" repo="nomad" className="lg:-mx-2" />
       ),
     },
   ],
