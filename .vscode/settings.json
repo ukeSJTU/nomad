@@ -31,7 +31,24 @@
     "**/tmp": true,
     "**/temp": true,
     "**/.cache": true,
-    "**/pnpm-lock.yaml": true
+    "**/pnpm-lock.yaml": true,
+    "**/.source": true,
+    "**/next-env.d.ts": true,
+    "**/.contentlayer": true,
+    "**/.content-collections": true,
+    "**/test-results": true,
+    "**/playwright-report": true,
+    "**/.husky": true,
+    "**/openapi.json": true,
+    "**/next.openapi.json": true,
+    "**/reports": true,
+    "**/.augment": true,
+    "**/.trae": true,
+    "**/.gitmessage": true,
+    "**/cli.json": true,
+    "**/.prettierignore": true,
+    "**/.prettierrc.json": true,
+    "**/.nvmrc": true
   },
 
   // Language-specific settings
