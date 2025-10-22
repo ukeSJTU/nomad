@@ -706,11 +706,11 @@ git rebase --abort
 ### 提交粒度
 
 <Callout title="提交原则" type="info">
-  - ✅ **小而频繁**：每个提交应该是一个逻辑上完整的改动 - ✅
-  **单一职责**：一个提交只做一件事 - ✅
-  **可回滚**：每个提交都应该是可以安全回滚的 - ❌
-  **避免大提交**：不要在一个提交中包含多个不相关的改动 - ❌
-  **避免半成品**：不要提交未完成或会破坏构建的代码
+  - **小而频繁**：每个提交应该是一个逻辑上完整的改动
+  - **单一职责**：一个提交只做一件事
+  - **可回滚**：每个提交都应该是可以安全回滚的
+  - **避免大提交**：不要在一个提交中包含多个不相关的改动
+  - **避免半成品**：不要提交未完成或会破坏构建的代码
 </Callout>
 
 **好的提交示例**：
@@ -728,6 +728,126 @@ git commit -m "test(auth): add login form tests"
 ```bash
 # 一个提交包含太多内容
 git commit -m "feat: add login, fix bugs, update docs"
+```
+
+#### 提交分组策略
+
+在开发过程中，应该将文件变更按逻辑分组为多个 commit：
+
+**什么应该一起提交（好的做法）**：
+
+- **同一个 schema 文件及其迁移**（相同逻辑单元）
+- **实现同一功能的相关 Server Actions**（如所有乘客 CRUD 操作）
+- **一个组件及其样式文件和测试**（如果紧密耦合）
+- **测试同一模块的多个测试文件**（所有后端测试或所有前端测试）
+- **同一功能的文档更新**（README + 该功能的 API 文档）
+
+**什么不应该一起提交（坏的做法）**：
+
+- **后端 schema + 前端组件**（不同层次）
+- **功能实现 + 无关的 bug 修复**（不同目的）
+- **多个不相关的功能**（缺乏原子性）
+- **代码变更 + 依赖更新**（不同类型）
+- **测试文件 + 被测试的代码**（除非是非常小的改动）
+
+#### 提交粒度指南
+
+- **最小粒度**：不是每个文件，而是每个**逻辑单元**
+- **最大粒度**：不超过 10-15 个文件，除非它们都相关（如批量文件重命名）
+- **理想粒度**：2-5 个实现同一连贯变更的文件
+
+#### 分层提交示例
+
+**创建新功能模块时**：
+
+```bash
+# Commit 1: Schema
+git add src/lib/schema/orders.ts
+git commit -m "feat(db): add orders table schema"
+
+# Commit 2: Types
+git add src/types/orders.ts
+git commit -m "feat(types): add order TypeScript interfaces"
+
+# Commit 3: Validations
+git add src/lib/validations/orders.ts
+git commit -m "feat(validation): add order validation schemas"
+
+# Commit 4: Server Actions（可以将相关的 actions 分组）
+git add src/app/api/orders/actions.ts
+git commit -m "feat(api): implement order management actions
+
+- Create order with payment validation
+- Cancel order with status checks
+- Update order status with state machine"
+
+# Commit 5: Services（如果有服务层）
+git add src/lib/services/order-service.ts
+git commit -m "feat(service): add order business logic layer"
+```
+
+**编写测试时**：
+
+```bash
+# 不要混合不同类型的测试
+git add src/lib/services/*.test.ts
+git commit -m "test(unit): add unit tests for service layer"
+
+git add tests/e2e/order-flow.spec.ts
+git commit -m "test(e2e): add order creation and payment E2E test"
+```
+
+**更新文档时**：
+
+```bash
+# 将相关文档分组在一起
+git add content/docs/functional-requirements/order-module.mdx
+git add content/docs/appendix/01-ui-details.mdx
+git commit -m "docs(requirements): update order module documentation
+
+- Add payment timeout acceptance criteria
+- Update order status transition diagram
+- Add UI mockups for payment page"
+```
+
+#### 提交前验证
+
+每次提交前，应该：
+
+```bash
+# 检查即将提交的内容
+git status
+git diff --staged
+
+# 确保没有包含意外的文件
+# 确保提交范围集中且符合逻辑
+```
+
+#### 常见反模式
+
+**大杂烩提交**：
+
+```bash
+git add .
+git commit -m "feat: implement passenger management"
+# 50 个文件变更 - 无法审查
+```
+
+**懒惰提交**：
+
+```bash
+git commit -m "update files"
+git commit -m "fix stuff"
+git commit -m "changes"
+# 无意义的提交信息
+```
+
+**混合提交**：
+
+```bash
+git add src/lib/schema/passengers.ts src/components/ui/button.tsx
+git commit -m "feat: add passengers and update button"
+# 不相关的改动在一个提交中
 ```
 
 ### 分支管理
@@ -748,8 +868,8 @@ git commit -m "feat: add login, fix bugs, update docs"
 3. **避免长期分支**：功能分支不应该存在超过 1-2 周，应该拆分成更小的功能
 
 4. **使用描述性名称**：分支名应该清楚地表达其目的
-   - ✅ `feat/user-profile-page`
-   - ❌ `my-branch` 或 `test`
+   - 推荐 `feat/user-profile-page`
+   - 不要用 `my-branch` 或 `test`
 
 ### Pull Request 最佳实践
 
@@ -846,10 +966,11 @@ git commit -m "feat: add login, fix bugs, update docs"
 ## 总结
 
 <Callout title="核心要点" type="info">
-  1. **分支策略**：使用 `main`、`develop` 和功能分支的简化 Git Flow 2.
-  **提交规范**：严格遵循 Conventional Commits 规范 3. **自动化**：通过 Husky 和
-  GitHub Actions 自动检查代码质量 4. **代码审查**：所有代码必须经过 PR
-  和审查才能合并 5. **持续集成**：每次 PR 都会自动运行构建、测试和检查
+  1. **分支策略**：使用 `main`、`develop` 和功能分支的简化 Git Flow
+  2. **提交规范**：严格遵循 Conventional Commits 规范
+  3. **自动化**：通过 Husky 和 GitHub Actions 自动检查代码质量
+  4. **代码审查**：所有代码必须经过 PR 和审查才能合并
+  5. **持续集成**：每次 PR 都会自动运行构建、测试和检查
 </Callout>
 
 遵循这些规范和最佳实践，可以确保：
