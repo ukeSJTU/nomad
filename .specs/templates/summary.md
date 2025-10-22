@@ -1,7 +1,92 @@
-This is the template for AI tech leader to report to user after every detail of the plan has been implemented.
+# 任务总结报告
 
-What has been changed on UI/UX...
+## 任务概览
 
-What has been changed for backedn ...
+**任务名称:** [从分支名派生，如 feat-user-login]
 
-Test Coverage ...
+**任务描述:** [一句话描述本次任务实现的核心功能]
+
+---
+
+## 实现的功能
+
+### 核心功能点
+
+- **功能点 1:** [简要描述]
+- **功能点 2:** [简要描述]
+- **功能点 3:** [简要描述]
+
+### 技术实现亮点
+
+- **数据库:** [新增/修改的表或字段]
+- **API:** [新增的 Server Actions 或 API 端点]
+- **UI组件:** [新增或修改的主要组件]
+- **测试覆盖:** [测试覆盖率或关键测试场景]
+
+---
+
+## 文件变更汇总
+
+### 新增文件
+
+```
+- path/to/new/file1.ts
+- path/to/new/file2.tsx
+```
+
+### 修改文件
+
+```
+- path/to/modified/file1.ts
+- path/to/modified/file2.tsx
+```
+
+### 删除文件
+
+```
+- path/to/deleted/file.ts (如有)
+```
+
+---
+
+## 验证状态
+
+- [ ] **类型检查:** `diagnostics` 无错误
+- [ ] **编译:** `pnpm build` 成功
+- [ ] **代码规范:** `pnpm lint` 通过
+- [ ] **单元测试:** `pnpm test` 通过
+- [ ] **E2E测试:** `pnpm e2e` 通过 (如适用)
+- [ ] **数据库迁移:** `pnpm db:generate` 和 `pnpm db:push` 成功 (如适用)
+
+---
+
+## 用户须知
+
+### 需要手动操作的事项
+
+1. **环境变量:** [如需添加新的环境变量，在此说明]
+2. **数据库迁移:** [如需运行迁移命令，在此说明]
+3. **依赖安装:** [如新增了依赖包，提醒运行 `pnpm install`]
+
+### 已知问题或限制
+
+- [列出任何已知的问题、待优化项或功能限制]
+
+### 后续建议
+
+- [建议的后续开发方向或优化点]
+
+---
+
+## 工件清单
+
+本次任务在 `.specs/[task-name]/` 目录下生成的所有工作报告：
+
+- [ ] `plan.md` - 任务规划文档
+- [ ] `architect.md` - 架构设计报告 (如适用)
+- [ ] `backend.md` - 后端开发报告
+- [ ] `frontend.md` - 前端开发报告
+- [ ] `qa.md` - 测试工程报告
+- [ ] `techwriter.md` - 文档更新报告 (如适用)
+- [ ] `devops.md` - DevOps配置报告 (如适用)
+- [ ] `summary.md` - 本总结报告

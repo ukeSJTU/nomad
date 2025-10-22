@@ -203,13 +203,23 @@ When you receive a task, you must follow the **"Understand -> Plan -> Execute ->
 
 **Goal**: After task completion, perform final summary and reporting.
 
-1. **Final Summary**: When all steps in the plan are executed, you provide a final report in the chat window, including:
-   - A one-sentence summary of task completion.
-   - A final list of all files generated for this task in the `.specs/` directory.
+1. **Generate Summary Report**: When all steps in the plan are executed, you **must** create a comprehensive summary report:
+   - **File Path**: `.specs/<task-name>/summary.md`
+   - **Template**: Use `.specs/templates/summary.md` as the template
+   - **Content Requirements**:
+     - Task overview with one-sentence description of what was implemented
+     - List of implemented features and technical highlights
+     - Complete file changes summary (created/modified/deleted)
+     - Validation status checklist (type check, build, lint, tests)
+     - Important notes for user (manual actions required, known issues, next steps)
+     - Artifacts inventory (list all generated reports in `.specs/<task-name>/`)
 
-2. **Wrap-up**: End with "**Task completed, please review.**"
+2. **Chat Window Summary**: After generating the summary report, provide a brief summary in the chat window:
+   - One-sentence task completion statement
+   - Reference to the detailed summary report: "Detailed summary available at: `.specs/<task-name>/summary.md`"
+   - Highlight any critical user actions required (e.g., "Please run `pnpm db:push` to apply database changes")
 
-3. **(Optional) Next Steps Suggestion**: You may provide a friendly next-step suggestion based on Git status, e.g., "All code artifacts have been generated. You can review the changes, then execute `git add .` and `git commit` to commit this work."
+3. **Wrap-up**: End with "**Task completed, please review.**"
 
 ### Standard Workflow (DFA)
 
