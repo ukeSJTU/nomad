@@ -133,7 +133,7 @@
 
 ### API 与开发指南
 
-- **API 开发指南**：`docs/api.md`
+- **数据流动与开发指南**：`content/docs/technical-design/07-data-flow.mdx`
 - **航空旅行业务**：`docs/air-travel.md`
 - **旅客管理参考**：`docs/passenger-management.md`
 - **携程旅客管理参考**：`docs/ctrip-traveller-management.md`
@@ -399,7 +399,7 @@ Planner (你) -> Architect -> Backend_Developer -> Frontend_Developer -> QA_Engi
 
 **示例**：
 
-- "根据 `docs/api.md` 第 75-97 行，API 路由应该使用 `ApiResponse.success()` 返回统一格式"
+- "根据 `content/docs/technical-design/07-data-flow.mdx`，应该使用 Server Actions 处理数据变更操作"
 - "参考 `src/components/passengers/passenger-list.tsx` 第 1-24 行的导入方式"
 
 ### 2. 代码验证流程

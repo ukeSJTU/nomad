@@ -188,7 +188,7 @@ This project uses several tools to maintain code quality:
 For detailed information about the project structure, file organization, and development conventions, please see:
 
 - [Project Structure and Conventions](docs/conventions.md) - Comprehensive guide to file organization, naming conventions, and best practices
-- [API Documentation Guide](docs/api.md) - Complete guide for developing and documenting APIs
+- [Data Flow Guide](content/docs/technical-design/07-data-flow.mdx) - Complete guide for data exchange using Server Components and Server Actions
 
 ## Contributing
 

@@ -89,17 +89,17 @@
 
 ---
 
-### 3.3 API 文档更新
+### 3.3 数据流文档更新
 
-**文档路径:** `docs/api.md`
+**文档路径:** `content/docs/technical-design/07-data-flow.mdx`
 
-**新增/修改的 API:**
+**新增/修改的 Server Actions 或数据获取方式:**
 
-#### API: `[HTTP Method] /api/[route]`
+#### Server Action: `[actionName]`
 
-**功能描述:** [说明此 API 的用途]
+**功能描述:** [说明此 Server Action 的用途]
 
-**请求参数:**
+**输入参数:**
 
 | 参数名        | 类型     | 必填 | 说明       | 示例        |
 | ------------- | -------- | ---- | ---------- | ----------- |
@@ -369,7 +369,7 @@ graph TD
 
 - [功能需求] `content/docs/functional-requirements/[module].mdx`
 - [技术设计] `content/docs/technical-design/[document].mdx`
-- [API 文档] `docs/api.md`
+- [数据流文档] `content/docs/technical-design/07-data-flow.mdx`
 
 ---
 
