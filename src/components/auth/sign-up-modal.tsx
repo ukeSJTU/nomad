@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -64,10 +66,23 @@ export default function SignUpModal({
             请您务必仔细阅读、充分理解协议中的条款内容并选择接受或不接受。
           </DialogDescription>
 
-          <div className="mb-4">
-            <button className="text-blue-600 hover:text-blue-800 text-sm underline">
+          <div className="mb-4 space-x-4">
+            <Link
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 text-sm underline"
+            >
               服务协议
-            </button>
+            </Link>
+            <Link
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 text-sm underline"
+            >
+              个人信息保护政策
+            </Link>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
