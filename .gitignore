@@ -49,6 +49,11 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 
+# AI Agent work artifacts (keep only templates)
+.specs/*
+!.specs/templates/
+!.specs/templates/**
+
 # Test Reports and Generated Files
 /reports/
 /public/index.html
