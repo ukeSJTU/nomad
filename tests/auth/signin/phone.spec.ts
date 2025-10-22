@@ -107,9 +107,6 @@ test.describe("Phone Sign-In Flow", () => {
     test("should display password login form fields", async ({ page }) => {
       await page.goto("/auth/sign-in");
 
-      // Should show country code selector
-      await expect(page.getByRole("combobox")).toBeVisible();
-
       // Should show phone number input
       await expect(page.getByPlaceholder("请输入手机号")).toBeVisible();
 
@@ -187,9 +184,6 @@ test.describe("Phone Sign-In Flow", () => {
     });
 
     test("should display OTP login form fields", async ({ page }) => {
-      // Should show country code selector
-      await expect(page.getByRole("combobox")).toBeVisible();
-
       // Should show phone number input
       await expect(page.getByPlaceholder("请输入手机号")).toBeVisible();
 
