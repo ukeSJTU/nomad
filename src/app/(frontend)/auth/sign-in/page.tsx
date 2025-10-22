@@ -24,7 +24,6 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
-  const [currentCountryCode, setCurrentCountryCode] = useState("+86");
   const [currentEmail, setCurrentEmail] = useState("");
   const [activeTab, setActiveTab] = useState<"password" | "otp">("password");
 
@@ -43,7 +42,8 @@ export default function SignInPage() {
   const handlePhonePasswordLogin = async (data: PhoneLoginData) => {
     setIsLoading(true);
 
-    const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
+    // For China mainland phone numbers, add +86 prefix for better-auth
+    const fullPhoneNumber = `+86${data.phoneNumber}`;
 
     try {
       // Use phone number + password to sign in
@@ -75,7 +75,8 @@ export default function SignInPage() {
   const handlePhoneOtpLogin = async (data: PhoneOtpLoginData) => {
     setIsLoading(true);
 
-    const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
+    // For China mainland phone numbers, add +86 prefix for better-auth
+    const fullPhoneNumber = `+86${data.phoneNumber}`;
 
     try {
       // Verify OTP code - this will sign in the user if successful
@@ -164,12 +165,13 @@ export default function SignInPage() {
    */
   const handleSendPhoneOtp = async () => {
     // Validate that phone number is entered
-    if (!currentPhoneNumber || !currentCountryCode) {
+    if (!currentPhoneNumber) {
       // Validation is now handled in the form component
       return;
     }
 
-    const fullPhoneNumber = `${currentCountryCode}${currentPhoneNumber}`;
+    // For China mainland phone numbers, add +86 prefix for better-auth
+    const fullPhoneNumber = `+86${currentPhoneNumber}`;
 
     setIsLoading(true);
 
@@ -308,9 +310,8 @@ export default function SignInPage() {
                   <PhoneOtpLoginForm
                     onSubmit={handlePhoneOtpLogin}
                     onSendOtp={handleSendPhoneOtp}
-                    onPhoneChange={(phoneNumber, countryCode) => {
+                    onPhoneChange={phoneNumber => {
                       setCurrentPhoneNumber(phoneNumber);
-                      setCurrentCountryCode(countryCode);
                     }}
                     isLoading={isLoading}
                     countdown={countdown}

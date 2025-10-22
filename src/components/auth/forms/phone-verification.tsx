@@ -1,20 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -25,13 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import {
-  countryCodes,
   type PhoneVerificationData,
   phoneVerificationSchema,
 } from "@/types/auth";
@@ -41,7 +25,7 @@ interface PhoneVerificationFormProps {
   isLoading?: boolean;
   onSendOtp?: () => void;
   countdown?: number;
-  onPhoneChange?: (phoneNumber: string, countryCode: string) => void;
+  onPhoneChange?: (phoneNumber: string) => void;
 }
 
 export default function PhoneVerificationForm({
@@ -51,27 +35,23 @@ export default function PhoneVerificationForm({
   countdown = 0,
   onPhoneChange,
 }: PhoneVerificationFormProps) {
-  const [open, setOpen] = useState(false);
-
   const form = useForm<PhoneVerificationData>({
     resolver: zodResolver(phoneVerificationSchema),
     defaultValues: {
-      countryCode: "+86",
       phoneNumber: "",
       otp: "",
       agreedToTerms: false,
     },
   });
 
-  // Watch for changes in phoneNumber and countryCode
-  const watchedValues = form.watch(["phoneNumber", "countryCode"]);
+  // Watch for changes in phoneNumber
+  const phoneNumber = form.watch("phoneNumber");
 
   useEffect(() => {
-    const [phoneNumber, countryCode] = watchedValues;
-    if (onPhoneChange && phoneNumber && countryCode) {
-      onPhoneChange(phoneNumber, countryCode);
+    if (onPhoneChange && phoneNumber) {
+      onPhoneChange(phoneNumber);
     }
-  }, [watchedValues, onPhoneChange]);
+  }, [phoneNumber, onPhoneChange]);
 
   const handleSubmit = (data: PhoneVerificationData) => {
     onSubmit(data);
@@ -88,91 +68,28 @@ export default function PhoneVerificationForm({
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div className="space-y-4">
           {/* Phone Number Section */}
-          <div>
-            <FormLabel className="text-sm font-medium text-gray-700 mb-3 block">
-              手机号
-            </FormLabel>
-            <div className="flex gap-2">
-              {/* Country Code Select */}
-              <FormField
-                control={form.control}
-                name="countryCode"
-                render={({ field }) => (
-                  <FormItem className="w-40">
-                    <Popover open={open} onOpenChange={setOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-full justify-between h-12"
-                          >
-                            {field.value
-                              ? countryCodes.find(
-                                  region => region.value === field.value
-                                )?.label
-                              : "选择区号"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
-                        <Command>
-                          <CommandInput placeholder="搜索区号或国家..." />
-                          <CommandList>
-                            <CommandEmpty>未找到匹配的区号</CommandEmpty>
-                            <CommandGroup>
-                              {countryCodes.map(region => (
-                                <CommandItem
-                                  key={region.value}
-                                  value={region.searchTerms.join(" ")}
-                                  onSelect={() => {
-                                    field.onChange(region.value);
-                                    setOpen(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      field.value === region.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  {region.label}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Phone Number Input */}
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="请输入手机号"
-                        className="h-12"
-                        maxLength={11}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-gray-700">
+                  手机号
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="tel"
+                    placeholder="请输入手机号"
+                    className="h-12"
+                    maxLength={11}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           {/* OTP Section */}
           <div>

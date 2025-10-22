@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, HelpCircle } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,14 +9,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -47,7 +39,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { countryCodes } from "@/types/auth";
 
 // Passenger form schema
 const passengerFormSchema = z
@@ -102,7 +93,6 @@ export default function PassengerForm({
   isLoading = false,
   initialData,
 }: PassengerFormProps) {
-  const [countryCodeOpen, setCountryCodeOpen] = useState(false);
   const [dobOpen, setDobOpen] = useState(false);
   const [expiryOpen, setExpiryOpen] = useState(false);
   const [dobCaptionLayout] =
@@ -351,63 +341,16 @@ export default function PassengerForm({
                 <FormItem>
                   <FormLabel>手机号码</FormLabel>
                   <div className="flex gap-2">
-                    <FormField
-                      control={form.control}
-                      name="phoneCountryCode"
-                      render={({ field: countryField }) => (
-                        <Popover
-                          open={countryCodeOpen}
-                          onOpenChange={setCountryCodeOpen}
-                        >
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className="w-32 justify-between"
-                            >
-                              {countryField.value
-                                ? countryCodes.find(
-                                    c => c.value === countryField.value
-                                  )?.value
-                                : "国家码"}
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[200px] p-0">
-                            <Command>
-                              <CommandInput placeholder="搜索国家/地区..." />
-                              <CommandList>
-                                <CommandEmpty>未找到国家/地区</CommandEmpty>
-                                <CommandGroup>
-                                  {countryCodes.map(country => (
-                                    <CommandItem
-                                      key={country.value}
-                                      value={country.searchTerms.join(" ")}
-                                      onSelect={() => {
-                                        countryField.onChange(country.value);
-                                        setCountryCodeOpen(false);
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          countryField.value === country.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {country.label}
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
-                              </CommandList>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                      )}
-                    />
+                    <div className="flex items-center justify-center w-16 px-3 border border-input rounded-md bg-muted text-sm">
+                      +86
+                    </div>
                     <FormControl>
-                      <Input {...field} placeholder="请输入手机号码" />
+                      <Input
+                        {...field}
+                        type="tel"
+                        placeholder="请输入手机号码"
+                        maxLength={11}
+                      />
                     </FormControl>
                   </div>
                   <FormMessage />

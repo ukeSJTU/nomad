@@ -68,7 +68,6 @@ export default function SignUpPage() {
     null
   ); // Store verified email data
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState(""); // Current phone number input
-  const [currentCountryCode, setCurrentCountryCode] = useState("+86"); // Current country code selection
   const [currentEmail, setCurrentEmail] = useState(""); // Current email input
   const [error, setError] = useState<string | null>(null); // Error message display
 
@@ -111,7 +110,8 @@ export default function SignUpPage() {
     setIsLoading(true);
     setError(null); // Clear previous errors
 
-    const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
+    // For China mainland phone numbers, add +86 prefix for better-auth
+    const fullPhoneNumber = `+86${data.phoneNumber}`;
 
     try {
       // Call better-auth to verify the OTP code
@@ -217,12 +217,13 @@ export default function SignUpPage() {
    */
   const handleSendPhoneOtp = async () => {
     // Validate that phone number is entered
-    if (!currentPhoneNumber || !currentCountryCode) {
+    if (!currentPhoneNumber) {
       setError("请先输入手机号"); // Please enter phone number first
       return;
     }
 
-    const fullPhoneNumber = `${currentCountryCode}${currentPhoneNumber}`;
+    // For China mainland phone numbers, add +86 prefix for better-auth
+    const fullPhoneNumber = `+86${currentPhoneNumber}`;
 
     setIsLoading(true);
     setError(null); // Clear previous errors
@@ -348,10 +349,9 @@ export default function SignUpPage() {
               <PhoneVerificationForm
                 onSubmit={handlePhoneVerificationSubmit}
                 onSendOtp={handleSendPhoneOtp}
-                onPhoneChange={(phoneNumber, countryCode) => {
+                onPhoneChange={phoneNumber => {
                   // Update parent state when phone number changes
                   setCurrentPhoneNumber(phoneNumber);
-                  setCurrentCountryCode(countryCode);
                 }}
                 isLoading={isLoading}
                 countdown={countdown}
@@ -377,9 +377,7 @@ export default function SignUpPage() {
           (() => {
             const maskedId =
               signUpMethod === "phone" && phoneData
-                ? maskPhoneNumber(
-                    `${phoneData.countryCode}${phoneData.phoneNumber}`
-                  )
+                ? maskPhoneNumber(phoneData.phoneNumber)
                 : signUpMethod === "email" && emailData
                   ? maskEmail(emailData.email)
                   : undefined;
