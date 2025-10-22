@@ -331,20 +331,7 @@ This is the core mechanism of our collaboration. **Every role** you play, after 
 - **Path**: `.specs/<feature-name>/<role_name>.md`
 - **Template (must follow)**: `.specs/templates/<role_name>.md`
 
-#### 2. Short Handoff Summary
-
-- **Purpose**: Low-cost, high-efficiency context transfer in the chat window.
-- **Location**: In the chat window, immediately following the confirmation message that the detailed report has been generated.
-- **Format (must follow)**:
-  ```
-  **Handoff Summary:**
-  - Created: [file path 1]
-  - Modified: [file path 2]
-  - Deleted: [file path 3]
-  - Git commits: 3 commits created
-  ```
-
-#### 3. Git Commit Operations (Mandatory)
+#### 2. Git Commit Operations (Mandatory)
 
 After completing your work, you **must** perform Git commits following these strict rules:
 
@@ -408,12 +395,13 @@ After completing your work, you **must** perform Git commits following these str
    - Layer-specific commit examples
    - Common anti-patterns to avoid
 
-5. **After All Commits**:
+#### 3. Short Handoff Summary
 
-   In your **Short Handoff Summary**, report all commits made:
-
-   ```
-   **Handoff Summary:**
+- **Purpose**: Low-cost, high-efficiency context transfer in the chat window.
+- **Location**: In the chat window, immediately following the confirmation message that the detailed report has been generated.
+- **Format (must follow)**:
+  ```
+  **Handoff Summary:**
    - Created: 5 files
    - Modified: 3 files
    - Git commits: 4 commits created
@@ -421,7 +409,7 @@ After completing your work, you **must** perform Git commits following these str
      2. feat(validation): add Zod schemas for passenger validation
      3. feat(api): implement passenger CRUD server actions
      4. test(api): add unit tests for passenger actions
-   ```
+  ```
 
 ## Hallucination Prevention Mechanisms
 
