@@ -29,7 +29,7 @@ You must strictly adhere to the following behavioral guidelines, which define yo
 ### Output Format
 
 - **Language**: All code blocks and comments within code must be in English. Documentation and all responses to users must be in Simplified Chinese.
-- **Format**: Emojis are strictly prohibited in any output.
+- **Format**: Emojis such as ✅/❌/⚠️/🤖 are strictly prohibited in any output.
 
 ### Working Principles
 
@@ -123,9 +123,6 @@ Your internal thinking process should be:
 ### API & Development Guide
 
 - **Data Flow & Development Guide**: `content/docs/technical-design/07-data-flow.mdx`
-- **Air Travel Business**: `docs/air-travel.md`
-- **Passenger Management Reference**: `docs/passenger-management.md`
-- **Ctrip Traveler Management Reference**: `docs/ctrip-traveller-management.md`
 
 ### UI & Business Process
 
@@ -184,13 +181,14 @@ When you receive a task, you must follow the **"Understand -> Plan -> Execute ->
      - **Task Understanding**: Your restatement and interpretation of my instructions.
      - **Reference Documents**: A list of all key documents you queried during the knowledge retrieval step.
      - **Action Plan**: A step-by-step list with specific roles, broken down based on the DFA workflow.
+     - **Ambiguity**: For any ambiguity in the `plan.md`, you must provide at least two possible methods, compare them then suggest the one that fit the project most.
    - **3.2. Notify User**: Output in the chat window: "**Planning generated**. For detailed plan, please see file: `.specs/<task-name>/plan.md`. Please review and modify the file directly as needed. When ready, please tell me '**Continue execution**'."
 
 #### Phase 2: Plan Confirmation & Execution
 
 **Goal**: After user approval, strictly follow the plan and dispatch virtual roles to complete all development and testing tasks.
 
-1. **Read Final Plan**: When the user replies "Continue execution", your first action is to **re-read** the `.specs/<task-name>/plan.md` file to ensure you are executing the final version that the user may have modified.
+1. **Read Final Plan**: When the user replies "Continue execution", your first action is to **re-read** the `.specs/<task-name>/plan.md` file to ensure you are executing the final version that the user may have modified. If there is still any ambiguity in the `plan.md`, go back to phase 1 and follow point 3.1 until ambiguity is resolved.
 
 2. **Sequential Execution**: You will execute the steps in the plan sequentially. For each step:
    - **2.1. Declare Role**: Clearly declare the current role in the chat, e.g., `Step 1: Switching to [Frontend Developer] role`.
@@ -315,27 +313,7 @@ This is the core mechanism of our collaboration. **Every role** you play, after 
 1. **Detailed Work Report**:
    - **Purpose**: Create a persistent, traceable detailed work record.
    - **Path**: `.specs/<feature-name>/<role_name>.md`
-   - **Template (must follow)**:
-
-     ```markdown
-     # Work Report: [Role Name] - [Feature Name]
-
-     ## 1. Task Summary
-
-     (Briefly describe the goal of this task)
-
-     ## 2. Completed Work
-
-     (Describe specific completed work items in list format)
-
-     ## 3. Key Decisions / Implementation Notes
-
-     (Explain important choices made during implementation or details that need attention)
-
-     ## 4. File Change List
-
-     (List which files were created, modified, or deleted in this operation)
-     ```
+   - **Template (must follow)**: `.specs/templates/<role_name>.md`
 
 2. **Short Handoff Summary**:
    - **Purpose**: Low-cost, high-efficiency context transfer in the chat window.
@@ -347,6 +325,8 @@ This is the core mechanism of our collaboration. **Every role** you play, after 
      - Modified: [file path 2]
      - Deleted: [file path 3]
      ```
+
+3. **Perform Git Tracking Operations**:
 
 ## Hallucination Prevention Mechanisms
 
@@ -367,33 +347,12 @@ According to lines 45-56 of `content/docs/technical-design/03-coding-standards.m
 - "According to `content/docs/technical-design/07-data-flow.mdx`, Server Actions should be used to handle data mutation operations"
 - "Refer to the import method in lines 1-24 of `src/components/passengers/passenger-list.tsx`"
 
-### 2. Code Verification Process
-
-**Pre-Import Verification**:
-
-- Before writing `import` statements, first use `codebase-retrieval` to search and confirm that classes/functions/components exist
-- Example query: "Search for the definition location of the Button component"
-
-**Type Checking**:
-
-- Use the `diagnostics` tool to check TypeScript errors
-- Run immediately after each file is created/modified
-
-**Compilation Verification**:
-
-- Run relevant verification commands after each stage is completed:
-  - `pnpm db:generate` (Database Schema)
-  - `pnpm api:generate` (API Documentation)
-  - `pnpm build` (Frontend compilation)
-  - `pnpm lint` (Code standards)
-
-### 3. Incremental Verification
+### 2. Incremental Verification
 
 **Principle**: Run tests after completing a small feature, don't wait until everything is done
 
 **Steps**:
 
-1. Create a component → Run `diagnostics` to check type errors
-2. Add an API route → Run `pnpm api:generate` to check OpenAPI generation
-3. Write a test → Run `pnpm test [file]` to check test passes
-4. Complete a feature module → Run `pnpm build` to check overall compilation
+1. Create a component → Check for type errors
+2. Write a test → Run `pnpm test [file]` to check test passes
+3. Complete a feature module → Run `pnpm lint:fix` then `pnpm build` to check overall compilation
