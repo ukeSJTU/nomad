@@ -175,9 +175,9 @@ When you receive a task, you must follow the **"Understand -> Plan -> Execute ->
      - **If** currently on a feature branch that matches the task, proceed.
 
 2. **Workspace & Planning**:
-   - **2.1. Create Workspace**: After branch confirmation, derive the task name from the branch name (e.g., `feat/user-login-form` -> `feat-user-login-form`) and create the corresponding artifact directory `.artifacts/<task-name>/`.
+   - **2.1. Create Workspace**: After branch confirmation, derive the task name from the branch name (e.g., `feat/user-login-form` -> `feat-user-login-form`) and create the corresponding artifact directory `.specs/<task-name>/`.
    - **2.2. Knowledge Retrieval & Analysis**: Comprehensively query relevant requirement, technical, and appendix documents to obtain all necessary context.
-   - **2.3. Generate Planning File**: Consolidate all your analysis results and write them into a **planning file**: `.artifacts/<task-name>/plan.md`, referencing the template `.artifacts/templates/plan.md`.
+   - **2.3. Generate Planning File**: Consolidate all your analysis results and write them into a **planning file**: `.specs/<task-name>/plan.md`, referencing the template `.specs/templates/plan.md`.
 
 3. **Handoff for Review**:
    - **3.1. Write `plan.md`**: This planning file **must** include the following:
@@ -185,19 +185,19 @@ When you receive a task, you must follow the **"Understand -> Plan -> Execute ->
      - **Reference Documents**: A list of all key documents you queried during the knowledge retrieval step.
      - **Action Plan**: A step-by-step list with specific roles, broken down based on the DFA workflow.
      - **Expected Output**: What project files are expected to be created or modified after the plan is executed.
-   - **3.2. Notify User**: Output in the chat window: "**Planning generated**. For detailed plan, please see file: `.artifacts/<task-name>/plan.md`. Please review and modify the file directly as needed. When ready, please tell me '**Continue execution**'."
+   - **3.2. Notify User**: Output in the chat window: "**Planning generated**. For detailed plan, please see file: `.specs/<task-name>/plan.md`. Please review and modify the file directly as needed. When ready, please tell me '**Continue execution**'."
 
 #### Phase 2: Plan Confirmation & Execution
 
 **Goal**: After user approval, strictly follow the plan and dispatch virtual roles to complete all development and testing tasks.
 
-1. **Read Final Plan**: When the user replies "Continue execution", your first action is to **re-read** the `.artifacts/<task-name>/plan.md` file to ensure you are executing the final version that the user may have modified.
+1. **Read Final Plan**: When the user replies "Continue execution", your first action is to **re-read** the `.specs/<task-name>/plan.md` file to ensure you are executing the final version that the user may have modified.
 
 2. **Sequential Execution**: You will execute the steps in the plan sequentially. For each step:
    - **2.1. Declare Role**: Clearly declare the current role in the chat, e.g., `Step 1: Switching to [Frontend Developer] role`.
    - **2.2. Execute Task**: Complete the code writing, testing, or documentation for that role.
    - **2.3. Deliver Artifacts**: Strictly follow the "Artifact & Handoff Protocol", i.e.:
-     - Write a complete, detailed work report to `.artifacts/<task-name>/<role_name>.md`.
+     - Write a complete, detailed work report to `.specs/<task-name>/<role_name>.md`.
      - In the chat window, output a **short handoff summary** (`Created/Modified/Deleted [file path]`).
 
 #### Phase 3: Integration & Delivery
@@ -206,7 +206,7 @@ When you receive a task, you must follow the **"Understand -> Plan -> Execute ->
 
 1. **Final Summary**: When all steps in the plan are executed, you provide a final report in the chat window, including:
    - A one-sentence summary of task completion.
-   - A final list of all files generated for this task in the `.artifacts/` directory.
+   - A final list of all files generated for this task in the `.specs/` directory.
 
 2. **Wrap-up**: End with "**Task completed, please review.**"
 
@@ -216,14 +216,14 @@ When you receive a task, you must follow the **"Understand -> Plan -> Execute ->
 
 You can play the following roles:
 
-| Role               | Name       | Artifact Template                    | Work Content                                      |
-| ------------------ | ---------- | ------------------------------------ | ------------------------------------------------- |
-| Architect          | Architect  | `.artifacts/templates/architect.md`  | High-level design, data contracts, tech decisions |
-| Backend Developer  | Backend    | `.artifacts/templates/backend.md`    | Schema, Server Actions, business logic            |
-| Frontend Developer | Frontend   | `.artifacts/templates/frontend.md`   | Server/Client Components, UI implementation       |
-| QA Engineer        | QA         | `.artifacts/templates/qa.md`         | Unit tests, component tests, E2E tests            |
-| Technical Writer   | TechWriter | `.artifacts/templates/techwriter.md` | Requirements docs, technical docs, API docs       |
-| DevOps Engineer    | DevOps     | `.artifacts/templates/devops.md`     | CI/CD, deployment config, dev toolchain           |
+| Role               | Name       | Artifact Template                | Work Content                                      |
+| ------------------ | ---------- | -------------------------------- | ------------------------------------------------- |
+| Architect          | Architect  | `.specs/templates/architect.md`  | High-level design, data contracts, tech decisions |
+| Backend Developer  | Backend    | `.specs/templates/backend.md`    | Schema, Server Actions, business logic            |
+| Frontend Developer | Frontend   | `.specs/templates/frontend.md`   | Server/Client Components, UI implementation       |
+| QA Engineer        | QA         | `.specs/templates/qa.md`         | Unit tests, component tests, E2E tests            |
+| Technical Writer   | TechWriter | `.specs/templates/techwriter.md` | Requirements docs, technical docs, API docs       |
+| DevOps Engineer    | DevOps     | `.specs/templates/devops.md`     | CI/CD, deployment config, dev toolchain           |
 
 #### Role Responsibilities
 
@@ -305,7 +305,7 @@ This is the core mechanism of our collaboration. **Every role** you play, after 
 
 1. **Detailed Work Report**:
    - **Purpose**: Create a persistent, traceable detailed work record.
-   - **Path**: `.artifacts/<feature-name>/<role_name>.md`
+   - **Path**: `.specs/<feature-name>/<role_name>.md`
    - **Template (must follow)**:
 
      ```markdown
@@ -430,7 +430,7 @@ According to lines 45-56 of `content/docs/technical-design/03-coding-standards.m
 
 ## Validation Checklist Quick Reference
 
-For detailed checklist, see: `.artifacts/validation-checklist.md`
+For detailed checklist, see: `.specs/validation-checklist.md`
 
 - [ ] Database Schema: `pnpm db:generate` no errors
 - [ ] API Documentation: `pnpm api:generate` generates successfully
