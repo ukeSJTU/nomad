@@ -1,0 +1,10 @@
+{
+  "title": "1. 引言",
+  "icon": "BookOpen",
+  "pages": [
+    "project-purpose",
+    "scope",
+    "intended-audience",
+    "definitions-acronyms"
+  ]
+}

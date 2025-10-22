@@ -33,7 +33,13 @@ pnpm dev
 
 ## 开发流程
 
-### 1. 创建功能分支
+> 📖 **完整的 Git 工作流程请参考**：[Git 工作流文档](http://localhost:3000/docs/04-git-workflow)
+>
+> 该文档包含详细的分支策略、提交规范、代码审查流程、CI/CD 集成以及常见问题解决方案。
+
+### 快速参考
+
+1. **创建功能分支**
 
 ```bash
 git checkout -b feat/your-feature-name
@@ -41,7 +47,7 @@ git checkout -b feat/your-feature-name
 git checkout -b fix/your-bug-fix
 ```
 
-### 2. 开发和测试
+2. **开发和测试**
 
 - 编写代码
 - 运行单元测试：`pnpm test`
@@ -55,34 +61,22 @@ git checkout -b fix/your-bug-fix
 - 端到端测试：使用 Playwright
 - 详细测试指南请参考：[docs/testing.md](docs/testing.md)
 
-### 3. 提交代码
+3. **提交代码**
 
-我们使用 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
+我们使用 [Conventional Commits](https://www.conventionalcommits.org/) 规范。详细的提交规范和示例请参考 [提交规范文档](http://localhost:3000/docs/04-git-workflow#commit-%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83)。
 
 ```bash
 git add .
 git commit -m "feat: add user authentication"
-# 或
-git commit -m "fix: resolve login button styling issue"
 ```
 
-**Commit 类型：**
-
-- `feat`: 新功能
-- `fix`: 修复 bug
-- `docs`: 文档变更
-- `style`: 代码格式（不影响功能）
-- `refactor`: 重构
-- `test`: 添加测试
-- `chore`: 其他变更
-
-### 4. 推送和创建 PR
+4. **推送和创建 PR**
 
 ```bash
 git push origin feat/your-feature-name
 ```
 
-然后在 GitHub 上创建 Pull Request。
+然后在 GitHub 上创建 Pull Request。详细的 PR 流程请参考 [开发工作流程](http://localhost:3000/docs/04-git-workflow#%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B)。
 
 ## 代码规范
 

@@ -1,0 +1,349 @@
+---
+title: 开发规范
+icon: ClipboardCheck
+---
+
+## 目录结构说明
+
+### 主要目录结构
+
+import { File, Files, Folder } from "fumadocs-ui/components/files";
+
+```files
+src/
+├── app/                    # Next.js App Router 页面和布局
+│   ├── globals.css        # 全局样式文件
+│   ├── layout.tsx         # 根布局组件
+│   ├── page.tsx          # 首页组件
+│   └── [路由目录]/        # 按路由结构组织的页面和布局
+├── components/            # 自定义组件
+│   ├── ui/               # shadcn/ui 组件（自动生成，不要手动修改）
+│   ├── common/           # 通用组件（如 loading、error-boundary 等）
+│   └── [功能域]/         # 按功能域组织的组件
+│       ├── forms/        # 表单组件
+│       ├── components/   # 其他功能组件
+│       └── index.ts      # 统一导出文件
+├── hooks/                # 自定义 React Hooks
+│   └── [功能域]/         # 可按功能域组织复杂的 hooks
+├── lib/                  # 核心配置和工具
+│   ├── db/              # 数据库配置和连接
+│   ├── schema/          # Drizzle ORM 数据库 schema 定义
+│   └── utils.ts         # 通用工具函数
+├── types/               # TypeScript 类型定义和数据验证
+│   ├── api.ts           # API 相关类型定义
+│   ├── auth.ts          # 认证相关类型和 Zod schemas
+│   ├── database.ts      # 数据库类型（从 schema 推导）
+│   └── index.ts         # 统一导出所有类型
+└── utils/               # 专用工具函数
+    └── logger.ts        # 日志工具等专用功能
+```
+
+## 导入规范
+
+### 1. 使用路径别名
+
+项目配置了 `@/` 别名指向 `src/` 目录，优先使用别名进行导入：
+
+```typescript
+// 推荐
+import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils";
+import { UserSchema } from "@/types/auth";
+
+// 避免
+import { Button } from "../../../components/ui/button";
+import { formatDate } from "../../lib/utils";
+```
+
+### 2. 导入顺序
+
+按照 ESLint 配置的导入顺序组织 import 语句：
+
+```typescript
+// 1. Node.js 内置模块
+import path from "path";
+
+// 2. 外部依赖
+import React from "react";
+import { NextRequest } from "next/server";
+
+// 3. 内部模块（使用 @/ 别名）
+import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils";
+import { UserType } from "@/types/auth";
+
+// 4. 相对导入
+import "./styles.css";
+```
+
+### 3. 别名配置
+
+项目中配置的主要别名：
+
+- `@/components` - 组件目录
+- `@/lib` - 核心库目录
+- `@/hooks` - Hooks 目录
+- `@/types` - 类型定义目录
+- `@/utils` - 工具函数目录
+
+## 组件组织规范
+
+### 1. shadcn/ui 组件
+
+- 统一放在 `@/components/ui/` 目录下
+- 由 shadcn/ui CLI 自动生成和管理
+- **不要手动修改这些组件文件**
+- 如需自定义，在其他目录创建包装组件
+
+### 2. 自定义组件组织
+
+采用 **功能域 + 类型细分** 的混合策略：
+
+```files
+src/components/
+├── ui/                    # shadcn/ui 组件
+├── common/               # 通用组件
+│   ├── loading.tsx
+│   ├── error-boundary.tsx
+│   └── index.ts
+├── auth/                 # 认证功能域
+│   ├── forms/           # 认证相关表单
+│   │   ├── sign-up-form.tsx
+│   │   ├── sign-in-form.tsx
+│   │   └── reset-password-form.tsx
+│   ├── components/      # 其他认证组件
+│   │   ├── phone-input.tsx
+│   │   └── auth-guard.tsx
+│   └── index.ts         # 统一导出
+└── dashboard/           # 仪表板功能域
+    ├── components/
+    │   ├── stats-card.tsx
+    │   └── chart-widget.tsx
+    └── index.ts
+```
+
+### 3. Index.ts 导出策略
+
+对于包含多个文件的目录，使用 `index.ts` 简化导入：
+
+```typescript
+// src/components/auth/index.ts
+export { SignUpForm, SignInForm, ResetPasswordForm } from "./forms";
+export { PhoneInput, AuthGuard } from "./components";
+
+// 使用时
+import { SignUpForm, PhoneInput } from "@/components/auth";
+```
+
+## 文件命名规范
+
+### 1. React 组件文件
+
+使用 **kebab-case** 命名：
+
+```
+user-profile.tsx
+buy-ticket-form.tsx
+navigation-menu.tsx
+```
+
+### 2. 工具函数文件
+
+使用 **kebab-case** 命名：
+
+```
+format-date.ts
+api-client.ts
+validation-helpers.ts
+```
+
+### 3. 类型定义文件
+
+使用 **kebab-case** 命名：
+
+```
+user-types.ts
+api-types.ts
+auth-schemas.ts
+```
+
+### 4. 测试文件
+
+使用 `*.test.ts` 或 `*.spec.ts` 后缀：
+
+```
+utils.test.ts           # 单元测试（与被测试文件同级）
+user-profile.test.tsx   # 组件测试
+example.spec.ts         # E2E 测试（在 tests/ 目录下）
+```
+
+### 5. 配置文件
+
+保持项目约定的命名方式：
+
+```
+next.config.ts
+drizzle.config.ts
+eslint.config.mjs
+```
+
+## 变量命名规范
+
+### 1. 变量和函数
+
+使用 **camelCase**：
+
+```typescript
+const userName = "john";
+const isLoggedIn = true;
+function formatUserName(name: string) {}
+const handleSubmit = () => {};
+```
+
+### 2. 常量
+
+使用 **UPPER_SNAKE_CASE**：
+
+```typescript
+const API_BASE_URL = "https://api.example.com";
+const MAX_RETRY_COUNT = 3;
+const DEFAULT_PAGE_SIZE = 20;
+```
+
+### 3. 类型和接口
+
+使用 **PascalCase**：
+
+```typescript
+interface UserProfile {
+  id: string;
+  name: string;
+}
+
+type ApiResponse<T> = {
+  data: T;
+  status: number;
+};
+
+enum UserRole {
+  Admin = "admin",
+  User = "user",
+}
+```
+
+### 4. 组件
+
+使用 **PascalCase**：
+
+```typescript
+const UserProfile = () => {};
+const SignUpForm = () => {};
+const NavigationMenu = () => {};
+```
+
+## 测试文件组织规则
+
+### 1. 单元测试
+
+- 与被测试文件放在同一目录下
+- 使用 `.test.ts` 或 `.test.tsx` 后缀
+- 使用 Vitest 作为测试框架
+
+```files
+src/lib/
+├── utils.ts
+└── utils.test.ts
+
+src/components/auth/
+├── sign-up-form.tsx
+└── sign-up-form.test.tsx
+```
+
+### 2. E2E 测试
+
+- 统一放在根目录的 `tests/` 目录下
+- 使用 `.spec.ts` 后缀
+- 使用 Playwright 作为测试框架
+
+```files
+tests/
+├── auth.spec.ts
+├── dashboard.spec.ts
+└── example.spec.ts
+```
+
+## Schema 和类型文件存放规范
+
+### 1. 数据库 Schema
+
+放在 `src/lib/schema/` 目录下，用于 Drizzle ORM：
+
+```files
+src/lib/schema/
+├── users.ts        # 用户表 schema
+├── posts.ts        # 文章表 schema
+└── index.ts        # 统一导出
+```
+
+### 2. 数据验证 Schema 和类型定义
+
+放在 `src/types/` 目录下：
+
+```files
+src/types/
+├── api.ts          # API 相关类型
+├── auth.ts         # 认证相关类型和 Zod schemas
+├── database.ts     # 数据库类型（从 schema 推导）
+└── index.ts        # 统一导出所有类型
+```
+
+示例：
+
+```typescript
+// src/types/auth.ts
+import { z } from "zod";
+
+// Zod validation schemas
+export const SignUpSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  name: z.string().min(2),
+});
+
+// TypeScript types
+export type SignUpData = z.infer<typeof SignUpSchema>;
+export type User = {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: Date;
+};
+```
+
+## 最佳实践
+
+### 1. 保持目录结构的一致性
+
+- 新功能按照既定的目录结构组织
+- 相似功能的文件放在相同的目录层级
+- 避免创建过深的嵌套目录（建议不超过 3-4 层）
+
+### 2. 使用 TypeScript 严格模式
+
+- 为所有函数和变量添加类型注解
+- 避免使用 `any` 类型（如果过于复杂的类型，可以用`// eslint-disable-next-line @typescript-eslint/no-explicit-any`这样的注释）
+- 利用 Zod 进行运行时数据验证
+
+### 3. 组件设计原则
+
+- 保持组件的单一职责
+- 优先使用组合而非继承
+- 合理使用 React Hooks 管理状态和副作用
+
+### 4. 导入导出规范
+
+- 优先使用命名导出而非默认导出
+- 在 `index.ts` 文件中统一管理导出
+- 避免循环依赖
+
+这个规范文档将帮助团队成员快速了解项目结构，确保代码的一致性和可维护性。

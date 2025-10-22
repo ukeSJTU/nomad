@@ -1,0 +1,302 @@
+---
+title: 测试框架
+icon: TestTube
+---
+
+本项目采用层次化的测试策略，确保代码质量和功能稳定性。测试框架主要分为三个层次：
+
+1. **单元测试**：使用 Vitest 测试独立的函数和工具类
+2. **组件测试**：使用 React Testing Library 测试 React 组件
+3. **端到端测试**：使用 Playwright 测试完整的用户流程
+
+## 技术栈
+
+- **Vitest**：快速的单元测试框架，与 Vite 深度集成
+- **React Testing Library**：专注于用户行为的 React 组件测试
+- **Playwright**：跨浏览器的端到端测试框架
+- **jsdom**：在 Node.js 环境中模拟浏览器 DOM
+
+## 单元测试
+
+### 概述
+
+单元测试主要用于测试独立的函数、工具类和业务逻辑。使用 Vitest 作为测试运行器，配置了 jsdom 环境来支持 DOM 相关的测试。
+
+### 配置文件
+
+- `vitest.config.mts`：Vitest 配置文件
+- 测试环境：jsdom
+- 支持 TypeScript 路径映射（`@/*`）
+
+### 运行命令
+
+```bash
+pnpm test          # 运行所有单元测试（监听模式）
+pnpm test:run      # 运行单元测试（非监听模式）
+pnpm test:ui       # 启动 Vitest UI 界面
+```
+
+### 测试文件位置
+
+- 测试文件命名：`*.test.ts` 或 `*.test.tsx`
+- 位置：与被测试文件同目录，如 `src/lib/utils.test.ts`
+
+### 示例
+
+```typescript
+import { describe, expect, it } from "vitest";
+import { cn } from "./utils";
+
+describe("cn utility function", () => {
+  it("should merge class names correctly", () => {
+    const result = cn("px-2", "py-4");
+    expect(result).toBe("px-2 py-4");
+  });
+});
+```
+
+## 组件测试
+
+### 概述
+
+组件测试使用 React Testing Library，专注于测试组件的用户交互行为，而不是实现细节。
+
+### 测试原则
+
+- 测试用户能看到和交互的内容
+- 避免测试实现细节
+- 使用语义化的查询方法（如 `getByRole`、`getByText`）
+- 模拟真实的用户行为
+
+### 常用 API
+
+```typescript
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+// 渲染组件
+render(<MyComponent />);
+
+// 查询元素
+screen.getByRole('button', { name: /submit/i });
+screen.getByText('Hello World');
+screen.getByLabelText('Username');
+
+// 用户交互
+await userEvent.click(button);
+await userEvent.type(input, 'test text');
+```
+
+### 测试文件示例
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Button } from './button';
+
+describe('Button Component', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByRole('button', { name: /click me/i })).toBeInTheDocument();
+  });
+
+  it('handles click events', async () => {
+    const handleClick = vi.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+
+    await userEvent.click(screen.getByRole('button'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+## 端到端测试
+
+### 概述
+
+端到端测试使用 Playwright 模拟真实用户在浏览器中的完整操作流程，测试应用的整体功能。
+
+### 配置文件
+
+- `playwright.config.ts`：Playwright 配置文件
+- 测试目录：`./tests`
+- 支持的浏览器：Chromium、Firefox、WebKit
+- 报告格式：HTML
+
+### 环境设置
+
+首次运行需要安装浏览器：
+
+```bash
+pnpm exec playwright install
+```
+
+### 运行命令
+
+```bash
+pnpm e2e           # 运行所有端到端测试
+pnpm e2e:ui        # 启动 Playwright UI 模式
+pnpm e2e:headed    # 有界面模式运行测试（可以看到浏览器）
+pnpm e2e:debug     # 调试模式运行测试
+pnpm e2e:report    # 查看测试报告
+```
+
+### 测试文件位置
+
+- 测试文件命名：`*.spec.ts`
+- 位置：`tests/` 目录下
+
+### 示例
+
+```typescript
+import { expect, test } from "@playwright/test";
+
+test("has title", async ({ page }) => {
+  await page.goto("https://playwright.dev/");
+  await expect(page).toHaveTitle(/Playwright/);
+});
+```
+
+### 具体测试
+
+#### 手机号注册流程
+
+**测试文件**：`tests/auth/signup/phone.spec.ts`
+
+**测试内容**：
+
+1. **用户协议模态框流程**
+   - 页面加载时自动显示协议模态框
+   - 点击"同意并继续"后关闭模态框并进入注册流程
+   - 点击"不同意"后跳转到首页
+   - 点击关闭按钮(X)后跳转到首页
+
+2. **手机验证流程**
+   - 空手机号验证（应显示错误）
+   - 无效手机号格式验证（少于11位）
+   - 发送验证码成功后显示倒计时（60秒）
+   - 倒计时期间按钮禁用
+   - 无效验证码格式验证（非6位数字）
+   - 提交前必须同意服务协议
+
+3. **密码设置流程**
+   - 显示所有密码要求（8位字符、大写字母、小写字母、数字）
+   - 密码长度验证（至少8位）
+   - 密码必须包含大写字母验证
+   - 密码必须包含小写字母验证
+   - 密码必须包含数字验证
+   - 两次密码输入必须一致验证
+   - 实时显示密码要求满足状态（✓/✗图标）
+
+4. **完整注册流程**
+   - 从协议同意到注册完成的端到端测试
+   - 表单状态在步骤间保持
+
+**重要提示**：
+
+- 测试环境下**不会消耗阿里云短信额度**
+- Playwright 会**自动启动和关闭开发服务器**，无需手动运行 `pnpm dev`
+- 配置了 `ENABLE_ALIYUN_SMS=false`，短信验证码仅在控制台模拟输出
+- 完整流程测试需要模拟 OTP 验证，当前使用示例验证码 `123456`
+
+### 常用 API
+
+```typescript
+// 页面导航
+await page.goto("/login");
+
+// 元素交互
+await page.click('button[type="submit"]');
+await page.fill('input[name="username"]', "testuser");
+await page.selectOption("select", "option1");
+
+// 断言
+await expect(page).toHaveTitle("Expected Title");
+await expect(page.locator(".success-message")).toBeVisible();
+await expect(page.locator("input")).toHaveValue("expected value");
+
+// 等待
+await page.waitForSelector(".loading-spinner", { state: "hidden" });
+await page.waitForURL("/dashboard");
+```
+
+## CI/CD 集成
+
+### GitHub Actions
+
+项目配置了 GitHub Actions 自动运行 Playwright 测试：
+
+- 触发条件：推送到 `main` 或 `develop` 分支，以及 Pull Request
+- 运行环境：Ubuntu Latest
+- 自动安装依赖和浏览器
+- 测试报告作为 artifact 保存 30 天
+
+配置文件：`.github/workflows/playwright.yml`
+
+## 最佳实践
+
+### 通用原则
+
+1. **测试金字塔**：单元测试 > 组件测试 > 端到端测试
+2. **快速反馈**：优先编写快速的单元测试
+3. **真实场景**：端到端测试覆盖关键用户流程
+4. **可维护性**：测试代码也需要保持清晰和可维护
+
+### 单元测试最佳实践
+
+- 每个函数都应该有对应的单元测试
+- 测试边界条件和异常情况
+- 使用描述性的测试名称
+- 保持测试的独立性
+
+### 组件测试最佳实践
+
+- 测试组件的公共 API（props、事件）
+- 测试用户交互行为
+- 避免测试样式和布局细节
+- 使用 `data-testid` 作为最后的查询手段
+
+### 端到端测试最佳实践
+
+- 专注于关键用户流程
+- 使用页面对象模式组织测试代码
+- 避免测试第三方服务
+- 合理使用等待和重试机制
+
+## 调试技巧
+
+### Vitest 调试
+
+```bash
+# 使用 UI 界面调试
+pnpm test:ui
+
+# 在特定测试文件上运行
+pnpm test src/lib/utils.test.ts
+
+# 只运行匹配的测试
+pnpm test --grep "should merge class names"
+```
+
+### Playwright 调试
+
+```bash
+# 调试模式（会暂停执行）
+pnpm e2e:debug
+
+# 有界面模式查看测试执行
+pnpm e2e:headed
+
+# 生成代码
+pnpm exec playwright codegen localhost:3000
+```
+
+## 覆盖率要求
+
+- 单元测试覆盖率目标：> 80%
+- 关键业务逻辑覆盖率：> 90%
+- 新功能必须包含相应测试
+- Bug 修复必须包含回归测试
+
+通过这套完整的测试框架，我们确保代码质量，减少 bug，提高开发效率。

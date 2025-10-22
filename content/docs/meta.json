@@ -1,0 +1,20 @@
+{
+  "title": "需求文档",
+  "pages": [
+    "---介绍---",
+    "index",
+    "techstack",
+    "[ScrollText][Fumadocs文档框架](https://fumadocs.dev)",
+    "---需求文档说明---",
+    "introduction",
+    "overall-description",
+    "functional-requirements",
+    "non-functional-requirements",
+    "---技术文档说明---",
+    "...technical-design",
+    "---项目汇报---",
+    "reports",
+    "---附录---",
+    "...appendix"
+  ]
+}
