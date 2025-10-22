@@ -184,7 +184,6 @@ When you receive a task, you must follow the **"Understand -> Plan -> Execute ->
      - **Task Understanding**: Your restatement and interpretation of my instructions.
      - **Reference Documents**: A list of all key documents you queried during the knowledge retrieval step.
      - **Action Plan**: A step-by-step list with specific roles, broken down based on the DFA workflow.
-     - **Expected Output**: What project files are expected to be created or modified after the plan is executed.
    - **3.2. Notify User**: Output in the chat window: "**Planning generated**. For detailed plan, please see file: `.specs/<task-name>/plan.md`. Please review and modify the file directly as needed. When ready, please tell me '**Continue execution**'."
 
 #### Phase 2: Plan Confirmation & Execution
@@ -218,12 +217,12 @@ You can play the following roles:
 
 | Role               | Name       | Artifact Template                | Work Content                                      |
 | ------------------ | ---------- | -------------------------------- | ------------------------------------------------- |
-| Architect          | Architect  | `.specs/templates/architect.md`  | High-level design, data contracts, tech decisions |
-| Backend Developer  | Backend    | `.specs/templates/backend.md`    | Schema, Server Actions, business logic            |
-| Frontend Developer | Frontend   | `.specs/templates/frontend.md`   | Server/Client Components, UI implementation       |
-| QA Engineer        | QA         | `.specs/templates/qa.md`         | Unit tests, component tests, E2E tests            |
-| Technical Writer   | TechWriter | `.specs/templates/techwriter.md` | Requirements docs, technical docs, API docs       |
-| DevOps Engineer    | DevOps     | `.specs/templates/devops.md`     | CI/CD, deployment config, dev toolchain           |
+| Architect          | architect  | `.specs/templates/architect.md`  | High-level design, data contracts, tech decisions |
+| Backend Developer  | backend    | `.specs/templates/backend.md`    | Schema, Server Actions, business logic            |
+| Frontend Developer | frontend   | `.specs/templates/frontend.md`   | Server/Client Components, UI implementation       |
+| QA Engineer        | qa         | `.specs/templates/qa.md`         | Unit tests, component tests, E2E tests            |
+| Technical Writer   | techwriter | `.specs/templates/techwriter.md` | Requirements docs, technical docs, API docs       |
+| DevOps Engineer    | devops     | `.specs/templates/devops.md`     | CI/CD, deployment config, dev toolchain           |
 
 #### Role Responsibilities
 
@@ -388,55 +387,3 @@ According to lines 45-56 of `content/docs/technical-design/03-coding-standards.m
 2. Add an API route → Run `pnpm api:generate` to check OpenAPI generation
 3. Write a test → Run `pnpm test [file]` to check test passes
 4. Complete a feature module → Run `pnpm build` to check overall compilation
-
-## Technical Architecture Key Points
-
-> Quick reference technical points, please consult relevant documentation for details.
-
-### Next.js 15 App Router Data Flow
-
-- **Server Component**: Directly fetch data, pass down to Client Component
-- **Mutation Operations**: Use Server Actions (`src/app/(frontend)/[route]/actions.ts`)
-- **Client Component**: Add `"use client"` directive to components that need interaction
-
-### Database (Drizzle ORM + PostgreSQL)
-
-- **Schema Location**: `src/lib/db/schema/`
-- **Naming Convention**: camelCase (field names)
-- **Relationship Definition**: Use `relations()` function
-- **Migration Commands**: `pnpm db:generate` → `pnpm db:push`
-
-### API Development (OpenAPI 3.0)
-
-- **Route Location**: `src/app/api/[route]/route.ts`
-- **Type Definitions**: `src/types/api/[module].ts`
-- **Response Format**: Use `ApiResponse` utility class (`src/lib/utils/api-response.ts`)
-- **Validation**: Use Zod Schema
-- **Documentation Generation**: `pnpm api:generate`
-
-### Testing Framework
-
-- **Unit Tests**: Vitest (`pnpm test`)
-- **Component Tests**: React Testing Library
-- **E2E Tests**: Playwright (`pnpm e2e`)
-- **Coverage Goal**: > 80%
-
-### Code Standards
-
-- **Linter**: ESLint (`pnpm lint`)
-- **Formatter**: Prettier (auto-format)
-- **Commit Convention**: Conventional Commits (enforced by Commitlint)
-- **Import Alias**: Use `@/` pointing to `src/`
-
-## Validation Checklist Quick Reference
-
-For detailed checklist, see: `.specs/validation-checklist.md`
-
-- [ ] Database Schema: `pnpm db:generate` no errors
-- [ ] API Documentation: `pnpm api:generate` generates successfully
-- [ ] TypeScript: `diagnostics` no errors
-- [ ] Compilation: `pnpm build` successful
-- [ ] Code Standards: `pnpm lint` passes
-- [ ] Unit Tests: `pnpm test` passes
-- [ ] E2E Tests: `pnpm e2e` passes
-- [ ] Test Coverage: > 80%
