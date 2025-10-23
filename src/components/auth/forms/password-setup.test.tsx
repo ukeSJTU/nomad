@@ -31,7 +31,7 @@ describe("PasswordSetupForm", () => {
     const onSubmit = vi.fn();
     render(<PasswordSetupForm onSubmit={onSubmit} />);
 
-    expect(screen.getByText("8-18位字符")).toBeInTheDocument();
+    expect(screen.getByText("8-20位字符")).toBeInTheDocument();
     expect(screen.getByText("包含至少一个大写字母")).toBeInTheDocument();
     expect(screen.getByText("包含至少一个小写字母")).toBeInTheDocument();
     expect(screen.getByText(/包含至少一个数字/)).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe("PasswordSetupForm", () => {
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
-      expect(screen.getByText("密码长度必须在8-18位之间")).toBeInTheDocument();
+      expect(screen.getByText("密码至少8位")).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -157,7 +157,7 @@ describe("PasswordSetupForm", () => {
     expect(passwordInput).toHaveAttribute("type", "password");
 
     // Click the eye icon to show password
-    const toggleButtons = screen.getAllByRole("button", { name: "" });
+    const toggleButtons = screen.getAllByRole("button", { name: "显示密码" });
     await user.click(toggleButtons[0]);
 
     expect(passwordInput).toHaveAttribute("type", "text");
@@ -167,6 +167,6 @@ describe("PasswordSetupForm", () => {
     const onSubmit = vi.fn();
     render(<PasswordSetupForm onSubmit={onSubmit} isLoading={true} />);
 
-    expect(screen.getByRole("button", { name: "提交中..." })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "创建中..." })).toBeDisabled();
   });
 });

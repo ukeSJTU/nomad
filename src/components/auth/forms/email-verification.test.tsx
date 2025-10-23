@@ -9,14 +9,16 @@ describe("EmailVerificationForm", () => {
     const onSubmit = vi.fn();
     render(<EmailVerificationForm onSubmit={onSubmit} />);
 
-    expect(screen.getByLabelText("邮箱")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("请输入邮箱")).toBeInTheDocument();
+    expect(screen.getByLabelText("邮箱地址")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("请输入邮箱地址")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("6位数字")).toBeInTheDocument();
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "发送验证码" })
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "下一步" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "下一步，设置密码" })
+    ).toBeInTheDocument();
   });
 
   it("should show validation error for empty email", async () => {
@@ -26,7 +28,7 @@ describe("EmailVerificationForm", () => {
 
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(screen.getByText("请输入邮箱地址")).toBeInTheDocument();
@@ -39,10 +41,13 @@ describe("EmailVerificationForm", () => {
     const onSubmit = vi.fn();
     render(<EmailVerificationForm onSubmit={onSubmit} />);
 
-    await user.type(screen.getByPlaceholderText("请输入邮箱"), "invalid-email");
+    await user.type(
+      screen.getByPlaceholderText("请输入邮箱地址"),
+      "invalid-email"
+    );
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(screen.getByText("请输入有效的邮箱地址")).toBeInTheDocument();
@@ -56,12 +61,12 @@ describe("EmailVerificationForm", () => {
     render(<EmailVerificationForm onSubmit={onSubmit} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.type(screen.getByPlaceholderText("6位数字"), "123");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(screen.getByText("验证码必须是6位数字")).toBeInTheDocument();
@@ -75,12 +80,12 @@ describe("EmailVerificationForm", () => {
     render(<EmailVerificationForm onSubmit={onSubmit} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
@@ -98,7 +103,7 @@ describe("EmailVerificationForm", () => {
     render(<EmailVerificationForm onSubmit={onSubmit} onSendOtp={onSendOtp} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.click(screen.getByRole("button", { name: "发送验证码" }));

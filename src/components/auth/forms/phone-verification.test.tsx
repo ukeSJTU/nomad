@@ -16,7 +16,9 @@ describe("PhoneVerificationForm", () => {
     expect(
       screen.getByRole("button", { name: "发送验证码" })
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "下一步" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "下一步，设置密码" })
+    ).toBeInTheDocument();
   });
 
   it("should show validation error for empty phone number", async () => {
@@ -26,7 +28,7 @@ describe("PhoneVerificationForm", () => {
 
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(screen.getByText("请输入手机号码")).toBeInTheDocument();
@@ -42,7 +44,7 @@ describe("PhoneVerificationForm", () => {
     await user.type(screen.getByPlaceholderText("请输入手机号"), "123");
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(screen.getByText("手机号码至少11位")).toBeInTheDocument();
@@ -58,7 +60,7 @@ describe("PhoneVerificationForm", () => {
     await user.type(screen.getByPlaceholderText("请输入手机号"), "13800138000");
     await user.type(screen.getByPlaceholderText("6位数字"), "123");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(screen.getByText("验证码必须是6位数字")).toBeInTheDocument();
@@ -73,7 +75,7 @@ describe("PhoneVerificationForm", () => {
 
     await user.type(screen.getByPlaceholderText("请输入手机号"), "13800138000");
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(screen.getByText("请同意服务协议和隐私政策")).toBeInTheDocument();
@@ -89,7 +91,7 @@ describe("PhoneVerificationForm", () => {
     await user.type(screen.getByPlaceholderText("请输入手机号"), "13800138000");
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
     await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "下一步" }));
+    await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
@@ -127,6 +129,6 @@ describe("PhoneVerificationForm", () => {
     render(<PhoneVerificationForm onSubmit={onSubmit} isLoading={true} />);
 
     expect(screen.getByPlaceholderText("请输入手机号")).toBeDisabled();
-    expect(screen.getByRole("button", { name: "提交中..." })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "验证中..." })).toBeDisabled();
   });
 });
