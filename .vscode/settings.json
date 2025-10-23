@@ -22,7 +22,7 @@
     "**/.git": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    "**/*.log": true,
+    // "**/*.log": true,
     "**/dist": true,
     "**/build": true,
     "**/.next": true,
