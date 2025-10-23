@@ -120,3 +120,63 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Print styles for legal documents */
+@media print {
+  /* Hide navigation and interactive elements */
+  header nav,
+  footer,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Optimize page layout for printing */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Ensure proper page breaks */
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+
+  section {
+    page-break-inside: avoid;
+  }
+
+  /* Adjust font sizes for print */
+  .print\:text-2xl {
+    font-size: 1.5rem !important;
+  }
+
+  .print\:text-xl {
+    font-size: 1.25rem !important;
+  }
+
+  .print\:prose-sm {
+    font-size: 0.875rem !important;
+  }
+
+  .print\:mb-6 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .print\:mt-8 {
+    margin-top: 2rem !important;
+  }
+
+  /* Show links as text with URL */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Don't show URL for anchor links */
+  a[href^="#"]:after {
+    content: "";
+  }
+}

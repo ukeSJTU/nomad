@@ -31,7 +31,7 @@ describe("PhoneVerificationForm", () => {
     await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
-      expect(screen.getByText("请输入手机号码")).toBeInTheDocument();
+      expect(screen.getByText("请输入手机号")).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });

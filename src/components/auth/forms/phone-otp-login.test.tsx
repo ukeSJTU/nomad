@@ -29,7 +29,7 @@ describe("PhoneOtpLoginForm", () => {
     await user.click(screen.getByRole("button", { name: "登录" }));
 
     await waitFor(() => {
-      expect(screen.getByText("请输入手机号码")).toBeInTheDocument();
+      expect(screen.getByText("请输入手机号")).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });

@@ -9,4 +9,5 @@ export {
   type PaginationConfig,
   type RowAction,
 } from "./data-table-with-actions";
+export { default as Footer } from "./footer";
 export { default as Header } from "./header";

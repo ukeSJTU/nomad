@@ -213,7 +213,7 @@ test.describe("Phone Sign-In Flow", () => {
       await page.getByRole("button", { name: "发送验证码" }).click();
 
       // Should show validation error
-      await expect(page.getByText("请输入手机号码")).toBeVisible();
+      await expect(page.getByText("请输入手机号")).toBeVisible();
     });
 
     test("should send OTP and start countdown", async ({ page }) => {

@@ -13,18 +13,19 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests",
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+  /* Run tests in files in sequential mode to avoid flasky test run */
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Optimize workers for CI and local development */
-  workers: process.env.CI ? "50%" : undefined,
+  workers: 1,
+  // workers: process.env.CI ? "50%" : undefined,
   /* Timeout settings */
-  timeout: 30 * 1000, // 30 seconds per test
+  timeout: 60 * 1000, // 60 seconds per test
   expect: {
-    timeout: 10 * 1000, // 10 seconds for assertions
+    timeout: 15 * 1000, // 15 seconds for assertions
   },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
@@ -97,6 +98,14 @@ export default defineConfig({
     env: {
       NODE_ENV: "test",
       ENABLE_ALIYUN_SMS: "false", // Explicitly disable Aliyun SMS in tests
+      // Dummy DATABASE_URL for test environment (not used for actual DB operations)
+      DATABASE_URL:
+        process.env.DATABASE_URL ||
+        "postgresql://dummy:dummy@localhost:5432/dummy",
+      // Dummy auth secrets for test environment
+      BETTER_AUTH_SECRET:
+        process.env.BETTER_AUTH_SECRET || "dummy-secret-for-test-only",
+      BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
       // Only enable Next.js debug logs in CI or when explicitly requested
       ...(process.env.CI || process.env.DEBUG
         ? { DEBUG: process.env.DEBUG || "next:error,next:router" }

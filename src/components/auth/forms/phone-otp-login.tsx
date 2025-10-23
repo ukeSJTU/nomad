@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -148,19 +149,23 @@ export default function PhoneOtpLoginForm({
                 <div className="space-y-1 leading-none">
                   <FormLabel className="text-sm text-gray-600">
                     同意《
-                    <button
-                      type="button"
+                    <Link
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 underline"
                     >
                       服务协议
-                    </button>
+                    </Link>
                     》和《
-                    <button
-                      type="button"
+                    <Link
+                      href="/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 underline"
                     >
                       隐私政策
-                    </button>
+                    </Link>
                     》
                   </FormLabel>
                   <FormMessage />
