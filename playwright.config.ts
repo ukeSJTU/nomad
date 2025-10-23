@@ -97,6 +97,14 @@ export default defineConfig({
     env: {
       NODE_ENV: "test",
       ENABLE_ALIYUN_SMS: "false", // Explicitly disable Aliyun SMS in tests
+      // Dummy DATABASE_URL for test environment (not used for actual DB operations)
+      DATABASE_URL:
+        process.env.DATABASE_URL ||
+        "postgresql://dummy:dummy@localhost:5432/dummy",
+      // Dummy auth secrets for test environment
+      BETTER_AUTH_SECRET:
+        process.env.BETTER_AUTH_SECRET || "dummy-secret-for-test-only",
+      BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
       // Only enable Next.js debug logs in CI or when explicitly requested
       ...(process.env.CI || process.env.DEBUG
         ? { DEBUG: process.env.DEBUG || "next:error,next:router" }
