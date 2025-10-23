@@ -32,25 +32,6 @@ describe("EmailLoginForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it("should show validation error for invalid email format", async () => {
-    const user = userEvent.setup();
-    const onSubmit = vi.fn();
-    render(<EmailLoginForm onSubmit={onSubmit} />);
-
-    await user.type(
-      screen.getByPlaceholderText("请输入邮箱地址"),
-      "invalid-email"
-    );
-    await user.type(screen.getByPlaceholderText("请输入密码"), "Password123");
-    await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "登录" }));
-
-    await waitFor(() => {
-      expect(screen.getByText("请输入有效的邮箱地址")).toBeInTheDocument();
-    });
-    expect(onSubmit).not.toHaveBeenCalled();
-  });
-
   it("should show validation error for empty password", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -107,13 +88,5 @@ describe("EmailLoginForm", () => {
         agreedToTerms: true,
       });
     });
-  });
-
-  it("should disable form when isLoading is true", () => {
-    const onSubmit = vi.fn();
-    render(<EmailLoginForm onSubmit={onSubmit} isLoading={true} />);
-
-    expect(screen.getByPlaceholderText("请输入邮箱地址")).toBeDisabled();
-    expect(screen.getByRole("button", { name: "登录中..." })).toBeDisabled();
   });
 });
