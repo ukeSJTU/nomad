@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 // Phone verification schema - complete form for step 1
+// Note: Only supports China mainland phone numbers (11 digits)
 export const phoneVerificationSchema = z.object({
-  countryCode: z.string().min(1, "请选择国家/地区"),
   phoneNumber: z
     .string()
     .min(1, "请输入手机号码")
@@ -25,6 +25,7 @@ export const passwordSetupSchema = z
     password: z
       .string()
       .min(8, "密码至少8位")
+      .max(20, "密码最多20位")
       .regex(/[A-Z]/, "密码必须包含至少一个大写字母")
       .regex(/[a-z]/, "密码必须包含至少一个小写字母")
       .regex(/[0-9]/, "密码必须包含至少一个数字"),
@@ -36,8 +37,8 @@ export const passwordSetupSchema = z
   });
 
 // Phone login schema - for password-based login
+// Note: Only supports China mainland phone numbers (11 digits)
 export const phoneLoginSchema = z.object({
-  countryCode: z.string().min(1, "请选择国家/地区"),
   phoneNumber: z
     .string()
     .min(1, "请输入手机号码")
@@ -51,8 +52,8 @@ export const phoneLoginSchema = z.object({
 });
 
 // Phone OTP login schema - for OTP-based login
+// Note: Only supports China mainland phone numbers (11 digits)
 export const phoneOtpLoginSchema = z.object({
-  countryCode: z.string().min(1, "请选择国家/地区"),
   phoneNumber: z
     .string()
     .min(1, "请输入手机号码")
@@ -112,57 +113,3 @@ export type PhoneLoginData = z.infer<typeof phoneLoginSchema>;
 export type PhoneOtpLoginData = z.infer<typeof phoneOtpLoginSchema>;
 export type EmailLoginData = z.infer<typeof emailLoginSchema>;
 export type EmailOtpLoginData = z.infer<typeof emailOtpLoginSchema>;
-
-// Country codes data with search functionality
-export const countryCodes = [
-  {
-    value: "+86",
-    label: "+86 中国大陆",
-    searchTerms: ["+86", "86", "中国", "中国大陆", "china", "mainland"],
-  },
-  {
-    value: "+852",
-    label: "+852 香港",
-    searchTerms: ["+852", "852", "香港", "hong kong", "hk"],
-  },
-  {
-    value: "+853",
-    label: "+853 澳门",
-    searchTerms: ["+853", "853", "澳门", "macau", "macao"],
-  },
-  {
-    value: "+886",
-    label: "+886 台湾",
-    searchTerms: ["+886", "886", "台湾", "taiwan", "tw"],
-  },
-  {
-    value: "+1",
-    label: "+1 美国",
-    searchTerms: ["+1", "1", "美国", "usa", "united states", "america"],
-  },
-  {
-    value: "+44",
-    label: "+44 英国",
-    searchTerms: ["+44", "44", "英国", "uk", "united kingdom", "britain"],
-  },
-  {
-    value: "+81",
-    label: "+81 日本",
-    searchTerms: ["+81", "81", "日本", "japan", "jp"],
-  },
-  {
-    value: "+82",
-    label: "+82 韩国",
-    searchTerms: ["+82", "82", "韩国", "korea", "south korea", "kr"],
-  },
-  {
-    value: "+65",
-    label: "+65 新加坡",
-    searchTerms: ["+65", "65", "新加坡", "singapore", "sg"],
-  },
-  {
-    value: "+60",
-    label: "+60 马来西亚",
-    searchTerms: ["+60", "60", "马来西亚", "malaysia", "my"],
-  },
-] as const;

@@ -70,8 +70,8 @@ export default function PasswordSetupForm({
   // Each requirement shows a check/x icon based on current password input
   const requirements = [
     {
-      label: "8-18位字符", // 8-18 characters
-      met: password.length >= 8 && password.length <= 18,
+      label: "8-20位字符", // 8-20 characters
+      met: password.length >= 8 && password.length <= 20,
     },
     {
       label: "包含至少一个大写字母", // Contains at least one uppercase letter
