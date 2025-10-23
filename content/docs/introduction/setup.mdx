@@ -1,0 +1,150 @@
+---
+title: 环境配置
+description: Nomad 项目的开发环境配置指南
+icon: Settings
+---
+
+## 前置要求
+
+在开始之前，请确保你的系统已安装以下软件：
+
+- **Node.js**: 20.15.0 或更高版本
+- **pnpm**: 10.0.0 或更高版本
+- **PostgreSQL**: 15 或更高版本（用于数据库）
+
+<Callout type="info">
+你可以使用 `node --version` 和 `pnpm --version` 命令检查已安装的版本。
+</Callout>
+
+## 环境安装
+
+### 一键配置（推荐）
+
+对于新开发者或快速开始，请使用我们的自动化配置脚本：
+
+```bash
+git clone https://github.com/ukeSJTU/nomad.git
+cd nomad
+
+# 运行自动化配置脚本
+pnpm setup:dev
+```
+
+该命令将自动完成：
+
+- 验证 Node.js 和 pnpm 版本
+- 安装所有项目依赖
+- 配置 Playwright 测试浏览器
+- 设置 Git hooks
+- 从模板创建 `.env` 文件
+- 验证开发环境
+
+配置完成后，请按照终端中显示的后续步骤操作。
+
+
+### 手动环境配置（可选）
+
+如果你希望手动配置或需要更多控制：
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/ukeSJTU/nomad.git
+cd nomad
+
+# 2. 安装依赖
+pnpm install
+
+# 3. 安装 Playwright 浏览器
+pnpm exec playwright install
+
+# 4. 设置 Git hooks
+pnpm prepare
+
+# 5. 创建环境配置文件
+cp .env.example .env
+```
+
+### 配置环境变量
+
+配置完成后，你**必须**配置 `.env` 文件：
+
+```bash
+# 编辑 .env 文件并设置必需的变量
+# 最重要的是: DATABASE_URL
+```
+
+### 创建数据库
+
+如果使用 PostgreSQL（推荐）：
+
+```bash
+createdb nomad
+```
+
+然后推送数据库架构：
+
+```bash
+pnpm db:push
+```
+
+### 填充数据库（可选）
+
+为开发环境填充示例数据：
+
+```bash
+pnpm db:seed
+```
+
+这将创建以下示例数据：
+
+- 机场（12 个主要国际机场）
+- 航空公司（10 家主要航空公司）
+- 航班（50 个不同状态的航班）
+- 座位舱位（经济舱、超级经济舱、商务舱、头等舱）
+
+### 启动开发服务器
+
+```bash
+# 启动开发服务器
+pnpm dev
+```
+
+在浏览器中打开 [http://localhost:3000](http://localhost:3000) 查看应用。
+
+## 常见问题
+
+### 数据库连接失败
+
+如果遇到数据库连接问题，请检查：
+
+1. PostgreSQL 服务是否正在运行
+2. `.env` 文件中的 `DATABASE_URL` 是否正确配置
+3. 数据库用户是否有足够的权限
+
+### pnpm 安装失败
+
+如果 pnpm 安装依赖时失败，可以尝试：
+
+```bash
+# 清理缓存
+pnpm store prune
+
+# 重新安装
+pnpm install
+```
+
+### 端口被占用
+
+如果 3000 端口已被占用，你可以指定其他端口：
+
+```bash
+PORT=3001 pnpm dev
+```
+
+## 下一步
+
+环境配置完成后，你可以：
+
+- 查看[技术栈文档](/docs/introduction/techstack)了解项目使用的技术
+- 阅读[编码规范](/docs/technical-design/coding-standards)了解代码风格要求
+- 查看[Git 工作流程](/docs/technical-design/git-workflow)了解如何协作开发
