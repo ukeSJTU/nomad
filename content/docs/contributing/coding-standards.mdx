@@ -1,0 +1,117 @@
+---
+title: 开发规范
+icon: ClipboardCheck
+---
+
+## 目录结构
+
+import { File, Files, Folder } from "fumadocs-ui/components/files";
+
+```files
+src/
+├── app/                    # Next.js App Router 页面
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── [路由目录]/
+├── components/            # 自定义组件
+│   ├── ui/               # shadcn/ui 组件（不要手动修改）
+│   ├── common/           # 通用组件
+│   └── [功能域]/         # 按功能域组织
+│       ├── forms/
+│       └── index.ts      # 统一导出
+├── hooks/                # React Hooks
+├── lib/                  # 核心配置
+│   ├── db/              # 数据库配置
+│   ├── schema/          # 数据库 schema
+│   └── utils.ts
+├── types/               # TypeScript 类型定义
+│   └── index.ts
+└── utils/               # 工具函数
+```
+
+## 导入规范
+
+### 使用路径别名
+
+```typescript
+// 推荐
+import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils";
+
+// 避免
+import { Button } from "../../../components/ui/button";
+```
+
+### 导入顺序
+
+```typescript
+// 1. Node.js 内置模块
+import path from "path";
+
+// 2. 外部依赖
+import React from "react";
+import { NextRequest } from "next/server";
+
+// 3. 内部模块（@/ 别名）
+import { Button } from "@/components/ui/button";
+
+// 4. 相对导入
+import "./styles.css";
+```
+
+## 命名规范
+
+| 类型 | 规范 | 示例 |
+| :--- | :--- | :--- |
+| 文件 | kebab-case | `user-profile.tsx` |
+| 变量/函数 | camelCase | `userName`, `handleSubmit()` |
+| 常量 | UPPER_SNAKE_CASE | `API_BASE_URL` |
+| 类型/接口 | PascalCase | `UserProfile`, `ApiResponse` |
+| 组件 | PascalCase | `UserProfile`, `SignUpForm` |
+| 测试文件 | `*.test.ts` | `utils.test.ts` |
+
+## Schema 和类型
+
+### 数据库 Schema
+
+```files
+src/lib/schema/
+├── users.ts
+├── posts.ts
+└── index.ts
+```
+
+### 数据验证和类型
+
+```files
+src/types/
+├── api.ts          # API 类型
+├── auth.ts         # 认证类型和 Zod schemas
+└── index.ts
+```
+
+示例：
+
+```typescript
+// src/types/auth.ts
+import { z } from "zod";
+
+export const SignUpSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export type SignUpData = z.infer<typeof SignUpSchema>;
+```
+
+## 最佳实践
+
+- **TypeScript**：使用严格模式，避免 `any`，使用 Zod 验证
+- **组件**：保持单一职责，优先使用组合
+- **导入导出**：优先使用命名导出，避免循环依赖
+- **目录层级**：不超过 3-4 层嵌套
+
+<Callout type="info">
+代码质量工具（ESLint、Prettier、Husky）已通过 `pnpm setup:dev` 配置完成。
+</Callout>

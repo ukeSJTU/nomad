@@ -1,0 +1,101 @@
+---
+title: 贡献指南
+description: 参与 Nomad 项目开发的快速指南
+icon: GitPullRequest
+---
+
+感谢你对 Nomad 项目的贡献！
+
+<Callout type="info">
+开始前请先完成[环境配置](/docs/introduction/setup)。
+</Callout>
+
+## 开发流程
+
+### 1. 创建功能分支
+
+```bash
+git checkout -b feat/your-feature-name  # 新功能
+git checkout -b fix/your-bug-fix        # Bug修复
+git checkout -b docs/update-readme      # 文档更新
+```
+
+### 2. 开发和测试
+
+```bash
+pnpm test                          # 单元测试
+pnpm e2e                           # E2E测试
+pnpm lint                          # 代码检查
+pnpm format                        # 格式化
+```
+
+### 3. 提交代码
+
+遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
+
+```bash
+git add .
+git commit -m "feat: add user authentication"
+```
+
+常用提交类型：`feat` | `fix` | `docs` | `style` | `refactor` | `test` | `chore`
+
+### 4. 推送和创建 PR
+
+```bash
+git push origin feat/your-feature-name
+```
+
+在 GitHub 上创建 PR，填写变更描述和相关 issue。
+
+## 代码规范
+
+完整的代码规范请参考[开发规范文档](/docs/contributing/coding-standards)。
+
+核心原则：
+- 使用 TypeScript 严格模式，避免 `any` 类型
+- 使用函数组件和 Hooks
+- 使用 Tailwind CSS 和 shadcn/ui
+- 遵循响应式设计优先原则
+
+## 测试要求
+
+- ✅ 新功能必须包含单元测试
+- ✅ Bug 修复需要添加回归测试
+- ✅ 保持测试覆盖率 > 80%
+- ✅ E2E 测试覆盖关键用户流程
+
+详细指南请参考[测试框架文档](/docs/technical-design/06-testing-framework)。
+
+## 代码审查
+
+### PR 作者
+
+- 确保 PR 描述清晰，说明变更原因
+- 关联相关 issue（使用 `Closes #123`）
+- 保持 PR 大小合理（< 500 行）
+- 确保所有 CI 检查通过
+
+### Reviewer
+
+- 提供建设性反馈
+- 关注代码质量、性能和安全性
+- 检查测试覆盖率
+- 验证是否符合项目规范
+
+## 获取帮助
+
+- 📝 创建 issue 提问
+- 💬 在 PR 中留言讨论
+- 📧 联系项目维护者
+
+## 相关文档
+
+- [环境配置](/docs/introduction/setup) - 开发环境配置
+- [开发规范](/docs/contributing/coding-standards) - 代码规范
+- [Git 工作流](/docs/contributing/git-workflow) - 分支管理和提交规范
+- [测试框架](/docs/technical-design/06-testing-framework) - 测试策略
+
+---
+
+再次感谢你的贡献！🚀

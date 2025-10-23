@@ -1,0 +1,178 @@
+---
+title: 业务流程图
+description: 通过可视化的流程图，直观地展示用户完成核心任务的完整路径和步骤。
+icon: Workflow
+---
+
+<Callout title="页面内容" type="info">
+  本页面旨在通过流程图的形式，清晰地展现用户在使用我们平台时所经历的核心业务路径。与功能列表不同，流程图能够揭示各个功能之间的动态联系和用户的操作顺序。这有助于团队在开发前识别出潜在的流程断点或不合理的步骤，确保用户旅程的顺畅与直观，并为后续的系统设计提供宏观指导。
+</Callout>
+
+本节将以流程图的形式，呈现平台最核心的两个业务流程。这些流程图主要关注用户在“理想路径 (Happy Path)”下的操作步骤。
+
+## 核心流程一：用户注册与登录
+
+此流程描绘了新用户如何创建账户，以及现有用户如何访问其账户的两种主要方式。
+
+### 流程图
+
+<Mermaid
+  chart="
+  flowchart TD
+  Start([开始: 用户访问平台首页]) --> ShowButtons[显示登录和注册按钮]
+  ShowButtons --> Decision1{用户选择操作?}
+  
+  %% 注册流程
+  Decision1 -->|选择注册| RegPage[进入注册页面]
+  RegPage --> RegInput[输入手机号、密码并获取验证码]
+  RegInput --> ValidFormat{信息格式是否有效?}
+  ValidFormat -->|否| FormatError[提示格式错误]
+  FormatError --> RegInput
+  ValidFormat -->|是| SendCode[模拟发送验证码]
+  SendCode --> InputCode[用户输入验证码]
+  InputCode --> CheckCode{验证码是否正确?}
+  CheckCode -->|否| CodeError[提示验证码错误]
+  CodeError --> InputCode
+  CheckCode -->|是| CreateAccount[系统创建用户账户<br/>提示注册成功]
+  CreateAccount --> LoginOrCenter[引导至登录或<br/>直接进入用户中心]
+  
+  %% 登录流程
+  Decision1 -->|选择登录| LoginPage[进入登录页面]
+  LoginPage --> LoginMethod{选择登录方式?}
+  
+  %% 密码登录
+  LoginMethod -->|密码登录| PwdInput[输入手机号/邮箱和密码]
+  PwdInput --> CheckPwd{凭证是否正确?}
+  CheckPwd -->|否| PwdError[提示错误]
+  PwdError --> PwdInput
+  CheckPwd -->|是| LoginSuccess[登录成功]
+  
+  %% 验证码登录
+  LoginMethod -->|验证码登录| CodeLoginInput[输入手机号并获取验证码]
+  CodeLoginInput --> CodeLoginValid{信息格式是否有效?}
+  CodeLoginValid -->|否| CodeLoginFormatError[提示格式错误]
+  CodeLoginFormatError --> CodeLoginInput
+  CodeLoginValid -->|是| SendLoginCode[发送验证码]
+  SendLoginCode --> InputLoginCode[用户输入验证码]
+  InputLoginCode --> CheckLoginCode{验证码是否正确?}
+  CheckLoginCode -->|否| LoginCodeError[提示验证码错误]
+  LoginCodeError --> InputLoginCode
+  CheckLoginCode -->|是| LoginSuccess
+  
+  %% GitHub登录
+  LoginMethod -->|GitHub登录| GitHubRedirect[跳转至GitHub授权页]
+  GitHubRedirect --> GitHubAuth[用户在GitHub确认授权]
+  GitHubAuth --> CheckAuth{授权成功?}
+  CheckAuth -->|否| AuthFail[返回登录页并提示]
+  AuthFail --> LoginPage
+  CheckAuth -->|是| LoginSuccess
+  
+  %% 结束
+  LoginSuccess --> End([结束: 进入用户中心或返回之前页面])
+  LoginOrCenter --> End"
+/>
+
+### 文字描述
+
+1.  **(开始)** 用户访问平台首页。
+2.  用户看到“登录”和“注册”按钮。
+3.  **(决策)** 用户选择操作？
+    * **选择“注册” ->**
+        1.  进入注册页面。
+        2.  用户输入手机号、密码，并获取验证码。
+        3.  **(决策)** 信息格式是否有效？
+            * 否：提示格式错误，流程停留在当前页面。
+            * 是：(模拟)发送验证码。
+        4.  用户输入收到的验证码。
+        5.  **(决策)** 验证码是否正确？
+            * 否：提示验证码错误。
+            * 是：系统创建用户账户，提示“注册成功”。
+        6.  流程引导至“登录”环节或直接进入用户中心。
+    * **选择“登录” ->**
+        1.  进入登录页面。
+        2.  **(决策)** 用户选择何种登录方式？
+            * **选择“密码登录”:**
+                1.  输入手机号/邮箱和密码。
+                2.  **(决策)** 凭证是否正确？
+                    * 否：提示错误。
+                    * 是：登录成功。
+            * **选择“验证码登录”:** (流程类似注册)
+            * **选择“GitHub登录”:**
+                1.  跳转至GitHub授权页。
+                2.  用户在GitHub上确认授权。
+                3.  **(决策)** 授权成功？
+                    * 否：返回登录页并提示。
+                    * 是：登录成功。
+4.  **(结束)** 用户成功登录，进入用户个人中心或返回之前页面。
+
+---
+
+## 核心流程二：机票搜索与预订
+
+此流程是平台的核心价值所在，描绘了从产生出行意向到最终完成机票预订的完整闭环。
+
+### 流程图
+
+<Mermaid chart="
+flowchart TD
+  Start([开始: 用户位于首页或机票搜索页]) --> SearchInput[输入出发地、目的地、日期等信息]
+  SearchInput --> ClickSearch[点击搜索]
+  ClickSearch --> ShowResults[系统展示航班结果列表页]
+  ShowResults --> BrowseFilter[用户浏览、排序、筛选航班]
+  
+  BrowseFilter --> Decision1{找到满意的航班?}
+  Decision1 -->|否 - 继续筛选| BrowseFilter
+  Decision1 -->|否 - 修改条件| SearchInput
+  Decision1 -->|是| ClickFlight[点击该航班]
+  
+  ClickFlight --> FlightDetail[系统展示航班详情页<br/>时间、价格、退改签政策等]
+  FlightDetail --> ConfirmInfo[用户确认信息]
+  ConfirmInfo --> ClickBook[点击预订]
+  
+  ClickBook --> OrderPage[系统进入订单填写页]
+  OrderPage --> CheckLogin{用户是否已登录?}
+  CheckLogin -->|否| LoginPrompt[提示用户登录/注册]
+  LoginPrompt --> LoginProcess[完成登录/注册]
+  LoginProcess --> OrderPage
+  CheckLogin -->|是| SelectPassenger[选择或填写旅客信息]
+  
+  SelectPassenger --> SubmitOrder[点击提交订单]
+  SubmitOrder --> CreateOrder[系统创建订单<br/>状态: 待支付]
+  CreateOrder --> PaymentPage[系统进入支付确认页<br/>展示订单摘要]
+  
+  PaymentPage --> SelectPayment[选择支付方式<br/>如平台余额]
+  SelectPayment --> ConfirmPay[点击确认支付]
+  ConfirmPay --> ProcessPayment[系统模拟处理支付<br/>更新订单状态为已支付/出票中]
+  
+  ProcessPayment --> End([结束: 展示预订成功页面<br/>可在订单管理中查看详情])"
+/>
+
+### 文字描述
+
+1.  **(开始)** 用户位于首页或机票搜索页。
+2.  用户输入“出发地”、“目的地”、“日期”等信息，点击“搜索”。
+3.  系统展示“航班结果列表页”。
+4.  用户在列表页进行浏览、排序、筛选。
+5.  **(决策)** 找到满意的航班？
+    * 否：返回第4步，或返回第2步修改搜索条件。
+    * 是：点击该航班。
+6.  系统展示“航班详情页”，包含更详细的时间、价格、退改签政策等。
+7.  用户确认信息后，点击“预订”。
+8.  系统进入“订单填写页”。
+9.  **(决策)** 用户是否已登录？
+    * 否：提示用户登录/注册，完成后返回本流程。
+    * 是：继续。
+10. 用户选择或填写旅客信息。
+11. 用户点击“提交订单”，系统创建订单（状态：待支付）。
+12. 系统进入“支付确认页”，展示订单摘要。
+13. 用户选择支付方式（如平台余额），点击“确认支付”。
+14. 系统（模拟）处理支付，并更新订单状态为“已支付 / 出票中”。
+15. **(结束)** 系统展示“预订成功”页面，并告知用户可在订单管理中查看详情。
+
+## 核心流程三：订单管理
+
+TODO：待补充
+
+### 流程图
+
+### 文字描述

@@ -1,0 +1,42 @@
+---
+title: 功能需求
+description: 详细的功能模块说明，包括用户故事和验收标准
+icon: Package
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+本章节详细描述系统的所有功能需求，按照用户、机票、订单和支付模块组织。
+
+## 需求统计
+
+| 模块 | 功能点数 | 用户故事数 | 验收标准数 | MoSCoW分布 |
+|------|---------|-----------|-----------|-----------|
+| 用户模块 | 6 | 16 | 34 | Must: 4, Should: 2 |
+| 机票模块 | 3 | 11 | 15 | Must: 3 |
+| 订单模块 | 2 | 5 | 9 | Must: 2 |
+| 支付模块 | 2 | 2 | 5 | Must: 1, Should: 1 |
+| **总计** | **13** | **34** | **63** | **Must: 10, Should: 3** |
+
+<Cards>
+  <Card 
+    href="./functional-requirements/user-module" 
+    title="用户模块"
+    description="注册、登录、个人信息、常用旅客、密码管理"
+  />
+  <Card 
+    href="./functional-requirements/flight-module" 
+    title="机票模块"
+    description="航班搜索、筛选排序、航班预订"
+  />
+  <Card 
+    href="./functional-requirements/order-module" 
+    title="订单模块"
+    description="订单列表、筛选、详情查看与操作"
+  />
+  <Card 
+    href="./functional-requirements/payment-module" 
+    title="支付模块"
+    description="模拟支付、模拟退款"
+  />
+</Cards>

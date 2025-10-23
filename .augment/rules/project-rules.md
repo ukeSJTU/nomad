@@ -1,3 +1,7 @@
+---
+type: "manual"
+---
+
 # AI Agent Working Guide
 
 > This file serves as the navigation hub for AI Agent tools, designed to quickly locate project documentation, understand workflows, prevent hallucinations, and reduce context overhead.

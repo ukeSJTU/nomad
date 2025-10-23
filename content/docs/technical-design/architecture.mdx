@@ -1,0 +1,70 @@
+---
+title: 架构概述
+icon: Network
+---
+
+## 核心目标
+
+本项目采用现代化全栈架构,核心目标包括:
+
+- **全栈整合**: 使用 Next.js 15 App Router 的 Server Components 和 Server Actions,简化传统 API 层
+- **端到端类型安全**: 通过 TypeScript + Drizzle ORM + Zod + React 19 构建完整类型链路
+- **Serverless 架构**: 前端部署在 Vercel,数据库使用 Neon DB,实现按需伸缩和免运维
+- **开发者体验**: 使用 pnpm、ESLint、Prettier、Husky 等工具保证代码质量
+
+## 系统架构图
+
+系统主要组件及交互关系:
+
+<Mermaid chart="
+graph TD
+    subgraph '用户端'
+        A[用户浏览器]
+    end
+
+    subgraph 'Vercel 平台'
+        B(Next.js 应用)
+        B -- '执行 Server Actions' --> C{服务逻辑}
+        C -- '使用 Drizzle ORM' --> D[(Neon DB<br>PostgreSQL)]
+        C -- '调用 API' --> E[Resend 邮件服务]
+        C -- '调用 API' --> F[阿里云 SMS 服务]
+    end
+
+    A -- '1. 发起HTTP请求' --> B
+    B -- '2. 渲染UI / 触发Action' --> A"
+
+/>
+
+
+## 数据流示例
+
+以用户手机注册流程为例:
+
+1. **前端**: 用户在 Shadcn/UI + Tailwind CSS 表单中输入信息
+2. **Server Action**: 点击注册触发 `registerUserAction` 函数
+3. **服务端处理**:
+   - 使用 Zod 验证表单数据
+   - 调用 Better Auth 处理认证逻辑
+   - 通过阿里云 SMS 发送验证码
+4. **数据库**: Better Auth 通过 Drizzle Adapter 将用户信息存入 Neon DB
+5. **响应**: 返回结果对象到前端更新 UI
+
+## 关键技术选型
+
+| 技术 | 选择理由 |
+|------|---------|
+| **Next.js 15 App Router** | Server Components 提供更好的性能和代码组织,Server Actions 简化数据操作 |
+| **Drizzle ORM** | 轻量级、TypeScript 集成优秀、贴近原生 SQL |
+| **Neon DB** | Serverless PostgreSQL,支持数据库分支功能,便于团队开发 |
+| **Shadcn/UI** | 可复制的组件代码,完全控制样式,最小化打包体积 |
+
+
+## 重要技术决策与理由 
+
+- **框架 - Next.js 15 App Router:** 我们选择 App Router 是为了利用其最新的 Server Components 特性，它允许我们将数据获取和服务端逻辑与UI组件就近放置，从而获得更好的性能和更内聚的代码结构。Server Actions 进一步简化了数据变更操作。
+
+- **ORM - Drizzle ORM:** 相较于其他ORM，Drizzle 以其轻量、贴近原生SQL的语法和无与伦比的TypeScript集成而著称。它无需重量级的代码生成步骤，能完美实现我们“端到端类型安全”的核心理念。
+
+- **数据库托管 - Neon DB:** 作为一个 Serverless PostgreSQL 平台，Neon 与 Vercel 的部署模型天生一对。其“数据库分支 (Branching)”功能允许我们为每个Git分支创建独立的数据库实例，极大地简化了开发和测试流程，避免了团队成员之间的数据干扰。
+
+- **UI策略 - Shadcn/UI:** 我们选择 Shadcn/UI 是因为它并非一个传统的组件“库”，而是一系列我们可以直接复制代码到项目中的组件“配方”。这给予了我们对组件样式和行为的100%控制权，避免了样式覆盖的麻烦，并确保最终打包体积最小化。

@@ -3,17 +3,13 @@
   "pages": [
     "---介绍---",
     "index",
-    "techstack",
-    "[ScrollText][Fumadocs文档框架](https://fumadocs.dev)",
-    "---需求文档说明---",
-    "introduction",
-    "overall-description",
-    "functional-requirements",
-    "non-functional-requirements",
-    "---技术文档说明---",
+    "...introduction",
+    "---需求文档---",
+    "...requirements",
+    "---技术文档---",
     "...technical-design",
-    "---项目汇报---",
-    "reports",
+    "---如何贡献---",
+    "...contributing",
     "---附录---",
     "...appendix"
   ]
