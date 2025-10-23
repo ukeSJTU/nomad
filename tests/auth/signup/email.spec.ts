@@ -58,9 +58,9 @@ test.describe("Email Sign-Up Flow", () => {
       const modal = page.getByRole("dialog");
       await expect(modal).toBeVisible();
 
-      // Verify modal content - check for service agreement text
-      await expect(page.getByText("服务协议")).toBeVisible();
-      await expect(page.getByText("隐私政策")).toBeVisible();
+      // Verify modal content - check for service agreement text within the modal
+      await expect(modal.getByText("服务协议")).toBeVisible();
+      await expect(modal.getByText("个人信息保护政策")).toBeVisible();
     });
 
     test("should close modal and proceed to registration after clicking agree", async ({
