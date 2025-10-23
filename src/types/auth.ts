@@ -5,7 +5,7 @@ import { z } from "zod";
 export const phoneVerificationSchema = z.object({
   phoneNumber: z
     .string()
-    .min(1, "请输入手机号码")
+    .min(1, "请输入手机号")
     .regex(/^[0-9]+$/, "手机号码只能包含数字")
     .min(11, "手机号码至少11位")
     .max(11, "手机号码最多11位"),
@@ -41,7 +41,7 @@ export const passwordSetupSchema = z
 export const phoneLoginSchema = z.object({
   phoneNumber: z
     .string()
-    .min(1, "请输入手机号码")
+    .min(1, "请输入手机号")
     .regex(/^[0-9]+$/, "手机号码只能包含数字")
     .min(11, "手机号码至少11位")
     .max(11, "手机号码最多11位"),
@@ -56,7 +56,7 @@ export const phoneLoginSchema = z.object({
 export const phoneOtpLoginSchema = z.object({
   phoneNumber: z
     .string()
-    .min(1, "请输入手机号码")
+    .min(1, "请输入手机号")
     .regex(/^[0-9]+$/, "手机号码只能包含数字")
     .min(11, "手机号码至少11位")
     .max(11, "手机号码最多11位"),

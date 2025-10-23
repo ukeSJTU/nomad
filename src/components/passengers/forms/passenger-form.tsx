@@ -348,7 +348,7 @@ export default function PassengerForm({
                       <Input
                         {...field}
                         type="tel"
-                        placeholder="请输入手机号码"
+                        placeholder="请输入手机号"
                         maxLength={11}
                       />
                     </FormControl>

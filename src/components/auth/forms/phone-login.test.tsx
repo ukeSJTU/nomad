@@ -48,7 +48,7 @@ describe("PhoneLoginForm", () => {
 
     // Should show validation error
     await waitFor(() => {
-      expect(screen.getByText("请输入手机号码")).toBeInTheDocument();
+      expect(screen.getByText("请输入手机号")).toBeInTheDocument();
     });
 
     // onSubmit should not be called
