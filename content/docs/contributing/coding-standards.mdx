@@ -320,6 +320,20 @@ export type User = {
 };
 ```
 
+## 代码质量工具
+
+项目使用以下工具来保持代码质量：
+
+- **ESLint**: 代码检查工具，支持 TypeScript
+- **Prettier**: 代码格式化工具
+- **Husky**: Git 钩子管理器
+- **lint-staged**: 对暂存文件运行代码检查
+- **commitlint**: 规范化提交信息验证（遵循 Conventional Commits 规范）
+
+<Callout type="info">
+这些工具已经通过 `pnpm setup:dev` 自动配置完成。每次提交代码时，会自动运行代码检查和格式化。
+</Callout>
+
 ## 最佳实践
 
 ### 1. 保持目录结构的一致性
