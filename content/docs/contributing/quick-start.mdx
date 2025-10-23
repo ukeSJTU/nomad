@@ -1,246 +1,101 @@
 ---
 title: 贡献指南
-description: 参与 Nomad 项目开发的完整指南
+description: 参与 Nomad 项目开发的快速指南
 icon: GitPullRequest
 ---
 
-感谢你对 Nomad 项目的贡献！本文档提供了参与项目开发的完整指南。
+感谢你对 Nomad 项目的贡献！
 
 <Callout type="info">
-请确保你已按照[环境配置文档](/docs/introduction/setup)中的步骤进行配置。
+开始前请先完成[环境配置](/docs/introduction/setup)。
 </Callout>
 
 ## 开发流程
 
-<Callout type="warn">
-**完整的 Git 工作流程请参考**：[Git 工作流文档](/docs/contributing/git-workflow)
-
-该文档包含详细的分支策略、提交规范、代码审查流程、CI/CD 集成以及常见问题解决方案。
-</Callout>
-
-### 开发步骤概览
-
-#### 1. 创建功能分支
+### 1. 创建功能分支
 
 ```bash
-# 功能开发
-git checkout -b feat/your-feature-name
-
-# Bug 修复
-git checkout -b fix/your-bug-fix
-
-# 文档更新
-git checkout -b docs/update-readme
+git checkout -b feat/your-feature-name  # 新功能
+git checkout -b fix/your-bug-fix        # Bug修复
+git checkout -b docs/update-readme      # 文档更新
 ```
 
-#### 2. 开发和测试
-
-在开发过程中，请确保代码质量：
+### 2. 开发和测试
 
 ```bash
-# 运行单元测试
-pnpm test
-
-# 运行端到端测试（首次需要安装浏览器）
-pnpm exec playwright install
-pnpm e2e
-
-# 代码检查
-pnpm lint
-
-# 代码格式化
-pnpm format
+pnpm test                          # 单元测试
+pnpm e2e                           # E2E测试
+pnpm lint                          # 代码检查
+pnpm format                        # 格式化
 ```
 
-<Callout type="info">
-**测试框架说明：**
-- **单元测试**: Vitest + React Testing Library
-- **端到端测试**: Playwright
-- 详细测试指南请参考[测试框架文档](/docs/technical-design/06-testing-framework)
-</Callout>
+### 3. 提交代码
 
-#### 3. 提交代码
-
-我们使用 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
+遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
 
 ```bash
 git add .
 git commit -m "feat: add user authentication"
 ```
 
-<Callout type="tip">
-常用的提交类型：
-- `feat`: 新功能
-- `fix`: Bug 修复
-- `docs`: 文档更新
-- `style`: 代码格式调整
-- `refactor`: 代码重构
-- `test`: 测试相关
-- `chore`: 构建/工具链更新
+常用提交类型：`feat` | `fix` | `docs` | `style` | `refactor` | `test` | `chore`
 
-详细提交规范请参考 [Git 工作流文档](/docs/contributing/git-workflow)
-</Callout>
-
-#### 4. 推送和创建 PR
+### 4. 推送和创建 PR
 
 ```bash
 git push origin feat/your-feature-name
 ```
 
-然后在 GitHub 上创建 Pull Request：
-
-1. 访问 [nomad 仓库](https://github.com/ukeSJTU/nomad)
-2. 点击 "Pull requests" → "New pull request"
-3. 选择你的分支
-4. 填写 PR 描述（包括变更内容、相关 issue 等）
-5. 提交 PR 等待代码审查
-
-<Callout type="info">
-详细的 PR 流程和最佳实践请参考 [Git 工作流文档](/docs/contributing/git-workflow)
-</Callout>
+在 GitHub 上创建 PR，填写变更描述和相关 issue。
 
 ## 代码规范
 
-我们遵循严格的代码规范以保持代码库的一致性和可维护性。
+完整的代码规范请参考[开发规范文档](/docs/contributing/coding-standards)。
 
-<Callout type="tip">
-完整的代码规范请参考[开发规范文档](/docs/contributing/coding-standards)，包括：
-- 目录结构规范
-- 文件命名规范
-- 导入导出规范
-- TypeScript 使用规范
-</Callout>
-
-### TypeScript
-
-- 使用严格的 TypeScript 配置
-- 避免使用 `any` 类型（必要时使用 eslint-disable 注释）
-- 为所有公共 API 提供类型声明
-- 利用 Zod 进行运行时数据验证
-
-### React/Next.js
-
+核心原则：
+- 使用 TypeScript 严格模式，避免 `any` 类型
 - 使用函数组件和 Hooks
-- 遵循 React 最佳实践和性能优化
-- 使用 Next.js 15 的 App Router
-- 合理使用 Server Components 和 Client Components
+- 使用 Tailwind CSS 和 shadcn/ui
+- 遵循响应式设计优先原则
 
-### 样式
+## 测试要求
 
-- 使用 Tailwind CSS 4 进行样式开发
-- 使用 shadcn/ui 组件库
-- 保持组件样式的一致性
-- 响应式设计优先（移动端优先）
-
-## 测试
-
-<Callout type="info">
-详细的测试策略、编写指南和最佳实践请参考[测试框架文档](/docs/technical-design/06-testing-framework)
-</Callout>
-
-### 运行测试
-
-```bash
-# 单元测试
-pnpm test          # 运行所有单元测试（监听模式）
-pnpm test:run      # 运行单元测试（单次运行）
-pnpm test:ui       # 启动 Vitest UI 界面
-pnpm test:coverage # 生成测试覆盖率报告
-
-# 端到端测试
-pnpm e2e           # 运行 Playwright 测试
-pnpm e2e:ui        # 启动 Playwright UI 模式
-pnpm e2e:headed    # 有界面模式运行测试
-pnpm e2e:debug     # 调试模式运行测试
-pnpm e2e:report    # 查看测试报告
-```
-
-### 测试要求
-
-- ✅ 新功能必须包含相应的单元测试
+- ✅ 新功能必须包含单元测试
 - ✅ Bug 修复需要添加回归测试
 - ✅ 保持测试覆盖率 > 80%
-- ✅ 所有测试必须通过才能合并 PR
 - ✅ E2E 测试覆盖关键用户流程
 
-## 文档贡献
-
-文档同样重要！如果你发现文档有问题或需要改进：
-
-- 更新相关的 README 文档
-- 为新功能添加使用示例和说明
-- 更新 API 文档（如适用）
-- 保持文档与代码同步更新
-
-## 报告问题
-
-### 报告 Bug
-
-如果你发现了 bug，请创建一个 issue 并包含以下信息：
-
-- Bug 的详细描述
-- 复现步骤
-- 预期行为 vs 实际行为
-- 环境信息（操作系统、浏览器版本等）
-- 截图或错误日志（如适用）
-
-### 功能建议
-
-如果你有新功能的想法：
-
-- 描述功能的用途和价值
-- 说明使用场景
-- 提供实现思路（如果有）
-- 考虑对现有功能的影响
-
-<Callout type="tip">
-创建 issue 前，请先搜索是否已有相关的 issue 存在。
-</Callout>
+详细指南请参考[测试框架文档](/docs/technical-design/06-testing-framework)。
 
 ## 代码审查
 
-### 作为 PR 作者
+### PR 作者
 
-提交 PR 时请注意：
+- 确保 PR 描述清晰，说明变更原因
+- 关联相关 issue（使用 `Closes #123`）
+- 保持 PR 大小合理（< 500 行）
+- 确保所有 CI 检查通过
 
-- ✅ 确保 PR 描述清晰，说明变更内容和原因
-- ✅ 关联相关的 issue（使用 `Closes #123` 语法）
-- ✅ 保持 PR 大小合理（建议 < 500 行变更）
-- ✅ 及时回应 reviewer 的反馈和建议
-- ✅ 确保所有 CI 检查通过
-- ✅ 解决代码冲突
+### Reviewer
 
-### 作为 Reviewer
-
-进行代码审查时请：
-
-- 提供建设性的反馈
-- 关注代码质量、性能、安全性和可维护性
-- 检查测试覆盖率和测试质量
+- 提供建设性反馈
+- 关注代码质量、性能和安全性
+- 检查测试覆盖率
 - 验证是否符合项目规范
-- 及时回复和审查 PR
-
-<Callout type="info">
-详细的代码审查流程请参考 [Git 工作流文档](/docs/contributing/git-workflow)
-</Callout>
 
 ## 获取帮助
-
-如果你在贡献过程中遇到任何问题，可以：
 
 - 📝 创建 issue 提问
 - 💬 在 PR 中留言讨论
 - 📧 联系项目维护者
-- 📖 查阅项目文档
 
 ## 相关文档
 
-- [环境配置](/docs/introduction/setup) - 开发环境配置指南
-- [技术栈](/docs/introduction/techstack) - 项目技术栈说明
-- [开发规范](/docs/contributing/coding-standards) - 代码规范和最佳实践
+- [环境配置](/docs/introduction/setup) - 开发环境配置
+- [开发规范](/docs/contributing/coding-standards) - 代码规范
 - [Git 工作流](/docs/contributing/git-workflow) - 分支管理和提交规范
-- [测试框架](/docs/technical-design/06-testing-framework) - 测试策略和指南
+- [测试框架](/docs/technical-design/06-testing-framework) - 测试策略
 
 ---
 
-再次感谢你的贡献！每一个 PR 都让 Nomad 变得更好。🚀
+再次感谢你的贡献！🚀
