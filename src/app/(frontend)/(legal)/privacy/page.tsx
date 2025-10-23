@@ -23,7 +23,7 @@ const sections = [
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
       {/* Header */}
       <header className="mb-8 print:mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2 print:text-2xl">
@@ -335,28 +335,6 @@ export default function PrivacyPolicyPage() {
           </p>
         </section>
       </article>
-
-      {/* Footer */}
-      <footer className="mt-12 pt-6 border-t border-gray-200 print:mt-8">
-        <p className="text-sm text-gray-500 text-center">
-          感谢您对 Nomad 的信任，我们将竭诚为您提供安全、可靠的服务。
-        </p>
-        <p className="text-sm text-gray-500 text-center mt-2">
-          相关文档：
-          <Link
-            href="/terms"
-            className="text-blue-600 hover:text-blue-800 underline ml-2"
-          >
-            服务协议
-          </Link>
-          <Link
-            href="/disclaimer"
-            className="text-blue-600 hover:text-blue-800 underline ml-2"
-          >
-            免责声明
-          </Link>
-        </p>
-      </footer>
-    </div>
+    </>
   );
 }

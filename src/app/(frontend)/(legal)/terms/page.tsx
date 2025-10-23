@@ -32,7 +32,7 @@ const sections = [
 
 export default function TermsOfServicePage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
       {/* Header */}
       <header className="mb-8 print:mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2 print:text-2xl">
@@ -321,6 +321,6 @@ export default function TermsOfServicePage() {
           如您对本协议有任何疑问，请联系我们的客服团队。
         </p>
       </footer>
-    </div>
+    </>
   );
 }

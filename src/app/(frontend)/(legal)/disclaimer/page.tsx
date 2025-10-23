@@ -20,7 +20,7 @@ const sections = [
 
 export default function DisclaimerPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
       {/* Header */}
       <header className="mb-8 print:mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2 print:text-2xl">
@@ -219,22 +219,7 @@ export default function DisclaimerPage() {
         <p className="text-sm text-gray-500 text-center">
           如您对本免责声明有任何疑问，请联系我们的客服团队。
         </p>
-        <p className="text-sm text-gray-500 text-center mt-2">
-          相关文档：
-          <Link
-            href="/terms"
-            className="text-blue-600 hover:text-blue-800 underline ml-2"
-          >
-            服务协议
-          </Link>
-          <Link
-            href="/privacy"
-            className="text-blue-600 hover:text-blue-800 underline ml-2"
-          >
-            个人信息保护政策
-          </Link>
-        </p>
       </footer>
-    </div>
+    </>
   );
 }
