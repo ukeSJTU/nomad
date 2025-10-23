@@ -91,7 +91,7 @@ test.describe("Legal Document Pages", () => {
 
       // Verify at least some sections are visible
       const section1 = page.getByRole("heading", {
-        name: /1\.\s*我们如何收集您的个人信息/,
+        name: /2\.\s*我们如何收集您的个人信息/,
       });
       await expect(section1).toBeVisible();
     });
