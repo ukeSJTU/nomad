@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -102,13 +103,23 @@ export default function EmailLoginForm({
               <div className="space-y-1 leading-none">
                 <FormLabel className="text-sm text-gray-600">
                   我已阅读并同意
-                  <a href="/terms" className="text-blue-600 hover:underline">
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline ml-1"
+                  >
                     服务协议
-                  </a>
+                  </Link>
                   和
-                  <a href="/privacy" className="text-blue-600 hover:underline">
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline ml-1"
+                  >
                     隐私政策
-                  </a>
+                  </Link>
                 </FormLabel>
                 <FormMessage />
               </div>
