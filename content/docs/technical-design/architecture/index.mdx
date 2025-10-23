@@ -3,23 +3,18 @@ title: 架构概述
 icon: Network
 ---
 
-## 架构概述 (Architecture Overview)
+## 核心目标
 
-### 1. 核心理念与目标 (Core Philosophy & Goals)
+本项目采用现代化全栈架构,核心目标包括:
 
-本项目旨在构建一个现代化、全栈类型安全、易于维护且具备卓越开发者体验（DX）的Web应用。我们的架构设计遵循以下核心目标：
+- **全栈整合**: 使用 Next.js 15 App Router 的 Server Components 和 Server Actions,简化传统 API 层
+- **端到端类型安全**: 通过 TypeScript + Drizzle ORM + Zod + React 19 构建完整类型链路
+- **Serverless 架构**: 前端部署在 Vercel,数据库使用 Neon DB,实现按需伸缩和免运维
+- **开发者体验**: 使用 pnpm、ESLint、Prettier、Husky 等工具保证代码质量
 
-- **全栈整合 (Full-stack Integration):** 我们将充分利用 **Next.js 15 App Router** 的能力，通过 **Server Components** 和 **Server Actions** 将前后端逻辑紧密结合。这种模式简化了传统的API层，降低了开发复杂性，并允许我们在同一个代码库和语言（TypeScript）中完成所有工作。
+## 系统架构图
 
-- **端到端类型安全 (End-to-End Type Safety):** 类型安全是我们架构的基石。我们将通过 **TypeScript**、**Drizzle ORM** (数据库 schema)、**Zod** (运行时验证) 和 **React 19** (UI)，构建一条从数据库到用户界面的完整类型链路，以在编译阶段捕获尽可能多的错误，提升代码的健壮性。
-
-- **Serverless优先 (Serverless First):** 我们优先采用无服务器架构。前端部署于 **Vercel**，数据库使用 **Neon DB**。这种架构实现了按需伸缩（包括缩减至零）、免运维和成本效益，完美契合课程项目的开发与部署模式。
-
-- **卓越的开发者体验 (**Superior DX): 我们相信优秀的工具能创造优秀的产品。通过 **pnpm**、**ESLint**、**Prettier**、**Husky** 和 **Commitlint** 等工具，我们建立了一套自动化的代码规范、格式化和提交检查流程，以保证团队协作的一致性和高效性。
-
-### 2. 系统架构图 (System Architecture Diagram)
-
-下图展示了系统的主要组件以及它们之间的交互关系：
+系统主要组件及交互关系:
 
 <Mermaid chart="
 graph TD
@@ -40,28 +35,31 @@ graph TD
 
 />
 
-**图解：**
 
-1.  用户通过浏览器与部署在 **Vercel** 上的 **Next.js** 应用进行交互。
-2.  用户的操作（如提交表单）会触发在服务端运行的 **Server Actions**。
-3.  Server Actions 作为服务逻辑的核心，使用 **Drizzle ORM** 与 **Neon DB** 数据库进行数据读写。
-4.  在需要发送邮件（如验证码）或短信时，服务逻辑会分别调用 **Resend** 或 **阿里云** 的外部API。
+## 数据流示例
 
-### 3. 关键组件与数据流说明 (Key Components & Data Flow)
+以用户手机注册流程为例:
 
-以**用户手机注册**的核心流程为例，数据在系统中的流转如下：
+1. **前端**: 用户在 Shadcn/UI + Tailwind CSS 表单中输入信息
+2. **Server Action**: 点击注册触发 `registerUserAction` 函数
+3. **服务端处理**:
+   - 使用 Zod 验证表单数据
+   - 调用 Better Auth 处理认证逻辑
+   - 通过阿里云 SMS 发送验证码
+4. **数据库**: Better Auth 通过 Drizzle Adapter 将用户信息存入 Neon DB
+5. **响应**: 返回结果对象到前端更新 UI
 
-1.  **前端 (Client Component):** 用户在基于 **Shadcn/UI** 和 **Tailwind CSS** 构建的表单中输入手机号、密码等信息。
-2.  **网络边界 (Server Action):** 用户点击“注册”按钮，直接调用一个与表单绑定的 **Server Action** 函数 (`registerUserAction`)。Next.js 框架负责处理底层的RPC调用。
-3.  **服务端 (Server Logic):**
-    - Action 在 Vercel 的 Serverless Function 环境中执行。
-    - 使用 **Zod** 对传入的表单数据进行严格的服务端验证。
-    - 调用 **Better Auth** 库来处理具体的认证逻辑。
-    - 在发送验证码时，调用**阿里云SMS**服务。
-4.  **数据库 (Database):** **Better Auth** 通过其 **Drizzle Adapter**，将经过哈希处理的用户信息和凭证写入 **Neon DB** 的 `users` 表中。
-5.  **响应：** Server Action 执行完毕后，直接向发起调用的前端组件返回一个序列化的结果对象（例如 `{ success: true }` 或 `{ success: false, error: '...' }`），前端组件根据此结果更新UI状态。
+## 关键技术选型
 
-### 4. 重要技术决策与理由 (Key Technical Decisions & Rationale)
+| 技术 | 选择理由 |
+|------|---------|
+| **Next.js 15 App Router** | Server Components 提供更好的性能和代码组织,Server Actions 简化数据操作 |
+| **Drizzle ORM** | 轻量级、TypeScript 集成优秀、贴近原生 SQL |
+| **Neon DB** | Serverless PostgreSQL,支持数据库分支功能,便于团队开发 |
+| **Shadcn/UI** | 可复制的组件代码,完全控制样式,最小化打包体积 |
+
+
+## 重要技术决策与理由 
 
 - **框架 - Next.js 15 App Router:** 我们选择 App Router 是为了利用其最新的 Server Components 特性，它允许我们将数据获取和服务端逻辑与UI组件就近放置，从而获得更好的性能和更内聚的代码结构。Server Actions 进一步简化了数据变更操作。
 

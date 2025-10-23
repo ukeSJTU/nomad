@@ -1,33 +1,33 @@
 ---
-title: 3.3 订单模块
+title: 订单模块
 description: Order Module
 icon: ShoppingCart
 ---
 
-## 3.3 订单模块
+## 订单模块
 
 订单模块包含以下功能：
 
-- [订单列表与筛选](#331-订单列表与筛选-order-list--filtering)
-- [订单详情与操作](#332-订单详情与操作-order-details--actions)
+- [订单列表与筛选](#订单列表与筛选-order-list--filtering)
+- [订单详情与操作](#订单详情与操作-order-details--actions)
 
-### 3.3.1 订单列表与筛选 (Order List & Filtering)
+### 订单列表与筛选 (Order List & Filtering)
 
-#### 1. 功能概述 (Feature Overview)
+#### 功能概述 (Feature Overview)
 
 本功能为已登录用户提供一个集中的订单中心，用户可以在此查看所有历史和当前的机票预订记录。页面支持通过订单状态、预订日期等多种条件进行筛选，帮助用户快速定位和管理他们的订单。
 
-#### 2. 优先级 (Priority)
+#### 优先级 (Priority)
 
 - **MoSCoW 评级:** Must Have
 
-#### 3. 用户故事 (User Stories)
+#### 用户故事 (User Stories)
 
 - **US-01 [Must Have]:** 作为一个**已预订机票的用户**，我希望**能在一个页面上看到我所有的订单列表**，以便**我能方便地追踪我的行程和消费记录**。
 
 - **US-02 [Should Have]:** 作为一个**拥有多个订单的用户**，我希望**能根据订单状态（如"待支付"）或预订日期进行筛选**，以便**快速找到我需要处理或查看的特定订单**。
 
-#### 4. 验收标准 (Acceptance Criteria)
+#### 验收标准 (Acceptance Criteria)
 
 **场景1: 用户成功查看订单列表 (Happy Path)**
 - **Given** 用户已登录且拥有至少一个订单
@@ -51,12 +51,12 @@ icon: ShoppingCart
 
 **场景5: 用户删除历史订单**
 - **Given** 用户位于订单列表页
-- **When** 用户点击任意一个订单卡片上的“删除订单”按钮
+- **When** 用户点击任意一个订单卡片上的"删除订单"按钮
 - **Then** 系统应弹出二次确认窗口
 - **When** 用户点击确认
 - **Then** 系统执行软删除操作，并刷新页面显示
 
-#### 5. UI与交互设计简述 (UI/UX Notes)
+#### UI与交互设计简述 (UI/UX Notes)
 
 - **页面布局:**
     - 位于个人中心，通常是进入"我的订单"的默认视图
@@ -72,17 +72,17 @@ icon: ShoppingCart
 
 ---
 
-### 3.3.2 订单详情与操作 (Order Details & Actions)
+### 订单详情与操作 (Order Details & Actions)
 
-#### 1. 功能概述 (Feature Overview)
+#### 功能概述 (Feature Overview)
 
 本功能向用户展示特定订单的所有详细信息，包括完整的航班、乘机人、价格和支付信息。同时，它也为处于特定状态的订单提供最核心的后续操作入口，如对未支付订单进行支付或取消。
 
-#### 2. 优先级 (Priority)
+#### 优先级 (Priority)
 
 - **MoSCoW 评级:** Must Have
 
-#### 3. 用户故事 (User Stories)
+#### 用户故事 (User Stories)
 
 - **US-01 [Must Have]:** 作为一个**用户**，我希望**能查看我订单的所有细节**，以便**在出行前核对航班、乘机人等所有信息是否准确无误**。
 
@@ -90,7 +90,7 @@ icon: ShoppingCart
 
 - **US-03 [Must Have]:** 作为一个**创建了订单但决定放弃的用户**，我希望**能方便地取消这个未支付的订单**，以便**避免后续的支付提醒**。
 
-#### 4. 验收标准 (Acceptance Criteria)
+#### 验收标准 (Acceptance Criteria)
 
 **场景1: 用户成功查看一个"待出行"的订单详情 (Happy Path)**
 - **Given** 用户有一个状态为"待出行"（已支付）的订单
@@ -113,7 +113,7 @@ icon: ShoppingCart
 - **When** 用户尝试寻找"取消订单"的按钮
 - **Then** 页面上不应显示"取消订单"的按钮，但可以显示一个（暂无功能的）"申请退款"按钮
 
-#### 5. UI与交互设计简述 (UI/UX Notes)
+#### UI与交互设计简述 (UI/UX Notes)
 
 - **页面布局:**
     - 顶部是醒目的订单状态标签（如"待支付"，配有倒计时）和订单号
