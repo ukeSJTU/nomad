@@ -100,47 +100,58 @@ Your internal thinking process should be:
 1. "The user's instruction is 'delete passenger'."
 2. "This feature involves specific business processes (acceptance criteria) and user-facing confirmation copy."
 3. "According to my query rules, I need to:"
-   - Query `docs/functional-requirements/user-module.mdx` to find the Acceptance Criteria for 'delete passenger' to determine the specific logic (e.g., requires secondary confirmation).
-   - Query `docs/appendix/ui-copy-and-messages.mdx` to find the exact title, content, and button text for the 'Delete Frequent Traveler' Confirmation Modal.
+   - Query `content/docs/requirements/functional-requirements/user-module.mdx` to find the Acceptance Criteria for 'delete passenger' to determine the specific logic (e.g., requires secondary confirmation).
+   - Query `content/docs/contributing/ui-details.mdx` to find the exact title, content, and button text for the 'Delete Frequent Traveler' Confirmation Modal.
 4. "Information gathering complete. Now I have all the necessary, precise details, and I can start generating code that complies with project specifications."
 
 ### Functional Requirements
 
-- **User Module**: `content/docs/functional-requirements/user-module.mdx`
-- **Flight Module**: `content/docs/functional-requirements/flight-module.mdx`
-- **Order Module**: `content/docs/functional-requirements/order-module.mdx`
-- **Payment Module**: `content/docs/functional-requirements/payment-module.mdx`
+- **User Module**: `content/docs/requirements/functional-requirements/user-module.mdx`
+- **Flight Module**: `content/docs/requirements/functional-requirements/flight-module.mdx`
+- **Order Module**: `content/docs/requirements/functional-requirements/order-module.mdx`
+- **Payment Module**: `content/docs/requirements/functional-requirements/payment-module.mdx`
 
-### Technical Design
+### Requirements Introduction
 
-- **Architecture Design**: `content/docs/technical-design/01-architecture.mdx`
-- **Environment Setup**: `content/docs/technical-design/02-setup.mdx`
-- **Coding Standards**: `content/docs/technical-design/03-coding-standards.mdx`
-- **Git Workflow**: `content/docs/technical-design/04-git-workflow.mdx`
-- **Database Design**: `content/docs/technical-design/05-database-design.mdx`
-- **Testing Framework**: `content/docs/technical-design/06-testing-framework.mdx`
+- **Project Purpose**: `content/docs/requirements/introduction/project-purpose.mdx`
+- **Scope**: `content/docs/requirements/introduction/scope.mdx`
+- **Definitions & Acronyms**: `content/docs/requirements/introduction/definitions-acronyms.mdx`
+- **Intended Audience**: `content/docs/requirements/introduction/intended-audience.mdx`
 
-### API & Development Guide
+### Overall Description
 
-- **Data Flow & Development Guide**: `content/docs/technical-design/07-data-flow.mdx`
-
-### UI & Business Process
-
-- **UI Detailed Design**: `content/docs/appendix/01-ui-details.mdx`
-- **Business Process Flow**: `content/docs/overall-description/business-process-flow.mdx`
-- **Product Vision**: `content/docs/overall-description/product-vision.mdx`
-- **User Characteristics**: `content/docs/overall-description/user-characteristics.mdx`
+- **Product Vision**: `content/docs/requirements/overall-description/product-vision.mdx`
+- **User Characteristics**: `content/docs/requirements/overall-description/user-characteristics.mdx`
+- **Business Process Flow**: `content/docs/requirements/overall-description/business-process-flow.mdx`
+- **Assumptions & Constraints**: `content/docs/requirements/overall-description/assumptions-constraints.mdx`
 
 ### Non-Functional Requirements
 
-- **Performance Requirements**: `content/docs/non-functional-requirements/performance.mdx`
-- **Security Requirements**: `content/docs/non-functional-requirements/security.mdx`
-- **Usability Requirements**: `content/docs/non-functional-requirements/usability.mdx`
-- **Compatibility Requirements**: `content/docs/non-functional-requirements/compatibility.mdx`
+- **Performance Requirements**: `content/docs/requirements/non-functional-requirements/performance.mdx`
+- **Security Requirements**: `content/docs/requirements/non-functional-requirements/security.mdx`
+- **Usability Requirements**: `content/docs/requirements/non-functional-requirements/usability.mdx`
+- **Compatibility Requirements**: `content/docs/requirements/non-functional-requirements/compatibility.mdx`
 
-### Tech Stack & Configuration
+### Technical Design
 
-- **Tech Stack Overview**: `content/docs/techstack.mdx`
+- **Architecture Design**: `content/docs/technical-design/architecture.mdx`
+- **Data Flow & Development Guide**: `content/docs/technical-design/data-flow.mdx`
+- **Testing Framework**: `content/docs/technical-design/test.mdx`
+
+### Getting Started
+
+- **Environment Setup**: `content/docs/introduction/setup.mdx`
+- **Tech Stack Overview**: `content/docs/introduction/techstack.mdx`
+
+### Contributing Guide
+
+- **Quick Start**: `content/docs/contributing/quick-start.mdx`
+- **Coding Standards**: `content/docs/contributing/coding-standards.mdx`
+- **Git Workflow**: `content/docs/contributing/git-workflow.mdx`
+- **UI Detailed Design**: `content/docs/contributing/ui-details.mdx`
+
+### Project Meta
+
 - **Contributing Guide**: `CONTRIBUTING.md`
 - **Project README**: `README.md`
 
@@ -239,7 +250,7 @@ You can play the following roles:
 - **Reason for Existence**: Before complex features begin or in the early stages of a project, someone needs to review technical solutions from a global perspective to ensure interface coordination between different modules.
 - **Work Scenarios**: This role is not needed for every task, only intervenes when major architectural decisions are involved.
 - **Specific Work**:
-  - Design and update database **ER diagrams** (`content/docs/technical-design/05-database-design.mdx`)
+  - Design and update database **ER diagrams** and architecture documentation (`content/docs/technical-design/architecture.mdx`)
   - Formulate key **data contracts** and inter-module interaction methods
   - Make important **technology selection decisions** (e.g., introducing new third-party libraries)
   - When the AI Tech Lead formulates complex plans, this role first performs **solution evaluation**
@@ -277,9 +288,9 @@ You can play the following roles:
 
 - **Reason for Existence**: Documentation is especially important for course projects and needs continuous updates to ensure all documentation stays in sync with the latest project state.
 - **Specific Work**:
-  - When requirements change, update **functional requirements documents** (`content/docs/functional-requirements/`)
+  - When requirements change, update **functional requirements documents** (`content/docs/requirements/functional-requirements/`)
   - When code implementation or architecture changes, update **technical design documents** (`content/docs/technical-design/`)
-  - When validation rules or UI copy are added or modified, update **appendix documents** (`content/docs/appendix/`)
+  - When UI details or contributing guidelines are added or modified, update **contributing documents** (`content/docs/contributing/`)
   - Write or update the project's `README.md` and `CONTRIBUTING.md`
 
 ##### 6. DevOps Engineer
@@ -373,7 +384,7 @@ After completing your work, you **must** perform Git commits following these str
    - **Technical Writer**: `docs(readme)`, `docs(api)`, `docs(requirements)`
    - **DevOps Engineer**: `ci(workflow)`, `chore(deps)`, `build(config)`
 
-4. **Follow Commit Granularity Guidelines**: Refer to the detailed commit strategy in `content/docs/technical-design/04-git-workflow.mdx` under "提交粒度" section for:
+4. **Follow Commit Granularity Guidelines**: Refer to the detailed commit strategy in `content/docs/contributing/git-workflow.mdx` under "提交粒度" section for:
    - What files should be committed together
    - What should NOT be committed together
    - Commit granularity guidelines
@@ -407,12 +418,12 @@ After completing your work, you **must** perform Git commits following these str
 **Format**:
 
 ```
-According to lines 45-56 of `content/docs/technical-design/03-coding-standards.mdx`...
+According to lines 45-56 of `content/docs/contributing/coding-standards.mdx`...
 ```
 
 **Examples**:
 
-- "According to `content/docs/technical-design/07-data-flow.mdx`, Server Actions should be used to handle data mutation operations"
+- "According to `content/docs/technical-design/data-flow.mdx`, Server Actions should be used to handle data mutation operations"
 - "Refer to the import method in lines 1-24 of `src/components/passengers/passenger-list.tsx`"
 
 ### 2. Incremental Verification
