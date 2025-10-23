@@ -328,10 +328,10 @@ test.describe("Phone Sign-Up Flow", () => {
 
       // Check that all password requirements are visible
       await expect(page.getByText("密码要求：")).toBeVisible();
-      await expect(page.getByText("至少8位字符")).toBeVisible();
+      await expect(page.getByText("8-20位字符")).toBeVisible();
       await expect(page.getByText("包含至少一个大写字母")).toBeVisible();
       await expect(page.getByText("包含至少一个小写字母")).toBeVisible();
-      await expect(page.getByText("包含至少一个数字")).toBeVisible();
+      await expect(page.getByText("包含至少一个数字（可选）")).toBeVisible();
     });
 
     test("should show validation error for password too short", async ({
@@ -471,9 +471,7 @@ test.describe("Phone Sign-Up Flow", () => {
 
       // Verify the visual feedback is working by checking for check icons
       // The Check component should be rendered when requirements are met
-      const requirements = page
-        .locator("li")
-        .filter({ hasText: "至少8位字符" });
+      const requirements = page.locator("li").filter({ hasText: "8-20位字符" });
       await expect(requirements).toBeVisible();
     });
   });

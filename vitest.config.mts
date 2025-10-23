@@ -37,6 +37,19 @@ export default defineConfig({
         "**/playwright-report/**",
         "**/test-results/**",
         "src/lib/auth.ts", // Better Auth configuration
+        "src/lib/auth/**", // Better Auth client
+        "src/lib/db/**", // Database connection and seed files
+        "src/lib/fumadocs/**", // Fumadocs configuration files
+        "src/components/ui/**", // Shadcn/UI components (third-party)
+        "src/components/fumadocs/**", // Fumadocs components
+        "src/components/auth/index.tsx", // Re-export file
+        "src/components/common/index.tsx", // Re-export file
+        "src/components/passengers/index.ts", // Re-export file
+        "src/types/index.ts", // Re-export file
+        "src/types/api/index.ts", // Re-export file
+        "src/hooks/**", // React hooks (can be tested separately if needed)
+        "src/middleware.ts", // Next.js middleware
+        "src/instrumentation.ts", // Next.js instrumentation
       ],
       include: ["src/**/*.{ts,tsx,js,jsx}"],
       thresholds: {

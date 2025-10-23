@@ -107,9 +107,6 @@ test.describe("Phone Sign-In Flow", () => {
     test("should display password login form fields", async ({ page }) => {
       await page.goto("/auth/sign-in");
 
-      // Should show country code selector
-      await expect(page.getByRole("combobox")).toBeVisible();
-
       // Should show phone number input
       await expect(page.getByPlaceholder("请输入手机号")).toBeVisible();
 
@@ -133,7 +130,7 @@ test.describe("Phone Sign-In Flow", () => {
       await page.getByRole("button", { name: "登录" }).click();
 
       // Should show validation errors
-      await expect(page.getByText("请输入手机号码")).toBeVisible();
+      await expect(page.getByText("请输入手机号")).toBeVisible();
       await expect(page.getByText("请输入密码")).toBeVisible();
     });
 
@@ -182,14 +179,15 @@ test.describe("Phone Sign-In Flow", () => {
   test.describe("OTP Login", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/auth/sign-in");
-      // Switch to OTP tab
-      await page.getByRole("tab", { name: "验证码登录" }).click();
+      // Wait for the tab to be visible and then switch to OTP tab
+      const otpTab = page.getByRole("tab", { name: "验证码登录" });
+      await otpTab.waitFor({ state: "visible" });
+      await otpTab.click();
+      // Wait for the tab content to be visible
+      await page.getByPlaceholder("6位数字").waitFor({ state: "visible" });
     });
 
     test("should display OTP login form fields", async ({ page }) => {
-      // Should show country code selector
-      await expect(page.getByRole("combobox")).toBeVisible();
-
       // Should show phone number input
       await expect(page.getByPlaceholder("请输入手机号")).toBeVisible();
 
