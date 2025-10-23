@@ -4,15 +4,14 @@
     "---介绍---",
     "index",
     "...introduction",
-    "---需求文档说明---",
+    "---需求文档---",
     "...requirements",
-    "---技术文档说明---",
+    "---技术文档---",
     "...technical-design",
     "---如何贡献---",
     "...contributing",
-    "---项目汇报---",
-    "reports",
     "---附录---",
-    "...appendix"
+    "...appendix",
+    "reports"
   ]
 }
