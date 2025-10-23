@@ -9,8 +9,8 @@ describe("EmailLoginForm", () => {
     const onSubmit = vi.fn();
     render(<EmailLoginForm onSubmit={onSubmit} />);
 
-    expect(screen.getByLabelText("邮箱")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("请输入邮箱")).toBeInTheDocument();
+    expect(screen.getByLabelText("邮箱地址")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("请输入邮箱地址")).toBeInTheDocument();
     expect(screen.getByLabelText("密码")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("请输入密码")).toBeInTheDocument();
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
@@ -37,7 +37,10 @@ describe("EmailLoginForm", () => {
     const onSubmit = vi.fn();
     render(<EmailLoginForm onSubmit={onSubmit} />);
 
-    await user.type(screen.getByPlaceholderText("请输入邮箱"), "invalid-email");
+    await user.type(
+      screen.getByPlaceholderText("请输入邮箱地址"),
+      "invalid-email"
+    );
     await user.type(screen.getByPlaceholderText("请输入密码"), "Password123");
     await user.click(screen.getByRole("checkbox"));
     await user.click(screen.getByRole("button", { name: "登录" }));
@@ -54,7 +57,7 @@ describe("EmailLoginForm", () => {
     render(<EmailLoginForm onSubmit={onSubmit} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.click(screen.getByRole("checkbox"));
@@ -72,7 +75,7 @@ describe("EmailLoginForm", () => {
     render(<EmailLoginForm onSubmit={onSubmit} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.type(screen.getByPlaceholderText("请输入密码"), "Password123");
@@ -90,7 +93,7 @@ describe("EmailLoginForm", () => {
     render(<EmailLoginForm onSubmit={onSubmit} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.type(screen.getByPlaceholderText("请输入密码"), "Password123");
@@ -110,7 +113,7 @@ describe("EmailLoginForm", () => {
     const onSubmit = vi.fn();
     render(<EmailLoginForm onSubmit={onSubmit} isLoading={true} />);
 
-    expect(screen.getByPlaceholderText("请输入邮箱")).toBeDisabled();
+    expect(screen.getByPlaceholderText("请输入邮箱地址")).toBeDisabled();
     expect(screen.getByRole("button", { name: "登录中..." })).toBeDisabled();
   });
 });

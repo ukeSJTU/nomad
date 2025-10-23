@@ -9,7 +9,7 @@ describe("PasswordSetupForm", () => {
     const onSubmit = vi.fn();
     render(<PasswordSetupForm onSubmit={onSubmit} />);
 
-    expect(screen.getByLabelText("密码")).toBeInTheDocument();
+    expect(screen.getByLabelText("设置密码")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("请输入密码")).toBeInTheDocument();
     expect(screen.getByLabelText("确认密码")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("请再次输入密码")).toBeInTheDocument();
@@ -50,7 +50,7 @@ describe("PasswordSetupForm", () => {
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
-      expect(screen.getByText("密码不能为空")).toBeInTheDocument();
+      expect(screen.getByText("密码至少8位")).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });

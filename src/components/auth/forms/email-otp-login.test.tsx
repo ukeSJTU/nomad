@@ -9,8 +9,8 @@ describe("EmailOtpLoginForm", () => {
     const onSubmit = vi.fn();
     render(<EmailOtpLoginForm onSubmit={onSubmit} />);
 
-    expect(screen.getByLabelText("邮箱")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("请输入邮箱")).toBeInTheDocument();
+    expect(screen.getByLabelText("邮箱地址")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("请输入邮箱地址")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("6位数字")).toBeInTheDocument();
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
     expect(
@@ -39,7 +39,10 @@ describe("EmailOtpLoginForm", () => {
     const onSubmit = vi.fn();
     render(<EmailOtpLoginForm onSubmit={onSubmit} />);
 
-    await user.type(screen.getByPlaceholderText("请输入邮箱"), "invalid-email");
+    await user.type(
+      screen.getByPlaceholderText("请输入邮箱地址"),
+      "invalid-email"
+    );
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
     await user.click(screen.getByRole("checkbox"));
     await user.click(screen.getByRole("button", { name: "登录" }));
@@ -56,7 +59,7 @@ describe("EmailOtpLoginForm", () => {
     render(<EmailOtpLoginForm onSubmit={onSubmit} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.type(screen.getByPlaceholderText("6位数字"), "123");
@@ -75,7 +78,7 @@ describe("EmailOtpLoginForm", () => {
     render(<EmailOtpLoginForm onSubmit={onSubmit} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.type(screen.getByPlaceholderText("6位数字"), "123456");
@@ -98,7 +101,7 @@ describe("EmailOtpLoginForm", () => {
     render(<EmailOtpLoginForm onSubmit={onSubmit} onSendOtp={onSendOtp} />);
 
     await user.type(
-      screen.getByPlaceholderText("请输入邮箱"),
+      screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
     await user.click(screen.getByRole("button", { name: "发送验证码" }));
