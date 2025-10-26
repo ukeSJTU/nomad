@@ -55,6 +55,8 @@ const eslintConfig = [
       "simple-import-sort": simpleImportSort,
     },
     rules: {
+      "react/no-unescaped-entities": "off",
+
       // TypeScript specific rules
       "@typescript-eslint/no-unused-vars": [
         "error",
