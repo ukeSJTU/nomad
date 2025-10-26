@@ -69,3 +69,5 @@ openapi.json
 .contentlayer
 .content-collections
 .source
+*storybook.log
+storybook-static

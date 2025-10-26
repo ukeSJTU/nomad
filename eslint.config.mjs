@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import { FlatCompat } from "@eslint/eslintrc";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -29,13 +32,10 @@ const eslintConfig = [
       "package-lock.json",
       "yarn.lock",
       ".source/**", // Fumadocs auto-generated files
+      ".storybook/**", // Storybook config files
     ],
-  },
-
-  // Base configurations
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-
-  // TypeScript and Import plugin configuration
+  }, // Base configurations
+  ...compat.extends("next/core-web-vitals", "next/typescript"), // TypeScript and Import plugin configuration
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
@@ -79,10 +79,9 @@ const eslintConfig = [
       "prefer-template": "error",
       "no-duplicate-imports": "error",
     },
-  },
-
-  // Prettier config must be the last to override conflicting rules
+  }, // Prettier config must be the last to override conflicting rules
   ...compat.extends("prettier"),
+  ...storybook.configs["flat/recommended"],
 ];
 
 export default eslintConfig;
