@@ -35,6 +35,28 @@ const preview: Preview = {
     backgrounds: {
       disable: true,
     },
+
+    docs: {
+      source: {
+        transform: (src: string) => {
+          // Remove the render function wrapper to show only JSX
+          const renderMatch = src.match(/render:\s*\(\)\s*=>\s*\(([\s\S]*)\)/);
+          if (renderMatch) {
+            return renderMatch[1].trim();
+          }
+
+          // Also handle render without parentheses
+          const renderMatch2 = src.match(/render:\s*\(\)\s*=>\s*([\s\S]*)/);
+          if (renderMatch2) {
+            const code = renderMatch2[1].trim();
+            // Remove trailing comma and braces if present
+            return code.replace(/,?\s*}?\s*$/, "").trim();
+          }
+
+          return src;
+        },
+      },
+    },
   },
   globalTypes: {
     theme: {
