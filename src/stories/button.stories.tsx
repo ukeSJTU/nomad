@@ -4,7 +4,7 @@ import { ChevronRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const meta = {
-  title: "UI/Button",
+  title: "Shadcn/Button",
   component: Button,
   parameters: {
     layout: "centered",
