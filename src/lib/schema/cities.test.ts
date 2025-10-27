@@ -12,33 +12,33 @@ describe("Cities Schema", () => {
     const columns = Object.keys(cities);
 
     expect(columns).toContain("id");
-    expect(columns).toContain("iata_code");
+    expect(columns).toContain("iataCode");
     expect(columns).toContain("name");
     expect(columns).toContain("timezone");
-    expect(columns).toContain("is_domestic");
-    expect(columns).toContain("pinyin_first_letter");
+    expect(columns).toContain("isDomestic");
+    expect(columns).toContain("pinyinFirstLetter");
     expect(columns).toContain("continent");
-    expect(columns).toContain("is_popular");
-    expect(columns).toContain("display_order");
-    expect(columns).toContain("is_deleted");
-    expect(columns).toContain("created_at");
-    expect(columns).toContain("updated_at");
+    expect(columns).toContain("isPopular");
+    expect(columns).toContain("displayOrder");
+    expect(columns).toContain("isDeleted");
+    expect(columns).toContain("createdAt");
+    expect(columns).toContain("updatedAt");
   });
 
   it("should have unique constraint on iata_code", () => {
-    const iataCodeColumn = cities.iata_code;
+    const iataCodeColumn = cities.iataCode;
     expect(iataCodeColumn.isUnique).toBe(true);
   });
 
   it("should have correct default values", () => {
-    expect(cities.is_domestic.default).toBeDefined();
-    expect(cities.is_popular.default).toBeDefined();
-    expect(cities.display_order.default).toBeDefined();
-    expect(cities.is_deleted.default).toBeDefined();
+    expect(cities.isDomestic.default).toBeDefined();
+    expect(cities.isPopular.default).toBeDefined();
+    expect(cities.displayOrder.default).toBeDefined();
+    expect(cities.isDeleted.default).toBeDefined();
   });
 
   it("should have pinyin_first_letter as nullable", () => {
-    expect(cities.pinyin_first_letter.notNull).toBe(false);
+    expect(cities.pinyinFirstLetter.notNull).toBe(false);
   });
 
   it("should have continent as nullable", () => {

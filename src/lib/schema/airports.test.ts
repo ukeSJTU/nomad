@@ -12,21 +12,21 @@ describe("Airports Schema", () => {
     const columns = Object.keys(airports);
 
     expect(columns).toContain("id");
-    expect(columns).toContain("iata_code");
+    expect(columns).toContain("iataCode");
     expect(columns).toContain("name");
-    expect(columns).toContain("city_id");
-    expect(columns).toContain("is_deleted");
-    expect(columns).toContain("created_at");
-    expect(columns).toContain("updated_at");
+    expect(columns).toContain("cityId");
+    expect(columns).toContain("isDeleted");
+    expect(columns).toContain("createdAt");
+    expect(columns).toContain("updatedAt");
   });
 
   it("should have unique constraint on iata_code", () => {
-    const iataCodeColumn = airports.iata_code;
+    const iataCodeColumn = airports.iataCode;
     expect(iataCodeColumn.isUnique).toBe(true);
   });
 
   it("should have foreign key reference to cities", () => {
-    const cityIdColumn = airports.city_id;
+    const cityIdColumn = airports.cityId;
     expect(cityIdColumn.notNull).toBe(true);
   });
 });
