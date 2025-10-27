@@ -15,6 +15,14 @@ import { db } from "./index";
 /**
  * Seed the database with sample data
  * This script populates airports, airlines, flights, and flight_seat_classes tables
+ *
+ * Uses Faker.js Airline module (v10.0.0+) for realistic aviation data:
+ * - faker.airline.airport() - generates airport with name, IATA code, and city
+ * - faker.airline.airline() - generates airline with name and IATA code
+ * - faker.airline.flightNumber() - generates industry-standard flight numbers
+ * - faker.airline.airplane() - generates realistic aircraft model names
+ *
+ * All IATA codes are guaranteed unique through duplicate checking loops
  */
 async function seed() {
   console.log("[SEED] Starting database seeding...");
@@ -32,92 +40,32 @@ async function seed() {
 
     // Seed Airports
     console.log("[SEED] Seeding airports...");
-    const airportData = [
-      {
-        iata_code: "JFK",
-        name: "John F. Kennedy International Airport",
-        city: "New York",
-        country: "United States",
-        timezone: "America/New_York",
-      },
-      {
-        iata_code: "LAX",
-        name: "Los Angeles International Airport",
-        city: "Los Angeles",
-        country: "United States",
-        timezone: "America/Los_Angeles",
-      },
-      {
-        iata_code: "LHR",
-        name: "London Heathrow Airport",
-        city: "London",
-        country: "United Kingdom",
-        timezone: "Europe/London",
-      },
-      {
-        iata_code: "CDG",
-        name: "Charles de Gaulle Airport",
-        city: "Paris",
-        country: "France",
-        timezone: "Europe/Paris",
-      },
-      {
-        iata_code: "NRT",
-        name: "Narita International Airport",
-        city: "Tokyo",
-        country: "Japan",
-        timezone: "Asia/Tokyo",
-      },
-      {
-        iata_code: "DXB",
-        name: "Dubai International Airport",
-        city: "Dubai",
-        country: "United Arab Emirates",
-        timezone: "Asia/Dubai",
-      },
-      {
-        iata_code: "SIN",
-        name: "Singapore Changi Airport",
-        city: "Singapore",
-        country: "Singapore",
-        timezone: "Asia/Singapore",
-      },
-      {
-        iata_code: "HKG",
-        name: "Hong Kong International Airport",
-        city: "Hong Kong",
-        country: "China",
-        timezone: "Asia/Hong_Kong",
-      },
-      {
-        iata_code: "SYD",
-        name: "Sydney Kingsford Smith Airport",
-        city: "Sydney",
-        country: "Australia",
-        timezone: "Australia/Sydney",
-      },
-      {
-        iata_code: "ORD",
-        name: "O'Hare International Airport",
-        city: "Chicago",
-        country: "United States",
-        timezone: "America/Chicago",
-      },
-      {
-        iata_code: "PVG",
-        name: "Shanghai Pudong International Airport",
-        city: "Shanghai",
-        country: "China",
-        timezone: "Asia/Shanghai",
-      },
-      {
-        iata_code: "ICN",
-        name: "Incheon International Airport",
-        city: "Seoul",
-        country: "South Korea",
-        timezone: "Asia/Seoul",
-      },
-    ];
+    /**
+     * Generate airport data using Faker.js Airline module
+     * faker.airline.airport() returns: { name: string, iataCode: string }
+     * We supplement with faker.location for missing fields (city, country, timezone)
+     * IATA code uniqueness is enforced to prevent database constraint violations
+     */
+    const airportData = [];
+    const usedAirportIataCodes = new Set<string>();
+
+    for (let i = 0; i < 70; i++) {
+      let airport;
+      // Ensure IATA code is unique (3-character code)
+      do {
+        airport = faker.airline.airport();
+      } while (usedAirportIataCodes.has(airport.iataCode));
+
+      usedAirportIataCodes.add(airport.iataCode);
+
+      airportData.push({
+        iata_code: airport.iataCode,
+        name: airport.name,
+        city: faker.location.city(),
+        country: faker.location.country(),
+        timezone: faker.location.timeZone(),
+      });
+    }
 
     const insertedAirports = await db
       .insert(airports)
@@ -127,58 +75,36 @@ async function seed() {
 
     // Seed Airlines
     console.log("[SEED] Seeding airlines...");
-    const airlineData = [
-      {
-        iata_code: "AA",
-        name: "American Airlines",
-        logo_url: "https://example.com/logos/aa.png",
-      },
-      {
-        iata_code: "UA",
-        name: "United Airlines",
-        logo_url: "https://example.com/logos/ua.png",
-      },
-      {
-        iata_code: "DL",
-        name: "Delta Air Lines",
-        logo_url: "https://example.com/logos/dl.png",
-      },
-      {
-        iata_code: "BA",
-        name: "British Airways",
-        logo_url: "https://example.com/logos/ba.png",
-      },
-      {
-        iata_code: "AF",
-        name: "Air France",
-        logo_url: "https://example.com/logos/af.png",
-      },
-      {
-        iata_code: "NH",
-        name: "All Nippon Airways",
-        logo_url: "https://example.com/logos/nh.png",
-      },
-      {
-        iata_code: "EK",
-        name: "Emirates",
-        logo_url: "https://example.com/logos/ek.png",
-      },
-      {
-        iata_code: "SQ",
-        name: "Singapore Airlines",
-        logo_url: "https://example.com/logos/sq.png",
-      },
-      {
-        iata_code: "CX",
-        name: "Cathay Pacific",
-        logo_url: "https://example.com/logos/cx.png",
-      },
-      {
-        iata_code: "QF",
-        name: "Qantas Airways",
-        logo_url: "https://example.com/logos/qf.png",
-      },
-    ];
+    /**
+     * Generate airline data using Faker.js Airline module
+     * faker.airline.airline() returns: { name: string, iataCode: string }
+     * We use a placeholder template for logo_url
+     * IATA code uniqueness is enforced to prevent database constraint violations
+     *
+     * Note: Database constraint requires IATA codes to be exactly 2 uppercase letters (A-Z)
+     * Faker may generate codes with digits (e.g., "6E", "9R"), so we filter those out
+     */
+    const airlineData = [];
+    const usedAirlineIataCodes = new Set<string>();
+
+    for (let i = 0; i < 30; i++) {
+      let airline;
+      // Ensure IATA code is unique AND matches pattern ^[A-Z]{2}$ (2 uppercase letters only)
+      do {
+        airline = faker.airline.airline();
+      } while (
+        usedAirlineIataCodes.has(airline.iataCode) ||
+        !/^[A-Z]{2}$/.test(airline.iataCode)
+      );
+
+      usedAirlineIataCodes.add(airline.iataCode);
+
+      airlineData.push({
+        iata_code: airline.iataCode,
+        name: airline.name,
+        logo_url: `https://example.com/logos/${airline.iataCode.toLowerCase()}.png`,
+      });
+    }
 
     const insertedAirlines = await db
       .insert(airlines)
@@ -188,16 +114,14 @@ async function seed() {
 
     // Seed Flights
     console.log("[SEED] Seeding flights...");
+    /**
+     * Generate flight data using Faker.js Airline module for realistic aviation data
+     * - faker.airline.flightNumber() returns industry-standard flight number format
+     * - faker.airline.airplane() returns realistic aircraft model names
+     * Flight status and timing use existing Faker methods for consistency
+     */
     const flightData = [];
     const statuses = ["SCHEDULED", "DELAYED", "CANCELLED", "COMPLETED"];
-    const aircraftTypes = [
-      "Boeing 737",
-      "Airbus A320",
-      "Boeing 777",
-      "Airbus A350",
-      "Boeing 787",
-      "Airbus A380",
-    ];
 
     // Generate 50 flights
     for (let i = 0; i < 50; i++) {
@@ -221,14 +145,23 @@ async function seed() {
         departureDate.getTime() + durationHours * 60 * 60 * 1000
       );
 
+      // Generate realistic flight number using Faker.js Airline module
+      // Format: airline IATA code + numeric identifier (e.g., "AA1234")
+      const flightNumberData = faker.airline.flightNumber({
+        addLeadingZeros: true,
+      });
+
+      // Generate realistic aircraft type (e.g., "Boeing 737", "Airbus A320")
+      const aircraftData = faker.airline.airplane();
+
       flightData.push({
-        flight_number: `${airline.iata_code}${faker.number.int({ min: 100, max: 9999 })}`,
+        flight_number: `${airline.iata_code}${flightNumberData.slice(-4)}`, // Use airline's IATA code with generated number
         airline_id: airline.id,
         departure_airport_id: departureAirport.id,
         arrival_airport_id: arrivalAirport.id,
         departure_datetime: departureDate,
         arrival_datetime: arrivalDate,
-        aircraft_type: faker.helpers.arrayElement(aircraftTypes),
+        aircraft_type: aircraftData.name,
         status: faker.helpers.arrayElement(statuses),
       });
     }
