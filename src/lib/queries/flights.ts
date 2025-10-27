@@ -1,3 +1,5 @@
+import { endOfDay, isBefore, isToday, startOfDay } from "date-fns";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 
@@ -173,50 +175,41 @@ export async function searchFlights(params: {
   // Calculate the date range in the departure city's timezone
   // The user's selected date is in the departure city's local time
   const departureDateStr = validated.departureDate; // YYYY-MM-DD format
+  const departureTimezone = departureCity.timezone; // IANA timezone (e.g., "Asia/Shanghai")
 
-  // Get current time in departure city's timezone
-  const nowInDepartureCity = new Date(
-    new Date().toLocaleString("en-US", { timeZone: departureCity.timezone })
-  );
+  // Get current time in UTC, then convert to departure city's timezone
+  const nowUTC = new Date();
+  const nowInDepartureCity = toZonedTime(nowUTC, departureTimezone);
 
-  // Parse the selected date in departure city's timezone
+  // Parse the user's selected date as a date in the departure city's timezone
+  // The user inputs "2025-10-28", which means "2025-10-28 00:00:00" in departure city's local time
   const selectedDateInDepartureCity = new Date(`${departureDateStr}T00:00:00`);
 
-  // Check if the selected date is in the past (in departure city's timezone)
-  const todayInDepartureCity = new Date(nowInDepartureCity);
-  todayInDepartureCity.setHours(0, 0, 0, 0);
+  // Get today's date (start of day) in departure city's timezone
+  const todayInDepartureCity = startOfDay(nowInDepartureCity);
 
-  if (selectedDateInDepartureCity < todayInDepartureCity) {
+  // Check if the selected date is in the past (in departure city's timezone)
+  if (isBefore(selectedDateInDepartureCity, todayInDepartureCity)) {
     throw new Error("Departure date cannot be in the past");
   }
 
   // Calculate start and end of the selected day in departure city's timezone
   // Then convert to UTC for database query
-  const startOfDayLocal = `${departureDateStr}T00:00:00`;
-  const endOfDayLocal = `${departureDateStr}T23:59:59.999`;
+  // End time is always end of the selected day
+  const endTimeInDepartureCity = endOfDay(selectedDateInDepartureCity);
 
+  // Start time depends on whether it's today or a future date
   // If the selected date is today, use current time as the start time
   // to filter out flights that have already departed
-  let startTime: Date;
-  if (
-    selectedDateInDepartureCity.getTime() === todayInDepartureCity.getTime()
-  ) {
-    // Use current time in departure city
-    startTime = nowInDepartureCity;
-  } else {
-    // Use start of day in departure city's timezone
-    startTime = new Date(
-      new Date(startOfDayLocal).toLocaleString("en-US", {
-        timeZone: departureCity.timezone,
-      })
-    );
-  }
+  const startTimeInDepartureCity = isToday(selectedDateInDepartureCity)
+    ? nowInDepartureCity // Today: use current time to filter out past flights
+    : startOfDay(selectedDateInDepartureCity); // Future: use start of day
 
-  const endTime = new Date(
-    new Date(endOfDayLocal).toLocaleString("en-US", {
-      timeZone: departureCity.timezone,
-    })
-  );
+  // Convert departure city local times to UTC for database query
+  // fromZonedTime treats the input date as being in the specified timezone
+  // and converts it to UTC
+  const startTime = fromZonedTime(startTimeInDepartureCity, departureTimezone);
+  const endTime = fromZonedTime(endTimeInDepartureCity, departureTimezone);
 
   const departureAirportIds = departureAirports.map(a => a.airport.id);
   const arrivalAirportIds = arrivalAirports.map(a => a.airport.id);
