@@ -11,7 +11,7 @@ const meta = {
 } satisfies Meta<typeof Skeleton>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = Omit<StoryObj<typeof meta>, "args">;
 
 export const Default: Story = {
   render: () => <Skeleton className="h-12 w-12 rounded-full" />,

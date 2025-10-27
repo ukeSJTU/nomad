@@ -16,7 +16,7 @@ const meta = {
 } satisfies Meta<typeof Accordion>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = Omit<StoryObj<typeof meta>, "args">;
 
 export const Single: Story = {
   render: () => (

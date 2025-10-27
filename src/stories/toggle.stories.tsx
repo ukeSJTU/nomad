@@ -28,7 +28,7 @@ const meta = {
 } satisfies Meta<typeof Toggle>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = Omit<StoryObj<typeof meta>, "args">;
 
 export const Default: Story = {
   args: {
