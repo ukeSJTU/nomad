@@ -1,12 +1,11 @@
+import { getTableName } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 
 import { flightSeatClasses } from "./flight-seat-classes";
 
 describe("Flight Seat Classes Schema", () => {
   it("should have correct table name", () => {
-    expect(flightSeatClasses[Symbol.for("drizzle:Name")]).toBe(
-      "flight_seat_classes"
-    );
+    expect(getTableName(flightSeatClasses)).toBe("flight_seat_classes");
   });
 
   it("should have all required fields defined", () => {
@@ -18,6 +17,7 @@ describe("Flight Seat Classes Schema", () => {
     expect(columns).toContain("total_seats");
     expect(columns).toContain("available_seats");
     expect(columns).toContain("price");
+    expect(columns).toContain("is_deleted");
     expect(columns).toContain("created_at");
     expect(columns).toContain("updated_at");
   });
