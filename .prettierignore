@@ -45,3 +45,6 @@ pnpm-lock.yaml
 
 # Auto-generated files
 next-env.d.ts
+
+# MDX documents content
+content/docs/**/*.mdx
