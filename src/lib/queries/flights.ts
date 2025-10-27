@@ -1,4 +1,4 @@
-import { and, eq, gte, lt, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { db } from "@/lib/db";
@@ -16,12 +16,12 @@ const seatClassEnum = z.enum(["ECONOMY", "BUSINESS", "FIRST"]);
 const searchFlightsParamsSchema = z.object({
   from: z
     .string()
-    .length(3, "Departure airport code must be 3 characters")
-    .regex(/^[A-Z]{3}$/, "Airport code must be uppercase letters"),
+    .length(3, "Departure city code must be 3 characters")
+    .regex(/^[A-Z]{3}$/, "City code must be uppercase letters"),
   to: z
     .string()
-    .length(3, "Arrival airport code must be 3 characters")
-    .regex(/^[A-Z]{3}$/, "Airport code must be uppercase letters"),
+    .length(3, "Arrival city code must be 3 characters")
+    .regex(/^[A-Z]{3}$/, "City code must be uppercase letters"),
   departureDate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
@@ -86,7 +86,15 @@ export type RoundTripFlightSearchResult = {
 };
 
 /**
- * Core function to search flights based on departure/arrival airports and date
+ * Core function to search flights based on departure/arrival cities and date
+ *
+ * @param params.from - Departure city IATA code (3 letters, e.g., "SHA" for Shanghai)
+ * @param params.to - Arrival city IATA code (3 letters, e.g., "NYC" for New York)
+ * @param params.departureDate - Departure date in YYYY-MM-DD format (in departure city's local time)
+ * @param params.classType - Optional seat class filter
+ *
+ * Note: The function handles multiple airports per city and filters flights based on
+ * the current time in the departure city's timezone to avoid showing past flights.
  */
 export async function searchFlights(params: {
   from: string;
@@ -101,72 +109,142 @@ export async function searchFlights(params: {
     to: params.to.toUpperCase(),
   });
 
-  // Validate that departure and arrival are different
+  // Validate that departure and arrival cities are different
   if (validated.from === validated.to) {
-    throw new Error("Departure and arrival airports must be different");
+    throw new Error("Departure and arrival cities must be different");
   }
 
-  // Validate that departure date is not in the past
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const departureDate = new Date(validated.departureDate);
-  if (departureDate < today) {
+  // Find departure city and its airports
+  const [departureCityData] = await db
+    .select({
+      city: cities,
+    })
+    .from(cities)
+    .where(
+      and(eq(cities.iataCode, validated.from), eq(cities.isDeleted, false))
+    )
+    .limit(1);
+
+  if (!departureCityData) {
+    throw new Error(`Departure city ${validated.from} not found`);
+  }
+
+  const departureCity = departureCityData.city;
+
+  // Find all airports in the departure city
+  const departureAirports = await db
+    .select({ airport: airports })
+    .from(airports)
+    .where(
+      and(eq(airports.cityId, departureCity.id), eq(airports.isDeleted, false))
+    );
+
+  if (departureAirports.length === 0) {
+    throw new Error(`No airports found for departure city ${validated.from}`);
+  }
+
+  // Find arrival city and its airports
+  const [arrivalCityData] = await db
+    .select({
+      city: cities,
+    })
+    .from(cities)
+    .where(and(eq(cities.iataCode, validated.to), eq(cities.isDeleted, false)))
+    .limit(1);
+
+  if (!arrivalCityData) {
+    throw new Error(`Arrival city ${validated.to} not found`);
+  }
+
+  const arrivalCity = arrivalCityData.city;
+
+  // Find all airports in the arrival city
+  const arrivalAirports = await db
+    .select({ airport: airports })
+    .from(airports)
+    .where(
+      and(eq(airports.cityId, arrivalCity.id), eq(airports.isDeleted, false))
+    );
+
+  if (arrivalAirports.length === 0) {
+    throw new Error(`No airports found for arrival city ${validated.to}`);
+  }
+
+  // Calculate the date range in the departure city's timezone
+  // The user's selected date is in the departure city's local time
+  const departureDateStr = validated.departureDate; // YYYY-MM-DD format
+
+  // Get current time in departure city's timezone
+  const nowInDepartureCity = new Date(
+    new Date().toLocaleString("en-US", { timeZone: departureCity.timezone })
+  );
+
+  // Parse the selected date in departure city's timezone
+  const selectedDateInDepartureCity = new Date(`${departureDateStr}T00:00:00`);
+
+  // Check if the selected date is in the past (in departure city's timezone)
+  const todayInDepartureCity = new Date(nowInDepartureCity);
+  todayInDepartureCity.setHours(0, 0, 0, 0);
+
+  if (selectedDateInDepartureCity < todayInDepartureCity) {
     throw new Error("Departure date cannot be in the past");
   }
 
-  // Calculate date range for the departure date (start and end of day)
-  const startOfDay = new Date(validated.departureDate);
-  startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date(validated.departureDate);
-  endOfDay.setHours(23, 59, 59, 999);
+  // Calculate start and end of the selected day in departure city's timezone
+  // Then convert to UTC for database query
+  const startOfDayLocal = `${departureDateStr}T00:00:00`;
+  const endOfDayLocal = `${departureDateStr}T23:59:59.999`;
 
-  // Find airport and city information from IATA codes
-  const [departureAirportData] = await db
-    .select({
-      airport: airports,
-      city: cities,
-    })
-    .from(airports)
-    .innerJoin(cities, eq(airports.cityId, cities.id))
-    .where(
-      and(eq(airports.iataCode, validated.from), eq(airports.isDeleted, false))
-    )
-    .limit(1);
-
-  const [arrivalAirportData] = await db
-    .select({
-      airport: airports,
-      city: cities,
-    })
-    .from(airports)
-    .innerJoin(cities, eq(airports.cityId, cities.id))
-    .where(
-      and(eq(airports.iataCode, validated.to), eq(airports.isDeleted, false))
-    )
-    .limit(1);
-
-  if (!departureAirportData) {
-    throw new Error(`Departure airport ${validated.from} not found`);
+  // If the selected date is today, use current time as the start time
+  // to filter out flights that have already departed
+  let startTime: Date;
+  if (
+    selectedDateInDepartureCity.getTime() === todayInDepartureCity.getTime()
+  ) {
+    // Use current time in departure city
+    startTime = nowInDepartureCity;
+  } else {
+    // Use start of day in departure city's timezone
+    startTime = new Date(
+      new Date(startOfDayLocal).toLocaleString("en-US", {
+        timeZone: departureCity.timezone,
+      })
+    );
   }
 
-  if (!arrivalAirportData) {
-    throw new Error(`Arrival airport ${validated.to} not found`);
-  }
+  const endTime = new Date(
+    new Date(endOfDayLocal).toLocaleString("en-US", {
+      timeZone: departureCity.timezone,
+    })
+  );
 
-  const departureAirport = departureAirportData.airport;
-  const departureCity = departureAirportData.city;
-  const arrivalAirport = arrivalAirportData.airport;
-  const arrivalCity = arrivalAirportData.city;
+  const departureAirportIds = departureAirports.map(a => a.airport.id);
+  const arrivalAirportIds = arrivalAirports.map(a => a.airport.id);
+
+  // Create aliases for airports table to join twice (departure and arrival)
+  const departureAirportsTable = airports;
+  const arrivalAirportsTable = airports;
 
   // Query flights with all related data
+  // Need to fetch both departure and arrival airport information for each flight
   const results = await db
     .select({
       flight: flights,
       airline: airlines,
+      departureAirport: departureAirportsTable,
+      arrivalAirport: arrivalAirportsTable,
       seatClass: flightSeatClasses,
     })
     .from(flights)
     .innerJoin(airlines, eq(flights.airlineId, airlines.id))
+    .innerJoin(
+      departureAirportsTable,
+      eq(flights.departureAirportId, departureAirportsTable.id)
+    )
+    .innerJoin(
+      arrivalAirportsTable,
+      eq(flights.arrivalAirportId, arrivalAirportsTable.id)
+    )
     .leftJoin(
       flightSeatClasses,
       and(
@@ -179,10 +257,10 @@ export async function searchFlights(params: {
     )
     .where(
       and(
-        eq(flights.departureAirportId, departureAirport.id),
-        eq(flights.arrivalAirportId, arrivalAirport.id),
-        gte(flights.departureDatetime, startOfDay),
-        lt(flights.departureDatetime, endOfDay),
+        inArray(flights.departureAirportId, departureAirportIds),
+        inArray(flights.arrivalAirportId, arrivalAirportIds),
+        gte(flights.departureDatetime, startTime),
+        lt(flights.departureDatetime, endTime),
         eq(flights.isDeleted, false)
       )
     )
@@ -206,9 +284,9 @@ export async function searchFlights(params: {
         },
         departure: {
           airport: {
-            id: departureAirport.id,
-            iataCode: departureAirport.iataCode,
-            name: departureAirport.name,
+            id: row.departureAirport.id,
+            iataCode: row.departureAirport.iataCode,
+            name: row.departureAirport.name,
           },
           city: {
             id: departureCity.id,
@@ -221,9 +299,9 @@ export async function searchFlights(params: {
         },
         arrival: {
           airport: {
-            id: arrivalAirport.id,
-            iataCode: arrivalAirport.iataCode,
-            name: arrivalAirport.name,
+            id: row.arrivalAirport.id,
+            iataCode: row.arrivalAirport.iataCode,
+            name: row.arrivalAirport.name,
           },
           city: {
             id: arrivalCity.id,

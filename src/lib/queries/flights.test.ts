@@ -19,17 +19,17 @@ describe("Flight Search Queries", () => {
 
   describe("searchFlights", () => {
     describe("Parameter Validation", () => {
-      it("should reject invalid departure airport code (not 3 characters)", async () => {
+      it("should reject invalid departure city code (not 3 characters)", async () => {
         await expect(
           searchFlights({
             from: "AB", // Only 2 characters
             to: "SHA",
             departureDate: "2025-12-01",
           })
-        ).rejects.toThrow("Departure airport code must be 3 characters");
+        ).rejects.toThrow("Departure city code must be 3 characters");
       });
 
-      it("should reject invalid departure airport code (lowercase)", async () => {
+      it("should reject invalid departure city code (lowercase)", async () => {
         await expect(
           searchFlights({
             from: "pek", // Lowercase
@@ -39,14 +39,14 @@ describe("Flight Search Queries", () => {
         ).rejects.toThrow();
       });
 
-      it("should reject invalid arrival airport code", async () => {
+      it("should reject invalid arrival city code", async () => {
         await expect(
           searchFlights({
-            from: "PEK",
+            from: "BJS",
             to: "SH", // Only 2 characters
             departureDate: "2025-12-01",
           })
-        ).rejects.toThrow("Arrival airport code must be 3 characters");
+        ).rejects.toThrow("Arrival city code must be 3 characters");
       });
 
       it("should reject invalid date format", async () => {
@@ -70,12 +70,25 @@ describe("Flight Search Queries", () => {
         ).rejects.toThrow();
       });
 
-      it("should automatically convert airport codes to uppercase", async () => {
-        const mockAirportQuery = {
+      it("should automatically convert city codes to uppercase", async () => {
+        const mockCityQuery = {
           from: vi.fn().mockReturnThis(),
-          innerJoin: vi.fn().mockReturnThis(),
           where: vi.fn().mockReturnThis(),
           limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
             {
               airport: {
                 id: "airport-1",
@@ -83,12 +96,6 @@ describe("Flight Search Queries", () => {
                 name: "Beijing Capital",
                 cityId: "city-1",
                 isDeleted: false,
-              },
-              city: {
-                id: "city-1",
-                iataCode: "BJS",
-                name: "北京",
-                timezone: "Asia/Shanghai",
               },
             },
           ]),
@@ -102,40 +109,112 @@ describe("Flight Search Queries", () => {
           orderBy: vi.fn().mockResolvedValue([]),
         };
 
-        vi.mocked(db.select).mockReturnValueOnce(mockAirportQuery as any);
-        vi.mocked(db.select).mockReturnValueOnce(mockAirportQuery as any);
-        vi.mocked(db.select).mockReturnValueOnce(mockFlightQuery as any);
+        // Mock sequence: departure city, arrival city, departure airports, arrival airports, flights
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockCityQuery as any) // departure city
+          .mockReturnValueOnce(mockAirportsQuery as any) // departure airports
+          .mockReturnValueOnce(mockCityQuery as any) // arrival city
+          .mockReturnValueOnce(mockAirportsQuery as any) // arrival airports
+          .mockReturnValueOnce(mockFlightQuery as any); // flights
 
         await searchFlights({
-          from: "pek", // Lowercase input
+          from: "bjs", // Lowercase input
           to: "sha", // Lowercase input
           departureDate: "2025-12-01",
         });
 
-        // Verify that the where clause was called with uppercase codes
-        expect(mockAirportQuery.where).toHaveBeenCalled();
+        // Verify that the where clause was called
+        expect(mockCityQuery.where).toHaveBeenCalled();
       });
     });
 
     describe("Business Logic Validation", () => {
-      it("should reject when departure and arrival airports are the same", async () => {
+      it("should reject when departure and arrival cities are the same", async () => {
         await expect(
           searchFlights({
-            from: "PEK",
-            to: "PEK", // Same as departure
+            from: "BJS",
+            to: "BJS", // Same as departure
             departureDate: "2025-12-01",
           })
-        ).rejects.toThrow("Departure and arrival airports must be different");
+        ).rejects.toThrow("Departure and arrival cities must be different");
       });
 
       it("should reject past departure dates", async () => {
         const pastDate = new Date();
-        pastDate.setDate(pastDate.getDate() - 1);
+        pastDate.setDate(pastDate.getDate() - 2); // Use 2 days ago to avoid timezone issues
         const pastDateString = pastDate.toISOString().split("T")[0];
+
+        // Mock departure city lookup
+        const mockDepartureCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockDepartureAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+                cityId: "city-1",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-2",
+                iataCode: "SHA",
+                name: "上海",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Pudong International",
+                cityId: "city-2",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        // Mock all 4 queries: departure city, departure airports, arrival city, arrival airports
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockDepartureCityQuery as any)
+          .mockReturnValueOnce(mockDepartureAirportsQuery as any)
+          .mockReturnValueOnce(mockArrivalCityQuery as any)
+          .mockReturnValueOnce(mockArrivalAirportsQuery as any);
 
         await expect(
           searchFlights({
-            from: "PEK",
+            from: "BJS",
             to: "SHA",
             departureDate: pastDateString,
           })
@@ -145,11 +224,24 @@ describe("Flight Search Queries", () => {
       it("should accept today's date", async () => {
         const today = new Date().toISOString().split("T")[0];
 
-        const mockAirportQuery = {
+        const mockCityQuery = {
           from: vi.fn().mockReturnThis(),
-          innerJoin: vi.fn().mockReturnThis(),
           where: vi.fn().mockReturnThis(),
           limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
             {
               airport: {
                 id: "airport-1",
@@ -157,12 +249,6 @@ describe("Flight Search Queries", () => {
                 name: "Beijing Capital",
                 cityId: "city-1",
                 isDeleted: false,
-              },
-              city: {
-                id: "city-1",
-                iataCode: "BJS",
-                name: "北京",
-                timezone: "Asia/Shanghai",
               },
             },
           ]),
@@ -176,26 +262,28 @@ describe("Flight Search Queries", () => {
           orderBy: vi.fn().mockResolvedValue([]),
         };
 
-        vi.mocked(db.select).mockReturnValueOnce(mockAirportQuery as any);
-        vi.mocked(db.select).mockReturnValueOnce(mockAirportQuery as any);
-        vi.mocked(db.select).mockReturnValueOnce(mockFlightQuery as any);
+        // Mock sequence: departure city, departure airports, arrival city, arrival airports, flights
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockCityQuery as any)
+          .mockReturnValueOnce(mockAirportsQuery as any)
+          .mockReturnValueOnce(mockCityQuery as any)
+          .mockReturnValueOnce(mockAirportsQuery as any)
+          .mockReturnValueOnce(mockFlightQuery as any);
 
         await expect(
           searchFlights({
-            from: "PEK",
+            from: "BJS",
             to: "SHA",
             departureDate: today,
           })
         ).resolves.toBeDefined();
       });
 
-      it("should throw error when departure airport not found", async () => {
+      it("should throw error when departure city not found", async () => {
         const mockSelect = vi.fn().mockReturnValue({
           from: vi.fn().mockReturnValue({
-            innerJoin: vi.fn().mockReturnValue({
-              where: vi.fn().mockReturnValue({
-                limit: vi.fn().mockResolvedValue([]), // Empty result
-              }),
+            where: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue([]), // Empty result
             }),
           }),
         });
@@ -204,27 +292,19 @@ describe("Flight Search Queries", () => {
 
         await expect(
           searchFlights({
-            from: "XXX", // Non-existent airport
+            from: "XXX", // Non-existent city
             to: "SHA",
             departureDate: "2025-12-01",
           })
-        ).rejects.toThrow("Departure airport XXX not found");
+        ).rejects.toThrow("Departure city XXX not found");
       });
 
-      it("should throw error when arrival airport not found", async () => {
-        const mockDepartureQuery = {
+      it("should throw error when arrival city not found", async () => {
+        const mockDepartureCityQuery = {
           from: vi.fn().mockReturnThis(),
-          innerJoin: vi.fn().mockReturnThis(),
           where: vi.fn().mockReturnThis(),
           limit: vi.fn().mockResolvedValue([
             {
-              airport: {
-                id: "airport-1",
-                iataCode: "PEK",
-                name: "Beijing Capital",
-                cityId: "city-1",
-                isDeleted: false,
-              },
               city: {
                 id: "city-1",
                 iataCode: "BJS",
@@ -235,39 +315,63 @@ describe("Flight Search Queries", () => {
           ]),
         };
 
-        const mockArrivalQuery = {
+        const mockDepartureAirportsQuery = {
           from: vi.fn().mockReturnThis(),
-          innerJoin: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+                cityId: "city-1",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalCityQuery = {
+          from: vi.fn().mockReturnThis(),
           where: vi.fn().mockReturnThis(),
           limit: vi.fn().mockResolvedValue([]), // Empty result
         };
 
         vi.mocked(db.select)
-          .mockReturnValueOnce(mockDepartureQuery as any)
-          .mockReturnValueOnce(mockArrivalQuery as any);
+          .mockReturnValueOnce(mockDepartureCityQuery as any)
+          .mockReturnValueOnce(mockDepartureAirportsQuery as any)
+          .mockReturnValueOnce(mockArrivalCityQuery as any);
 
         await expect(
           searchFlights({
-            from: "PEK",
-            to: "XXX", // Non-existent airport
+            from: "BJS",
+            to: "XXX", // Non-existent city
             departureDate: "2025-12-01",
           })
-        ).rejects.toThrow("Arrival airport XXX not found");
+        ).rejects.toThrow("Arrival city XXX not found");
       });
     });
   });
 
   describe("searchOneWayFlights", () => {
     it("should be an alias for searchFlights", async () => {
-      const mockAirportQuery = {
+      const mockCityQuery = {
         from: vi.fn().mockReturnThis(),
-        innerJoin: vi.fn().mockReturnThis(),
         where: vi.fn().mockReturnThis(),
-        limit: vi.fn(),
+        limit: vi.fn().mockResolvedValue([
+          {
+            city: {
+              id: "city-1",
+              iataCode: "BJS",
+              name: "北京",
+              timezone: "Asia/Shanghai",
+            },
+          },
+        ]),
       };
 
-      mockAirportQuery.limit
-        .mockResolvedValueOnce([
+      const mockAirportsQuery = {
+        from: vi.fn().mockReturnThis(),
+        where: vi.fn().mockResolvedValue([
           {
             airport: {
               id: "airport-1",
@@ -276,31 +380,9 @@ describe("Flight Search Queries", () => {
               cityId: "city-1",
               isDeleted: false,
             },
-            city: {
-              id: "city-1",
-              iataCode: "BJS",
-              name: "北京",
-              timezone: "Asia/Shanghai",
-            },
           },
-        ])
-        .mockResolvedValueOnce([
-          {
-            airport: {
-              id: "airport-2",
-              iataCode: "SHA",
-              name: "Shanghai Hongqiao",
-              cityId: "city-2",
-              isDeleted: false,
-            },
-            city: {
-              id: "city-2",
-              iataCode: "SHA",
-              name: "上海",
-              timezone: "Asia/Shanghai",
-            },
-          },
-        ]);
+        ]),
+      };
 
       const mockFlightQuery = {
         from: vi.fn().mockReturnThis(),
@@ -310,13 +392,16 @@ describe("Flight Search Queries", () => {
         orderBy: vi.fn().mockResolvedValue([]),
       };
 
+      // Mock sequence: departure city, departure airports, arrival city, arrival airports, flights
       vi.mocked(db.select)
-        .mockReturnValueOnce(mockAirportQuery as any)
-        .mockReturnValueOnce(mockAirportQuery as any)
+        .mockReturnValueOnce(mockCityQuery as any)
+        .mockReturnValueOnce(mockAirportsQuery as any)
+        .mockReturnValueOnce(mockCityQuery as any)
+        .mockReturnValueOnce(mockAirportsQuery as any)
         .mockReturnValueOnce(mockFlightQuery as any);
 
       const result = await searchOneWayFlights({
-        from: "PEK",
+        from: "BJS",
         to: "SHA",
         departureDate: "2025-12-01",
       });
