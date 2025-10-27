@@ -12,6 +12,7 @@ import {
   user,
 } from "../schema/index";
 import { db } from "./index";
+import { displaySeedConfig, parseSeedConfig } from "./seed.config";
 
 /**
  * Seed the database with sample data
@@ -24,9 +25,30 @@ import { db } from "./index";
  * - faker.airline.airplane() - generates realistic aircraft model names
  *
  * All IATA codes are guaranteed unique through duplicate checking loops
+ *
+ * Supports CLI arguments for configuration:
+ * @example
+ * ```bash
+ * # Use specific seed for reproducible data
+ * pnpm db:seed --seed=12345
+ *
+ * # Generate more data
+ * pnpm db:seed --cities=50 --airports=100 --flights=200
+ *
+ * # Combine options
+ * pnpm db:seed --seed=12345 --users=20 --flights=100
+ * ```
  */
 async function seed() {
+  // Parse configuration from CLI arguments
+  const config = parseSeedConfig();
+
+  // Set Faker seed for reproducible data generation
+  const seedValue = config.seed ?? Date.now();
+  faker.seed(seedValue);
+
   console.log("[SEED] Starting database seeding...");
+  displaySeedConfig({ ...config, seed: seedValue });
 
   try {
     // Clear existing data (in reverse order of dependencies)
@@ -45,7 +67,7 @@ async function seed() {
     const cityData = [];
     const usedCityIataCodes = new Set<string>();
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < config.counts.cities; i++) {
       let cityIataCode;
       // Ensure IATA code is unique (3-character code)
       do {
@@ -54,11 +76,21 @@ async function seed() {
 
       usedCityIataCodes.add(cityIataCode);
 
+      const isDomestic = faker.datatype.boolean();
+      const continents = ["Asia", "Europe", "America", "Africa", "Oceania"];
+
       cityData.push({
         iataCode: cityIataCode,
         name: faker.location.city(),
         timezone: faker.location.timeZone(),
-        isDomestic: faker.datatype.boolean(),
+        isDomestic,
+        // Domestic cities must have pinyinFirstLetter
+        pinyinFirstLetter: isDomestic
+          ? faker.string.alpha({ length: 1, casing: "upper" })
+          : null,
+        // International cities must have continent
+        continent: !isDomestic ? faker.helpers.arrayElement(continents) : null,
+        isPopular: faker.datatype.boolean({ probability: 0.2 }), // 20% chance of being popular
       });
     }
 
@@ -76,7 +108,7 @@ async function seed() {
     const airportData = [];
     const usedAirportIataCodes = new Set<string>();
 
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < config.counts.airports; i++) {
       let airport;
       // Ensure IATA code is unique (3-character code)
       do {
@@ -115,7 +147,7 @@ async function seed() {
     const airlineData = [];
     const usedAirlineIataCodes = new Set<string>();
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < config.counts.airlines; i++) {
       let airline;
       // Ensure IATA code is unique AND matches pattern ^[A-Z]{2}$ (2 uppercase letters only)
       do {
@@ -150,8 +182,7 @@ async function seed() {
      */
     const flightData = [];
 
-    // Generate 50 flights
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < config.counts.flights; i++) {
       const airline = faker.helpers.arrayElement(insertedAirlines);
       const departureAirport = faker.helpers.arrayElement(insertedAirports);
       let arrivalAirport = faker.helpers.arrayElement(insertedAirports);
@@ -248,10 +279,9 @@ async function seed() {
 
     // Seed Users
     console.log("[SEED] Seeding users...");
-    const numberOfUsers = 10;
     const userData = [];
 
-    for (let i = 0; i < numberOfUsers; i++) {
+    for (let i = 0; i < config.counts.users; i++) {
       const firstName = faker.person.firstName();
       const lastName = faker.person.lastName();
 
@@ -287,8 +317,11 @@ async function seed() {
     const passengerData = [];
 
     for (const currentUser of insertedUsers) {
-      // Each user gets 1-5 passengers
-      const numberOfPassengers = faker.number.int({ min: 1, max: 5 });
+      // Each user gets a random number of passengers based on config
+      const numberOfPassengers = faker.number.int({
+        min: config.counts.passengersPerUser.min,
+        max: config.counts.passengersPerUser.max,
+      });
 
       for (let i = 0; i < numberOfPassengers; i++) {
         const hasChineseName = faker.datatype.boolean();
