@@ -1,4 +1,4 @@
 {
   "title": "Technical Design",
-  "pages": ["architecture", "backend", "data-flow", "test"]
+  "pages": ["architecture", "backend", "data-flow", "test", "seeding"]
 }

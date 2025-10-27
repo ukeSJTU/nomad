@@ -1,0 +1,323 @@
+---
+title: 数据库种子数据系统
+description: 数据库种子数据生成系统的技术设计文档
+icon: Sprout
+---
+
+# 数据库种子数据系统
+
+## 概述
+
+数据库种子数据系统用于生成测试和开发环境所需的模拟数据。系统基于 Faker.js 实现,支持可重现的数据生成、多种预设场景和灵活的配置选项。
+
+### 核心特性
+
+- **可重现性**: 通过固定种子值生成一致的数据
+- **场景预设**: 提供 5 种预定义场景满足不同需求
+- **灵活配置**: 支持命令行参数和交互式配置
+- **增量模式**: 支持在现有数据基础上追加新数据
+- **真实数据**: 使用 Faker.js Airline 模块生成符合行业标准的航空数据
+
+## 系统架构
+
+### 文件结构
+
+```
+src/lib/db/
+├── seed.ts           # 主种子脚本
+└── seed.config.ts    # 配置管理模块
+```
+
+### 数据依赖关系
+
+```
+Cities (城市)
+  └── Airports (机场)
+        └── Flights (航班)
+              └── Flight Seat Classes (座位舱位)
+
+Airlines (航空公司)
+  └── Flights (航班)
+
+Users (用户)
+  └── Passengers (乘客信息)
+```
+
+## 配置系统
+
+### 配置模式
+
+系统支持两种运行模式:
+
+#### 1. 完全模式 (Full Mode)
+
+- 清除所有现有数据
+- 重新生成全部数据
+- 适用于初始化和重置环境
+
+#### 2. 增量模式 (Incremental Mode)
+
+- 保留现有数据
+- 仅添加新记录
+- 适用于扩充测试数据
+
+### 预设场景
+
+| 场景 | 说明 | 种子值 | 城市 | 机场 | 航空公司 | 航班 | 用户 |
+|------|------|--------|------|------|----------|------|------|
+| **minimal** | 最小数据集,快速测试 | 42 | 3 | 5 | 5 | 10 | 2 |
+| **development** | 日常开发使用 | 42 | 10 | 20 | 15 | 50 | 5 |
+| **testing** | 自动化测试 (CI/CD) | 12345 | 5 | 10 | 10 | 30 | 3 |
+| **demo** | 演示展示 | 99999 | 50 | 100 | 50 | 200 | 20 |
+| **performance** | 性能测试 | 88888 | 200 | 500 | 100 | 2000 | 100 |
+
+### 配置参数
+
+```typescript
+{
+  seed: number;              // Faker 种子值,默认 42
+  mode: "full" | "incremental";  // 运行模式
+  counts: {
+    cities: number;          // 城市数量
+    airports: number;        // 机场数量
+    airlines: number;        // 航空公司数量
+    flights: number;         // 航班数量
+    users: number;           // 用户数量
+    passengersPerUser: {     // 每个用户的乘客数量范围
+      min: number;
+      max: number;
+    }
+  }
+}
+```
+
+## 使用方法
+
+### 交互式模式
+
+直接运行命令,通过交互式界面选择场景:
+
+```bash
+pnpm db:seed
+```
+
+### 命令行模式
+
+#### 使用预设场景
+
+```bash
+# 使用演示场景
+pnpm db:seed --scenario=demo
+
+# 使用性能测试场景
+pnpm db:seed --scenario=performance
+```
+
+#### 自定义配置
+
+```bash
+# 指定种子值(可重现数据)
+pnpm db:seed --seed=12345
+
+# 增量模式添加数据
+pnpm db:seed --incremental --flights=10
+
+# 自定义各表数量
+pnpm db:seed --cities=50 --airports=100 --flights=200
+
+# 组合多个参数
+pnpm db:seed --seed=12345 --users=20 --flights=100
+```
+
+### 可用参数
+
+| 参数 | 说明 | 示例 |
+|------|------|------|
+| `--scenario=<name>` | 使用预设场景 | `--scenario=demo` |
+| `--seed=<number>` | 设置 Faker 种子值 | `--seed=12345` |
+| `--mode=<mode>` | 设置运行模式 | `--mode=incremental` |
+| `--incremental` | 增量模式快捷方式 | `--incremental` |
+| `--cities=<number>` | 城市数量 | `--cities=50` |
+| `--airports=<number>` | 机场数量 | `--airports=100` |
+| `--airlines=<number>` | 航空公司数量 | `--airlines=30` |
+| `--flights=<number>` | 航班数量 | `--flights=200` |
+| `--users=<number>` | 用户数量 | `--users=20` |
+
+## 数据生成详解
+
+### 城市 (Cities)
+
+- **IATA 代码**: 3 位大写字母,保证唯一性
+- **国内/国际**: 随机分配,国内城市包含拼音首字母,国际城市包含大洲信息
+- **热门标记**: 20% 概率标记为热门城市
+- **时区**: 使用真实时区数据
+
+### 机场 (Airports)
+
+- **数据源**: `faker.airline.airport()` 生成真实机场名称和 IATA 代码
+- **关联**: 随机关联到已生成的城市
+- **唯一性**: IATA 代码去重处理
+
+### 航空公司 (Airlines)
+
+- **数据源**: `faker.airline.airline()` 生成真实航空公司名称
+- **IATA 代码**: 严格验证为 2 位大写字母 (A-Z)
+- **Logo**: 使用 UI Avatars API 生成品牌色 Logo
+- **品牌色**: 从预定义的 10 种颜色中随机选择
+
+### 航班 (Flights)
+
+- **航班号**: 航空公司 IATA 代码 + 4 位数字 (如 CA1234)
+- **机型**: `faker.airline.airplane()` 生成真实机型 (如 Boeing 737)
+- **时间**: 未来 90 天内随机出发时间
+- **航程**: 2-15 小时随机飞行时长
+- **路线**: 确保出发和到达机场不同
+
+### 座位舱位 (Flight Seat Classes)
+
+每个航班随机生成 2-3 个舱位:
+
+| 舱位 | 基础价格 | 基础座位数 | 价格浮动 |
+|------|----------|------------|----------|
+| 经济舱 (ECONOMY) | ¥200 | 150 | ±30% |
+| 商务舱 (BUSINESS) | ¥1500 | 30 | ±30% |
+| 头等舱 (FIRST) | ¥5000 | 12 | ±30% |
+
+- **可用座位**: 总座位数的 30%-100%
+- **座位数浮动**: 基础值 ±10
+
+### 用户 (Users)
+
+- **姓名**: 随机生成的英文姓名
+- **邮箱**: 基于姓名生成的邮箱地址
+- **验证状态**: 随机邮箱和手机验证状态
+- **手机号**: 70% 概率包含手机号
+- **头像**: 50% 概率包含头像 URL
+
+### 乘客信息 (Passengers)
+
+每个用户生成 1-5 个乘客信息:
+
+- **姓名**: 支持中文姓名或英文姓名
+- **证件类型**: 身份证、护照或其他
+  - 身份证: 18 位数字
+  - 护照: E + 8 位数字
+  - 其他: 10 位字母数字组合
+- **国籍**: 支持多个国家/地区
+- **性别**: 男性、女性或其他
+- **出生日期**: 1-80 岁随机年龄
+- **联系方式**: 可选的电话、传真、邮箱
+
+## 技术实现
+
+### 唯一性保证
+
+使用 Set 数据结构确保 IATA 代码唯一:
+
+```typescript
+const usedIataCodes = new Set<string>();
+do {
+  code = generateCode();
+} while (usedIataCodes.has(code));
+usedIataCodes.add(code);
+```
+
+### 数据验证
+
+使用 Zod 进行配置验证:
+
+```typescript
+const seedConfigSchema = z.object({
+  seed: z.number().int().positive().optional().default(42),
+  mode: z.enum(["full", "incremental"]).default("full"),
+  counts: z.object({...})
+});
+```
+
+### 进度显示
+
+使用 ora 库提供友好的进度提示:
+
+```typescript
+const spinner = ora("Seeding cities...").start();
+// ... 执行操作
+spinner.succeed(`Seeded ${count} cities`);
+```
+
+## 最佳实践
+
+### 开发环境
+
+使用 development 场景,数据量适中,启动快速:
+
+```bash
+pnpm db:seed --scenario=development
+```
+
+### 自动化测试
+
+使用固定种子值确保测试数据一致:
+
+```bash
+pnpm db:seed --scenario=testing
+```
+
+### 性能测试
+
+使用 performance 场景生成大量数据:
+
+```bash
+pnpm db:seed --scenario=performance
+```
+
+### 增量添加数据
+
+在现有数据基础上添加更多航班:
+
+```bash
+pnpm db:seed --incremental --flights=50
+```
+
+## 注意事项
+
+1. **数据清除**: 完全模式会清除所有现有数据,请谨慎使用
+2. **种子值**: 相同的种子值会生成完全相同的数据,便于调试和测试
+3. **依赖关系**: 数据生成严格遵循外键依赖关系
+4. **IATA 代码**: 航空公司 IATA 代码必须是 2 位大写字母,系统会自动过滤不符合的代码
+5. **性能**: 大数据量场景 (如 performance) 可能需要较长时间完成
+
+## 扩展开发
+
+### 添加新场景
+
+在 `seed.config.ts` 中添加新场景:
+
+```typescript
+export const scenarios = {
+  // ... 现有场景
+  myScenario: {
+    name: "My Scenario",
+    description: "Custom scenario description",
+    seed: 54321,
+    mode: "full" as const,
+    counts: {
+      cities: 20,
+      airports: 40,
+      // ...
+    },
+  },
+};
+```
+
+### 添加新表
+
+1. 在 `seed.ts` 中添加种子逻辑
+2. 在 `seed.config.ts` 中添加配置参数
+3. 更新 CLI 参数解析
+4. 遵循依赖关系顺序
+
+## 相关资源
+
+- [Faker.js 文档](https://fakerjs.dev/)
+- [Drizzle ORM 文档](https://orm.drizzle.team/)
+- [数据库架构设计](/docs/technical-design/architecture)
