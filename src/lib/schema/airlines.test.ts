@@ -12,16 +12,16 @@ describe("Airlines Schema", () => {
     const columns = Object.keys(airlines);
 
     expect(columns).toContain("id");
-    expect(columns).toContain("iata_code");
+    expect(columns).toContain("iataCode");
     expect(columns).toContain("name");
-    expect(columns).toContain("logo_url");
-    expect(columns).toContain("is_deleted");
-    expect(columns).toContain("created_at");
-    expect(columns).toContain("updated_at");
+    expect(columns).toContain("logoUrl");
+    expect(columns).toContain("isDeleted");
+    expect(columns).toContain("createdAt");
+    expect(columns).toContain("updatedAt");
   });
 
   it("should have unique constraint on iata_code", () => {
-    const iataCodeColumn = airlines.iata_code;
+    const iataCodeColumn = airlines.iataCode;
     expect(iataCodeColumn.isUnique).toBe(true);
   });
 });

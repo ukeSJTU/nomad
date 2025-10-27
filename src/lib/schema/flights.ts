@@ -38,65 +38,69 @@ export const flights = pgTable(
     id: uuid().primaryKey().defaultRandom(),
 
     // Flight Identification
-    flight_number: varchar({ length: 10 }).notNull(), // Format: [A-Z]{2}[0-9]{1,4} (e.g., "CA1234")
+    flightNumber: varchar("flight_number", { length: 10 }).notNull(), // Format: [A-Z]{2}[0-9]{1,4} (e.g., "CA1234")
 
     // Relationships
-    airline_id: uuid()
+    airlineId: uuid("airline_id")
       .notNull()
       .references(() => airlines.id, { onDelete: "restrict" }),
-    departure_airport_id: uuid()
+    departureAirportId: uuid("departure_airport_id")
       .notNull()
       .references(() => airports.id, { onDelete: "restrict" }),
-    arrival_airport_id: uuid()
+    arrivalAirportId: uuid("arrival_airport_id")
       .notNull()
       .references(() => airports.id, { onDelete: "restrict" }),
 
     // Flight Schedule (stored in UTC)
-    departure_datetime: timestamp({ withTimezone: true }).notNull(),
-    arrival_datetime: timestamp({ withTimezone: true }).notNull(),
+    departureDatetime: timestamp("departure_datetime", {
+      withTimezone: true,
+    }).notNull(),
+    arrivalDatetime: timestamp("arrival_datetime", {
+      withTimezone: true,
+    }).notNull(),
 
     // Terminal Information (for display in flight cards)
-    departure_terminal: varchar({ length: 10 }), // Departure terminal (e.g., "T1", "T2", "Terminal A")
-    arrival_terminal: varchar({ length: 10 }), // Arrival terminal (optional)
+    departureTerminal: varchar("departure_terminal", { length: 10 }), // Departure terminal (e.g., "T1", "T2", "Terminal A")
+    arrivalTerminal: varchar("arrival_terminal", { length: 10 }), // Arrival terminal (optional)
 
     // Aircraft Information
-    aircraft_type: varchar({ length: 50 }), // Aircraft model (e.g., "Boeing 737", "Airbus A320")
+    aircraftType: varchar("aircraft_type", { length: 50 }), // Aircraft model (e.g., "Boeing 737", "Airbus A320")
 
     // Soft Delete
-    is_deleted: boolean().notNull().default(false),
+    isDeleted: boolean("is_deleted").notNull().default(false),
 
     // Timestamps
-    created_at: timestamp().notNull().defaultNow(),
-    updated_at: timestamp()
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
   table => [
     // Index Design
-    index("idx_flights_airline_id").on(table.airline_id), // Filter by airline
-    index("idx_flights_departure_airport_id").on(table.departure_airport_id), // Filter by departure airport
-    index("idx_flights_arrival_airport_id").on(table.arrival_airport_id), // Filter by arrival airport
-    index("idx_flights_flight_number").on(table.flight_number), // Search by flight number
-    index("idx_flights_departure_datetime").on(table.departure_datetime), // Filter by departure time
-    index("idx_flights_is_deleted").on(table.is_deleted), // Soft delete filter
+    index("idx_flights_airline_id").on(table.airlineId), // Filter by airline
+    index("idx_flights_departure_airport_id").on(table.departureAirportId), // Filter by departure airport
+    index("idx_flights_arrival_airport_id").on(table.arrivalAirportId), // Filter by arrival airport
+    index("idx_flights_flight_number").on(table.flightNumber), // Search by flight number
+    index("idx_flights_departure_datetime").on(table.departureDatetime), // Filter by departure time
+    index("idx_flights_is_deleted").on(table.isDeleted), // Soft delete filter
 
     // Composite Index: Core flight search query (from airport A to airport B on date X)
     index("idx_flights_search").on(
-      table.departure_airport_id,
-      table.arrival_airport_id,
-      table.departure_datetime,
-      table.is_deleted
+      table.departureAirportId,
+      table.arrivalAirportId,
+      table.departureDatetime,
+      table.isDeleted
     ),
 
     // Constraints
     check(
       "flights_flight_number_format",
-      sql`${table.flight_number} ~ '^[A-Z]{2}[0-9]{1,4}$'`
+      sql`${table.flightNumber} ~ '^[A-Z]{2}[0-9]{1,4}$'`
     ), // Flight number must match format: 2 letters + 1-4 digits
     check(
       "flights_arrival_after_departure",
-      sql`${table.arrival_datetime} > ${table.departure_datetime}`
+      sql`${table.arrivalDatetime} > ${table.departureDatetime}`
     ), // Arrival must be after departure
   ]
 );
