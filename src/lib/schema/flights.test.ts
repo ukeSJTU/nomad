@@ -1,10 +1,11 @@
+import { getTableName } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 
 import { flights } from "./flights";
 
 describe("Flights Schema", () => {
   it("should have correct table name", () => {
-    expect(flights[Symbol.for("drizzle:Name")]).toBe("flights");
+    expect(getTableName(flights)).toBe("flights");
   });
 
   it("should have all required fields defined", () => {
@@ -17,8 +18,9 @@ describe("Flights Schema", () => {
     expect(columns).toContain("arrival_airport_id");
     expect(columns).toContain("departure_datetime");
     expect(columns).toContain("arrival_datetime");
+    expect(columns).toContain("departure_terminal");
+    expect(columns).toContain("arrival_terminal");
     expect(columns).toContain("aircraft_type");
-    expect(columns).toContain("status");
     expect(columns).toContain("is_deleted");
     expect(columns).toContain("created_at");
     expect(columns).toContain("updated_at");
