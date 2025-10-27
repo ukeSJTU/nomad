@@ -279,6 +279,89 @@ describe("Flight Search Queries", () => {
         ).resolves.toBeDefined();
       });
 
+      it("should reject departure date exceeding one year from today", async () => {
+        const futureDate = new Date();
+        futureDate.setFullYear(futureDate.getFullYear() + 1);
+        futureDate.setDate(futureDate.getDate() + 1); // One day more than one year
+        const futureDateString = futureDate.toISOString().split("T")[0];
+
+        // Mock departure city lookup
+        const mockDepartureCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockDepartureAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+                cityId: "city-1",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-2",
+                iataCode: "SHA",
+                name: "上海",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Pudong International",
+                cityId: "city-2",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        // Mock all 4 queries: departure city, departure airports, arrival city, arrival airports
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockDepartureCityQuery as any)
+          .mockReturnValueOnce(mockDepartureAirportsQuery as any)
+          .mockReturnValueOnce(mockArrivalCityQuery as any)
+          .mockReturnValueOnce(mockArrivalAirportsQuery as any);
+
+        await expect(
+          searchFlights({
+            from: "BJS",
+            to: "SHA",
+            departureDate: futureDateString,
+          })
+        ).rejects.toThrow("Departure date cannot exceed one year from today");
+      });
+
       it("should throw error when departure city not found", async () => {
         const mockSelect = vi.fn().mockReturnValue({
           from: vi.fn().mockReturnValue({

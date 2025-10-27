@@ -1,4 +1,4 @@
-import { endOfDay, isBefore, isToday, startOfDay } from "date-fns";
+import { addYears, endOfDay, isBefore, isToday, startOfDay } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -191,6 +191,12 @@ export async function searchFlights(params: {
   // Check if the selected date is in the past (in departure city's timezone)
   if (isBefore(selectedDateInDepartureCity, todayInDepartureCity)) {
     throw new Error("Departure date cannot be in the past");
+  }
+
+  // Check if the selected date exceeds one year from today
+  const oneYearFromToday = addYears(todayInDepartureCity, 1);
+  if (!isBefore(selectedDateInDepartureCity, oneYearFromToday)) {
+    throw new Error("Departure date cannot exceed one year from today");
   }
 
   // Calculate start and end of the selected day in departure city's timezone
