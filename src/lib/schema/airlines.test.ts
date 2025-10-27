@@ -1,10 +1,11 @@
+import { getTableName } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 
 import { airlines } from "./airlines";
 
 describe("Airlines Schema", () => {
   it("should have correct table name", () => {
-    expect(airlines[Symbol.for("drizzle:Name")]).toBe("airlines");
+    expect(getTableName(airlines)).toBe("airlines");
   });
 
   it("should have all required fields defined", () => {
