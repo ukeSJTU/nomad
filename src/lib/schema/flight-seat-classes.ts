@@ -43,56 +43,53 @@ export const flightSeatClasses = pgTable(
     id: uuid().primaryKey().defaultRandom(),
 
     // Relationships
-    flight_id: uuid()
+    flightId: uuid("flight_id")
       .notNull()
       .references(() => flights.id, { onDelete: "restrict" }),
 
     // Seat Class Information
-    class_type: varchar({ length: 20 }).notNull(), // ECONOMY, BUSINESS, FIRST
+    classType: varchar("class_type", { length: 20 }).notNull(), // ECONOMY, BUSINESS, FIRST
 
     // Seat Inventory
-    total_seats: integer().notNull(), // Total number of seats in this class
-    available_seats: integer().notNull(), // Remaining seats available for booking
+    totalSeats: integer("total_seats").notNull(), // Total number of seats in this class
+    availableSeats: integer("available_seats").notNull(), // Remaining seats available for booking
 
     // Pricing
     price: numeric({ precision: 10, scale: 2 }).notNull(), // Current price for this class (CNY)
 
     // Soft Delete
-    is_deleted: boolean().notNull().default(false),
+    isDeleted: boolean("is_deleted").notNull().default(false),
 
     // Timestamps
-    created_at: timestamp().notNull().defaultNow(),
-    updated_at: timestamp()
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
   table => [
     // Index Design
-    index("idx_seat_classes_flight_id").on(table.flight_id), // Query seat classes by flight
-    index("idx_seat_classes_class_type").on(table.class_type), // Filter by cabin class
-    index("idx_seat_classes_is_deleted").on(table.is_deleted), // Soft delete filter
+    index("idx_seat_classes_flight_id").on(table.flightId), // Query seat classes by flight
+    index("idx_seat_classes_class_type").on(table.classType), // Filter by cabin class
+    index("idx_seat_classes_is_deleted").on(table.isDeleted), // Soft delete filter
 
     // Unique Constraint: One flight can only have one record per class type
-    unique("uk_seat_classes_flight_class").on(
-      table.flight_id,
-      table.class_type
-    ),
+    unique("uk_seat_classes_flight_class").on(table.flightId, table.classType),
 
     // Constraints
     check(
       "seat_classes_class_type_valid",
-      sql`${table.class_type} IN ('ECONOMY', 'BUSINESS', 'FIRST')`
+      sql`${table.classType} IN ('ECONOMY', 'BUSINESS', 'FIRST')`
     ), // Class type must be one of the allowed values
     check(
       "seat_classes_available_seats_non_negative",
-      sql`${table.available_seats} >= 0`
+      sql`${table.availableSeats} >= 0`
     ), // Available seats cannot be negative
     check(
       "seat_classes_available_seats_not_exceed_total",
-      sql`${table.available_seats} <= ${table.total_seats}`
+      sql`${table.availableSeats} <= ${table.totalSeats}`
     ), // Available seats cannot exceed total seats
-    check("seat_classes_total_seats_positive", sql`${table.total_seats} > 0`), // Total seats must be positive
+    check("seat_classes_total_seats_positive", sql`${table.totalSeats} > 0`), // Total seats must be positive
     check("seat_classes_price_positive", sql`${table.price} > 0`), // Price must be positive
   ]
 );

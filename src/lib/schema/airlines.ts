@@ -32,25 +32,26 @@ export const airlines = pgTable(
     id: uuid().primaryKey().defaultRandom(),
 
     // Basic Information
-    iata_code: varchar({ length: 2 }).notNull().unique(), // IATA airline code (e.g., "CA" for Air China, "MU" for China Eastern)
-    name: varchar({ length: 255 }).notNull(), // Airline name in Chinese (e.g., "中国国际航空", "东方航空")
-    logo_url: varchar({ length: 500 }), // URL to airline logo image (optional)
+    iataCode: varchar("iata_code", { length: 2 }).notNull().unique(), // IATA airline code (e.g., "CA" for Air China, "MU" for China Eastern)
+    name: varchar({ length: 255 }).notNull(), // Airline name in Chinese (e.g., "中国国际航空", "中国东方航空")
+    logoUrl: varchar("logo_url", { length: 500 }), // Logo URL (optional)
 
     // Soft Delete
-    is_deleted: boolean().notNull().default(false),
+    isDeleted: boolean("is_deleted").notNull().default(false),
 
     // Timestamps
-    created_at: timestamp().notNull().defaultNow(),
-    updated_at: timestamp()
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
   table => [
     // Index Design
-    index("idx_airlines_is_deleted").on(table.is_deleted), // Soft delete filter optimization
+    index("idx_airlines_iata_code").on(table.iataCode), // Unique IATA code lookup
+    index("idx_airlines_is_deleted").on(table.isDeleted), // Soft delete filter optimization
 
     // Constraints
-    check("airlines_iata_code_format", sql`${table.iata_code} ~ '^[A-Z]{2}$'`), // IATA code must be 2 uppercase letters
+    check("airlines_iata_code_format", sql`${table.iataCode} ~ '^[A-Z]{2}$'`), // IATA code must be 2 uppercase letters
   ]
 );
