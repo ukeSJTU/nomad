@@ -73,7 +73,7 @@ The seed script SHALL generate data compatible with existing database schema wit
 
 - **WHEN** switching from hardcoded to generated data
 - **THEN** the data structure SHALL remain unchanged
-- **AND** the number of records generated SHALL remain consistent (12 airports, 10 airlines, 50 flights)
+- **AND** the number of records generated SHALL remain consistent (70 airports, 30 airlines, 50 flights)
 - **AND** existing tests SHALL continue to work without modification
 - **AND** foreign key relationships SHALL be maintained correctly
 
