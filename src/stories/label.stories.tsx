@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Label>;
 
 export default meta;
@@ -37,4 +36,3 @@ export const Required: Story = {
     ),
   },
 };
-

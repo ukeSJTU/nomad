@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Skeleton>;
 
 export default meta;
@@ -40,4 +39,3 @@ export const List: Story = {
     </div>
   ),
 };
-

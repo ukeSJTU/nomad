@@ -16,7 +16,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Breadcrumb>;
 
 export default meta;
@@ -79,7 +78,9 @@ export const Long: Story = {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink href="/products/electronics">Electronics</BreadcrumbLink>
+          <BreadcrumbLink href="/products/electronics">
+            Electronics
+          </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
@@ -95,4 +96,3 @@ export const Long: Story = {
     </Breadcrumb>
   ),
 };
-

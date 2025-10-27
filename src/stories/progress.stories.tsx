@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     value: {
       control: { type: "range", min: 0, max: 100, step: 1 },
@@ -61,4 +60,3 @@ export const Complete: Story = {
     className: "w-[300px]",
   },
 };
-

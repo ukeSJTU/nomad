@@ -17,7 +17,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Table>;
 
 export default meta;
@@ -69,7 +68,7 @@ export const Default: Story = {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {invoices.map((invoice) => (
+        {invoices.map(invoice => (
           <TableRow key={invoice.invoice}>
             <TableCell className="font-medium">{invoice.invoice}</TableCell>
             <TableCell>{invoice.paymentStatus}</TableCell>
@@ -95,7 +94,7 @@ export const WithFooter: Story = {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {invoices.map((invoice) => (
+        {invoices.map(invoice => (
           <TableRow key={invoice.invoice}>
             <TableCell className="font-medium">{invoice.invoice}</TableCell>
             <TableCell>{invoice.paymentStatus}</TableCell>
@@ -113,4 +112,3 @@ export const WithFooter: Story = {
     </Table>
   ),
 };
-

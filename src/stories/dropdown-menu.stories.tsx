@@ -38,7 +38,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof DropdownMenu>;
 
 export default meta;
@@ -149,4 +148,3 @@ export const Simple: Story = {
     </DropdownMenu>
   ),
 };
-

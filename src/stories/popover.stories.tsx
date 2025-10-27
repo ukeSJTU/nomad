@@ -3,7 +3,11 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const meta = {
   title: "Shadcn/Popover",
@@ -11,7 +15,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Popover>;
 
 export default meta;
@@ -75,4 +78,3 @@ export const Simple: Story = {
     </Popover>
   ),
 };
-

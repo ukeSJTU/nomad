@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     orientation: {
       control: "select",
@@ -57,4 +56,3 @@ export const Vertical: Story = {
     </div>
   ),
 };
-

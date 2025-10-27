@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     type: {
       control: "select",
@@ -81,4 +80,3 @@ export const File: Story = {
     type: "file",
   },
 };
-

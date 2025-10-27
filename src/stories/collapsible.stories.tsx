@@ -15,7 +15,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Collapsible>;
 
 export default meta;
@@ -57,4 +56,3 @@ export const Default: Story = {
     );
   },
 };
-

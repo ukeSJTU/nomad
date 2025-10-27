@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Avatar>;
 
 export default meta;
@@ -50,4 +49,3 @@ export const CustomSize: Story = {
     </div>
   ),
 };
-

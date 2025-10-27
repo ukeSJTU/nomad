@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const meta = {
@@ -9,7 +15,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Tabs>;
 
 export default meta;
@@ -72,4 +77,3 @@ export const ThreeTabs: Story = {
     </Tabs>
   ),
 };
-

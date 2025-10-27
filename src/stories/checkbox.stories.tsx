@@ -9,7 +9,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     checked: {
       control: "boolean",
@@ -49,11 +48,10 @@ export const DisabledChecked: Story = {
 };
 
 export const WithLabel: Story = {
-  render: (args) => (
+  render: args => (
     <div className="flex items-center space-x-2">
       <Checkbox id="terms" {...args} />
       <Label htmlFor="terms">Accept terms and conditions</Label>
     </div>
   ),
 };
-

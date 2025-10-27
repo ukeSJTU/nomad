@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Spinner>;
 
 export default meta;
@@ -35,4 +34,3 @@ export const ExtraLarge: Story = {
     className: "size-12",
   },
 };
-

@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     placeholder: {
       control: "text",
@@ -49,4 +48,3 @@ export const WithRows: Story = {
     rows: 10,
   },
 };
-

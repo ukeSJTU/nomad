@@ -15,7 +15,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof HoverCard>;
 
 export default meta;
@@ -63,4 +62,3 @@ export const Simple: Story = {
     </HoverCard>
   ),
 };
-

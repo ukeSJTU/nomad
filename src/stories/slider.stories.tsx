@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     defaultValue: {
       control: "object",
@@ -72,4 +71,3 @@ export const Disabled: Story = {
     className: "w-[300px]",
   },
 };
-

@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 const preview: Preview = {
+  // Global tags applied to all stories
+  tags: ["autodocs"],
+
   parameters: {
     controls: {
       matchers: {

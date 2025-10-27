@@ -9,7 +9,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Kbd>;
 
 export default meta;
@@ -66,4 +65,3 @@ export const MacShortcut: Story = {
     </div>
   ),
 };
-

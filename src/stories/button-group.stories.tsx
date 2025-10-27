@@ -14,7 +14,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     orientation: {
       control: "select",
@@ -102,4 +101,3 @@ export const Mixed: Story = {
     </ButtonGroup>
   ),
 };
-

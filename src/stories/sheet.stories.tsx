@@ -20,7 +20,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Sheet>;
 
 export default meta;
@@ -116,4 +115,3 @@ export const Bottom: Story = {
     </Sheet>
   ),
 };
-

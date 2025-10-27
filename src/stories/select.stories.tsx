@@ -16,7 +16,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Select>;
 
 export default meta;
@@ -79,4 +78,3 @@ export const Small: Story = {
     </Select>
   ),
 };
-

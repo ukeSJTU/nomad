@@ -13,7 +13,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Accordion>;
 
 export default meta;
@@ -69,4 +68,3 @@ export const Multiple: Story = {
     </Accordion>
   ),
 };
-

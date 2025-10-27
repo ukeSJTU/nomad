@@ -9,7 +9,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     checked: {
       control: "boolean",
@@ -49,11 +48,10 @@ export const DisabledChecked: Story = {
 };
 
 export const WithLabel: Story = {
-  render: (args) => (
+  render: args => (
     <div className="flex items-center space-x-2">
       <Switch id="airplane-mode" {...args} />
       <Label htmlFor="airplane-mode">Airplane Mode</Label>
     </div>
   ),
 };
-

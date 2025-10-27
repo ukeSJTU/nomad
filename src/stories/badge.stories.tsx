@@ -9,7 +9,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     variant: {
       control: "select",
@@ -93,4 +92,3 @@ export const Status: Story = {
     variant: "outline",
   },
 };
-

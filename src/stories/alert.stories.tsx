@@ -9,7 +9,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     variant: {
       control: "select",
@@ -63,4 +62,3 @@ export const TitleOnly: Story = {
     </Alert>
   ),
 };
-

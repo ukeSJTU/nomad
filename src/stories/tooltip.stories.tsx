@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const meta = {
   title: "Shadcn/Tooltip",
@@ -9,7 +13,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Tooltip>;
 
 export default meta;
@@ -79,4 +82,3 @@ export const Left: Story = {
     </Tooltip>
   ),
 };
-
