@@ -5,6 +5,7 @@ import {
   account,
   airlines,
   airports,
+  cities,
   flights,
   flightSeatClasses,
   passengers,
@@ -34,9 +35,35 @@ async function seed() {
     await db.delete(flights);
     await db.delete(airlines);
     await db.delete(airports);
+    await db.delete(cities);
     await db.delete(passengers);
     await db.delete(account);
     await db.delete(user);
+
+    // Seed Cities
+    console.log("[SEED] Seeding cities...");
+    const cityData = [];
+    const usedCityIataCodes = new Set<string>();
+
+    for (let i = 0; i < 30; i++) {
+      let cityIataCode;
+      // Ensure IATA code is unique (3-character code)
+      do {
+        cityIataCode = faker.string.alpha({ length: 3, casing: "upper" });
+      } while (usedCityIataCodes.has(cityIataCode));
+
+      usedCityIataCodes.add(cityIataCode);
+
+      cityData.push({
+        iataCode: cityIataCode,
+        name: faker.location.city(),
+        timezone: faker.location.timeZone(),
+        isDomestic: faker.datatype.boolean(),
+      });
+    }
+
+    const insertedCities = await db.insert(cities).values(cityData).returning();
+    console.log(`[SEED] Seeded ${insertedCities.length} cities`);
 
     // Seed Airports
     console.log("[SEED] Seeding airports...");
@@ -58,12 +85,13 @@ async function seed() {
 
       usedAirportIataCodes.add(airport.iataCode);
 
+      // Randomly select a city for this airport
+      const city = faker.helpers.arrayElement(insertedCities);
+
       airportData.push({
-        iata_code: airport.iataCode,
+        iataCode: airport.iataCode,
         name: airport.name,
-        city: faker.location.city(),
-        country: faker.location.country(),
-        timezone: faker.location.timeZone(),
+        cityId: city.id,
       });
     }
 
@@ -100,9 +128,9 @@ async function seed() {
       usedAirlineIataCodes.add(airline.iataCode);
 
       airlineData.push({
-        iata_code: airline.iataCode,
+        iataCode: airline.iataCode,
         name: airline.name,
-        logo_url: `https://example.com/logos/${airline.iataCode.toLowerCase()}.png`,
+        logoUrl: `https://example.com/logos/${airline.iataCode.toLowerCase()}.png`,
       });
     }
 
@@ -121,7 +149,6 @@ async function seed() {
      * Flight status and timing use existing Faker methods for consistency
      */
     const flightData = [];
-    const statuses = ["SCHEDULED", "DELAYED", "CANCELLED", "COMPLETED"];
 
     // Generate 50 flights
     for (let i = 0; i < 50; i++) {
@@ -155,14 +182,13 @@ async function seed() {
       const aircraftData = faker.airline.airplane();
 
       flightData.push({
-        flight_number: `${airline.iata_code}${flightNumberData.slice(-4)}`, // Use airline's IATA code with generated number
-        airline_id: airline.id,
-        departure_airport_id: departureAirport.id,
-        arrival_airport_id: arrivalAirport.id,
-        departure_datetime: departureDate,
-        arrival_datetime: arrivalDate,
-        aircraft_type: aircraftData.name,
-        status: faker.helpers.arrayElement(statuses),
+        flightNumber: `${airline.iataCode}${flightNumberData.slice(-4)}`, // Use airline's IATA code with generated number
+        airlineId: airline.id,
+        departureAirportId: departureAirport.id,
+        arrivalAirportId: arrivalAirport.id,
+        departureDatetime: departureDate,
+        arrivalDatetime: arrivalDate,
+        aircraftType: aircraftData.name,
       });
     }
 
@@ -182,8 +208,8 @@ async function seed() {
     ];
 
     for (const flight of insertedFlights) {
-      // Randomly decide how many classes to add (2-4 classes per flight)
-      const numClasses = faker.number.int({ min: 2, max: 4 });
+      // Randomly decide how many classes to add (2-3 classes per flight)
+      const numClasses = faker.number.int({ min: 2, max: 3 });
       const selectedClasses = faker.helpers
         .shuffle(classTypes)
         .slice(0, numClasses);
@@ -203,10 +229,10 @@ async function seed() {
         const price = (classType.basePrice * priceVariation).toFixed(2);
 
         seatClassData.push({
-          flight_id: flight.id,
-          class_type: classType.type,
-          total_seats: totalSeats,
-          available_seats: availableSeats,
+          flightId: flight.id,
+          classType: classType.type,
+          totalSeats,
+          availableSeats,
           price,
         });
       }
@@ -365,6 +391,7 @@ async function seed() {
     console.log("\n[SEED] Summary:");
     console.log(`   - Users: ${insertedUsers.length}`);
     console.log(`   - Passengers: ${insertedPassengers.length}`);
+    console.log(`   - Cities: ${insertedCities.length}`);
     console.log(`   - Airports: ${insertedAirports.length}`);
     console.log(`   - Airlines: ${insertedAirlines.length}`);
     console.log(`   - Flights: ${insertedFlights.length}`);
