@@ -11,7 +11,7 @@ const meta = {
 } satisfies Meta<typeof Spinner>;
 
 export default meta;
-type Story = Omit<StoryObj<typeof meta>, "args">;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

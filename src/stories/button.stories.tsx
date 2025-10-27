@@ -39,7 +39,7 @@ const meta = {
 } satisfies Meta<typeof Button>;
 
 export default meta;
-type Story = Omit<StoryObj<typeof meta>, "args">;
+type Story = StoryObj<typeof meta>;
 
 // Default button
 export const Default: Story = {

@@ -23,7 +23,7 @@ const meta = {
 } satisfies Meta<typeof Badge>;
 
 export default meta;
-type Story = Omit<StoryObj<typeof meta>, "args">;
+type Story = StoryObj<typeof meta>;
 
 // Variants
 export const Default: Story = {
