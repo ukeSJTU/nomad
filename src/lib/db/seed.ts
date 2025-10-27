@@ -14,6 +14,7 @@ import {
 } from "../schema/index";
 import { db } from "./index";
 import {
+  brandColors,
   displaySeedConfig,
   parseSeedConfig,
   promptForScenario,
@@ -204,10 +205,12 @@ async function seed() {
 
         usedAirlineIataCodes.add(airline.iataCode);
 
+        const bgColor = faker.helpers.arrayElement(brandColors);
+
         airlineData.push({
           iataCode: airline.iataCode,
           name: airline.name,
-          logoUrl: `https://example.com/logos/${airline.iataCode.toLowerCase()}.png`,
+          logoUrl: `https://ui-avatars.com/api/?name=${airline.iataCode}&background=${bgColor}&color=fff&size=256&bold=true&rounded=true&format=svg`,
         });
       }
 
