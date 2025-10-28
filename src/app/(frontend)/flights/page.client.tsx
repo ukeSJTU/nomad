@@ -24,7 +24,7 @@ export function FlightsPageClient({ cities }: FlightsPageClientProps) {
   const router = useRouter();
 
   const handleSearch = (data: SearchFormData) => {
-    // 构建搜索参数
+    // Build search parameters
     const params = new URLSearchParams();
     params.set("tripType", data.tripType);
     if (data.departureCity) {
@@ -41,7 +41,7 @@ export function FlightsPageClient({ cities }: FlightsPageClientProps) {
     }
     params.set("class", data.seatClass);
 
-    // 跳转到搜索结果页面
+    // Navigate to search results page
     router.push(`/flights/search?${params.toString()}`);
   };
 

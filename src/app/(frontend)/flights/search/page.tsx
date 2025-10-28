@@ -5,7 +5,7 @@ import { getAllCities } from "@/lib/queries/cities";
 import { FlightSearchPageClient } from "./page.client";
 
 export default async function FlightSearchPage() {
-  // 在服务端获取城市数据
+  // Fetch city data on the server
   const cities = await getAllCities();
 
   return (
