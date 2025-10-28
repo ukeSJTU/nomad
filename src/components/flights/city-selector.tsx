@@ -10,6 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CityData } from "@/lib/queries/cities";
 
@@ -112,7 +113,7 @@ export function CitySelector({
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-[600px] p-0" align="start">
-        <div className="flex h-[400px]">
+        <div className="flex">
           <div className="w-40 border-r bg-muted/30 p-2 flex flex-col gap-1">
             <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
               {title}
@@ -145,17 +146,19 @@ export function CitySelector({
               onValueChange={setCurrentTab}
               className="flex-1 flex flex-col"
             >
-              <TabsList className="rounded-none border-b bg-transparent p-0 h-auto justify-start flex-wrap">
+              <TabsList className="rounded-none bg-transparent p-0 h-9 justify-start shrink-0 overflow-x-auto">
                 {currentTabs.map(tab => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-2"
+                    className="rounded-none border-0 bg-transparent px-3 py-1.5 text-sm text-muted-foreground data-[state=active]:text-primary data-[state=active]:shadow-none hover:text-foreground transition-colors"
                   >
                     {tab.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
+
+              <Separator />
 
               {currentTabs.map(tab => (
                 <TabsContent
@@ -163,9 +166,9 @@ export function CitySelector({
                   value={tab.value}
                   className="flex-1 overflow-y-auto p-4 mt-0"
                 >
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-5 gap-x-2 gap-y-2">
                     {filteredCities.length === 0 ? (
-                      <div className="col-span-3 text-center text-muted-foreground py-8">
+                      <div className="col-span-5 text-center text-muted-foreground py-8">
                         暂无城市数据
                       </div>
                     ) : (
@@ -178,14 +181,12 @@ export function CitySelector({
                               : "ghost"
                           }
                           onClick={() => handleCitySelect(city)}
-                          className="justify-start h-auto py-2"
+                          className="justify-center h-auto py-1.5 px-2 text-sm"
                         >
-                          <div className="flex flex-col items-start">
-                            <span className="font-medium">{city.name}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {city.iataCode}
-                            </span>
-                          </div>
+                          <span className="font-medium">{city.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {city.iataCode}
+                          </span>
                         </Button>
                       ))
                     )}
