@@ -1,17 +1,11 @@
 "use client";
 
-import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 
 import { CityInput } from "@/components/flights/city-selector";
+import { DateInput } from "@/components/flights/date-selector";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -21,7 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { CityData } from "@/lib/queries/cities";
-import { cn } from "@/lib/utils";
 
 interface SearchFormProps {
   showSearchButton?: boolean;
@@ -46,11 +39,9 @@ export function SearchForm({
   const [tripType, setTripType] = useState<"one-way" | "round-trip">("one-way");
   const [departureCity, setDepartureCity] = useState<CityData | null>(null);
   const [arrivalCity, setArrivalCity] = useState<CityData | null>(null);
-  const [departureDate, setDepartureDate] = useState<Date>();
-  const [returnDate, setReturnDate] = useState<Date>();
+  const [departureDate, setDepartureDate] = useState<Date | null>(null);
+  const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [seatClass, setSeatClass] = useState("economy");
-  const [departureDateOpen, setDepartureDateOpen] = useState(false);
-  const [returnDateOpen, setReturnDateOpen] = useState(false);
 
   const handleSwap = () => {
     const temp = departureCity;
@@ -64,8 +55,8 @@ export function SearchForm({
         tripType,
         departureCity,
         arrivalCity,
-        departureDate,
-        returnDate,
+        departureDate: departureDate || undefined,
+        returnDate: returnDate || undefined,
         seatClass,
       });
     }
@@ -111,73 +102,15 @@ export function SearchForm({
       </div>
 
       {/* Dates */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>出发日期</Label>
-          <Popover open={departureDateOpen} onOpenChange={setDepartureDateOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !departureDate && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {departureDate
-                  ? departureDate.toLocaleDateString("zh-CN")
-                  : "选择日期"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={departureDate}
-                onSelect={date => {
-                  setDepartureDate(date);
-                  setDepartureDateOpen(false);
-                }}
-                disabled={date => date < new Date()}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        {tripType === "round-trip" && (
-          <div className="space-y-2">
-            <Label>返程日期</Label>
-            <Popover open={returnDateOpen} onOpenChange={setReturnDateOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !returnDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {returnDate
-                    ? returnDate.toLocaleDateString("zh-CN")
-                    : "选择日期"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={returnDate}
-                  onSelect={date => {
-                    setReturnDate(date);
-                    setReturnDateOpen(false);
-                  }}
-                  disabled={date =>
-                    date < new Date() ||
-                    (departureDate ? date < departureDate : false)
-                  }
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-        )}
+      <div className="space-y-2">
+        <DateInput
+          tripType={tripType}
+          departureDate={departureDate}
+          returnDate={returnDate}
+          onDepartureDateChange={setDepartureDate}
+          onReturnDateChange={setReturnDate}
+          onTripTypeChange={setTripType}
+        />
       </div>
 
       {/* Seat Class */}
