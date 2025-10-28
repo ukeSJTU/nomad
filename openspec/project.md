@@ -45,7 +45,7 @@ Nomad is a modern Online Travel Agency (OTA) platform designed to provide a **cl
 ### Development Tools
 
 - **pnpm 10.17.1** - Fast, disk-efficient package manager (required >=10.0.0)
-- **Node.js >=20.15.0** - JavaScript runtime
+- **Node.js >=22.21.0** - JavaScript runtime
 - **ESLint 9** - Code linting with TypeScript plugin
 - **Prettier 3.6.2** - Code formatting
 - **Husky 9.1.7** - Git hooks management
@@ -479,7 +479,7 @@ Nomad is a flight booking platform targeting budget-conscious young travelers wh
 
 ### Technical Constraints
 
-- **Node.js Version:** Must use >= 20.15.0
+- **Node.js Version:** Must use >= 22.21.0
 - **Package Manager:** Must use pnpm >= 10.0.0 (enforced by `packageManager` field)
 - **TypeScript Strict Mode:** Enabled, avoid `any` types
 - **Database:** PostgreSQL only (via Neon DB)

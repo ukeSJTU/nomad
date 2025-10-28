@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -303,7 +303,7 @@ export default {
 
 ```dockerfile
 # Dockerfile
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # [Dockerfile 内容]
 ```
