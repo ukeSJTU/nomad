@@ -5,25 +5,22 @@ import { use, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CityData } from "@/lib/queries/cities";
 
 interface CitySelectorProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
   onSelect: (city: CityData) => void;
   title?: string;
   selectedCity?: CityData | null;
-  // 传入 Promise，使用 use hook 读取
   citiesPromise: Promise<CityData[]>;
+  children: React.ReactNode;
 }
 
-// 字母分组配置
 const LETTER_GROUPS = [
   { label: "热门", value: "popular" },
   { label: "ABCDEF", value: "ABCDEF", letters: ["A", "B", "C", "D", "E", "F"] },
@@ -37,7 +34,6 @@ const LETTER_GROUPS = [
   { label: "WXYZ", value: "WXYZ", letters: ["W", "X", "Y", "Z"] },
 ];
 
-// 大洲配置
 const CONTINENTS = [
   { label: "热门", value: "popular" },
   { label: "亚洲", value: "Asia" },
@@ -48,35 +44,29 @@ const CONTINENTS = [
 ];
 
 export function CitySelector({
-  open,
-  onOpenChange,
   onSelect,
   title = "选择城市",
   selectedCity,
   citiesPromise,
+  children,
 }: CitySelectorProps) {
-  // 使用 use hook 读取 Promise
   const allCities = use(citiesPromise);
 
   const [domesticOrInternational, setDomesticOrInternational] = useState<
     "domestic" | "international"
   >("domestic");
-  const [domesticTab, setDomesticTab] = useState("popular");
-  const [internationalTab, setInternationalTab] = useState("popular");
+  const [currentTab, setCurrentTab] = useState("popular");
 
-  // 根据当前选中的标签过滤城市数据（客户端过滤，无需请求）
   const filteredCities = useMemo(() => {
     if (domesticOrInternational === "domestic") {
-      // 国内城市
       const domesticCities = allCities.filter(
         city => city.pinyinFirstLetter !== null
       );
 
-      if (domesticTab === "popular") {
+      if (currentTab === "popular") {
         return domesticCities.filter(city => city.isPopular);
       } else {
-        // 根据字母组过滤
-        const group = LETTER_GROUPS.find(g => g.value === domesticTab);
+        const group = LETTER_GROUPS.find(g => g.value === currentTab);
         if (group?.letters) {
           return domesticCities.filter(city =>
             group.letters.includes(city.pinyinFirstLetter!)
@@ -84,164 +74,126 @@ export function CitySelector({
         }
       }
     } else {
-      // 国际城市
       const internationalCities = allCities.filter(
         city => city.continent !== null
       );
 
-      if (internationalTab === "popular") {
+      if (currentTab === "popular") {
         return internationalCities.filter(city => city.isPopular);
       } else {
-        // 根据大洲过滤
         return internationalCities.filter(
-          city => city.continent === internationalTab
+          city => city.continent === currentTab
         );
       }
     }
 
     return [];
-  }, [allCities, domesticOrInternational, domesticTab, internationalTab]);
+  }, [allCities, domesticOrInternational, currentTab]);
 
   const handleCitySelect = (city: CityData) => {
     onSelect(city);
-    onOpenChange(false);
   };
 
+  const handleRegionChange = (region: "domestic" | "international") => {
+    setDomesticOrInternational(region);
+    setCurrentTab("popular");
+  };
+
+  const currentTabs =
+    domesticOrInternational === "domestic" ? LETTER_GROUPS : CONTINENTS;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-
-        <div className="flex-1 overflow-hidden flex flex-col">
-          {/* 国内/国际切换 */}
-          <Tabs
-            value={domesticOrInternational}
-            onValueChange={value =>
-              setDomesticOrInternational(value as "domestic" | "international")
-            }
-            className="flex-1 flex flex-col"
-          >
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="domestic">国内</TabsTrigger>
-              <TabsTrigger value="international">
-                国际及中国港澳台热门
-              </TabsTrigger>
-            </TabsList>
-
-            {/* 国内城市 */}
-            <TabsContent
-              value="domestic"
-              className="flex-1 overflow-hidden flex flex-col mt-0"
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <DropdownMenuContent className="w-[600px] p-0" align="start">
+        <div className="flex h-[400px]">
+          <div className="w-40 border-r bg-muted/30 p-2 flex flex-col gap-1">
+            <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
+              {title}
+            </DropdownMenuLabel>
+            <Button
+              variant={
+                domesticOrInternational === "domestic" ? "secondary" : "ghost"
+              }
+              className="justify-start w-full"
+              onClick={() => handleRegionChange("domestic")}
             >
-              <Tabs
-                value={domesticTab}
-                onValueChange={setDomesticTab}
-                className="flex-1 flex flex-col"
-              >
-                <TabsList className="mb-4 flex-wrap h-auto">
-                  {LETTER_GROUPS.map(group => (
-                    <TabsTrigger key={group.value} value={group.value}>
-                      {group.label}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-
-                {LETTER_GROUPS.map(group => (
-                  <TabsContent
-                    key={group.value}
-                    value={group.value}
-                    className="flex-1 overflow-y-auto mt-0"
-                  >
-                    <div className="grid grid-cols-4 gap-4">
-                      {filteredCities.length === 0 ? (
-                        <div className="col-span-4 text-center text-muted-foreground py-8">
-                          暂无城市数据
-                        </div>
-                      ) : (
-                        filteredCities.map(city => (
-                          <Button
-                            key={city.iataCode}
-                            variant={
-                              selectedCity?.iataCode === city.iataCode
-                                ? "default"
-                                : "outline"
-                            }
-                            onClick={() => handleCitySelect(city)}
-                            className="justify-start"
-                          >
-                            {city.name}
-                          </Button>
-                        ))
-                      )}
-                    </div>
-                  </TabsContent>
-                ))}
-              </Tabs>
-            </TabsContent>
-
-            {/* 国际城市 */}
-            <TabsContent
-              value="international"
-              className="flex-1 overflow-hidden flex flex-col mt-0"
+              国内
+            </Button>
+            <Button
+              variant={
+                domesticOrInternational === "international"
+                  ? "secondary"
+                  : "ghost"
+              }
+              className="justify-start w-full"
+              onClick={() => handleRegionChange("international")}
             >
-              <Tabs
-                value={internationalTab}
-                onValueChange={setInternationalTab}
-                className="flex-1 flex flex-col"
-              >
-                <TabsList className="mb-4 flex-wrap h-auto">
-                  {CONTINENTS.map(continent => (
-                    <TabsTrigger key={continent.value} value={continent.value}>
-                      {continent.label}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
+              国际及港澳台
+            </Button>
+          </div>
 
-                {CONTINENTS.map(continent => (
-                  <TabsContent
-                    key={continent.value}
-                    value={continent.value}
-                    className="flex-1 overflow-y-auto mt-0"
+          <div className="flex-1 flex flex-col">
+            <Tabs
+              value={currentTab}
+              onValueChange={setCurrentTab}
+              className="flex-1 flex flex-col"
+            >
+              <TabsList className="rounded-none border-b bg-transparent p-0 h-auto justify-start flex-wrap">
+                {currentTabs.map(tab => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-2"
                   >
-                    <div className="grid grid-cols-4 gap-4">
-                      {filteredCities.length === 0 ? (
-                        <div className="col-span-4 text-center text-muted-foreground py-8">
-                          暂无城市数据
-                        </div>
-                      ) : (
-                        filteredCities.map(city => (
-                          <Button
-                            key={city.iataCode}
-                            variant={
-                              selectedCity?.iataCode === city.iataCode
-                                ? "default"
-                                : "outline"
-                            }
-                            onClick={() => handleCitySelect(city)}
-                            className="justify-start"
-                          >
-                            {city.name}
-                          </Button>
-                        ))
-                      )}
-                    </div>
-                  </TabsContent>
+                    {tab.label}
+                  </TabsTrigger>
                 ))}
-              </Tabs>
-            </TabsContent>
-          </Tabs>
+              </TabsList>
+
+              {currentTabs.map(tab => (
+                <TabsContent
+                  key={tab.value}
+                  value={tab.value}
+                  className="flex-1 overflow-y-auto p-4 mt-0"
+                >
+                  <div className="grid grid-cols-3 gap-2">
+                    {filteredCities.length === 0 ? (
+                      <div className="col-span-3 text-center text-muted-foreground py-8">
+                        暂无城市数据
+                      </div>
+                    ) : (
+                      filteredCities.map(city => (
+                        <Button
+                          key={city.iataCode}
+                          variant={
+                            selectedCity?.iataCode === city.iataCode
+                              ? "default"
+                              : "ghost"
+                          }
+                          onClick={() => handleCitySelect(city)}
+                          className="justify-start h-auto py-2"
+                        >
+                          <div className="flex flex-col items-start">
+                            <span className="font-medium">{city.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {city.iataCode}
+                            </span>
+                          </div>
+                        </Button>
+                      ))
+                    )}
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
-/**
- * 城市选择器输入框组件
- * 显示出发地和目的地，点击打开城市选择器
- */
 interface CityInputProps {
   departureCity: CityData | null;
   arrivalCity: CityData | null;
@@ -259,36 +211,29 @@ export function CityInput({
   onSwap,
   citiesPromise,
 }: CityInputProps) {
-  const [departureSelectorOpen, setDepartureSelectorOpen] = useState(false);
-  const [arrivalSelectorOpen, setArrivalSelectorOpen] = useState(false);
-
   return (
     <div className="flex items-center gap-2">
-      {/* 出发地 */}
       <div className="flex-1">
-        <Button
-          variant="outline"
-          onClick={() => setDepartureSelectorOpen(true)}
-          className="w-full h-16 flex flex-col items-start justify-center"
-        >
-          <span className="text-xs text-muted-foreground">出发地</span>
-          <span className="text-lg font-medium">
-            {departureCity
-              ? `${departureCity.name}(${departureCity.iataCode})`
-              : "请选择"}
-          </span>
-        </Button>
         <CitySelector
-          open={departureSelectorOpen}
-          onOpenChange={setDepartureSelectorOpen}
           onSelect={onDepartureCityChange}
           title="选择出发城市"
           selectedCity={departureCity}
           citiesPromise={citiesPromise}
-        />
+        >
+          <Button
+            variant="outline"
+            className="w-full h-16 flex flex-col items-start justify-center"
+          >
+            <span className="text-xs text-muted-foreground">出发地</span>
+            <span className="text-lg font-medium">
+              {departureCity
+                ? `${departureCity.name}(${departureCity.iataCode})`
+                : "请选择"}
+            </span>
+          </Button>
+        </CitySelector>
       </div>
 
-      {/* 交换按钮 */}
       {onSwap && (
         <Button
           variant="ghost"
@@ -300,28 +245,25 @@ export function CityInput({
         </Button>
       )}
 
-      {/* 目的地 */}
       <div className="flex-1">
-        <Button
-          variant="outline"
-          onClick={() => setArrivalSelectorOpen(true)}
-          className="w-full h-16 flex flex-col items-start justify-center"
-        >
-          <span className="text-xs text-muted-foreground">目的地</span>
-          <span className="text-lg font-medium">
-            {arrivalCity
-              ? `${arrivalCity.name}(${arrivalCity.iataCode})`
-              : "请选择"}
-          </span>
-        </Button>
         <CitySelector
-          open={arrivalSelectorOpen}
-          onOpenChange={setArrivalSelectorOpen}
           onSelect={onArrivalCityChange}
           title="选择到达城市"
           selectedCity={arrivalCity}
           citiesPromise={citiesPromise}
-        />
+        >
+          <Button
+            variant="outline"
+            className="w-full h-16 flex flex-col items-start justify-center"
+          >
+            <span className="text-xs text-muted-foreground">目的地</span>
+            <span className="text-lg font-medium">
+              {arrivalCity
+                ? `${arrivalCity.name}(${arrivalCity.iataCode})`
+                : "请选择"}
+            </span>
+          </Button>
+        </CitySelector>
       </div>
     </div>
   );
