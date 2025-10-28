@@ -19,6 +19,8 @@ interface CitySelectorProps {
   selectedCity?: CityData | null;
   citiesPromise: Promise<CityData[]>;
   children: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const LETTER_GROUPS = [
@@ -49,6 +51,8 @@ export function CitySelector({
   selectedCity,
   citiesPromise,
   children,
+  open,
+  onOpenChange,
 }: CitySelectorProps) {
   const allCities = use(citiesPromise);
 
@@ -92,6 +96,8 @@ export function CitySelector({
 
   const handleCitySelect = (city: CityData) => {
     onSelect(city);
+    // 选择城市后自动关闭下拉菜单
+    onOpenChange?.(false);
   };
 
   const handleRegionChange = (region: "domestic" | "international") => {
@@ -103,7 +109,7 @@ export function CitySelector({
     domesticOrInternational === "domestic" ? LETTER_GROUPS : CONTINENTS;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-[600px] p-0" align="start">
         <div className="flex h-[400px]">
@@ -211,14 +217,25 @@ export function CityInput({
   onSwap,
   citiesPromise,
 }: CityInputProps) {
+  const [departureOpen, setDepartureOpen] = useState(false);
+  const [arrivalOpen, setArrivalOpen] = useState(false);
+
+  const handleDepartureSelect = (city: CityData) => {
+    onDepartureCityChange(city);
+    // 选择出发地后自动打开目的地选择器
+    setArrivalOpen(true);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1">
         <CitySelector
-          onSelect={onDepartureCityChange}
+          onSelect={handleDepartureSelect}
           title="选择出发城市"
           selectedCity={departureCity}
           citiesPromise={citiesPromise}
+          open={departureOpen}
+          onOpenChange={setDepartureOpen}
         >
           <Button
             variant="outline"
@@ -251,6 +268,8 @@ export function CityInput({
           title="选择到达城市"
           selectedCity={arrivalCity}
           citiesPromise={citiesPromise}
+          open={arrivalOpen}
+          onOpenChange={setArrivalOpen}
         >
           <Button
             variant="outline"
