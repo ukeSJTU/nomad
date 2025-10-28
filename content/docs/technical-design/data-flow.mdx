@@ -5,49 +5,166 @@ icon: TrendingUpDown
 
 ## 概述
 
-本项目采用 Next.js 现代化数据流方案,不使用传统 RESTful API:
+本项目采用 Next.js 15 现代化数据流方案，通过 Server Components 和 Server Actions 替代传统 RESTful API，实现端到端类型安全、更少的样板代码和更好的开发体验。
 
-- **Server Component + Client Component**: 替代 GET 请求
-- **Server Actions**: 替代 POST/PUT/DELETE 等变更操作
-
-**优势**: 简化开发流程、类型安全、更好的性能、更少的样板代码
+---
 
 ## Server Components 数据获取
 
-Server Components 在服务端渲染,可直接访问数据库等服务端资源。
+当需要读取/获取数据并渲染 UI 时使用 Server Components。
 
-```typescript
-// src/app/flights/page.tsx - Server Component
-import { db } from "@/lib/db";
-import { FlightList } from "@/components/flights/flight-list";
+它们在服务端执行，可以直接访问数据库、文件系统或调用后端 API，无需创建 API 路由。数据获取完成后直接渲染成 HTML 发送给客户端，减少客户端 JavaScript 体积，提升首屏加载速度。适合展示页面、列表页、详情页等以读取为主的场景。
 
-export default async function FlightsPage() {
-  // 直接查询数据库
-  const flights = await db.flight.findMany({
-    orderBy: { departureTime: 'asc' },
+### 文件组织
+
+- `src/app/(frontend)/home/passengers/page.tsx` Server Component，负责调用查询以及后端业务（例如身份验证）
+- `src/lib/queries/passengers.ts` 实现具体的查询功能
+  - `src/lib/queries/index.ts` 统一导出所有查询函数
+  - `src/lib/queries/passengers.test.ts` 可选的单元测试，主要验证数据转换逻辑
+  - `src/lib/queries/passengers.integration.test.ts` 可选的集成测试，在测试数据库上验证业务逻辑
+- `src/components/passengers/passengers-page-client.tsx` Client Component，负责处理前端用户交互功能
+
+### 代码示例
+
+#### Server Component 页面
+
+```typescript title="src/app/(frontend)/home/passengers/page.tsx"
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
+import { PassengersPageClient } from "@/components/passengers/passengers-page-client";
+import { auth } from "@/lib/auth";
+import { getPassengers } from "@/lib/queries";
+
+export default async function PassengersPage() {
+  // 1. 获取请求头（用于身份验证）
+  const headersList = await headers();
+
+  // 2. 验证用户会话
+  const session = await auth.api.getSession({
+    headers: headersList,
   });
 
-  // 传递给 Client Component
-  return <FlightList flights={flights} />;
+  // 3. 未登录则重定向到登录页
+  if (!session?.user?.id) {
+    redirect("/auth/sign-in");
+  }
+
+  // 4. 调用查询函数获取数据
+  const initialPassengers = await getPassengers(session.user.id);
+
+  // 5. 将数据传递给 Client Component
+  return <PassengersPageClient initialPassengers={initialPassengers} />;
 }
 ```
 
+**关键点：**
+- 函数必须是 `async` 的
+- 不需要 `"use client"` 指令（默认就是 Server Component）
+- 可以直接使用 `await` 调用异步函数
+- 可以访问服务端专属 API（如 `headers()`、`cookies()`）
+
+#### 查询函数
+
+```typescript title="src/lib/queries/passengers.ts"
+import { eq } from "drizzle-orm";
+
+import { db } from "@/lib/db";
+import { passengers } from "@/lib/schema/passengers";
+import type { Passenger } from "@/types/api/passengers";
+
+export async function getPassengers(userId: string): Promise<Passenger[]> {
+  // 直接查询数据库
+  const result = await db
+    .select()
+    .from(passengers)
+    .where(eq(passengers.userId, userId));
+
+  // 转换为 API 格式
+  return result.map(p => ({
+    id: p.id,
+    chineseName: p.chineseName,
+    englishFirstName: p.englishFirstName,
+    englishLastName: p.englishLastName,
+    // ... 其他字段
+    documentType: p.documentType,
+    documentNumber: p.documentNumber,
+    documentExpiryDate: p.documentExpiryDate ?? "",
+  }));
+}
+```
+
+**关键点：**
+- 将数据库查询逻辑抽离到独立文件
+- 便于复用和测试
+- 负责数据格式转换（数据库格式 → API 格式）
+
+### 数据验证
+
+Server Components 通常**不需要**数据验证，因为数据来源是可信的（自己的数据库）。
+
+**例外情况：** 当使用 URL 参数或查询参数时需要验证，因为这些是用户可控的输入。
+
+```typescript title="src/app/(frontend)/passengers/[id]/page.tsx"
+import { z } from "zod";
+import { notFound } from "next/navigation";
+
+export default async function PassengerDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  // 验证 URL 参数
+  const result = z.string().uuid().safeParse(params.id);
+
+  if (!result.success) {
+    notFound(); // 返回 404 页面
+  }
+
+  const passenger = await getPassengerById(result.data);
+  return <PassengerDetail passenger={passenger} />;
+}
+```
+
+### 缓存策略
+
+Next.js 15 默认不缓存 Server Components 的数据获取。如需缓存，可以使用以下方式：
+
 ```typescript
-// src/components/flights/flight-list.tsx - Client Component
+// 页面级缓存 - 每小时重新验证
+export const revalidate = 3600;
+
+// 或使用 unstable_cache 进行数据级缓存
+import { unstable_cache } from "next/cache";
+
+const getCachedPassengers = unstable_cache(
+  async (userId: string) => getPassengers(userId),
+  ['passengers-list'],
+  { revalidate: 60, tags: ['passengers'] }
+);
+```
+
+> 除非特殊强调，否则不需要缓存。
+
+### 错误处理
+
+使用 `error.tsx` 文件处理错误：
+
+```typescript title="src/app/(frontend)/home/passengers/error.tsx"
 "use client";
 
-export function FlightList({ flights }: { flights: Flight[] }) {
-  const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
-
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <div>
-      {flights.map(flight => (
-        <FlightCard
-          key={flight.id}
-          flight={flight}
-          onClick={() => setSelectedFlight(flight)}
-        />
-      ))}
+      <h2>出错了</h2>
+      <p>{error.message}</p>
+      <button onClick={reset}>重试</button>
     </div>
   );
 }
@@ -55,248 +172,350 @@ export function FlightList({ flights }: { flights: Flight[] }) {
 
 ## Server Actions 数据变更
 
-Server Actions 是在服务端执行的异步函数,用于处理数据变更操作。
+当需要修改数据（创建、更新、删除）时使用 Server Actions。
 
-```typescript
-// src/app/actions/flight.ts
-"use server";
+它们是在服务端执行的异步函数，可以直接在表单提交或事件处理中调用，无需创建 API 端点。提供了渐进增强（无 JavaScript 也能工作）、自动重新验证缓存、类型安全等优势。适合表单提交、按钮点击等交互操作。
 
+### 文件组织
+
+- `src/lib/actions/auth.ts` 认证相关的 Server Actions
+- `src/lib/actions/passengers.ts` 旅客管理相关的 Server Actions
+- `src/lib/actions/index.ts` 统一导出所有 Server Actions
+
+### 代码示例
+
+#### 定义 Server Action
+
+```typescript title="src/lib/actions/auth.ts"
+"use server"; // 必须在文件顶部声明
+
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
 
-const createFlightSchema = z.object({
-  flightNumber: z.string().min(1),
-  departure: z.string().min(1),
-  arrival: z.string().min(1),
-  departureTime: z.string().datetime(),
-});
+export async function setInitialPasswordAction(password: string) {
+  try {
+    // 1. 获取用户会话
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
 
-export async function createFlight(formData: FormData) {
-  // 验证输入
-  const validatedData = createFlightSchema.parse({
-    flightNumber: formData.get("flightNumber"),
-    departure: formData.get("departure"),
-    arrival: formData.get("arrival"),
-    departureTime: formData.get("departureTime"),
-  });
+    // 2. 验证用户身份
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "Authentication required. Please complete verification first.",
+      };
+    }
 
-  // 执行数据库操作
-  const flight = await db.flight.create({
-    data: validatedData,
-  });
+    // 3. 业务逻辑验证
+    const existingAccounts = await db
+      .select()
+      .from(account)
+      .where(
+        and(
+          eq(account.userId, session.user.id),
+          eq(account.providerId, "credential")
+        )
+      );
 
-  // 重新验证缓存
-  revalidatePath("/flights");
+    if (existingAccounts.length > 0) {
+      return {
+        success: false,
+        error: "Password has already been set for this account.",
+      };
+    }
 
-  return { success: true, flight };
+    // 4. 执行数据变更
+    await auth.api.setPassword({
+      body: { newPassword: password },
+      headers: headersList,
+    });
+
+    // 5. 返回统一格式的结果
+    return {
+      success: true,
+      message: "Password set successfully",
+    };
+  } catch (error) {
+    console.error("Set password error:", error);
+    return {
+      success: false,
+      error: "Failed to set password. Please try again.",
+    };
+  }
 }
 ```
 
-```typescript
-// src/components/flights/create-flight-form.tsx
+**关键点：**
+- 文件顶部必须有 `"use server"` 指令
+- 始终使用 try-catch 处理错误
+- 返回统一的结果格式：`{ success: boolean, data?: T, error?: string }`
+- 验证用户身份（通过 session）
+- 不要抛出异常，而是返回错误信息
+
+#### 在 Client Component 中调用
+
+```typescript title="src/app/(frontend)/auth/sign-up/page.tsx"
 "use client";
 
-import { createFlight } from "@/app/actions/flight";
+import { setInitialPasswordAction } from "@/lib/actions";
 
-export function CreateFlightForm() {
-  const handleSubmit = async (formData: FormData) => {
-    try {
-      const result = await createFlight(formData);
-      if (result.success) {
-        toast.success("航班创建成功");
-      }
-    } catch (error) {
-      toast.error("创建失败");
+export default function SignUpPage() {
+  const handlePasswordSetup = async (password: string) => {
+    // 直接调用 Server Action
+    const result = await setInitialPasswordAction(password);
+
+    if (!result.success) {
+      // 处理错误
+      setError(result.error || "Failed to set password");
+      return;
     }
+
+    // 处理成功
+    console.log(result.message);
+    router.push("/home");
   };
 
   return (
-    <form action={handleSubmit}>
-      <input name="flightNumber" placeholder="航班号" required />
-      <input name="departure" placeholder="出发地" required />
-      <input name="arrival" placeholder="目的地" required />
-      <input name="departureTime" type="datetime-local" required />
-      <button type="submit">创建航班</button>
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const password = e.currentTarget.password.value;
+      handlePasswordSetup(password);
+    }}>
+      <input name="password" type="password" />
+      <button type="submit">设置密码</button>
     </form>
   );
 }
 ```
 
-## 数据验证
+**关键点：**
+- 像调用普通函数一样调用 Server Action
+- 处理返回的结果（成功/失败）
+- 无需手动处理 fetch、headers、cookies 等
 
-使用 Zod 进行类型安全验证:
+### 数据验证
 
-```typescript
-// src/lib/validations/flight.ts
+Server Actions **必须**验证所有用户输入，使用 Zod 进行类型安全的验证。
+
+```typescript title="src/lib/actions/passengers.ts"
+"use server";
+
 import { z } from "zod";
 
-export const createFlightSchema = z.object({
-  flightNumber: z.string().min(1, "航班号不能为空").max(10),
-  departure: z.string().length(3, "机场代码必须是3个字符"),
-  arrival: z.string().length(3, "机场代码必须是3个字符"),
-  departureTime: z.string().datetime(),
-  price: z.number().positive("价格必须大于0"),
-  availableSeats: z.number().int().min(0),
-});
+// 定义验证 schema
+const createPassengerSchema = z.object({
+  chineseName: z.string().min(1).max(100).optional(),
+  englishFirstName: z.string().min(1).max(100).optional(),
+  documentType: z.enum(["passport", "id_card", "other"]),
+  documentNumber: z.string().min(1).max(50),
+  documentExpiryDate: z.string().date(),
+}).refine(
+  data => !!data.chineseName || (!!data.englishFirstName),
+  { message: "Either Chinese name or English name is required" }
+);
 
-export type CreateFlightInput = z.infer<typeof createFlightSchema>;
+export async function createPassengerAction(formData: unknown) {
+  try {
+    // 验证输入数据
+    const result = createPassengerSchema.safeParse(formData);
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: "Validation failed",
+        fieldErrors: result.error.flatten().fieldErrors,
+      };
+    }
+
+    // 使用验证后的数据
+    const validatedData = result.data;
+
+    // 执行数据库操作
+    const passenger = await db.insert(passengers).values({
+      ...validatedData,
+      userId: session.user.id,
+    });
+
+    return {
+      success: true,
+      data: passenger,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: "Failed to create passenger",
+    };
+  }
+}
 ```
 
-在 Server Action 中验证:
+**关键点：**
+- 使用 `safeParse()` 而不是 `parse()`，避免抛出异常
+- 返回字段级别的错误信息（`fieldErrors`）
+- 只使用验证后的数据进行数据库操作
+
+### 缓存策略
+
+Server Actions 执行后，使用 `revalidatePath` 或 `revalidateTag` 更新缓存。
 
 ```typescript
 "use server";
 
-import { createFlightSchema } from "@/lib/validations/flight";
+import { revalidatePath, revalidateTag } from "next/cache";
 
-export async function createFlight(formData: FormData) {
-  const result = createFlightSchema.safeParse({
-    flightNumber: formData.get("flightNumber"),
-    departure: formData.get("departure"),
-    // ...其他字段
-  });
+export async function deletePassengerAction(id: string) {
+  // 执行删除操作
+  await db.update(passengers)
+    .set({ isDeleted: true })
+    .where(eq(passengers.id, id));
 
-  if (!result.success) {
-    return {
-      success: false,
-      error: "验证失败",
-      fieldErrors: result.error.flatten().fieldErrors,
-    };
-  }
+  // 重新验证相关页面的缓存
+  revalidatePath("/home/passengers");
 
-  const flight = await db.flight.create({ data: result.data });
-  revalidatePath("/flights");
-  return { success: true, data: flight };
+  // 或使用 tag 重新验证
+  revalidateTag("passengers");
+
+  return { success: true };
 }
 ```
 
-## 缓存策略
-
-### 页面级缓存
-
-```typescript
-// 静态生成
-export const dynamic = 'force-static';
-
-// 增量静态再生成 (每小时更新)
-export const revalidate = 3600;
-
-// 动态渲染 (每次请求重新生成)
-export const dynamic = 'force-dynamic';
-```
-
-### 数据级缓存与重新验证
-
-```typescript
-import { unstable_cache, revalidatePath, revalidateTag } from "next/cache";
-
-// 缓存查询
-const getCachedFlights = unstable_cache(
-  async () => db.flight.findMany(),
-  ['flights-list'],
-  { revalidate: 60, tags: ['flights'] }
-);
-
-// Server Action 中重新验证
-export async function createFlight(formData: FormData) {
-  const flight = await db.flight.create({ data: validatedData });
-  
-  revalidatePath("/flights"); // 重新验证路径
-  revalidateTag("flights");   // 重新验证标签
-  
-  return { success: true, data: flight };
-}
-```
-
-## 最佳实践
-
-### 文件组织
-
-```
-src/
-├── app/
-│   ├── actions/          # Server Actions
-│   │   ├── flight.ts
-│   │   └── booking.ts
-│   ├── flights/          # 页面路由
-│   │   ├── page.tsx      # Server Component
-│   │   ├── error.tsx     # Error Boundary
-│   │   └── loading.tsx   # Loading UI
-├── components/           # Client Components
-│   └── flights/
-│       ├── flight-list.tsx
-│       └── create-flight-form.tsx
-└── lib/
-    ├── validations/      # Zod schemas
-    └── db.ts
-```
-
-### 组件选择
-
-| 使用场景 | 组件类型 |
-|---------|---------|
-| 数据获取、访问后端资源 | Server Component |
-| 交互性 (onClick 等)、React Hooks | Client Component |
+**使用场景：**
+- `revalidatePath()` - 重新验证特定路径的缓存
+- `revalidateTag()` - 重新验证带有特定标签的所有缓存
 
 ### 错误处理
 
+Server Actions 应该捕获所有错误并返回友好的错误信息，而不是抛出异常。
+
 ```typescript
-"use server";
-
-type ActionState<T> = {
-  success: boolean;
-  data?: T;
-  error?: string;
-  fieldErrors?: Record<string, string[]>;
-};
-
-export async function createFlight(formData: FormData): Promise<ActionState<Flight>> {
+export async function updatePassengerAction(id: string, formData: unknown) {
   try {
-    // 1. 验证输入
-    const result = createFlightSchema.safeParse({ /* ... */ });
+    // 1. 验证身份
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session?.user?.id) {
+      return { success: false, error: "Authentication required" };
+    }
+
+    // 2. 验证数据
+    const result = schema.safeParse(formData);
     if (!result.success) {
-      return { success: false, error: "验证失败", fieldErrors: result.error.flatten().fieldErrors };
+      return {
+        success: false,
+        error: "Validation failed",
+        fieldErrors: result.error.flatten().fieldErrors
+      };
     }
 
-    // 2. 业务验证
-    const existingFlight = await db.flight.findFirst({ where: { flightNumber: result.data.flightNumber } });
-    if (existingFlight) {
-      return { success: false, error: "航班号已存在" };
+    // 3. 验证权限
+    const passenger = await db.select()
+      .from(passengers)
+      .where(
+        and(
+          eq(passengers.id, id),
+          eq(passengers.userId, session.user.id)
+        )
+      );
+
+    if (!passenger) {
+      return { success: false, error: "Passenger not found" };
     }
 
-    // 3. 执行操作
-    const flight = await db.flight.create({ data: result.data });
-    
-    // 4. 重新验证缓存
-    revalidatePath("/flights");
-    
-    return { success: true, data: flight };
+    // 4. 执行操作
+    await db.update(passengers)
+      .set(result.data)
+      .where(eq(passengers.id, id));
+
+    return { success: true };
   } catch (error) {
-    console.error("创建航班失败:", error);
-    return { success: false, error: "系统错误" };
+    // 5. 捕获未预期的错误
+    console.error("Update passenger error:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred"
+    };
   }
 }
 ```
 
-### 性能优化
+**错误处理层级：**
+1. 身份验证错误
+2. 数据验证错误
+3. 权限验证错误
+4. 业务逻辑错误
+5. 系统错误（catch 块）
 
-```typescript
-import { Suspense } from "react";
+## 必要的 API Routes 保留
 
-export default function FlightsPage() {
-  return (
-    <Suspense fallback={<FlightListSkeleton />}>
-      <FlightList />
-    </Suspense>
-  );
-}
+虽然项目主要使用 Server Components 和 Server Actions，但在某些特殊场景下仍需保留 API Routes。
 
-async function FlightList() {
-  const flights = await db.flight.findMany();
-  return <FlightCards flights={flights} />;
+### 当前保留的 API Routes
+
+| API Route | 用途 | 保留原因 |
+|-----------|------|---------|
+| `/api/auth/[...all]` | Better Auth 认证处理 | 第三方库要求，处理所有认证相关请求（登录、注册、OAuth 回调等） |
+| `/api/chat` | AI 聊天流式响应 | 需要 Edge Runtime 和流式传输（Streaming），Server Actions 不支持 |
+| `/api/health` | 健康检查端点 | 供外部监控系统调用，需要独立的 HTTP 端点 |
+
+### 何时需要创建 API Route
+
+仅在以下情况下创建 API Route：
+
+1. **外部系统调用**
+   - Webhook 回调（如支付回调、第三方服务通知）
+   - 第三方集成（需要提供 HTTP API）
+   - 移动应用或其他客户端调用
+
+2. **特殊运行时需求**
+   - 需要 Edge Runtime
+   - 需要流式响应（Streaming）
+   - 需要特殊的响应头或状态码
+
+3. **第三方库要求**
+   - 库本身要求 API Route（如 Better Auth）
+   - 无法通过 Server Actions 实现的功能
+
+### 示例：健康检查 API
+
+```typescript title="src/app/api/health/route.ts"
+import { ApiResponse } from "@/lib/utils/api-response";
+
+export async function GET() {
+  const healthData = {
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    message: "Service is healthy",
+  };
+
+  return ApiResponse.success(healthData);
 }
 ```
+
+### 示例：流式响应 API
+
+```typescript title="src/app/api/chat/route.ts"
+import { streamText } from "ai";
+
+export const runtime = "edge"; // 使用 Edge Runtime
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  const result = streamText({
+    model: openai("gpt-4"),
+    messages,
+  });
+
+  return result.toUIMessageStreamResponse();
+}
+```
+
+**重要提示：** 除上述场景外，所有数据获取和变更操作都应使用 Server Components 和 Server Actions，而不是创建新的 API Routes。
+
+---
 
 ## 总结
 
@@ -304,5 +523,13 @@ async function FlightList() {
 - **Server Actions**: 数据变更操作
 - **类型安全**: TypeScript + Zod 端到端类型安全
 - **缓存优化**: 利用 Next.js 缓存机制
-- **开发效率**: 减少样板代码,提高开发体验
+- **开发效率**: 减少样板代码，提高开发体验
+- **API Routes**: 仅在特殊场景下使用（外部调用、流式响应、第三方库要求）
 
+## 参考文档
+
+- [Server and Client Components](https://nextjs.org/docs/15/app/getting-started/server-and-client-components)
+- [Fetching Data](https://nextjs.org/docs/15/app/getting-started/fetching-data)
+- [Updating Data](https://nextjs.org/docs/15/app/getting-started/updating-data)
+- [Caching and Revalidating](https://nextjs.org/docs/15/app/getting-started/caching-and-revalidating)
+- [Error Handling](https://nextjs.org/docs/15/app/getting-started/error-handling)
