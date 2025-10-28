@@ -10,6 +10,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "PEK",
     name: "北京",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "B",
     continent: null,
     isPopular: true,
@@ -18,6 +19,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "SHA",
     name: "上海",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "S",
     continent: null,
     isPopular: true,
@@ -26,6 +28,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "CAN",
     name: "广州",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "G",
     continent: null,
     isPopular: true,
@@ -34,6 +37,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "SZX",
     name: "深圳",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "S",
     continent: null,
     isPopular: true,
@@ -42,6 +46,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "CTU",
     name: "成都",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "C",
     continent: null,
     isPopular: true,
@@ -50,6 +55,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "HGH",
     name: "杭州",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "H",
     continent: null,
     isPopular: true,
@@ -59,6 +65,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "XIY",
     name: "西安",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "X",
     continent: null,
     isPopular: false,
@@ -67,6 +74,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "WUH",
     name: "武汉",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "W",
     continent: null,
     isPopular: false,
@@ -75,6 +83,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "NKG",
     name: "南京",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "N",
     continent: null,
     isPopular: false,
@@ -83,6 +92,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "KMG",
     name: "昆明",
+    timezone: "Asia/Shanghai",
     pinyinFirstLetter: "K",
     continent: null,
     isPopular: false,
@@ -92,6 +102,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "TYO",
     name: "东京",
+    timezone: "Asia/Tokyo",
     pinyinFirstLetter: null,
     continent: "Asia",
     isPopular: true,
@@ -100,6 +111,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "NYC",
     name: "纽约",
+    timezone: "America/New_York",
     pinyinFirstLetter: null,
     continent: "America",
     isPopular: true,
@@ -108,6 +120,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "LON",
     name: "伦敦",
+    timezone: "Europe/London",
     pinyinFirstLetter: null,
     continent: "Europe",
     isPopular: true,
@@ -116,6 +129,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "PAR",
     name: "巴黎",
+    timezone: "Europe/Paris",
     pinyinFirstLetter: null,
     continent: "Europe",
     isPopular: true,
@@ -124,6 +138,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "SIN",
     name: "新加坡",
+    timezone: "Asia/Singapore",
     pinyinFirstLetter: null,
     continent: "Asia",
     isPopular: true,
@@ -133,6 +148,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "SYD",
     name: "悉尼",
+    timezone: "Australia/Sydney",
     pinyinFirstLetter: null,
     continent: "Oceania",
     isPopular: false,
@@ -141,6 +157,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "DXB",
     name: "迪拜",
+    timezone: "Asia/Dubai",
     pinyinFirstLetter: null,
     continent: "Asia",
     isPopular: false,
@@ -149,6 +166,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "LAX",
     name: "洛杉矶",
+    timezone: "America/Los_Angeles",
     pinyinFirstLetter: null,
     continent: "America",
     isPopular: false,
@@ -157,6 +175,7 @@ const mockCities: CityData[] = [
   {
     iataCode: "CAI",
     name: "开罗",
+    timezone: "Africa/Cairo",
     pinyinFirstLetter: null,
     continent: "Africa",
     isPopular: false,
