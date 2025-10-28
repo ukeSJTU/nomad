@@ -10,6 +10,7 @@ import SignUpModal, {
 } from "@/components/auth";
 import { Stepper, type StepperStep } from "@/components/common";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { setInitialPasswordAction } from "@/lib/actions";
 import { authClient } from "@/lib/auth/client";
 import type {
   EmailVerificationData,
@@ -139,40 +140,28 @@ export default function SignUpPage() {
 
   /**
    * Handles password setup form submission
-   * Calls the API to set the initial password and completes registration
+   * Calls the Server Action to set the initial password and completes registration
    */
   const handlePasswordSetupSubmit = async (data: PasswordSetupData) => {
     setIsLoading(true);
     setError(null); // Clear previous errors
 
     try {
-      // Call API endpoint to set the initial password
-      const response = await fetch("/api/auth/set-initial-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Include session cookies for authentication
-        body: JSON.stringify({
-          password: data.password,
-        }),
-      });
+      // Call Server Action to set the initial password
+      const result = await setInitialPasswordAction(data.password);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to set password");
+      if (!result.success) {
+        setError(result.error || "Failed to set password");
+        return;
       }
 
-      const result = await response.json();
-      console.log("Password set successfully:", result);
+      console.log("Password set successfully:", result.message);
 
       // Password setup successful, proceed to success step
       setCurrentStep(3);
     } catch (error) {
       console.error("Password setup error:", error);
-      setError(
-        error instanceof Error ? error.message : "设置密码失败，请重试" // Failed to set password, please try again
-      );
+      setError("Network error. Please try again.");
     } finally {
       setIsLoading(false);
     }

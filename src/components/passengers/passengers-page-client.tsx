@@ -4,10 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import {
-  batchDeletePassengersAction,
-  deletePassengerAction,
-} from "@/app/(frontend)/home/passengers/actions";
 import { PassengersDataTable } from "@/components/passengers/passengers-data-table";
 import {
   AlertDialog,
@@ -19,6 +15,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  batchDeletePassengersAction,
+  deletePassengerAction,
+} from "@/lib/actions";
 import type { Passenger } from "@/types/api/passengers";
 
 interface PassengersPageClientProps {

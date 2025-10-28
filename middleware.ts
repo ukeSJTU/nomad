@@ -14,11 +14,6 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Early return for non-API docs paths (performance optimization)
-  if (!pathname.startsWith("/docs/api")) {
-    return NextResponse.next();
-  }
-
   // Environment checks
   const isProduction = process.env.NODE_ENV === "production";
   const enableApiDocs = process.env.ENABLE_API_DOCS === "true";
@@ -37,9 +32,5 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // More specific matcher for better performance
-  matcher: [
-    "/docs/:path*",
-    // Also protect the OpenAPI spec file
-    "/openapi.json",
-  ],
+  matcher: ["/docs/:path*"],
 };
