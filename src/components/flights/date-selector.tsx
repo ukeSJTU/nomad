@@ -1,6 +1,7 @@
 "use client";
 
-import { addDays, differenceInDays, format } from "date-fns";
+import { addDays, differenceInDays, format, startOfDay } from "date-fns";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { useState } from "react";
 import { type DateRange } from "react-day-picker";
 
@@ -186,6 +187,11 @@ interface DateInputProps {
   maxDaysInFuture?: number;
   /**
    * Timezone of the departure city (for calculating "today")
+   * Uses IANA timezone identifiers (e.g., "America/New_York", "Asia/Shanghai")
+   * When provided, the minimum selectable date is calculated based on "today"
+   * in the departure city's timezone, not the user's local timezone.
+   * This prevents users from selecting dates that have already passed in the departure city.
+   * @example "America/New_York", "Europe/London", "Asia/Tokyo"
    */
   timezone?: string;
 }
@@ -194,6 +200,13 @@ interface DateInputProps {
  * DateInput component for flight search form
  * Provides departure and return date selection with trip type awareness
  * Mimics CityInput pattern with auto-opening next selector
+ *
+ * Features:
+ * - Timezone-aware date calculations using date-fns-tz
+ * - Auto-opens return date selector after departure selection (round-trip)
+ * - Shows "Add Return Date" button for one-way trips
+ * - Displays trip duration for round-trip
+ * - Enforces business rules (departure >= today, return >= departure)
  */
 export function DateInput({
   tripType,
@@ -204,15 +217,32 @@ export function DateInput({
   onTripTypeChange,
   minDate,
   maxDaysInFuture = 365,
-  timezone: _timezone, // Reserved for future timezone-aware date calculations
+  timezone,
 }: DateInputProps) {
   const [departureOpen, setDepartureOpen] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
 
-  // Calculate min and max dates
-  // TODO: Use timezone parameter with date-fns-tz for timezone-aware calculations
-  const today = minDate || new Date();
-  today.setHours(0, 0, 0, 0); // Reset time to start of day
+  // Calculate min and max dates with timezone awareness
+  // If timezone is provided, calculate "today" in that timezone
+  // Otherwise, use local timezone
+  const today =
+    minDate ||
+    (() => {
+      if (timezone) {
+        // Get current time in the specified timezone
+        const nowInTimezone = toZonedTime(new Date(), timezone);
+        // Get start of day in that timezone
+        const startOfDayInTimezone = startOfDay(nowInTimezone);
+        // Convert back to local time for date-fns operations
+        return fromZonedTime(startOfDayInTimezone, timezone);
+      } else {
+        // Use local timezone
+        const localToday = new Date();
+        localToday.setHours(0, 0, 0, 0);
+        return localToday;
+      }
+    })();
+
   const maxDate = addDays(today, maxDaysInFuture);
 
   const handleDepartureSelect = (date: Date | DateRange | undefined) => {
