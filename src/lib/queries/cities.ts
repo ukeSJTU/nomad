@@ -9,6 +9,7 @@ import { cities } from "@/lib/schema";
 export interface CityData {
   iataCode: string;
   name: string;
+  timezone: string;
   pinyinFirstLetter: string | null;
   continent: string | null;
   isPopular: boolean;
@@ -24,6 +25,7 @@ export async function getAllCities(): Promise<CityData[]> {
     .select({
       iataCode: cities.iataCode,
       name: cities.name,
+      timezone: cities.timezone,
       pinyinFirstLetter: cities.pinyinFirstLetter,
       continent: cities.continent,
       isPopular: cities.isPopular,
