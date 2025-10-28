@@ -15,10 +15,12 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getAllCities } from "@/lib/queries/cities";
 
 export default function FlightSearchPage() {
   const searchParams = useSearchParams();
   const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
+  const citiesPromise = getAllCities();
 
   useEffect(() => {
     // 模拟更新时间
@@ -38,7 +40,7 @@ export default function FlightSearchPage() {
       {/* 1. Search Form (filled with URL params, no search button) */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <SearchForm showSearchButton={false} />
+          <SearchForm showSearchButton={false} citiesPromise={citiesPromise} />
         </CardContent>
       </Card>
 
