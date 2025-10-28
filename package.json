@@ -13,6 +13,8 @@
     "start": "next start",
     "test": "vitest",
     "test:run": "vitest --run",
+    "test:unit": "vitest --run --project=unit",
+    "test:storybook": "vitest --run --project=storybook",
     "test:coverage": "vitest --run --coverage",
     "test:report": "pnpm test:coverage && pnpm e2e && node scripts/generate-dashboard.js",
     "test:ui": "vitest --ui",
