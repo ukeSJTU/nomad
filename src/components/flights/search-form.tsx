@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 interface SearchFormProps {
   showSearchButton?: boolean;
   onSearch?: (data: SearchFormData) => void;
-  citiesPromise: Promise<CityData[]>;
+  cities: CityData[];
 }
 
 export interface SearchFormData {
@@ -41,7 +41,7 @@ export interface SearchFormData {
 export function SearchForm({
   showSearchButton = false,
   onSearch,
-  citiesPromise,
+  cities,
 }: SearchFormProps) {
   const [tripType, setTripType] = useState<"one-way" | "round-trip">("one-way");
   const [departureCity, setDepartureCity] = useState<CityData | null>(null);
@@ -106,7 +106,7 @@ export function SearchForm({
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={citiesPromise}
+          citiesPromise={Promise.resolve(cities)}
         />
       </div>
 
