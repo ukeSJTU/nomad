@@ -96,7 +96,7 @@ export function CitySelector({
 
   const handleCitySelect = (city: CityData) => {
     onSelect(city);
-    // 选择城市后自动关闭下拉菜单
+    // Auto-close dropdown after city selection
     onOpenChange?.(false);
   };
 
@@ -222,7 +222,7 @@ export function CityInput({
 
   const handleDepartureSelect = (city: CityData) => {
     onDepartureCityChange(city);
-    // 选择出发地后自动打开目的地选择器
+    // Auto-open arrival selector after selecting departure city
     setArrivalOpen(true);
   };
 
