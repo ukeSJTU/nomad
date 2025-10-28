@@ -3,9 +3,9 @@
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 
+import { CityInput } from "@/components/flights/city-selector";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Popover,
@@ -20,17 +20,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { CityData } from "@/lib/queries/cities";
 import { cn } from "@/lib/utils";
 
 interface SearchFormProps {
   showSearchButton?: boolean;
   onSearch?: (data: SearchFormData) => void;
+  citiesPromise: Promise<CityData[]>;
 }
 
 export interface SearchFormData {
   tripType: "one-way" | "round-trip";
-  departureCity: string;
-  arrivalCity: string;
+  departureCity: CityData | null;
+  arrivalCity: CityData | null;
   departureDate: Date | undefined;
   returnDate: Date | undefined;
   seatClass: string;
@@ -39,15 +41,22 @@ export interface SearchFormData {
 export function SearchForm({
   showSearchButton = false,
   onSearch,
+  citiesPromise,
 }: SearchFormProps) {
   const [tripType, setTripType] = useState<"one-way" | "round-trip">("one-way");
-  const [departureCity, setDepartureCity] = useState("");
-  const [arrivalCity, setArrivalCity] = useState("");
+  const [departureCity, setDepartureCity] = useState<CityData | null>(null);
+  const [arrivalCity, setArrivalCity] = useState<CityData | null>(null);
   const [departureDate, setDepartureDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
   const [seatClass, setSeatClass] = useState("economy");
   const [departureDateOpen, setDepartureDateOpen] = useState(false);
   const [returnDateOpen, setReturnDateOpen] = useState(false);
+
+  const handleSwap = () => {
+    const temp = departureCity;
+    setDepartureCity(arrivalCity);
+    setArrivalCity(temp);
+  };
 
   const handleSearch = () => {
     if (onSearch) {
@@ -90,25 +99,15 @@ export function SearchForm({
       </div>
 
       {/* Cities */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="departure-city">出发城市</Label>
-          <Input
-            id="departure-city"
-            placeholder="请输入出发城市"
-            value={departureCity}
-            onChange={e => setDepartureCity(e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="arrival-city">到达城市</Label>
-          <Input
-            id="arrival-city"
-            placeholder="请输入到达城市"
-            value={arrivalCity}
-            onChange={e => setArrivalCity(e.target.value)}
-          />
-        </div>
+      <div className="space-y-2">
+        <CityInput
+          departureCity={departureCity}
+          arrivalCity={arrivalCity}
+          onDepartureCityChange={setDepartureCity}
+          onArrivalCityChange={setArrivalCity}
+          onSwap={handleSwap}
+          citiesPromise={citiesPromise}
+        />
       </div>
 
       {/* Dates */}

@@ -14,16 +14,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getAllCities } from "@/lib/queries/cities";
 
 export default function FlightsPage() {
   const router = useRouter();
+  const citiesPromise = getAllCities();
 
   const handleSearch = (data: SearchFormData) => {
     // 构建搜索参数
     const params = new URLSearchParams();
     params.set("tripType", data.tripType);
-    params.set("from", data.departureCity);
-    params.set("to", data.arrivalCity);
+    if (data.departureCity) {
+      params.set("from", data.departureCity.iataCode);
+    }
+    if (data.arrivalCity) {
+      params.set("to", data.arrivalCity.iataCode);
+    }
     if (data.departureDate) {
       params.set("departDate", data.departureDate.toISOString().split("T")[0]);
     }
@@ -51,7 +57,11 @@ export default function FlightsPage() {
           <CardDescription>请填写您的出行信息</CardDescription>
         </CardHeader>
         <CardContent>
-          <SearchForm showSearchButton onSearch={handleSearch} />
+          <SearchForm
+            showSearchButton
+            onSearch={handleSearch}
+            citiesPromise={citiesPromise}
+          />
         </CardContent>
       </Card>
 
