@@ -110,6 +110,7 @@ export function SearchForm({
           onDepartureDateChange={setDepartureDate}
           onReturnDateChange={setReturnDate}
           onTripTypeChange={setTripType}
+          timezone={departureCity?.timezone}
         />
       </div>
 
