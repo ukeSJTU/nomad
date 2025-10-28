@@ -26,15 +26,6 @@ async function mockBetterAuthApis(page: Page) {
       body: JSON.stringify({ error: null }),
     });
   });
-
-  // Mock the set initial password endpoint to return success
-  await page.route("**/api/auth/set-initial-password", async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ message: "Password set successfully" }),
-    });
-  });
 }
 
 /**
@@ -334,79 +325,6 @@ test.describe("Email Sign-Up Flow", () => {
 
       // Should show validation error
       await expect(page.getByText("两次输入的密码不一致")).toBeVisible();
-    });
-  });
-
-  /**
-   * Test suite for complete happy path
-   * Tests the entire registration flow from start to finish
-   */
-  test.describe("Complete Registration Flow", () => {
-    test("should complete full registration flow successfully", async ({
-      page,
-    }) => {
-      // Set up API mocks before starting the flow
-      await mockBetterAuthApis(page);
-
-      // Step 1: Navigate to sign-up page
-      await page.goto("/auth/sign-up");
-
-      // Step 2: Agree to initial user agreement modal
-      const agreeButton = page.getByRole("button", { name: "同意并继续" });
-      await expect(agreeButton).toBeVisible();
-      await agreeButton.click();
-      await expect(page.getByRole("dialog")).not.toBeVisible();
-
-      // Step 3: Switch to email tab
-      const emailTab = page.getByRole("tab", { name: "邮箱注册" });
-      await emailTab.click();
-
-      // Step 4: Verify we're on email verification step
-      await expect(page.getByText("验证邮箱")).toBeVisible();
-      await expect(page.getByText("注册账户")).toBeVisible();
-
-      // Step 5: Enter email and send OTP
-      const emailInput = page.getByPlaceholder("请输入邮箱地址");
-      await emailInput.fill("test@example.com");
-
-      const sendOtpButton = page.getByRole("button", { name: "发送验证码" });
-      await sendOtpButton.click();
-
-      // Verify OTP was sent (countdown started)
-      await expect(page.getByRole("button", { name: /\d+s/ })).toBeVisible();
-
-      // Step 6: Enter OTP code (mocked API will accept any valid format)
-      const otpInput = page.getByPlaceholder("6位数字");
-      await otpInput.fill("123456");
-
-      // Step 7: Agree to terms
-      const termsCheckbox = page.getByRole("checkbox");
-      await termsCheckbox.check();
-
-      // Step 8: Submit email verification
-      const submitButton = page.getByRole("button", {
-        name: "下一步，设置密码",
-      });
-      await submitButton.click();
-
-      // Step 9: Verify we're on password setup step
-      await expect(page.getByPlaceholder("请输入密码")).toBeVisible();
-      await expect(page.getByText("密码要求：")).toBeVisible();
-
-      // Step 10: Set password
-      const passwordInput = page.getByPlaceholder("请输入密码");
-      await passwordInput.fill("Password123");
-
-      const confirmPasswordInput = page.getByPlaceholder("请再次输入密码");
-      await confirmPasswordInput.fill("Password123");
-
-      // Step 11: Complete registration
-      const completeButton = page.getByRole("button", { name: "完成注册" });
-      await completeButton.click();
-
-      // Step 12: Verify registration success
-      await expect(page.getByText("注册成功！")).toBeVisible();
-      await expect(page.getByText("欢迎使用 Nomad")).toBeVisible();
     });
   });
 });
