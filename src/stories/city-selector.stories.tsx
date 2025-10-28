@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
-import { CityInput, CitySelector } from "@/components/flights/city-selector";
-import { Button } from "@/components/ui/button";
+import { CityInput } from "@/components/flights/city-selector";
 import type { CityData } from "@/lib/queries/cities";
 
 // Mock city data for Storybook
@@ -169,65 +168,19 @@ const mockCities: CityData[] = [
 const mockCitiesPromise = Promise.resolve(mockCities);
 
 const meta = {
-  title: "Flights/CitySelector",
-  component: CitySelector,
+  title: "Flights/CityInput",
+  component: CityInput,
   parameters: {
     layout: "centered",
   },
   tags: ["autodocs"],
-} satisfies Meta<typeof CitySelector>;
+} satisfies Meta<typeof CityInput>;
 
 export default meta;
 type Story = Omit<StoryObj<typeof meta>, "args">;
 
-// Story with controlled state
+// 默认状态：两个城市都未选择
 export const Default: Story = {
-  render: () => {
-    const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
-
-    return (
-      <CitySelector
-        onSelect={setSelectedCity}
-        title="选择城市"
-        selectedCity={selectedCity}
-        citiesPromise={mockCitiesPromise}
-      >
-        <Button>
-          {selectedCity
-            ? `${selectedCity.name} (${selectedCity.iataCode})`
-            : "选择城市"}
-        </Button>
-      </CitySelector>
-    );
-  },
-};
-
-// Story with pre-selected city
-export const WithSelectedCity: Story = {
-  render: () => {
-    const [selectedCity, setSelectedCity] = useState<CityData | null>(
-      mockCities[0]
-    );
-
-    return (
-      <CitySelector
-        onSelect={setSelectedCity}
-        title="选择出发城市"
-        selectedCity={selectedCity}
-        citiesPromise={mockCitiesPromise}
-      >
-        <Button>
-          {selectedCity
-            ? `${selectedCity.name} (${selectedCity.iataCode})`
-            : "选择城市"}
-        </Button>
-      </CitySelector>
-    );
-  },
-};
-
-// Story showing CityInput component
-export const CityInputExample: Story = {
   render: () => {
     const [departureCity, setDepartureCity] = useState<CityData | null>(null);
     const [arrivalCity, setArrivalCity] = useState<CityData | null>(null);
@@ -248,19 +201,53 @@ export const CityInputExample: Story = {
           onSwap={handleSwap}
           citiesPromise={mockCitiesPromise}
         />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p>💡 提示：选择出发地后会自动打开目的地选择器</p>
+        </div>
       </div>
     );
   },
 };
 
-// Story with pre-filled cities
-export const CityInputWithCities: Story = {
+// 只有出发地的初始值
+export const WithDepartureCity: Story = {
   render: () => {
     const [departureCity, setDepartureCity] = useState<CityData | null>(
-      mockCities[0]
+      mockCities[0] // 北京
     );
+    const [arrivalCity, setArrivalCity] = useState<CityData | null>(null);
+
+    const handleSwap = () => {
+      const temp = departureCity;
+      setDepartureCity(arrivalCity);
+      setArrivalCity(temp);
+    };
+
+    return (
+      <div className="w-[600px]">
+        <CityInput
+          departureCity={departureCity}
+          arrivalCity={arrivalCity}
+          onDepartureCityChange={setDepartureCity}
+          onArrivalCityChange={setArrivalCity}
+          onSwap={handleSwap}
+          citiesPromise={mockCitiesPromise}
+        />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p>出发地：{departureCity?.name}</p>
+          <p>目的地：未选择</p>
+        </div>
+      </div>
+    );
+  },
+};
+
+// 只有目的地的初始值
+export const WithArrivalCity: Story = {
+  render: () => {
+    const [departureCity, setDepartureCity] = useState<CityData | null>(null);
     const [arrivalCity, setArrivalCity] = useState<CityData | null>(
-      mockCities[9]
+      mockCities[1] // 上海
     );
 
     const handleSwap = () => {
@@ -279,6 +266,156 @@ export const CityInputWithCities: Story = {
           onSwap={handleSwap}
           citiesPromise={mockCitiesPromise}
         />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p>出发地：未选择</p>
+          <p>目的地：{arrivalCity?.name}</p>
+        </div>
+      </div>
+    );
+  },
+};
+
+// 两个城市都有初始值（国内城市）
+export const WithBothCitiesDomestic: Story = {
+  render: () => {
+    const [departureCity, setDepartureCity] = useState<CityData | null>(
+      mockCities[0] // 北京
+    );
+    const [arrivalCity, setArrivalCity] = useState<CityData | null>(
+      mockCities[1] // 上海
+    );
+
+    const handleSwap = () => {
+      const temp = departureCity;
+      setDepartureCity(arrivalCity);
+      setArrivalCity(temp);
+    };
+
+    return (
+      <div className="w-[600px]">
+        <CityInput
+          departureCity={departureCity}
+          arrivalCity={arrivalCity}
+          onDepartureCityChange={setDepartureCity}
+          onArrivalCityChange={setArrivalCity}
+          onSwap={handleSwap}
+          citiesPromise={mockCitiesPromise}
+        />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p>
+            出发地：{departureCity?.name} ({departureCity?.iataCode})
+          </p>
+          <p>
+            目的地：{arrivalCity?.name} ({arrivalCity?.iataCode})
+          </p>
+          <p className="mt-2">💡 点击中间的交换按钮可以互换出发地和目的地</p>
+        </div>
+      </div>
+    );
+  },
+};
+
+// 两个城市都有初始值（国际城市）
+export const WithBothCitiesInternational: Story = {
+  render: () => {
+    const [departureCity, setDepartureCity] = useState<CityData | null>(
+      mockCities[10] // 东京
+    );
+    const [arrivalCity, setArrivalCity] = useState<CityData | null>(
+      mockCities[11] // 纽约
+    );
+
+    const handleSwap = () => {
+      const temp = departureCity;
+      setDepartureCity(arrivalCity);
+      setArrivalCity(temp);
+    };
+
+    return (
+      <div className="w-[600px]">
+        <CityInput
+          departureCity={departureCity}
+          arrivalCity={arrivalCity}
+          onDepartureCityChange={setDepartureCity}
+          onArrivalCityChange={setArrivalCity}
+          onSwap={handleSwap}
+          citiesPromise={mockCitiesPromise}
+        />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p>
+            出发地：{departureCity?.name} ({departureCity?.iataCode})
+          </p>
+          <p>
+            目的地：{arrivalCity?.name} ({arrivalCity?.iataCode})
+          </p>
+          <p className="mt-2">🌍 国际航班示例</p>
+        </div>
+      </div>
+    );
+  },
+};
+
+// 混合：国内到国际
+export const DomesticToInternational: Story = {
+  render: () => {
+    const [departureCity, setDepartureCity] = useState<CityData | null>(
+      mockCities[0] // 北京
+    );
+    const [arrivalCity, setArrivalCity] = useState<CityData | null>(
+      mockCities[10] // 东京
+    );
+
+    const handleSwap = () => {
+      const temp = departureCity;
+      setDepartureCity(arrivalCity);
+      setArrivalCity(temp);
+    };
+
+    return (
+      <div className="w-[600px]">
+        <CityInput
+          departureCity={departureCity}
+          arrivalCity={arrivalCity}
+          onDepartureCityChange={setDepartureCity}
+          onArrivalCityChange={setArrivalCity}
+          onSwap={handleSwap}
+          citiesPromise={mockCitiesPromise}
+        />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p>
+            出发地：{departureCity?.name} ({departureCity?.iataCode}) - 国内
+          </p>
+          <p>
+            目的地：{arrivalCity?.name} ({arrivalCity?.iataCode}) - 国际
+          </p>
+        </div>
+      </div>
+    );
+  },
+};
+
+// 不带交换按钮
+export const WithoutSwapButton: Story = {
+  render: () => {
+    const [departureCity, setDepartureCity] = useState<CityData | null>(
+      mockCities[0]
+    );
+    const [arrivalCity, setArrivalCity] = useState<CityData | null>(
+      mockCities[1]
+    );
+
+    return (
+      <div className="w-[600px]">
+        <CityInput
+          departureCity={departureCity}
+          arrivalCity={arrivalCity}
+          onDepartureCityChange={setDepartureCity}
+          onArrivalCityChange={setArrivalCity}
+          citiesPromise={mockCitiesPromise}
+        />
+        <div className="mt-4 text-sm text-muted-foreground">
+          <p>💡 不传 onSwap 属性时，不显示交换按钮</p>
+        </div>
       </div>
     );
   },
