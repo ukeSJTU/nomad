@@ -37,9 +37,5 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // More specific matcher for better performance
-  matcher: [
-    "/docs/:path*",
-    // Also protect the OpenAPI spec file
-    "/openapi.json",
-  ],
+  matcher: ["/docs/:path*"],
 };
