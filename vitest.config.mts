@@ -1,7 +1,16 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
+const dirname =
+  typeof __dirname !== "undefined"
+    ? __dirname
+    : path.dirname(fileURLToPath(import.meta.url));
 
+// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
@@ -14,7 +23,8 @@ export default defineConfig({
       "**/cypress/**",
       "**/.{idea,git,cache,output,temp}/**",
       "**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*",
-      "**/tests/**", // Exclude Playwright tests
+      "**/tests/**",
+      // Exclude Playwright tests
       "**/test-results/**",
       "**/playwright-report/**",
       "src/lib/fumadocs/**", // These are fumadocs configuration files
@@ -32,23 +42,37 @@ export default defineConfig({
         "**/*.test.*",
         "**/*.spec.*",
         "**/tests/**",
-        "src/app/**", // Next.js app directory
+        "src/app/**",
+        // Next.js app directory
         "**/.next/**",
         "**/playwright-report/**",
         "**/test-results/**",
-        "src/lib/auth.ts", // Better Auth configuration
-        "src/lib/auth/**", // Better Auth client
-        "src/lib/db/**", // Database connection and seed files
-        "src/lib/fumadocs/**", // Fumadocs configuration files
-        "src/components/ui/**", // Shadcn/UI components (third-party)
-        "src/components/fumadocs/**", // Fumadocs components
-        "src/components/auth/index.tsx", // Re-export file
-        "src/components/common/index.tsx", // Re-export file
-        "src/components/passengers/index.ts", // Re-export file
-        "src/types/index.ts", // Re-export file
-        "src/types/api/index.ts", // Re-export file
-        "src/hooks/**", // React hooks (can be tested separately if needed)
-        "src/middleware.ts", // Next.js middleware
+        "src/lib/auth.ts",
+        // Better Auth configuration
+        "src/lib/auth/**",
+        // Better Auth client
+        "src/lib/db/**",
+        // Database connection and seed files
+        "src/lib/fumadocs/**",
+        // Fumadocs configuration files
+        "src/components/ui/**",
+        // Shadcn/UI components (third-party)
+        "src/components/fumadocs/**",
+        // Fumadocs components
+        "src/components/auth/index.tsx",
+        // Re-export file
+        "src/components/common/index.tsx",
+        // Re-export file
+        "src/components/passengers/index.ts",
+        // Re-export file
+        "src/types/index.ts",
+        // Re-export file
+        "src/types/api/index.ts",
+        // Re-export file
+        "src/hooks/**",
+        // React hooks (can be tested separately if needed)
+        "src/middleware.ts",
+        // Next.js middleware
         "src/instrumentation.ts", // Next.js instrumentation
       ],
       include: ["src/**/*.{ts,tsx,js,jsx}"],
@@ -65,5 +89,43 @@ export default defineConfig({
       json: "./coverage/vitest-results.json",
       junit: "./coverage/vitest-results.xml",
     },
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          include: ["src/**/*.{test,spec}.{ts,tsx}"],
+          exclude: [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/*.stories.tsx", // Exclude Storybook files from unit tests
+          ],
+        },
+      },
+      {
+        extends: true,
+        plugins: [
+          // The plugin will run tests for the stories defined in your Storybook config
+          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
+          storybookTest({
+            configDir: path.join(dirname, ".storybook"),
+          }),
+        ],
+        test: {
+          name: "storybook",
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: "playwright",
+            instances: [
+              {
+                browser: "chromium",
+              },
+            ],
+          },
+          setupFiles: [".storybook/vitest.setup.ts"],
+        },
+      },
+    ],
   },
 });

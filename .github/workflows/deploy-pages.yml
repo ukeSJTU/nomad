@@ -1,8 +1,8 @@
-name: Deploy Test Reports to GitHub Pages
+name: Deploy Test Reports & Storybook to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Playwright Tests", "Unit Tests"]
+    workflows: ["Playwright Tests", "Unit Tests", "Storybook Build & Deploy"]
     types:
       - completed
     branches: ["**"]
@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "pnpm"
 
       - name: Install dependencies
@@ -60,9 +60,17 @@ jobs:
           path: ./artifacts/
         continue-on-error: true # Still continue if test results are not available
 
+      - name: Download Storybook build
+        uses: dawidd6/action-download-artifact@v11
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          name: storybook-static
+          path: ./artifacts/
+        continue-on-error: true # Still continue if Storybook is not available
+
       - name: Extract and organize artifacts
         run: |
-          mkdir -p public/playwright-report public/coverage reports/playwright reports/coverage
+          mkdir -p public/playwright-report public/coverage public/storybook reports/playwright reports/coverage
 
           echo "=== Checking downloaded artifacts ==="
           ls -la artifacts/ || echo "No artifacts directory found"
@@ -87,6 +95,16 @@ jobs:
             ls -la public/coverage/
           else
             echo "No test coverage reports found"
+          fi
+
+          # Move and organize Storybook
+          if [ -d "artifacts/storybook-static" ]; then
+            echo "Moving Storybook..."
+            cp -r artifacts/storybook-static/* public/storybook/ 2>/dev/null || true
+            echo "Storybook organized"
+            ls -la public/storybook/
+          else
+            echo "No Storybook build found"
           fi
 
       - name: Generate test dashboard
@@ -152,16 +170,17 @@ jobs:
           number: ${{ steps.find-pr.outputs.pr_number }}
           recreate: true
           message: |
-            ## Test Reports Dashboard
+            ## 📊 Test Reports & Documentation Dashboard
 
-            Your test reports have been successfully generated and deployed!
+            Your test reports and Storybook have been successfully generated and deployed!
 
             ### **Main Dashboard**
             **[View Test Dashboard](${{ needs.deploy.outputs.page_url }})**
 
             ### **Detailed Reports**
-            - **[Playwright E2E Tests](${{ needs.deploy.outputs.page_url }}playwright-report/)**
-            - **[Unit Test Coverage](${{ needs.deploy.outputs.page_url }}coverage/)**
+            - 📚 **[Storybook - Component Library](${{ needs.deploy.outputs.page_url }}storybook/)**
+            - 🎭 **[Playwright E2E Tests](${{ needs.deploy.outputs.page_url }}playwright-report/)**
+            - 📈 **[Unit Test Coverage](${{ needs.deploy.outputs.page_url }}coverage/)**
 
             ### **Quick Stats**
             - **Workflow Run**: [#${{ github.event.workflow_run.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }})
@@ -169,5 +188,5 @@ jobs:
             - **Branch**: `${{ github.event.workflow_run.head_branch }}`
 
             ---
-              
+
             *Reports are automatically updated on every push to this PR*

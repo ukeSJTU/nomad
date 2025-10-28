@@ -95,7 +95,7 @@ curl -X POST https://example.com/api/users \
 ## 环境信息
 
 - **环境**: [开发/测试/生产]
-- **Node.js版本**: [例如 20.15.0]
+- **Node.js版本**: [例如 22.21.0]
 - **数据库**: [例如 PostgreSQL 15.0]
 - **部署平台**: [例如 Vercel, AWS]
 

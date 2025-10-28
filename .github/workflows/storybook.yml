@@ -1,0 +1,78 @@
+name: Storybook Build & Deploy
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+concurrency:
+  group: "storybook-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook
+        run: pnpm build-storybook
+        env:
+          NODE_ENV: production
+
+      - name: Run Storybook accessibility tests
+        run: pnpm test:run --project=storybook
+        continue-on-error: true
+
+      - name: Upload Storybook build
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-static
+          path: storybook-static/
+          retention-days: 7
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-test-results
+          path: |
+            test-results/
+            coverage/
+          retention-days: 7
+
+      - name: Build status
+        if: success()
+        run: |
+          echo "✅ Storybook built successfully!"
+          echo "📦 Artifact uploaded and ready for deployment"
+
+      - name: Build failed
+        if: failure()
+        run: |
+          echo "❌ Storybook build failed!"
+          echo "Please check the logs above for details."

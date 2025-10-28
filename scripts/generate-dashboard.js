@@ -96,7 +96,45 @@ const generateDashboard = (playwrightData, coverageData) => {
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Storybook Card -->
+            <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <span class="text-3xl mr-3">📚</span>
+                        Storybook
+                    </h2>
+                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Components</span>
+                </div>
+                <div class="space-y-3">
+                    <p class="text-gray-600">Interactive component library and documentation</p>
+                    <div class="flex flex-col space-y-2 text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Component Showcase</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Interactive Props</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Accessibility Tests</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Auto-generated Docs</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <a href="../storybook/index.html" class="inline-flex items-center bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
+                        <span class="mr-2">📖</span>
+                        View Storybook
+                    </a>
+                </div>
+            </div>
+
             <!-- Playwright Tests Card -->
             <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
                 <div class="flex items-center justify-between mb-6">
@@ -108,7 +146,7 @@ const generateDashboard = (playwrightData, coverageData) => {
                 </div>
                 ${generatePlaywrightSection(playwrightData)}
                 <div class="mt-6">
-                    <a href="../playwright-report/index.html" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                    <a href="../playwright-report/index.html" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
                         <span class="mr-2">📋</span>
                         View Detailed Report
                     </a>
@@ -126,7 +164,7 @@ const generateDashboard = (playwrightData, coverageData) => {
                 </div>
                 ${generateCoverageSection(coverageData)}
                 <div class="mt-6">
-                    <a href="../coverage/index.html" class="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                    <a href="../coverage/index.html" class="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
                         <span class="mr-2">📊</span>
                         View Coverage Report
                     </a>
