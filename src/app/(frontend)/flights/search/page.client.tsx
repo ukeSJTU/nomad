@@ -28,11 +28,11 @@ export function FlightSearchPageClient({
   const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
 
   useEffect(() => {
-    // 模拟更新时间
+    // Update last refresh time
     setLastUpdateTime(new Date());
   }, [searchParams]);
 
-  // 从 URL 参数获取搜索信息
+  // Get search parameters from URL
   const tripType = searchParams.get("tripType") || "one-way";
   const from = searchParams.get("from") || "";
   const to = searchParams.get("to") || "";
