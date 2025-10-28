@@ -85,8 +85,6 @@ const mockCities: CityData[] = [
   },
 ];
 
-const mockCitiesPromise = Promise.resolve(mockCities);
-
 const meta: Meta<typeof SearchForm> = {
   title: "Flights/SearchForm",
   component: SearchForm,
@@ -111,7 +109,7 @@ export const Default: Story = {
         <SearchForm
           showSearchButton={false}
           onSearch={handleSearch}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
       </div>
     );
@@ -133,7 +131,7 @@ export const WithSearchButton: Story = {
         <SearchForm
           showSearchButton={true}
           onSearch={handleSearch}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         {searchData && (
           <div className="p-4 bg-muted rounded-lg">
