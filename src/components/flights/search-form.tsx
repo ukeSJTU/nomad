@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { CityInput } from "@/components/flights/city-selector";
-import { DateInput } from "@/components/flights/date-selector";
+import { DateSelector } from "@/components/flights/date-selector";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -102,17 +102,15 @@ export function SearchForm({
       </div>
 
       {/* Dates */}
-      <div className="space-y-2">
-        <DateInput
-          tripType={tripType}
-          departureDate={departureDate}
-          returnDate={returnDate}
-          onDepartureDateChange={setDepartureDate}
-          onReturnDateChange={setReturnDate}
-          onTripTypeChange={setTripType}
-          timezone={departureCity?.timezone}
-        />
-      </div>
+      <DateSelector
+        tripType={tripType}
+        departureDate={departureDate}
+        returnDate={returnDate}
+        onDepartureDateChange={setDepartureDate}
+        onReturnDateChange={setReturnDate}
+        onTripTypeChange={setTripType}
+        timezone={departureCity?.timezone}
+      />
 
       {/* Seat Class */}
       <div className="space-y-2">
