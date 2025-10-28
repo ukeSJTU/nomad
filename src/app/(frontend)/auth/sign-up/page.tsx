@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { setInitialPasswordAction } from "@/app/(frontend)/auth/actions";
 import SignUpModal, {
   EmailVerificationForm,
   PasswordSetupForm,
@@ -11,6 +10,7 @@ import SignUpModal, {
 } from "@/components/auth";
 import { Stepper, type StepperStep } from "@/components/common";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { setInitialPasswordAction } from "@/lib/actions";
 import { authClient } from "@/lib/auth/client";
 import type {
   EmailVerificationData,

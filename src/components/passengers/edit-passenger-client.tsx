@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { updatePassengerAction } from "@/app/(frontend)/home/passengers/actions";
 import PassengerForm from "@/components/passengers/forms/passenger-form";
+import { updatePassengerAction } from "@/lib/actions";
 import type { Passenger } from "@/types/api/passengers";
 
 interface EditPassengerClientProps {
