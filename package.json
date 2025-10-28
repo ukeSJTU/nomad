@@ -28,7 +28,6 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx --env-file=.env src/lib/db/seed.ts",
-    "api:generate": "next-openapi-gen generate",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",

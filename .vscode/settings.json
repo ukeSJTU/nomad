@@ -38,8 +38,6 @@
     "**/test-results": true,
     "**/playwright-report": true,
     "**/.husky": true,
-    "**/openapi.json": true,
-    "**/next.openapi.json": true,
     "**/reports": true,
     "**/.augment": true,
     "**/.trae": true,
