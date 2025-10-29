@@ -121,7 +121,6 @@ export function SearchForm({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="economy">经济舱</SelectItem>
-            <SelectItem value="premium-economy">超级经济舱</SelectItem>
             <SelectItem value="business">商务舱</SelectItem>
             <SelectItem value="first">头等舱</SelectItem>
           </SelectContent>
