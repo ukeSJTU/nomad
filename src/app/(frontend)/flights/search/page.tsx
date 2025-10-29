@@ -33,7 +33,7 @@ export default async function FlightSearchPage({
 
   console.log(params.tripType);
 
-  // 处理舱位类型
+  // Handle cabin class type
   const classType = params.class?.toUpperCase() as
     | "ECONOMY"
     | "BUSINESS"
@@ -44,7 +44,7 @@ export default async function FlightSearchPage({
 
   try {
     if (params.tripType === "one-way") {
-      // 单程航班搜索
+      // One-way flight search
       flights = await searchOneWayFlights({
         from: params.from,
         to: params.to,
@@ -52,7 +52,7 @@ export default async function FlightSearchPage({
         classType,
       });
     } else if (params.tripType === "round-trip") {
-      // 往返航班搜索 - 需要验证返程日期
+      // Round-trip flight search - validate return date
       if (!params.returnDate) {
         redirect("/flights");
       }
@@ -65,7 +65,7 @@ export default async function FlightSearchPage({
         classType,
       });
     } else {
-      // 默认为单程
+      // Default to one-way
       flights = await searchOneWayFlights({
         from: params.from,
         to: params.to,
