@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CityInput } from "@/components/flights/city-selector";
 import { DateSelector } from "@/components/flights/date-selector";
@@ -19,7 +19,9 @@ import type { CityData } from "@/lib/queries/cities";
 interface SearchFormProps {
   showSearchButton?: boolean;
   onSearch?: (data: SearchFormData) => void;
+  onChange?: (data: SearchFormData) => void;
   cities: CityData[];
+  initialValues?: Partial<SearchFormData>;
 }
 
 export interface SearchFormData {
@@ -34,14 +36,79 @@ export interface SearchFormData {
 export function SearchForm({
   showSearchButton = false,
   onSearch,
+  onChange,
   cities,
+  initialValues,
 }: SearchFormProps) {
-  const [tripType, setTripType] = useState<"one-way" | "round-trip">("one-way");
-  const [departureCity, setDepartureCity] = useState<CityData | null>(null);
-  const [arrivalCity, setArrivalCity] = useState<CityData | null>(null);
-  const [departureDate, setDepartureDate] = useState<Date | null>(null);
-  const [returnDate, setReturnDate] = useState<Date | null>(null);
-  const [seatClass, setSeatClass] = useState("economy");
+  const [tripType, setTripType] = useState<"one-way" | "round-trip">(
+    initialValues?.tripType || "one-way"
+  );
+  const [departureCity, setDepartureCity] = useState<CityData | null>(
+    initialValues?.departureCity || null
+  );
+  const [arrivalCity, setArrivalCity] = useState<CityData | null>(
+    initialValues?.arrivalCity || null
+  );
+  const [departureDate, setDepartureDate] = useState<Date | null>(
+    initialValues?.departureDate || null
+  );
+  const [returnDate, setReturnDate] = useState<Date | null>(
+    initialValues?.returnDate || null
+  );
+  const [seatClass, setSeatClass] = useState(
+    initialValues?.seatClass || "economy"
+  );
+
+  // Update state when initialValues change
+  useEffect(() => {
+    if (initialValues) {
+      if (initialValues.tripType !== undefined)
+        setTripType(initialValues.tripType);
+      if (initialValues.departureCity !== undefined)
+        setDepartureCity(initialValues.departureCity);
+      if (initialValues.arrivalCity !== undefined)
+        setArrivalCity(initialValues.arrivalCity);
+      if (initialValues.departureDate !== undefined)
+        setDepartureDate(initialValues.departureDate);
+      if (initialValues.returnDate !== undefined)
+        setReturnDate(initialValues.returnDate);
+      if (initialValues.seatClass !== undefined)
+        setSeatClass(initialValues.seatClass);
+    }
+  }, [initialValues]);
+
+  // Trigger onChange when form values change (for auto-search)
+  // Only trigger if we have the minimum required fields to avoid premature navigation
+  useEffect(() => {
+    if (!onChange) return;
+
+    // Don't trigger onChange if basic required fields are missing
+    if (!departureCity || !arrivalCity || !departureDate) {
+      return;
+    }
+
+    // For round-trip, don't trigger if returnDate is missing
+    if (tripType === "round-trip" && !returnDate) {
+      return;
+    }
+
+    onChange({
+      tripType,
+      departureCity,
+      arrivalCity,
+      departureDate: departureDate || undefined,
+      returnDate: returnDate || undefined,
+      seatClass,
+    });
+  }, [
+    tripType,
+    departureCity,
+    arrivalCity,
+    departureDate,
+    returnDate,
+    seatClass,
+    onChange,
+  ]);
 
   const handleSwap = () => {
     const temp = departureCity;
@@ -62,6 +129,19 @@ export function SearchForm({
     }
   };
 
+  // Auto-set return date when switching to round-trip
+  const handleTripTypeChange = (newTripType: "one-way" | "round-trip") => {
+    setTripType(newTripType);
+
+    // If switching to round-trip and no return date is set, set a default
+    if (newTripType === "round-trip" && !returnDate && departureDate) {
+      // Default: 7 days after departure
+      const defaultReturnDate = new Date(departureDate);
+      defaultReturnDate.setDate(defaultReturnDate.getDate() + 7);
+      setReturnDate(defaultReturnDate);
+    }
+  };
+
   return (
     <div className="w-full space-y-6">
       {/* Trip Type Selection */}
@@ -70,7 +150,7 @@ export function SearchForm({
         <RadioGroup
           value={tripType}
           onValueChange={value =>
-            setTripType(value as "one-way" | "round-trip")
+            handleTripTypeChange(value as "one-way" | "round-trip")
           }
           className="flex gap-4"
         >
