@@ -1,16 +1,16 @@
 "use client";
 
-import { Calendar, Clock, Filter, SortAsc } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { FlightCard } from "@/components/flights/flight-card";
 import { FlightCardSkeleton } from "@/components/flights/flight-card-skeleton";
+import { FlightFilterSort } from "@/components/flights/flight-filter-sort";
 import {
   SearchForm,
   type SearchFormData,
 } from "@/components/flights/search-form";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -55,6 +55,12 @@ export function FlightSearchPageClient({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
+  const [filteredFlights, setFilteredFlights] = useState<FlightSearchResult[]>(
+    []
+  );
+  const [activeRoundTripTab, setActiveRoundTripTab] = useState<
+    "outbound" | "return"
+  >("outbound");
 
   // Parse and validate URL parameters
   const parsedParams = useMemo(() => {
@@ -198,7 +204,13 @@ export function FlightSearchPageClient({
           </div>
         ) : (
           // Round-trip: Tabs for outbound and return with enhanced styling
-          <Tabs defaultValue="outbound" className="w-auto">
+          <Tabs
+            value={activeRoundTripTab}
+            onValueChange={value =>
+              setActiveRoundTripTab(value as "outbound" | "return")
+            }
+            className="w-auto"
+          >
             <TabsList className="h-auto">
               <TabsTrigger
                 value="outbound"
@@ -276,28 +288,24 @@ export function FlightSearchPageClient({
       </div>
 
       {/* 4. Search Toolbar (Filtering and Sorting) - Sticky */}
-      <div className="sticky top-0 z-10 bg-background pb-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                筛选
-              </Button>
-              <Button variant="outline" size="sm">
-                <SortAsc className="h-4 w-4 mr-2" />
-                排序
-              </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <div className="flex gap-2 flex-wrap">
-                <Skeleton className="h-8 w-20" />
-                <Skeleton className="h-8 w-24" />
-                <Skeleton className="h-8 w-20" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {flights &&
+        (Array.isArray(flights)
+          ? flights.length > 0 && (
+              <FlightFilterSort
+                flights={flights}
+                onFilteredFlightsChange={setFilteredFlights}
+              />
+            )
+          : (flights.outbound.length > 0 || flights.inbound.length > 0) && (
+              <FlightFilterSort
+                flights={
+                  activeRoundTripTab === "outbound"
+                    ? flights.outbound
+                    : flights.inbound
+                }
+                onFilteredFlightsChange={setFilteredFlights}
+              />
+            ))}
 
       {/* 5. Search Results Cards */}
       <div className="space-y-4">
@@ -310,8 +318,8 @@ export function FlightSearchPageClient({
           </>
         ) : Array.isArray(flights) ? (
           // One-way flights
-          flights.length > 0 ? (
-            flights.map(flight => {
+          filteredFlights.length > 0 ? (
+            filteredFlights.map(flight => {
               const durationMinutes = calculateFlightDuration(
                 flight.departure.datetime,
                 flight.arrival.datetime
@@ -361,10 +369,9 @@ export function FlightSearchPageClient({
               </CardHeader>
             </Card>
           )
-        ) : // Round-trip flights - show outbound flights for now
-        // TODO: Implement round-trip flight selection UI
-        flights.outbound.length > 0 ? (
-          flights.outbound.map(flight => {
+        ) : // Round-trip flights - use filtered flights based on active tab
+        filteredFlights.length > 0 ? (
+          filteredFlights.map(flight => {
             const durationMinutes = calculateFlightDuration(
               flight.departure.datetime,
               flight.arrival.datetime
@@ -395,10 +402,15 @@ export function FlightSearchPageClient({
                 daysOffset={daysOffset > 0 ? daysOffset : undefined}
                 duration={formatDuration(durationMinutes)}
                 price={lowestPrice}
-                buttonText="选择去程"
+                buttonText={
+                  activeRoundTripTab === "outbound" ? "选择去程" : "选择返程"
+                }
                 onButtonClick={() => {
-                  // TODO: Navigate to return flight selection
-                  console.log("Select outbound flight:", flight.id);
+                  // TODO: Navigate to return flight selection or booking
+                  console.log(
+                    `Select ${activeRoundTripTab} flight:`,
+                    flight.id
+                  );
                 }}
               />
             );
