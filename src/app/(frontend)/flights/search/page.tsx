@@ -31,8 +31,6 @@ export default async function FlightSearchPage({
     redirect("/flights");
   }
 
-  console.log(params.tripType);
-
   // Handle cabin class type
   const classType = params.class?.toUpperCase() as
     | "ECONOMY"
@@ -77,14 +75,16 @@ export default async function FlightSearchPage({
     console.error(error);
   }
 
-  console.log(flights);
-
   // Fetch city data on the server
   const cities = await getAllCities();
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <FlightSearchPageClient cities={cities} />
+      <FlightSearchPageClient
+        cities={cities}
+        flights={flights}
+        tripType={params.tripType as "one-way" | "round-trip" | undefined}
+      />
     </Suspense>
   );
 }

@@ -4,6 +4,7 @@ import { Calendar, Clock, Filter, SortAsc } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { FlightCard } from "@/components/flights/flight-card";
 import { FlightCardSkeleton } from "@/components/flights/flight-card-skeleton";
 import {
   SearchForm,
@@ -25,15 +26,31 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type {
+  FlightSearchResult,
+  RoundTripFlightSearchResult,
+} from "@/lib/queries";
 import type { CityData } from "@/lib/queries/cities";
 import { formatDateWithWeekday, formatTime } from "@/utils/date";
+import {
+  calculateDaysOffset,
+  calculateFlightDuration,
+  formatAirportDisplay,
+  formatDuration,
+  formatFlightTime,
+  getLowestPrice,
+} from "@/utils/flight";
 
 interface FlightSearchPageClientProps {
   cities: CityData[];
+  flights?: FlightSearchResult[] | RoundTripFlightSearchResult;
+  tripType?: "one-way" | "round-trip";
 }
 
 export function FlightSearchPageClient({
   cities,
+  flights,
+  tripType: _initialTripType,
 }: FlightSearchPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -284,23 +301,120 @@ export function FlightSearchPageClient({
 
       {/* 5. Search Results Cards */}
       <div className="space-y-4">
-        {/* Skeleton placeholders for flight results */}
-        {[1, 2, 3, 4, 5].map(i => (
-          <FlightCardSkeleton key={i} />
-        ))}
-      </div>
+        {!flights ? (
+          // Loading state
+          <>
+            {[1, 2, 3, 4, 5].map(i => (
+              <FlightCardSkeleton key={i} />
+            ))}
+          </>
+        ) : Array.isArray(flights) ? (
+          // One-way flights
+          flights.length > 0 ? (
+            flights.map(flight => {
+              const durationMinutes = calculateFlightDuration(
+                flight.departure.datetime,
+                flight.arrival.datetime
+              );
+              const daysOffset = calculateDaysOffset(
+                flight.departure.datetime,
+                flight.arrival.datetime
+              );
+              const lowestPrice = getLowestPrice(flight.seatClasses);
 
-      {/* No Results Message (hidden by default, shown when no results) */}
-      {false && (
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>未找到航班</CardTitle>
-            <CardDescription>
-              抱歉,没有找到符合您搜索条件的航班。请尝试调整搜索条件。
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      )}
+              return (
+                <FlightCard
+                  key={flight.id}
+                  airlineLogo={flight.airline.logoUrl || undefined}
+                  airlineName={flight.airline.name}
+                  flightNumber={flight.flightNumber}
+                  aircraftType={flight.aircraftType || "N/A"}
+                  departureTime={formatFlightTime(flight.departure.datetime)}
+                  departureAirport={formatAirportDisplay(
+                    flight.departure.airport.name,
+                    flight.departure.terminal
+                  )}
+                  arrivalTime={formatFlightTime(flight.arrival.datetime)}
+                  arrivalAirport={formatAirportDisplay(
+                    flight.arrival.airport.name,
+                    flight.arrival.terminal
+                  )}
+                  daysOffset={daysOffset > 0 ? daysOffset : undefined}
+                  duration={formatDuration(durationMinutes)}
+                  price={lowestPrice}
+                  buttonText="订票"
+                  onButtonClick={() => {
+                    // TODO: Navigate to booking page
+                    console.log("Book flight:", flight.id);
+                  }}
+                />
+              );
+            })
+          ) : (
+            // No results for one-way
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle>未找到航班</CardTitle>
+                <CardDescription>
+                  抱歉,没有找到符合您搜索条件的航班。请尝试调整搜索条件。
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          )
+        ) : // Round-trip flights - show outbound flights for now
+        // TODO: Implement round-trip flight selection UI
+        flights.outbound.length > 0 ? (
+          flights.outbound.map(flight => {
+            const durationMinutes = calculateFlightDuration(
+              flight.departure.datetime,
+              flight.arrival.datetime
+            );
+            const daysOffset = calculateDaysOffset(
+              flight.departure.datetime,
+              flight.arrival.datetime
+            );
+            const lowestPrice = getLowestPrice(flight.seatClasses);
+
+            return (
+              <FlightCard
+                key={flight.id}
+                airlineLogo={flight.airline.logoUrl || undefined}
+                airlineName={flight.airline.name}
+                flightNumber={flight.flightNumber}
+                aircraftType={flight.aircraftType || "N/A"}
+                departureTime={formatFlightTime(flight.departure.datetime)}
+                departureAirport={formatAirportDisplay(
+                  flight.departure.airport.name,
+                  flight.departure.terminal
+                )}
+                arrivalTime={formatFlightTime(flight.arrival.datetime)}
+                arrivalAirport={formatAirportDisplay(
+                  flight.arrival.airport.name,
+                  flight.arrival.terminal
+                )}
+                daysOffset={daysOffset > 0 ? daysOffset : undefined}
+                duration={formatDuration(durationMinutes)}
+                price={lowestPrice}
+                buttonText="选择去程"
+                onButtonClick={() => {
+                  // TODO: Navigate to return flight selection
+                  console.log("Select outbound flight:", flight.id);
+                }}
+              />
+            );
+          })
+        ) : (
+          // No results for round-trip
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>未找到航班</CardTitle>
+              <CardDescription>
+                抱歉,没有找到符合您搜索条件的航班。请尝试调整搜索条件。
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
