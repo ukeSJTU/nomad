@@ -183,9 +183,6 @@ const mockCities: CityData[] = [
   },
 ];
 
-// Create a promise that resolves with mock data
-const mockCitiesPromise = Promise.resolve(mockCities);
-
 const meta = {
   title: "Flights/CityInput",
   component: CityInput,
@@ -218,7 +215,7 @@ export const Default: Story = {
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         <div className="mt-4 text-sm text-muted-foreground">
           <p>
@@ -252,7 +249,7 @@ export const WithDepartureCity: Story = {
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         <div className="mt-4 text-sm text-muted-foreground">
           <p>Departure: {departureCity?.name}</p>
@@ -285,7 +282,7 @@ export const WithArrivalCity: Story = {
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         <div className="mt-4 text-sm text-muted-foreground">
           <p>Departure: Not selected</p>
@@ -320,7 +317,7 @@ export const WithBothCitiesDomestic: Story = {
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         <div className="mt-4 text-sm text-muted-foreground">
           <p>
@@ -360,7 +357,7 @@ export const WithBothCitiesInternational: Story = {
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         <div className="mt-4 text-sm text-muted-foreground">
           <p>
@@ -400,7 +397,7 @@ export const DomesticToInternational: Story = {
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         <div className="mt-4 text-sm text-muted-foreground">
           <p>
@@ -434,7 +431,7 @@ export const WithoutSwapButton: Story = {
           arrivalCity={arrivalCity}
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
-          citiesPromise={mockCitiesPromise}
+          cities={mockCities}
         />
         <div className="mt-4 text-sm text-muted-foreground">
           <p>💡 Swap button is hidden when onSwap prop is not provided</p>
