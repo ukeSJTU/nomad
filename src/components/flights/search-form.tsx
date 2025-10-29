@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { CityInput } from "@/components/flights/city-selector";
 import { DateSelector } from "@/components/flights/date-selector";
@@ -59,9 +59,16 @@ export function SearchForm({
     initialValues?.seatClass || "economy"
   );
 
-  // Update state when initialValues change
+  // Track if this is the initial mount to prevent triggering onChange on mount
+  const isInitialMount = useRef(true);
+  // Track if we're currently syncing from initialValues to prevent onChange trigger
+  const isSyncingFromProps = useRef(false);
+
+  // Update state when initialValues change (from URL params)
   useEffect(() => {
     if (initialValues) {
+      isSyncingFromProps.current = true;
+
       if (initialValues.tripType !== undefined)
         setTripType(initialValues.tripType);
       if (initialValues.departureCity !== undefined)
@@ -74,12 +81,28 @@ export function SearchForm({
         setReturnDate(initialValues.returnDate);
       if (initialValues.seatClass !== undefined)
         setSeatClass(initialValues.seatClass);
+
+      // Reset the flag after state updates have been applied
+      setTimeout(() => {
+        isSyncingFromProps.current = false;
+      }, 0);
     }
   }, [initialValues]);
 
   // Trigger onChange when form values change (for auto-search)
   // Only trigger if we have the minimum required fields to avoid premature navigation
   useEffect(() => {
+    // Skip on initial mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // Skip if we're syncing from props (URL params changed)
+    if (isSyncingFromProps.current) {
+      return;
+    }
+
     if (!onChange) return;
 
     // Don't trigger onChange if basic required fields are missing
