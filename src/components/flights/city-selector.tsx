@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeftRight } from "lucide-react";
-import { use, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +18,7 @@ interface CitySelectorProps {
   onSelect: (city: CityData) => void;
   title?: string;
   selectedCity?: CityData | null;
-  citiesPromise: Promise<CityData[]>;
+  cities: CityData[];
   children: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -50,12 +50,12 @@ export function CitySelector({
   onSelect,
   title = "选择城市",
   selectedCity,
-  citiesPromise,
+  cities,
   children,
   open,
   onOpenChange,
 }: CitySelectorProps) {
-  const allCities = use(citiesPromise);
+  const allCities = cities;
 
   const [domesticOrInternational, setDomesticOrInternational] = useState<
     "domestic" | "international"
@@ -207,7 +207,7 @@ interface CityInputProps {
   onDepartureCityChange: (city: CityData) => void;
   onArrivalCityChange: (city: CityData) => void;
   onSwap?: () => void;
-  citiesPromise: Promise<CityData[]>;
+  cities: CityData[];
 }
 
 export function CityInput({
@@ -216,7 +216,7 @@ export function CityInput({
   onDepartureCityChange,
   onArrivalCityChange,
   onSwap,
-  citiesPromise,
+  cities,
 }: CityInputProps) {
   const [departureOpen, setDepartureOpen] = useState(false);
   const [arrivalOpen, setArrivalOpen] = useState(false);
@@ -234,7 +234,7 @@ export function CityInput({
           onSelect={handleDepartureSelect}
           title="选择出发城市"
           selectedCity={departureCity}
-          citiesPromise={citiesPromise}
+          cities={cities}
           open={departureOpen}
           onOpenChange={setDepartureOpen}
         >
@@ -268,7 +268,7 @@ export function CityInput({
           onSelect={onArrivalCityChange}
           title="选择到达城市"
           selectedCity={arrivalCity}
-          citiesPromise={citiesPromise}
+          cities={cities}
           open={arrivalOpen}
           onOpenChange={setArrivalOpen}
         >
