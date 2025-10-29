@@ -5,6 +5,7 @@ import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { useState } from "react";
 import { type DateRange } from "react-day-picker";
 
+import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import {
   DropdownMenu,
@@ -244,9 +245,12 @@ export function DateSelector({
             <div className="relative flex items-center">
               <div className="w-px h-full bg-border" />
               {tripDuration > 1 && (
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium shadow-sm">
+                <Badge
+                  variant="secondary"
+                  className="absolute flex items-center justify-center text-xs font-medium left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                >
                   {tripDuration}天
-                </div>
+                </Badge>
               )}
             </div>
 
