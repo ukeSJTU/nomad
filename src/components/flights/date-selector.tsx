@@ -95,38 +95,61 @@ export function DateSelector({
     if (tripType === "round-trip") {
       const range = date as DateRange | undefined;
 
-      if (activeField === "departure") {
-        // User clicked departure date field
-        if (range?.from) {
-          onDepartureDateChange(range.from);
+      console.log(range, activeField);
 
-          // If user selected a date after current return date, clear return date and keep calendar open
-          if (returnDate && range.from > returnDate) {
-            onReturnDateChange(range.from);
+      if (activeField === "departure") {
+        // User clicked departure date field - they want to modify departure date
+        if (range?.from && range?.to) {
+          // User selected a complete range
+          onDepartureDateChange(range.from);
+          onReturnDateChange(range.to);
+          setCalendarOpen(false);
+        } else if (range?.from && !range?.to) {
+          // User clicked a single date - this should update departure date
+          const newDepartureDate = range.from;
+          onDepartureDateChange(newDepartureDate);
+
+          if (returnDate) {
+            if (newDepartureDate <= returnDate) {
+              // New departure is before or same as return - keep return date, close calendar
+              setCalendarOpen(false);
+            } else {
+              // New departure is after return - set return to same date, keep calendar open
+              onReturnDateChange(newDepartureDate);
+              // Calendar stays open for return date selection
+            }
+          } else {
+            // No return date yet - set it to same as departure, keep calendar open
+            onReturnDateChange(newDepartureDate);
             // Calendar stays open for return date selection
-          } else if (range?.to) {
-            // User selected a range
-            onReturnDateChange(range.to);
-            setCalendarOpen(false);
           }
         }
       } else {
-        // User clicked return date field
-        if (range?.from) {
-          // If user selected a date before current departure date, update departure date
-          if (departureDate && range.from < departureDate) {
-            onDepartureDateChange(range.from);
-            if (range?.to) {
-              onReturnDateChange(range.to);
+        // User clicked return date field - they want to modify return date
+        if (range?.from && range?.to) {
+          // User selected a complete range
+          onDepartureDateChange(range.from);
+          onReturnDateChange(range.to);
+          setCalendarOpen(false);
+        } else if (range?.from && !range?.to) {
+          // User clicked a single date - this should update return date
+          const newReturnDate = range.from;
+
+          if (departureDate) {
+            if (newReturnDate >= departureDate) {
+              // New return is after or same as departure - update return, close calendar
+              onReturnDateChange(newReturnDate);
+              setCalendarOpen(false);
+            } else {
+              // New return is before departure - swap them
+              onDepartureDateChange(newReturnDate);
+              onReturnDateChange(departureDate);
               setCalendarOpen(false);
             }
-          } else if (range?.to) {
-            // Normal case: update return date
-            onReturnDateChange(range.to);
-            setCalendarOpen(false);
-          } else if (range?.from) {
-            // User selected a single date for return
-            onReturnDateChange(range.from);
+          } else {
+            // No departure date yet - set both to same date
+            onDepartureDateChange(newReturnDate);
+            onReturnDateChange(newReturnDate);
             setCalendarOpen(false);
           }
         }
