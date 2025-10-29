@@ -1,6 +1,7 @@
 import { addYears, endOfDay, isBefore, isToday, startOfDay } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
 import { db } from "@/lib/db";
@@ -221,8 +222,8 @@ export async function searchFlights(params: {
   const arrivalAirportIds = arrivalAirports.map(a => a.airport.id);
 
   // Create aliases for airports table to join twice (departure and arrival)
-  const departureAirportsTable = airports;
-  const arrivalAirportsTable = airports;
+  const departureAirportsTable = alias(airports, "departureAirports");
+  const arrivalAirportsTable = alias(airports, "arrivalAirports");
 
   // Query flights with all related data
   // Need to fetch both departure and arrival airport information for each flight
