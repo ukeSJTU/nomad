@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { FlightCard } from "@/components/flights/flight-card";
+import { FlightCardSkeleton } from "@/components/flights/flight-card-skeleton";
 
 const meta = {
   title: "Flights/FlightCard",
@@ -218,6 +219,31 @@ export const MultipleFlights: Story = {
         price={980}
         buttonText="Select Outbound"
       />
+    </div>
+  ),
+};
+
+// Loading skeleton state
+export const Skeleton: Story = {
+  args: {
+    airlineLogo:
+      "https://ui-avatars.com/api/?name=MU&background=0D8ABC&color=fff",
+    airlineName: "China Eastern Airlines",
+    flightNumber: "MU277",
+    aircraftType: "Airbus 321 (M)",
+    departureTime: "17:05",
+    departureAirport: "Beijing Daxing Int'l T1",
+    arrivalTime: "21:00",
+    arrivalAirport: "Kansai Int'l T1",
+    duration: "2h 55m",
+    price: 804,
+    buttonText: "订票",
+  },
+  render: () => (
+    <div className="space-y-4 w-full max-w-5xl p-4">
+      <FlightCardSkeleton />
+      <FlightCardSkeleton />
+      <FlightCardSkeleton />
     </div>
   ),
 };
