@@ -4,6 +4,7 @@ import { Calendar, Clock, Filter, SortAsc } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { FlightCardSkeleton } from "@/components/flights/flight-card-skeleton";
 import {
   SearchForm,
   type SearchFormData,
@@ -285,48 +286,7 @@ export function FlightSearchPageClient({
       <div className="space-y-4">
         {/* Skeleton placeholders for flight results */}
         {[1, 2, 3, 4, 5].map(i => (
-          <Card key={i} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-5 w-32" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                </div>
-                <div className="text-right space-y-2">
-                  <Skeleton className="h-6 w-24" />
-                  <Skeleton className="h-4 w-16" />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex-1 grid grid-cols-3 gap-4">
-                  {/* Departure */}
-                  <div className="space-y-1">
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-4 w-20" />
-                  </div>
-                  {/* Duration */}
-                  <div className="flex flex-col items-center space-y-1">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-1 w-full" />
-                    <Skeleton className="h-3 w-12" />
-                  </div>
-                  {/* Arrival */}
-                  <div className="space-y-1 text-right">
-                    <Skeleton className="h-6 w-16 ml-auto" />
-                    <Skeleton className="h-4 w-20 ml-auto" />
-                  </div>
-                </div>
-                <div className="ml-8">
-                  <Skeleton className="h-10 w-24" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <FlightCardSkeleton key={i} />
         ))}
       </div>
 
