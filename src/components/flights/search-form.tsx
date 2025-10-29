@@ -97,7 +97,7 @@ export function SearchForm({
           onDepartureCityChange={setDepartureCity}
           onArrivalCityChange={setArrivalCity}
           onSwap={handleSwap}
-          citiesPromise={Promise.resolve(cities)}
+          cities={cities}
         />
       </div>
 
