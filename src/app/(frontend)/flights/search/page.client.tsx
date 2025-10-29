@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Calendar, Clock, Filter, SortAsc } from "lucide-react";
+import { Calendar, Clock, Filter, SortAsc } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -18,6 +18,12 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { CityData } from "@/lib/queries/cities";
 
 interface FlightSearchPageClientProps {
@@ -114,10 +120,20 @@ export function FlightSearchPageClient({
     returnDate,
     seatClass,
   } = parsedParams;
-  const from = departureCity.iataCode;
-  const to = arrivalCity.iataCode;
-  const departDateStr = departureDate.toISOString().split("T")[0];
-  const returnDateStr = returnDate?.toISOString().split("T")[0];
+
+  // Helper function to format date with weekday
+  const formatDateWithWeekday = (date: Date) => {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+    const weekday = weekdays[date.getDay()];
+    return `${month}月${day}日 ${weekday}`;
+  };
+
+  // Helper function to format time as HH:MM:SS
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString("zh-CN", { hour12: false });
+  };
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
@@ -156,51 +172,127 @@ export function FlightSearchPageClient({
 
       {/* 3. Search Info + Last Update Time */}
       <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm">
-          <div className="font-medium">
-            {from} <ArrowRight className="inline h-4 w-4 mx-1" /> {to}
+        {/* Left: Trip Info */}
+        {tripType === "one-way" ? (
+          // One-way trip: Enhanced text display with hierarchy
+          <div className="flex items-baseline gap-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              单程
+            </span>
+            <span className="text-lg font-semibold text-foreground">
+              {departureCity.name}
+            </span>
+            <span className="text-base text-muted-foreground">→</span>
+            <span className="text-lg font-semibold text-foreground">
+              {arrivalCity.name}
+            </span>
+            <Separator orientation="vertical" className="h-5" />
+            <span className="text-sm font-medium text-muted-foreground">
+              {formatDateWithWeekday(departureDate)}
+            </span>
           </div>
-          <Separator orientation="vertical" className="h-4" />
-          <div className="text-muted-foreground">
-            {departDateStr}
-            {tripType === "round-trip" &&
-              returnDateStr &&
-              ` - ${returnDateStr}`}
-          </div>
-          <Separator orientation="vertical" className="h-4" />
-          <div className="text-muted-foreground">
-            {seatClass === "economy" && "经济舱"}
-            {seatClass === "business" && "商务舱"}
-            {seatClass === "first" && "头等舱"}
-          </div>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Clock className="h-4 w-4" />
-          <span>更新于 {lastUpdateTime.toLocaleTimeString("zh-CN")}</span>
-        </div>
+        ) : (
+          // Round-trip: Tabs for outbound and return with enhanced styling
+          <Tabs defaultValue="outbound" className="w-auto">
+            <TabsList className="h-auto">
+              <TabsTrigger
+                value="outbound"
+                className="flex-col items-start py-2 px-3"
+              >
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                    1
+                  </span>
+                  <span className="text-[10px] font-medium uppercase tracking-wide opacity-70">
+                    选择去程
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-sm font-semibold">
+                    {departureCity.name}
+                  </span>
+                  <span className="text-xs opacity-60">→</span>
+                  <span className="text-sm font-semibold">
+                    {arrivalCity.name}
+                  </span>
+                  <span className="text-xs font-medium opacity-70 ml-1">
+                    {formatDateWithWeekday(departureDate)}
+                  </span>
+                </div>
+              </TabsTrigger>
+              <TabsTrigger
+                value="return"
+                className="flex-col items-start py-2 px-3"
+              >
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                    2
+                  </span>
+                  <span className="text-[10px] font-medium uppercase tracking-wide opacity-70">
+                    选择返程
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-sm font-semibold">
+                    {arrivalCity.name}
+                  </span>
+                  <span className="text-xs opacity-60">→</span>
+                  <span className="text-sm font-semibold">
+                    {departureCity.name}
+                  </span>
+                  <span className="text-xs font-medium opacity-70 ml-1">
+                    {returnDate && formatDateWithWeekday(returnDate)}
+                  </span>
+                </div>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        )}
+
+        {/* Right: Last Update Time with Tooltip */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground cursor-help hover:text-foreground transition-colors">
+              <Clock className="h-4 w-4" />
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] uppercase tracking-wide opacity-60">
+                  最近更新
+                </span>
+                <span className="text-sm font-mono font-semibold">
+                  {formatTime(lastUpdateTime)}
+                </span>
+              </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>机票价格变动频繁，搜索结果有效期15min。</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
 
-      {/* 4. Search Toolbar (Filtering and Sorting) */}
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              筛选
-            </Button>
-            <Button variant="outline" size="sm">
-              <SortAsc className="h-4 w-4 mr-2" />
-              排序
-            </Button>
-            <Separator orientation="vertical" className="h-6" />
-            <div className="flex gap-2 flex-wrap">
-              <Skeleton className="h-8 w-20" />
-              <Skeleton className="h-8 w-24" />
-              <Skeleton className="h-8 w-20" />
+      {/* 4. Search Toolbar (Filtering and Sorting) - Sticky */}
+      <div className="sticky top-0 z-10 bg-background pb-6">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-2" />
+                筛选
+              </Button>
+              <Button variant="outline" size="sm">
+                <SortAsc className="h-4 w-4 mr-2" />
+                排序
+              </Button>
+              <Separator orientation="vertical" className="h-6" />
+              <div className="flex gap-2 flex-wrap">
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-20" />
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* 5. Search Results Cards */}
       <div className="space-y-4">
