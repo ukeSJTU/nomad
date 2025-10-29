@@ -25,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { CityData } from "@/lib/queries/cities";
+import { formatDateWithWeekday, formatTime } from "@/utils/date";
 
 interface FlightSearchPageClientProps {
   cities: CityData[];
@@ -120,20 +121,6 @@ export function FlightSearchPageClient({
     returnDate,
     seatClass,
   } = parsedParams;
-
-  // Helper function to format date with weekday
-  const formatDateWithWeekday = (date: Date) => {
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-    const weekday = weekdays[date.getDay()];
-    return `${month}月${day}日 ${weekday}`;
-  };
-
-  // Helper function to format time as HH:MM:SS
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("zh-CN", { hour12: false });
-  };
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">

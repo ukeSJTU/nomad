@@ -12,6 +12,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getWeekdayLabel } from "@/utils/date";
 
 /**
  * Get relative date label (今天, 明天, 后天, etc.)
@@ -32,14 +33,6 @@ function getRelativeDateLabel(date: Date, referenceDate: Date): string {
     default:
       return "";
   }
-}
-
-/**
- * Get weekday label (周一, 周二, etc.)
- */
-function getWeekdayLabel(date: Date): string {
-  const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-  return weekdays[date.getDay()];
 }
 
 interface DateSelectorProps {
