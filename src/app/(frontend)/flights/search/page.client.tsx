@@ -1,10 +1,13 @@
 "use client";
 
 import { ArrowRight, Calendar, Clock, Filter, SortAsc } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
-import { SearchForm } from "@/components/flights/search-form";
+import {
+  SearchForm,
+  type SearchFormData,
+} from "@/components/flights/search-form";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,28 +27,111 @@ interface FlightSearchPageClientProps {
 export function FlightSearchPageClient({
   cities,
 }: FlightSearchPageClientProps) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
 
-  useEffect(() => {
-    // Update last refresh time
-    setLastUpdateTime(new Date());
-  }, [searchParams]);
+  // Parse and validate URL parameters
+  const parsedParams = useMemo(() => {
+    const tripType = searchParams.get("tripType");
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    const departDate = searchParams.get("departDate");
+    const returnDate = searchParams.get("returnDate");
+    const seatClass = searchParams.get("class");
 
-  // Get search parameters from URL
-  const tripType = searchParams.get("tripType") || "one-way";
-  const from = searchParams.get("from") || "";
-  const to = searchParams.get("to") || "";
-  const departDate = searchParams.get("departDate") || "";
-  const returnDate = searchParams.get("returnDate") || "";
-  const seatClass = searchParams.get("class") || "economy";
+    // Validate required params
+    if (!tripType || !from || !to || !departDate || !seatClass) {
+      return null;
+    }
+
+    // Find matching cities
+    const departureCity = cities.find(city => city.iataCode === from);
+    const arrivalCity = cities.find(city => city.iataCode === to);
+
+    if (!departureCity || !arrivalCity) {
+      return null;
+    }
+
+    return {
+      tripType: tripType as "one-way" | "round-trip",
+      departureCity,
+      arrivalCity,
+      departureDate: new Date(departDate),
+      returnDate: returnDate ? new Date(returnDate) : undefined,
+      seatClass,
+    };
+  }, [searchParams, cities]);
+
+  // Redirect to /flights if params are invalid
+  useEffect(() => {
+    if (!parsedParams) {
+      router.replace("/flights");
+    }
+  }, [parsedParams, router]);
+
+  useEffect(() => {
+    // Update last refresh time when search params change
+    if (parsedParams) {
+      setLastUpdateTime(new Date());
+    }
+  }, [searchParams, parsedParams]);
+
+  // Handle form changes (auto-search)
+  const handleFormChange = (data: SearchFormData) => {
+    // The SearchForm component already validates required fields before calling onChange
+    // So we can safely build the URL here
+    const params = new URLSearchParams();
+    params.set("tripType", data.tripType);
+    params.set("from", data.departureCity!.iataCode);
+    params.set("to", data.arrivalCity!.iataCode);
+    params.set("departDate", data.departureDate!.toISOString().split("T")[0]);
+    if (data.returnDate && data.tripType === "round-trip") {
+      params.set("returnDate", data.returnDate.toISOString().split("T")[0]);
+    }
+    params.set("class", data.seatClass);
+
+    // Navigate to update URL (this will trigger a new search)
+    router.push(`/flights/search?${params.toString()}`);
+  };
+
+  // If params are invalid, show nothing (will redirect)
+  if (!parsedParams) {
+    return null;
+  }
+
+  // Get display values from parsed params
+  const {
+    tripType,
+    departureCity,
+    arrivalCity,
+    departureDate,
+    returnDate,
+    seatClass,
+  } = parsedParams;
+  const from = departureCity.iataCode;
+  const to = arrivalCity.iataCode;
+  const departDateStr = departureDate.toISOString().split("T")[0];
+  const returnDateStr = returnDate?.toISOString().split("T")[0];
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       {/* 1. Search Form (filled with URL params, no search button) */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <SearchForm showSearchButton={false} cities={cities} />
+          <SearchForm
+            showSearchButton={false}
+            cities={cities}
+            initialValues={{
+              tripType,
+              departureCity,
+              arrivalCity,
+              departureDate,
+              returnDate,
+              seatClass,
+            }}
+            onChange={handleFormChange}
+          />
         </CardContent>
       </Card>
 
@@ -67,18 +153,18 @@ export function FlightSearchPageClient({
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm">
           <div className="font-medium">
-            {from || "出发地"} <ArrowRight className="inline h-4 w-4 mx-1" />{" "}
-            {to || "目的地"}
+            {from} <ArrowRight className="inline h-4 w-4 mx-1" /> {to}
           </div>
           <Separator orientation="vertical" className="h-4" />
           <div className="text-muted-foreground">
-            {departDate || "未选择日期"}
-            {tripType === "round-trip" && returnDate && ` - ${returnDate}`}
+            {departDateStr}
+            {tripType === "round-trip" &&
+              returnDateStr &&
+              ` - ${returnDateStr}`}
           </div>
           <Separator orientation="vertical" className="h-4" />
           <div className="text-muted-foreground">
             {seatClass === "economy" && "经济舱"}
-            {seatClass === "premium-economy" && "超级经济舱"}
             {seatClass === "business" && "商务舱"}
             {seatClass === "first" && "头等舱"}
           </div>
