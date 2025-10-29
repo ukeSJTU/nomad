@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { addDays } from "date-fns";
 import { useState } from "react";
 
 import { DateSelector } from "@/components/flights/date-selector";
@@ -40,8 +41,10 @@ export const OneWayTrip: Story = {
 
 export const RoundTrip: Story = {
   render: () => {
-    const [departureDate, setDepartureDate] = useState<Date | null>(null);
-    const [returnDate, setReturnDate] = useState<Date | null>(null);
+    const [departureDate, setDepartureDate] = useState<Date | null>(new Date());
+    const [returnDate, setReturnDate] = useState<Date | null>(
+      addDays(new Date(), 1)
+    );
     const [tripType, setTripType] = useState<"one-way" | "round-trip">(
       "round-trip"
     );
