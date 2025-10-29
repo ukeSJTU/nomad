@@ -91,8 +91,13 @@ export function FlightSearchPageClient({
     }
     params.set("class", data.seatClass);
 
-    // Navigate to update URL (this will trigger a new search)
-    router.push(`/flights/search?${params.toString()}`);
+    const newUrl = `/flights/search?${params.toString()}`;
+    const currentUrl = `/flights/search?${searchParams.toString()}`;
+
+    // Only navigate if the URL actually changed
+    if (newUrl !== currentUrl) {
+      router.push(newUrl);
+    }
   };
 
   // If params are invalid, show nothing (will redirect)
