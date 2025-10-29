@@ -50,7 +50,7 @@ export function FlightCard({
   daysOffset,
   duration,
   price,
-  buttonText = "Book",
+  buttonText = "订票",
   onButtonClick,
   className,
 }: FlightCardProps) {
