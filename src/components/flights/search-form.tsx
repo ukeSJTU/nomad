@@ -211,28 +211,33 @@ export function SearchForm({
         </div>
       </div>
 
-      {/* Cities */}
-      <div className="space-y-2">
-        <CityInput
-          departureCity={departureCity}
-          arrivalCity={arrivalCity}
-          onDepartureCityChange={setDepartureCity}
-          onArrivalCityChange={setArrivalCity}
-          onSwap={handleSwap}
-          cities={cities}
-        />
-      </div>
+      {/* Lower section */}
+      <div className="flex items-center gap-6">
+        {/* Cities */}
+        <div className="space-y-2 flex-1">
+          <CityInput
+            departureCity={departureCity}
+            arrivalCity={arrivalCity}
+            onDepartureCityChange={setDepartureCity}
+            onArrivalCityChange={setArrivalCity}
+            onSwap={handleSwap}
+            cities={cities}
+          />
+        </div>
 
-      {/* Dates */}
-      <DateSelector
-        tripType={tripType}
-        departureDate={departureDate}
-        returnDate={returnDate}
-        onDepartureDateChange={setDepartureDate}
-        onReturnDateChange={setReturnDate}
-        onTripTypeChange={setTripType}
-        timezone={departureCity?.timezone}
-      />
+        <div className="flex-1">
+          {/* Dates */}
+          <DateSelector
+            tripType={tripType}
+            departureDate={departureDate}
+            returnDate={returnDate}
+            onDepartureDateChange={setDepartureDate}
+            onReturnDateChange={setReturnDate}
+            onTripTypeChange={setTripType}
+            timezone={departureCity?.timezone}
+          />
+        </div>
+      </div>
 
       {/* Search Button */}
       {showSearchButton && (
