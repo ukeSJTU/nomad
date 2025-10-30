@@ -179,13 +179,21 @@ export function SearchForm({
             className="flex gap-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="one-way" id="one-way" />
+              <RadioGroupItem
+                value="one-way"
+                id="one-way"
+                className="scale-125"
+              />
               <Label htmlFor="one-way" className="font-normal cursor-pointer">
                 单程
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="round-trip" id="round-trip" />
+              <RadioGroupItem
+                value="round-trip"
+                id="round-trip"
+                className="scale-125"
+              />
               <Label
                 htmlFor="round-trip"
                 className="font-normal cursor-pointer"
