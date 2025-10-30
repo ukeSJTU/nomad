@@ -167,29 +167,48 @@ export function SearchForm({
 
   return (
     <div className="w-full space-y-6">
-      {/* Trip Type Selection */}
-      <div className="space-y-2">
-        <Label>行程类型</Label>
-        <RadioGroup
-          value={tripType}
-          onValueChange={value =>
-            handleTripTypeChange(value as "one-way" | "round-trip")
-          }
-          className="flex gap-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="one-way" id="one-way" />
-            <Label htmlFor="one-way" className="font-normal cursor-pointer">
-              单程
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="round-trip" id="round-trip" />
-            <Label htmlFor="round-trip" className="font-normal cursor-pointer">
-              往返
-            </Label>
-          </div>
-        </RadioGroup>
+      {/* Upper section */}
+      <div className="flex justify-between items-center">
+        {/* Trip Type Selection */}
+        <div className="space-y-2">
+          <RadioGroup
+            value={tripType}
+            onValueChange={value =>
+              handleTripTypeChange(value as "one-way" | "round-trip")
+            }
+            className="flex gap-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="one-way" id="one-way" />
+              <Label htmlFor="one-way" className="font-normal cursor-pointer">
+                单程
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="round-trip" id="round-trip" />
+              <Label
+                htmlFor="round-trip"
+                className="font-normal cursor-pointer"
+              >
+                往返
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {/* Seat Class */}
+        <div className="space-y-2">
+          <Select value={seatClass} onValueChange={setSeatClass}>
+            <SelectTrigger id="seat-class">
+              <SelectValue placeholder="选择舱位等级" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="economy">经济舱</SelectItem>
+              <SelectItem value="business">商务舱</SelectItem>
+              <SelectItem value="first">头等舱</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Cities */}
@@ -214,21 +233,6 @@ export function SearchForm({
         onTripTypeChange={setTripType}
         timezone={departureCity?.timezone}
       />
-
-      {/* Seat Class */}
-      <div className="space-y-2">
-        <Label htmlFor="seat-class">舱位等级</Label>
-        <Select value={seatClass} onValueChange={setSeatClass}>
-          <SelectTrigger id="seat-class">
-            <SelectValue placeholder="选择舱位等级" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="economy">经济舱</SelectItem>
-            <SelectItem value="business">商务舱</SelectItem>
-            <SelectItem value="first">头等舱</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
 
       {/* Search Button */}
       {showSearchButton && (
