@@ -71,7 +71,7 @@ export function FlightCard({
         className
       )}
     >
-      <CardContent className="pt-6">
+      <CardContent className="py-2">
         <div className="flex items-center gap-6">
           {/* Left: Airline information */}
           <div className="flex items-center gap-3 min-w-[180px]">
