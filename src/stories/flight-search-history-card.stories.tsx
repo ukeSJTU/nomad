@@ -41,7 +41,6 @@ const baseRecord: SearchHistoryRecord = {
   seatClass: "economy",
   lowestPriceAtSearch: "1200.00",
   currentLowestPrice: "1200.00",
-  searchCount: 1,
   lastSearchedAt: new Date("2025-10-30T10:00:00Z"),
 };
 
@@ -95,15 +94,18 @@ export const PriceIncreased: Story = {
   },
 };
 
-// Multiple searches
-export const MultipleSearches: Story = {
+// Different route
+export const DifferentRoute: Story = {
   args: {
     record: {
       ...baseRecord,
       id: "5",
-      searchCount: 5,
+      departureCityName: "深圳",
+      arrivalCityName: "成都",
+      departureCityIata: "SZX",
+      arrivalCityIata: "CTU",
     },
-    onClick: () => console.log("Clicked: Multiple searches flight"),
+    onClick: () => console.log("Clicked: Different route flight"),
   },
 };
 
@@ -188,7 +190,6 @@ export const MultipleCards: StoryWithRender = {
           returnDate: "2025-11-10",
           lowestPriceAtSearch: "2400.00",
           currentLowestPrice: "2600.00",
-          searchCount: 3,
         }}
         onClick={() => console.log("Clicked: Card 2")}
       />
