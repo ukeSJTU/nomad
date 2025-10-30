@@ -85,15 +85,15 @@ export function FlightSearchHistoryCard({
 
   return (
     <Card
-      className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
+      className="p-4 hover:shadow-lg transition-shadow cursor-pointer max-w-2xl"
       onClick={handleClick}
     >
       <div className="flex items-start justify-between gap-4">
         {/* Left section - Route and Date */}
         <div className="flex-1 space-y-2">
           {/* Route */}
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-semibold">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-lg font-semibold whitespace-nowrap">
               {record.departureCityName}
             </span>
             {record.tripType === "round-trip" ? (
@@ -101,13 +101,13 @@ export function FlightSearchHistoryCard({
             ) : (
               <ArrowRight className="h-4 w-4 text-gray-400 shrink-0" />
             )}
-            <span className="text-lg font-semibold">
+            <span className="text-lg font-semibold whitespace-nowrap">
               {record.arrivalCityName}
             </span>
           </div>
 
           {/* Date Info */}
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 whitespace-nowrap">
             {record.tripType === "one-way" ? (
               // One-way: "2025-10-30 周四"
               <span>{formatOneWayDate(record.departureDate)}</span>
@@ -123,7 +123,7 @@ export function FlightSearchHistoryCard({
           </div>
 
           {/* Additional Info */}
-          <div className="flex items-center gap-2 text-xs text-gray-400">
+          <div className="flex items-center gap-2 text-xs text-gray-400 whitespace-nowrap">
             <Plane className="h-3 w-3" />
             <span>
               {record.seatClass === "economy"
