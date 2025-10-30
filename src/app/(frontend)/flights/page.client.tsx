@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { UnderConstruction } from "@/components/common";
@@ -7,22 +8,22 @@ import {
   SearchForm,
   type SearchFormData,
 } from "@/components/flights/search-form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FlightSearchHistoryCard } from "@/components/flights/search-history";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CityData } from "@/lib/queries/cities";
+import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
 
 interface FlightsPageClientProps {
   cities: CityData[];
+  searchHistory: SearchHistoryRecord[];
 }
 
-export function FlightsPageClient({ cities }: FlightsPageClientProps) {
+export function FlightsPageClient({
+  cities,
+  searchHistory,
+}: FlightsPageClientProps) {
   const router = useRouter();
 
   const handleSearch = (data: SearchFormData) => {
@@ -106,31 +107,41 @@ export function FlightsPageClient({ cities }: FlightsPageClientProps) {
       </Tabs>
 
       {/* Search History Section */}
-      <Card>
+      <Card className="mt-6">
         <CardHeader>
-          <CardTitle>搜索历史</CardTitle>
-          <CardDescription>您最近的搜索记录</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>你搜索过的机票</CardTitle>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => {
+                // TODO: Implement clear history logic
+                console.log("Clear search history");
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              清空历史
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {/* Skeleton placeholders for search history */}
-            {[1, 2, 3].map(i => (
-              <div
-                key={i}
-                className="flex items-center justify-between p-4 border rounded-lg"
-              >
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-4">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-4 w-8" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                  <Skeleton className="h-3 w-32" />
-                </div>
-                <Skeleton className="h-9 w-20" />
-              </div>
-            ))}
-          </div>
+          {searchHistory.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <p>暂无搜索历史</p>
+              <p className="text-sm mt-2">
+                开始搜索航班后，您的搜索记录将显示在这里
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              {searchHistory.map(record => (
+                <FlightSearchHistoryCard key={record.id} record={record} />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
