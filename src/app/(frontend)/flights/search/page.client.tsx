@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FlightCard } from "@/components/flights/flight-card";
 import { FlightCardSkeleton } from "@/components/flights/flight-card-skeleton";
 import { FlightFilterSort } from "@/components/flights/flight-filter-sort";
+import { QuickDateSelector } from "@/components/flights/quick-date-selector";
 import {
   SearchForm,
   type SearchFormData,
@@ -19,7 +20,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
@@ -168,18 +168,35 @@ export function FlightSearchPageClient({
       </Card>
 
       {/* 2. Quick Date Selector */}
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
-            <span className="text-sm font-medium shrink-0">快速选择日期:</span>
-            {/* Skeleton placeholders for date options */}
-            {[1, 2, 3, 4, 5, 6, 7].map(i => (
-              <Skeleton key={i} className="h-16 w-24 shrink-0" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {parsedParams && (
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+              <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span className="text-sm font-medium shrink-0">
+                快速选择日期:
+              </span>
+              <QuickDateSelector
+                from={parsedParams.departureCity.iataCode}
+                to={parsedParams.arrivalCity.iataCode}
+                departureDate={
+                  parsedParams.departureDate.toISOString().split("T")[0]
+                }
+                returnDate={
+                  parsedParams.returnDate?.toISOString().split("T")[0]
+                }
+                tripType={parsedParams.tripType}
+                classType={
+                  parsedParams.seatClass.toUpperCase() as
+                    | "ECONOMY"
+                    | "BUSINESS"
+                    | "FIRST"
+                }
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* 3. Search Info + Last Update Time */}
       <div className="mb-6 flex items-center justify-between">
