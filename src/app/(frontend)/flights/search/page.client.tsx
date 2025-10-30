@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -169,33 +169,23 @@ export function FlightSearchPageClient({
 
       {/* 2. Quick Date Selector */}
       {parsedParams && (
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 overflow-x-auto pb-2">
-              <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
-              <span className="text-sm font-medium shrink-0">
-                快速选择日期:
-              </span>
-              <QuickDateSelector
-                from={parsedParams.departureCity.iataCode}
-                to={parsedParams.arrivalCity.iataCode}
-                departureDate={
-                  parsedParams.departureDate.toISOString().split("T")[0]
-                }
-                returnDate={
-                  parsedParams.returnDate?.toISOString().split("T")[0]
-                }
-                tripType={parsedParams.tripType}
-                classType={
-                  parsedParams.seatClass.toUpperCase() as
-                    | "ECONOMY"
-                    | "BUSINESS"
-                    | "FIRST"
-                }
-              />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex items-center gap-2 pb-2">
+          <QuickDateSelector
+            from={parsedParams.departureCity.iataCode}
+            to={parsedParams.arrivalCity.iataCode}
+            departureDate={
+              parsedParams.departureDate.toISOString().split("T")[0]
+            }
+            returnDate={parsedParams.returnDate?.toISOString().split("T")[0]}
+            tripType={parsedParams.tripType}
+            classType={
+              parsedParams.seatClass.toUpperCase() as
+                | "ECONOMY"
+                | "BUSINESS"
+                | "FIRST"
+            }
+          />
+        </div>
       )}
 
       {/* 3. Search Info + Last Update Time */}
