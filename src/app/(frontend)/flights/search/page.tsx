@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
+import { recordSearchHistory } from "@/lib/actions/flight-search-history";
 import {
   FlightSearchResult,
   RoundTripFlightSearchResult,
@@ -49,6 +50,29 @@ export default async function FlightSearchPage({
         departureDate: params.departDate,
         classType,
       });
+
+      // Record search history (fire-and-forget, non-blocking)
+      recordSearchHistory({
+        departureCityIata: params.from,
+        arrivalCityIata: params.to,
+        departureDate: params.departDate,
+        tripType: "one-way",
+        seatClass: classType?.toLowerCase() as
+          | "economy"
+          | "business"
+          | "first"
+          | undefined,
+        lowestPrice:
+          Array.isArray(flights) && flights.length > 0
+            ? Math.min(
+                ...flights.flatMap(f =>
+                  f.seatClasses.map(sc => parseFloat(sc.price))
+                )
+              )
+            : undefined,
+      }).catch(error => {
+        console.error("Failed to record search history:", error);
+      });
     } else if (params.tripType === "round-trip") {
       // Round-trip flight search - validate return date
       if (!params.returnDate) {
@@ -62,6 +86,33 @@ export default async function FlightSearchPage({
         returnDate: params.returnDate,
         classType,
       });
+
+      // Record search history (fire-and-forget, non-blocking)
+      recordSearchHistory({
+        departureCityIata: params.from,
+        arrivalCityIata: params.to,
+        departureDate: params.departDate,
+        returnDate: params.returnDate,
+        tripType: "round-trip",
+        seatClass: classType?.toLowerCase() as
+          | "economy"
+          | "business"
+          | "first"
+          | undefined,
+        lowestPrice:
+          flights && "outbound" in flights
+            ? Math.min(
+                ...flights.outbound.flatMap(f =>
+                  f.seatClasses.map(sc => parseFloat(sc.price))
+                ),
+                ...flights.inbound.flatMap(f =>
+                  f.seatClasses.map(sc => parseFloat(sc.price))
+                )
+              )
+            : undefined,
+      }).catch(error => {
+        console.error("Failed to record search history:", error);
+      });
     } else {
       // Default to one-way
       flights = await searchOneWayFlights({
@@ -69,6 +120,29 @@ export default async function FlightSearchPage({
         to: params.to,
         departureDate: params.departDate,
         classType,
+      });
+
+      // Record search history (fire-and-forget, non-blocking)
+      recordSearchHistory({
+        departureCityIata: params.from,
+        arrivalCityIata: params.to,
+        departureDate: params.departDate,
+        tripType: "one-way",
+        seatClass: classType?.toLowerCase() as
+          | "economy"
+          | "business"
+          | "first"
+          | undefined,
+        lowestPrice:
+          Array.isArray(flights) && flights.length > 0
+            ? Math.min(
+                ...flights.flatMap(f =>
+                  f.seatClasses.map(sc => parseFloat(sc.price))
+                )
+              )
+            : undefined,
+      }).catch(error => {
+        console.error("Failed to record search history:", error);
       });
     }
   } catch (error) {
