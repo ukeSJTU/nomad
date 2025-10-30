@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
+import { UnderConstruction } from "@/components/common";
 import {
   SearchForm,
   type SearchFormData,
@@ -14,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CityData } from "@/lib/queries/cities";
 
 interface FlightsPageClientProps {
@@ -46,27 +48,62 @@ export function FlightsPageClient({ cities }: FlightsPageClientProps) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* Page Header */}
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-2">机票搜索</h1>
-        <p className="text-muted-foreground">搜索并预订您的理想航班</p>
-      </div>
-
+    <div className="container mx-auto px-4 py-8 max-w-8xl">
       {/* Search Form Card */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>搜索航班</CardTitle>
-          <CardDescription>请填写您的出行信息</CardDescription>
-        </CardHeader>
-        <CardContent>
+
+      <Tabs defaultValue="domestic">
+        <TabsList className="w-full h-12 grid grid-cols-6">
+          <TabsTrigger value="domestic">国内、国际/中国港澳台</TabsTrigger>
+          <TabsTrigger value="special">特价机票</TabsTrigger>
+          <TabsTrigger value="status">航班动态</TabsTrigger>
+          <TabsTrigger value="seat">在线选座</TabsTrigger>
+          <TabsTrigger value="refund">退票改签</TabsTrigger>
+          <TabsTrigger value="more">更多服务</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="domestic">
           <SearchForm
             showSearchButton
             onSearch={handleSearch}
             cities={cities}
           />
-        </CardContent>
-      </Card>
+        </TabsContent>
+
+        <TabsContent value="special">
+          <UnderConstruction
+            title="未实现"
+            description="特价机票功能不在项目实现范围内"
+          />
+        </TabsContent>
+
+        <TabsContent value="status">
+          <UnderConstruction
+            title="未实现"
+            description="航班动态功能不在项目实现范围内"
+          />
+        </TabsContent>
+
+        <TabsContent value="seat">
+          <UnderConstruction
+            title="未实现"
+            description="在线选座功能不在项目实现范围内"
+          />
+        </TabsContent>
+
+        <TabsContent value="refund">
+          <UnderConstruction
+            title="未实现"
+            description="退票改签功能不在项目实现范围内"
+          />
+        </TabsContent>
+
+        <TabsContent value="more">
+          <UnderConstruction
+            title="未实现"
+            description="更多服务功能不在项目实现范围内"
+          />
+        </TabsContent>
+      </Tabs>
 
       {/* Search History Section */}
       <Card>
