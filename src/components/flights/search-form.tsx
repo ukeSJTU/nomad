@@ -1,5 +1,6 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { CityInput } from "@/components/flights/city-selector";
@@ -166,7 +167,7 @@ export function SearchForm({
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 justify-center items-center">
       {/* Upper section */}
       <div className="flex justify-between items-center">
         {/* Trip Type Selection */}
@@ -249,9 +250,16 @@ export function SearchForm({
 
       {/* Search Button */}
       {showSearchButton && (
-        <Button onClick={handleSearch} className="w-full" size="lg">
-          搜索航班
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            onClick={handleSearch}
+            className="text-base font-semibold rounded-full px-8"
+            size="lg"
+          >
+            <Search className="mr-2 h-5 w-5" />
+            搜索航班
+          </Button>
+        </div>
       )}
     </div>
   );
