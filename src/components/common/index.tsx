@@ -1,6 +1,7 @@
 import { Stepper, type StepperStep } from "@/components/common/stepper";
 
 export { Stepper, type StepperStep };
+export { default as UnderConstruction } from "./construction";
 export {
   type BatchAction,
   type Column,
