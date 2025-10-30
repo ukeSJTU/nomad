@@ -2,7 +2,6 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { EnhancedQueryLogger } from "drizzle-query-logger";
 
 import * as schema from "@/lib/schema";
-import logger from "@/utils/logger";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is not set.");
@@ -10,7 +9,8 @@ if (!process.env.DATABASE_URL) {
 
 const dbLogger = new EnhancedQueryLogger({
   log: message => {
-    logger.debug(message);
+    // In development, use console.log directly to avoid pino formatting issues
+    console.log(message);
   },
 });
 
