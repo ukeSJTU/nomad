@@ -33,7 +33,6 @@ describe("Flight Search History Queries", () => {
           seatClass: "economy",
           lowestPriceAtSearch: "1234.56",
           currentLowestPrice: "1200.00",
-          searchCount: 3,
           lastSearchedAt: new Date("2025-10-30T10:00:00Z"),
         },
         {
@@ -48,7 +47,6 @@ describe("Flight Search History Queries", () => {
           seatClass: "business",
           lowestPriceAtSearch: "3456.78",
           currentLowestPrice: "3500.00",
-          searchCount: 1,
           lastSearchedAt: new Date("2025-10-29T15:30:00Z"),
         },
       ];

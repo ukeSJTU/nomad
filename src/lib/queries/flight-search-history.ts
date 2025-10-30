@@ -18,7 +18,6 @@ export interface SearchHistoryRecord {
   seatClass: string;
   lowestPriceAtSearch: string | null; // Decimal string (e.g., "1234.56")
   currentLowestPrice: string | null; // Decimal string (e.g., "1234.56")
-  searchCount: number;
   lastSearchedAt: Date;
 }
 
@@ -46,7 +45,6 @@ export async function getRecentSearchHistory(
       seatClass: flightSearchHistory.seatClass,
       lowestPriceAtSearch: flightSearchHistory.lowestPriceAtSearch,
       currentLowestPrice: flightSearchHistory.currentLowestPrice,
-      searchCount: flightSearchHistory.searchCount,
       lastSearchedAt: flightSearchHistory.lastSearchedAt,
     })
     .from(flightSearchHistory)

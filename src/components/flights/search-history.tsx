@@ -132,12 +132,6 @@ export function FlightSearchHistoryCard({
                   ? "商务舱"
                   : "头等舱"}
             </span>
-            {record.searchCount > 1 && (
-              <>
-                <span>•</span>
-                <span>搜索 {record.searchCount} 次</span>
-              </>
-            )}
           </div>
         </div>
 
