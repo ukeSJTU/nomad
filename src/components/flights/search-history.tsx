@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftRight, ArrowRight, Plane } from "lucide-react";
+import { ArrowLeftRight, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -120,18 +120,6 @@ export function FlightSearchHistoryCard({
                   formatRoundTripDate(record.returnDate, "return")}
               </span>
             )}
-          </div>
-
-          {/* Additional Info */}
-          <div className="flex items-center gap-2 text-xs text-gray-400 whitespace-nowrap">
-            <Plane className="h-3 w-3" />
-            <span>
-              {record.seatClass === "economy"
-                ? "经济舱"
-                : record.seatClass === "business"
-                  ? "商务舱"
-                  : "头等舱"}
-            </span>
           </div>
         </div>
 
