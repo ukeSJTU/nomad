@@ -132,10 +132,14 @@ export function FlightsPageClient({
           </p>
         </div>
       ) : (
-        <div className="space-y-3 max-h-[600px] overflow-y-auto">
-          {searchHistory.map(record => (
-            <FlightSearchHistoryCard key={record.id} record={record} />
-          ))}
+        <div className="relative">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+            {searchHistory.map(record => (
+              <div key={record.id} className="shrink-0">
+                <FlightSearchHistoryCard record={record} />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
