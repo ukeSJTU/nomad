@@ -172,17 +172,6 @@ export function QuickDateSelector({
                   {formatDateWithWeekday(new Date(price.date))}
                 </div>
 
-                {/* Price */}
-                <div className="text-sm font-medium mt-1">
-                  {isAvailable ? (
-                    <span className="text-primary">
-                      ¥{Math.round(price.lowestPrice!)}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground">无</span>
-                  )}
-                </div>
-
                 {/* Return date for round-trip */}
                 {tripType === "round-trip" && price.returnDate && (
                   <div className="text-xs text-muted-foreground mt-0.5">
@@ -190,7 +179,19 @@ export function QuickDateSelector({
                     {new Date(price.returnDate).getDate()}
                   </div>
                 )}
+
+                {/* Price */}
+                <div className="text-sm font-medium mt-0.5">
+                  {isAvailable ? (
+                    <span className="font-bold text-orange-500">
+                      ¥{Math.round(price.lowestPrice!)}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground">无</span>
+                  )}
+                </div>
               </button>
+
               {/* Vertical separator (except for last item) */}
               {index < prices.length - 1 && (
                 <div className="absolute top-0 right-0 h-full w-px bg-border" />
