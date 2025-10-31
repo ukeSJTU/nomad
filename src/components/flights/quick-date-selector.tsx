@@ -120,11 +120,13 @@ export function QuickDateSelector({
     return (
       <div className="flex items-center gap-4 pb-2">
         <Skeleton className="h-8 w-8 shrink-0 rounded" />
-        {[1, 2, 3, 4, 5, 6, 7].map(i => (
-          <div key={i} className="flex-1 min-w-0 max-w-32">
-            <Skeleton className="h-16 w-32" />
-          </div>
-        ))}
+        <div className="flex items-center gap-1.5 flex-1 justify-around">
+          {[1, 2, 3, 4, 5, 6, 7].map(i => (
+            <div key={i} className="flex-1 min-w-0 max-w-32">
+              <Skeleton className="h-16 w-full rounded-lg" />
+            </div>
+          ))}
+        </div>
         <Skeleton className="h-8 w-8 shrink-0 rounded" />
       </div>
     );
@@ -189,7 +191,6 @@ export function QuickDateSelector({
                   </div>
                 )}
               </button>
-
               {/* Vertical separator (except for last item) */}
               {index < prices.length - 1 && (
                 <div className="absolute top-0 right-0 h-full w-px bg-border" />
