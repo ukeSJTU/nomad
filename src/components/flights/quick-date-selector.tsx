@@ -118,11 +118,11 @@ export function QuickDateSelector({
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
+      <div className="flex items-center gap-4 pb-2">
         <Skeleton className="h-8 w-8 shrink-0 rounded" />
         {[1, 2, 3, 4, 5, 6, 7].map(i => (
-          <div key={i} className="flex flex-col items-center gap-1 shrink-0">
-            <Skeleton className="h-16 w-24" />
+          <div key={i} className="flex-1 min-w-0 max-w-32">
+            <Skeleton className="h-16 w-32" />
           </div>
         ))}
         <Skeleton className="h-8 w-8 shrink-0 rounded" />
@@ -131,7 +131,7 @@ export function QuickDateSelector({
   }
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2">
+    <div className="flex items-center gap-4 pb-2">
       {/* Left Arrow */}
       <Button
         variant="outline"
@@ -145,57 +145,59 @@ export function QuickDateSelector({
       </Button>
 
       {/* Date Items */}
-      {prices.map((price, index) => {
-        const isSelected = price.date === departureDate;
-        const isAvailable = price.lowestPrice !== null;
+      <div className="flex items-center gap-1.5 flex-1 justify-around">
+        {prices.map((price, index) => {
+          const isSelected = price.date === departureDate;
+          const isAvailable = price.lowestPrice !== null;
 
-        return (
-          <div key={price.date} className="shrink-0">
-            <button
-              onClick={() => handleDateClick(price)}
-              disabled={!isAvailable || isPending}
-              className={cn(
-                "flex flex-col items-center justify-center",
-                "w-24 h-16 rounded-lg border-2 transition-all",
-                "hover:shadow-md disabled:cursor-not-allowed",
-                isSelected
-                  ? "border-primary bg-primary/10 font-semibold"
-                  : "border-border bg-background hover:border-primary/50",
-                !isAvailable && "opacity-50 bg-muted"
-              )}
-            >
-              {/* Date */}
-              <div className="text-xs text-muted-foreground">
-                {formatDateWithWeekday(new Date(price.date))}
-              </div>
-
-              {/* Price */}
-              <div className="text-sm font-medium mt-1">
-                {isAvailable ? (
-                  <span className="text-primary">
-                    ¥{Math.round(price.lowestPrice!)}
-                  </span>
-                ) : (
-                  <span className="text-muted-foreground">无</span>
+          return (
+            <div key={price.date} className="flex-1 min-w-0 max-w-32">
+              <button
+                onClick={() => handleDateClick(price)}
+                disabled={!isAvailable || isPending}
+                className={cn(
+                  "flex flex-col items-center justify-center",
+                  "w-full h-16 rounded-lg border-2 transition-all",
+                  "hover:shadow-md disabled:cursor-not-allowed",
+                  isSelected
+                    ? "border-primary bg-primary/10 font-semibold"
+                    : "border-border bg-background hover:border-primary/50",
+                  !isAvailable && "opacity-50 bg-muted"
                 )}
-              </div>
-
-              {/* Return date for round-trip */}
-              {tripType === "round-trip" && price.returnDate && (
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  返 {new Date(price.returnDate).getMonth() + 1}/
-                  {new Date(price.returnDate).getDate()}
+              >
+                {/* Date */}
+                <div className="text-xs text-muted-foreground">
+                  {formatDateWithWeekday(new Date(price.date))}
                 </div>
-              )}
-            </button>
 
-            {/* Vertical separator (except for last item) */}
-            {index < prices.length - 1 && (
-              <div className="absolute top-0 right-0 h-full w-px bg-border" />
-            )}
-          </div>
-        );
-      })}
+                {/* Price */}
+                <div className="text-sm font-medium mt-1">
+                  {isAvailable ? (
+                    <span className="text-primary">
+                      ¥{Math.round(price.lowestPrice!)}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground">无</span>
+                  )}
+                </div>
+
+                {/* Return date for round-trip */}
+                {tripType === "round-trip" && price.returnDate && (
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    返 {new Date(price.returnDate).getMonth() + 1}/
+                    {new Date(price.returnDate).getDate()}
+                  </div>
+                )}
+              </button>
+
+              {/* Vertical separator (except for last item) */}
+              {index < prices.length - 1 && (
+                <div className="absolute top-0 right-0 h-full w-px bg-border" />
+              )}
+            </div>
+          );
+        })}
+      </div>
 
       {/* Right Arrow */}
       <Button

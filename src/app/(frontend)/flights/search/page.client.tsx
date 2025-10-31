@@ -169,7 +169,7 @@ export function FlightSearchPageClient({
 
       {/* 2. Quick Date Selector */}
       {parsedParams && (
-        <div className="flex items-center gap-2 pb-2">
+        <div className="items-center pb-2 w-full">
           <QuickDateSelector
             from={parsedParams.departureCity.iataCode}
             to={parsedParams.arrivalCity.iataCode}
