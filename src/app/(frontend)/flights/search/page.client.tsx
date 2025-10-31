@@ -14,7 +14,6 @@ import {
 } from "@/components/flights/search-form";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -149,23 +148,21 @@ export function FlightSearchPageClient({
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       {/* 1. Search Form (filled with URL params, no search button) */}
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          <SearchForm
-            showSearchButton={false}
-            cities={cities}
-            initialValues={{
-              tripType,
-              departureCity,
-              arrivalCity,
-              departureDate,
-              returnDate,
-              seatClass,
-            }}
-            onChange={handleFormChange}
-          />
-        </CardContent>
-      </Card>
+      <div className="pb-6">
+        <SearchForm
+          showSearchButton={false}
+          cities={cities}
+          initialValues={{
+            tripType,
+            departureCity,
+            arrivalCity,
+            departureDate,
+            returnDate,
+            seatClass,
+          }}
+          onChange={handleFormChange}
+        />
+      </div>
 
       {/* 2. Quick Date Selector */}
       {parsedParams && (
