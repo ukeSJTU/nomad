@@ -14,10 +14,40 @@ const dbLogger = new EnhancedQueryLogger({
   },
 });
 
+/**
+ * Determine whether to use SSL for database connections
+ * Priority:
+ * 1. Explicit DATABASE_SSL environment variable (true/false)
+ * 2. Auto-detect from DATABASE_URL (sslmode parameter)
+ * 3. Default based on NODE_ENV (production = true, others = false)
+ */
+function shouldUseSSL(): boolean {
+  // Check explicit DATABASE_SSL environment variable
+  const explicitSSL = process.env.DATABASE_SSL?.toLowerCase();
+  if (explicitSSL === "true" || explicitSSL === "enabled") {
+    return true;
+  }
+  if (explicitSSL === "false" || explicitSSL === "disabled") {
+    return false;
+  }
+
+  // Auto-detect from DATABASE_URL sslmode parameter
+  const databaseUrl = process.env.DATABASE_URL;
+  if (databaseUrl?.includes("sslmode=require")) {
+    return true;
+  }
+  if (databaseUrl?.includes("sslmode=disable")) {
+    return false;
+  }
+
+  // Default: use SSL in production, disable in development/test
+  return process.env.NODE_ENV === "production";
+}
+
 export const db = drizzle({
   connection: {
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === "production",
+    ssl: shouldUseSSL(),
   },
   schema,
   logger: process.env.NODE_ENV === "development" ? dbLogger : false,
