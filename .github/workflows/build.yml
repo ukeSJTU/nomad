@@ -33,7 +33,9 @@ jobs:
           # Disable Next.js telemetry in CI
           NEXT_TELEMETRY_DISABLED: 1
           # Dummy DATABASE_URL for build process (not used for actual DB operations)
-          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy?sslmode=disable"
+          # Explicitly disable SSL for dummy database in CI
+          DATABASE_SSL: "false"
           # Dummy auth secret for build process
           BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
           BETTER_AUTH_URL: "http://localhost:3000"
