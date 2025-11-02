@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 
 import { Stepper } from "@/components/common/stepper";
+import { Button } from "@/components/ui/button";
 
 const meta = {
   title: "Common/Stepper",
@@ -258,4 +260,65 @@ export const VariantComparison: Story = {
       </div>
     </div>
   ),
+};
+
+// Interactive animation demo
+export const InteractiveAnimation: Story = {
+  args: {
+    steps: fourSteps,
+    currentStep: 1,
+    variant: "default",
+  },
+  render: args => {
+    const [currentStep, setCurrentStep] = useState(1);
+
+    const handleNext = () => {
+      if (currentStep < args.steps.length) {
+        setCurrentStep(currentStep + 1);
+      }
+    };
+
+    const handlePrevious = () => {
+      if (currentStep > 1) {
+        setCurrentStep(currentStep - 1);
+      }
+    };
+
+    const handleReset = () => {
+      setCurrentStep(1);
+    };
+
+    return (
+      <div className="space-y-6 w-[800px]">
+        <div>
+          <h3 className="text-sm font-medium mb-4">
+            Interactive Demo - Click buttons to see animation
+          </h3>
+          <Stepper {...args} currentStep={currentStep} />
+        </div>
+
+        <div className="flex gap-3 items-center justify-center">
+          <Button
+            onClick={handlePrevious}
+            disabled={currentStep === 1}
+            variant="outline"
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Step {currentStep} of {args.steps.length}
+          </span>
+          <Button
+            onClick={handleNext}
+            disabled={currentStep === args.steps.length}
+          >
+            Next
+          </Button>
+          <Button onClick={handleReset} variant="secondary">
+            Reset
+          </Button>
+        </div>
+      </div>
+    );
+  },
 };
