@@ -49,7 +49,7 @@ jobs:
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: playwright-report-merged
-          path: ./artifacts/
+          path: ./artifacts/playwright-report-merged/
         continue-on-error: true # Still continue if Playwright report is not available
 
       - name: Download test results
@@ -57,7 +57,7 @@ jobs:
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: test-results
-          path: ./artifacts/
+          path: ./artifacts/test-results/
         continue-on-error: true # Still continue if test results are not available
 
       - name: Download Storybook build
@@ -65,7 +65,7 @@ jobs:
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: storybook-static
-          path: ./artifacts/
+          path: ./artifacts/storybook-static/
         continue-on-error: true # Still continue if Storybook is not available
 
       - name: Extract and organize artifacts
@@ -77,50 +77,83 @@ jobs:
 
           # Debug: Show the actual structure
           echo "=== Artifact directory structure ==="
-          find artifacts -type d -maxdepth 3 || true
+          find artifacts -type f -name "*.html" -o -name "*.zip" || true
 
-          # Move and organize Playwright reports
-          # The artifact download creates a nested directory structure
-          if [ -d "artifacts/playwright-report-merged/playwright-report-merged" ]; then
-            echo "Moving Playwright reports (nested structure)..."
-            cp -r artifacts/playwright-report-merged/playwright-report-merged/* public/playwright-report/ 2>/dev/null || true
-            echo "Playwright reports organized"
-            ls -la public/playwright-report/
-          elif [ -d "artifacts/playwright-report-merged" ]; then
-            echo "Moving Playwright reports (flat structure)..."
+          # Extract Playwright reports
+          if [ -f "artifacts/playwright-report-merged/index.html" ]; then
+            echo "Extracting Playwright reports from zip..."
+            cd artifacts/playwright-report-merged
+            # The downloaded file is actually a zip, even though it's named index.html
+            if file index.html | grep -q "Zip archive"; then
+              unzip -q index.html -d extracted || true
+              cd ../..
+              if [ -d "artifacts/playwright-report-merged/extracted" ]; then
+                cp -r artifacts/playwright-report-merged/extracted/* public/playwright-report/ 2>/dev/null || true
+                echo "Playwright reports organized"
+                ls -la public/playwright-report/ | head -20
+              fi
+            else
+              cd ../..
+              echo "index.html is not a zip file, copying as-is"
+              cp -r artifacts/playwright-report-merged/* public/playwright-report/ 2>/dev/null || true
+            fi
+          elif [ -d "artifacts/playwright-report-merged" ] && [ "$(ls -A artifacts/playwright-report-merged)" ]; then
+            echo "Moving Playwright reports (already extracted)..."
             cp -r artifacts/playwright-report-merged/* public/playwright-report/ 2>/dev/null || true
             echo "Playwright reports organized"
-            ls -la public/playwright-report/
+            ls -la public/playwright-report/ | head -20
           else
             echo "No Playwright reports found"
           fi
 
-          # Move and organize test coverage reports
-          if [ -d "artifacts/test-results/test-results" ]; then
-            echo "Moving test coverage reports (nested structure)..."
-            cp -r artifacts/test-results/test-results/* public/coverage/ 2>/dev/null || true
-            echo "Coverage reports organized"
-            ls -la public/coverage/
-          elif [ -d "artifacts/test-results" ]; then
-            echo "Moving test coverage reports (flat structure)..."
+          # Extract test coverage reports
+          if [ -f "artifacts/test-results/index.html" ]; then
+            echo "Extracting test coverage reports from zip..."
+            cd artifacts/test-results
+            if file index.html | grep -q "Zip archive"; then
+              unzip -q index.html -d extracted || true
+              cd ../..
+              if [ -d "artifacts/test-results/extracted" ]; then
+                cp -r artifacts/test-results/extracted/* public/coverage/ 2>/dev/null || true
+                echo "Coverage reports organized"
+                ls -la public/coverage/ | head -20
+              fi
+            else
+              cd ../..
+              echo "index.html is not a zip file, copying as-is"
+              cp -r artifacts/test-results/* public/coverage/ 2>/dev/null || true
+            fi
+          elif [ -d "artifacts/test-results" ] && [ "$(ls -A artifacts/test-results)" ]; then
+            echo "Moving test coverage reports (already extracted)..."
             cp -r artifacts/test-results/* public/coverage/ 2>/dev/null || true
             echo "Coverage reports organized"
-            ls -la public/coverage/
+            ls -la public/coverage/ | head -20
           else
             echo "No test coverage reports found"
           fi
 
-          # Move and organize Storybook
-          if [ -d "artifacts/storybook-static/storybook-static" ]; then
-            echo "Moving Storybook (nested structure)..."
-            cp -r artifacts/storybook-static/storybook-static/* public/storybook/ 2>/dev/null || true
-            echo "Storybook organized"
-            ls -la public/storybook/
-          elif [ -d "artifacts/storybook-static" ]; then
-            echo "Moving Storybook (flat structure)..."
+          # Extract Storybook
+          if [ -f "artifacts/storybook-static/index.html" ]; then
+            echo "Extracting Storybook from zip..."
+            cd artifacts/storybook-static
+            if file index.html | grep -q "Zip archive"; then
+              unzip -q index.html -d extracted || true
+              cd ../..
+              if [ -d "artifacts/storybook-static/extracted" ]; then
+                cp -r artifacts/storybook-static/extracted/* public/storybook/ 2>/dev/null || true
+                echo "Storybook organized"
+                ls -la public/storybook/ | head -20
+              fi
+            else
+              cd ../..
+              echo "index.html is not a zip file, copying as-is"
+              cp -r artifacts/storybook-static/* public/storybook/ 2>/dev/null || true
+            fi
+          elif [ -d "artifacts/storybook-static" ] && [ "$(ls -A artifacts/storybook-static)" ]; then
+            echo "Moving Storybook (already extracted)..."
             cp -r artifacts/storybook-static/* public/storybook/ 2>/dev/null || true
             echo "Storybook organized"
-            ls -la public/storybook/
+            ls -la public/storybook/ | head -20
           else
             echo "No Storybook build found"
           fi
