@@ -75,11 +75,20 @@ jobs:
           echo "=== Checking downloaded artifacts ==="
           ls -la artifacts/ || echo "No artifacts directory found"
 
+          # Debug: Show the actual structure
+          echo "=== Artifact directory structure ==="
+          find artifacts -type d -maxdepth 3 || true
+
           # Move and organize Playwright reports
-          if [ -d "artifacts/playwright-report-merged" ]; then
-            echo "Moving Playwright reports..."
+          # The artifact download creates a nested directory structure
+          if [ -d "artifacts/playwright-report-merged/playwright-report-merged" ]; then
+            echo "Moving Playwright reports (nested structure)..."
+            cp -r artifacts/playwright-report-merged/playwright-report-merged/* public/playwright-report/ 2>/dev/null || true
+            echo "Playwright reports organized"
+            ls -la public/playwright-report/
+          elif [ -d "artifacts/playwright-report-merged" ]; then
+            echo "Moving Playwright reports (flat structure)..."
             cp -r artifacts/playwright-report-merged/* public/playwright-report/ 2>/dev/null || true
-            cp -r artifacts/playwright-report-merged/* reports/playwright/ 2>/dev/null || true
             echo "Playwright reports organized"
             ls -la public/playwright-report/
           else
@@ -87,10 +96,14 @@ jobs:
           fi
 
           # Move and organize test coverage reports
-          if [ -d "artifacts/test-results" ]; then
-            echo "Moving test coverage reports..."
+          if [ -d "artifacts/test-results/test-results" ]; then
+            echo "Moving test coverage reports (nested structure)..."
+            cp -r artifacts/test-results/test-results/* public/coverage/ 2>/dev/null || true
+            echo "Coverage reports organized"
+            ls -la public/coverage/
+          elif [ -d "artifacts/test-results" ]; then
+            echo "Moving test coverage reports (flat structure)..."
             cp -r artifacts/test-results/* public/coverage/ 2>/dev/null || true
-            cp -r artifacts/test-results/* reports/coverage/ 2>/dev/null || true
             echo "Coverage reports organized"
             ls -la public/coverage/
           else
@@ -98,8 +111,13 @@ jobs:
           fi
 
           # Move and organize Storybook
-          if [ -d "artifacts/storybook-static" ]; then
-            echo "Moving Storybook..."
+          if [ -d "artifacts/storybook-static/storybook-static" ]; then
+            echo "Moving Storybook (nested structure)..."
+            cp -r artifacts/storybook-static/storybook-static/* public/storybook/ 2>/dev/null || true
+            echo "Storybook organized"
+            ls -la public/storybook/
+          elif [ -d "artifacts/storybook-static" ]; then
+            echo "Moving Storybook (flat structure)..."
             cp -r artifacts/storybook-static/* public/storybook/ 2>/dev/null || true
             echo "Storybook organized"
             ls -la public/storybook/
