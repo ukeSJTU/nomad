@@ -35,16 +35,16 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
                   {/* Step Circle */}
                   <div
                     className={cn(
-                      "flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-200 z-10 bg-background",
+                      "flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-200 z-10",
                       {
                         // Completed state
                         "border-primary bg-primary text-primary-foreground":
                           isCompleted,
                         // Active state
-                        "border-primary bg-accent text-accent-foreground ring-2 ring-primary/20":
+                        "border-primary bg-primary text-primary-foreground ring-4 ring-primary/20":
                           isActive,
                         // Inactive state
-                        "border-muted-foreground/30 bg-muted text-muted-foreground":
+                        "border-muted-foreground/40 bg-background text-muted-foreground":
                           !isActive && !isCompleted,
                       }
                     )}
@@ -78,7 +78,7 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
                         {step.label}
                       </div>
                       {step.description && (
-                        <div className="text-xs text-muted-foreground mt-1">
+                        <div className="text-xs text-muted-foreground/80 mt-1 font-normal">
                           {step.description}
                         </div>
                       )}
@@ -94,7 +94,7 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
                         "h-0.5 w-full transition-all duration-200",
                         {
                           "bg-primary": stepNumber < currentStep,
-                          "bg-muted-foreground/30": stepNumber >= currentStep,
+                          "bg-muted-foreground/40": stepNumber >= currentStep,
                         }
                       )}
                     />
