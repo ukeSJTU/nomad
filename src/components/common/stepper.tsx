@@ -51,7 +51,7 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
                   >
                     {isCompleted ? (
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 shrink-0"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -62,28 +62,28 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
                         />
                       </svg>
                     ) : (
-                      <span className="text-sm font-medium">{stepNumber}</span>
+                      <span className="text-sm font-medium leading-none">
+                        {stepNumber}
+                      </span>
                     )}
                   </div>
 
                   {/* Step Label */}
-                  {variant === "default" && (
-                    <div className="mt-2 text-center">
-                      <div
-                        className={cn("text-sm font-medium transition-colors", {
-                          "text-primary": isActive || isCompleted,
-                          "text-muted-foreground": !isActive && !isCompleted,
-                        })}
-                      >
-                        {step.label}
-                      </div>
-                      {step.description && (
-                        <div className="text-xs text-muted-foreground/80 mt-1 font-normal">
-                          {step.description}
-                        </div>
-                      )}
+                  <div className="mt-2 text-center">
+                    <div
+                      className={cn("text-sm font-medium transition-colors", {
+                        "text-primary": isActive || isCompleted,
+                        "text-muted-foreground": !isActive && !isCompleted,
+                      })}
+                    >
+                      {step.label}
                     </div>
-                  )}
+                    {variant === "default" && step.description && (
+                      <div className="text-xs text-muted-foreground/80 mt-1 font-normal">
+                        {step.description}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Connector Line */}
@@ -106,32 +106,6 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
             );
           })}
         </div>
-
-        {/* Compact variant labels */}
-        {variant === "compact" && (
-          <div className="flex items-center justify-between mt-4">
-            {steps.map((step, index) => {
-              const stepNumber = index + 1;
-              const isActive = stepNumber === currentStep;
-              const isCompleted = stepNumber < currentStep;
-
-              return (
-                <div
-                  key={`${step.id}-label`}
-                  className={cn(
-                    "text-sm font-medium transition-colors text-center flex-1",
-                    {
-                      "text-primary": isActive || isCompleted,
-                      "text-muted-foreground": !isActive && !isCompleted,
-                    }
-                  )}
-                >
-                  {step.label}
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
     );
   }
