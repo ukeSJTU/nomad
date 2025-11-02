@@ -89,15 +89,17 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
                 {/* Connector Line */}
                 {!isLast && (
                   <div className="flex-1 mx-4 flex items-center h-8">
-                    <div
-                      className={cn(
-                        "h-0.5 w-full transition-all duration-200",
-                        {
-                          "bg-primary": stepNumber < currentStep,
-                          "bg-muted-foreground/40": stepNumber >= currentStep,
-                        }
-                      )}
-                    />
+                    <div className="relative w-full h-0.5 bg-muted-foreground/40 overflow-hidden">
+                      <div
+                        className={cn(
+                          "absolute inset-0 transition-all duration-350 ease-in-out",
+                          {
+                            "w-full bg-primary": stepNumber < currentStep,
+                            "w-0 bg-primary": stepNumber >= currentStep,
+                          }
+                        )}
+                      />
+                    </div>
                   </div>
                 )}
               </React.Fragment>
