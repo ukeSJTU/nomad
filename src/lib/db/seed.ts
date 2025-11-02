@@ -1,16 +1,24 @@
 import { faker } from "@faker-js/faker";
 import { sql } from "drizzle-orm";
+import ora from "ora";
 
 import {
   account,
   airlines,
   airports,
+  cities,
   flights,
   flightSeatClasses,
   passengers,
   user,
 } from "../schema/index";
 import { db } from "./index";
+import {
+  brandColors,
+  displaySeedConfig,
+  parseSeedConfig,
+  promptForScenario,
+} from "./seed.config";
 
 /**
  * Seed the database with sample data
@@ -23,97 +31,198 @@ import { db } from "./index";
  * - faker.airline.airplane() - generates realistic aircraft model names
  *
  * All IATA codes are guaranteed unique through duplicate checking loops
+ *
+ * Supports CLI arguments for configuration:
+ * @example
+ * ```bash
+ * # Use specific seed for reproducible data
+ * pnpm db:seed --seed=12345
+ *
+ * # Generate more data
+ * pnpm db:seed --cities=50 --airports=100 --flights=200
+ *
+ * # Combine options
+ * pnpm db:seed --seed=12345 --users=20 --flights=100
+ * ```
  */
 async function seed() {
+  // Check if interactive mode (no CLI arguments)
+  const hasCliArgs = process.argv.slice(2).length > 0;
+  let config;
+
+  if (!hasCliArgs) {
+    // Interactive mode
+    config = await promptForScenario();
+  } else {
+    // Parse configuration from CLI arguments
+    config = parseSeedConfig();
+  }
+
+  // Set Faker seed for reproducible data generation
+  faker.seed(config.seed);
+
   console.log("[SEED] Starting database seeding...");
+  displaySeedConfig(config);
 
   try {
-    // Clear existing data (in reverse order of dependencies)
-    console.log("[SEED] Clearing existing data...");
-    await db.delete(flightSeatClasses);
-    await db.delete(flights);
-    await db.delete(airlines);
-    await db.delete(airports);
-    await db.delete(passengers);
-    await db.delete(account);
-    await db.delete(user);
+    // Clear existing data (in reverse order of dependencies) - only in full mode
+    if (config.mode === "full") {
+      const spinner = ora("Clearing existing data...").start();
+      await db.delete(flightSeatClasses);
+      await db.delete(flights);
+      await db.delete(airlines);
+      await db.delete(airports);
+      await db.delete(cities);
+      await db.delete(passengers);
+      await db.delete(account);
+      await db.delete(user);
+      spinner.succeed("Cleared existing data");
+    } else {
+      console.log("[SEED] Incremental mode - keeping existing data");
+    }
+
+    // Seed Cities
+    let insertedCities;
+    if (config.mode === "incremental") {
+      // In incremental mode, fetch existing cities instead of creating new ones
+      const citiesSpinner = ora("Loading existing cities...").start();
+      insertedCities = await db.select().from(cities);
+      citiesSpinner.succeed(`Loaded ${insertedCities.length} existing cities`);
+    } else {
+      const citiesSpinner = ora("Seeding cities...").start();
+      const cityData = [];
+      const usedCityIataCodes = new Set<string>();
+
+      for (let i = 0; i < config.counts.cities; i++) {
+        let cityIataCode;
+        // Ensure IATA code is unique (3-character code)
+        do {
+          cityIataCode = faker.string.alpha({ length: 3, casing: "upper" });
+        } while (usedCityIataCodes.has(cityIataCode));
+
+        usedCityIataCodes.add(cityIataCode);
+
+        const isDomestic = faker.datatype.boolean();
+        const continents = ["Asia", "Europe", "America", "Africa", "Oceania"];
+
+        cityData.push({
+          iataCode: cityIataCode,
+          name: faker.location.city(),
+          timezone: faker.location.timeZone(),
+          isDomestic,
+          // Domestic cities must have pinyinFirstLetter
+          pinyinFirstLetter: isDomestic
+            ? faker.string.alpha({ length: 1, casing: "upper" })
+            : null,
+          // International cities must have continent
+          continent: !isDomestic
+            ? faker.helpers.arrayElement(continents)
+            : null,
+          isPopular: faker.datatype.boolean({ probability: 0.2 }), // 20% chance of being popular
+        });
+      }
+
+      insertedCities = await db.insert(cities).values(cityData).returning();
+      citiesSpinner.succeed(`Seeded ${insertedCities.length} cities`);
+    }
 
     // Seed Airports
-    console.log("[SEED] Seeding airports...");
-    /**
-     * Generate airport data using Faker.js Airline module
-     * faker.airline.airport() returns: { name: string, iataCode: string }
-     * We supplement with faker.location for missing fields (city, country, timezone)
-     * IATA code uniqueness is enforced to prevent database constraint violations
-     */
-    const airportData = [];
-    const usedAirportIataCodes = new Set<string>();
+    let insertedAirports;
+    if (config.mode === "incremental") {
+      const airportsSpinner = ora("Loading existing airports...").start();
+      insertedAirports = await db.select().from(airports);
+      airportsSpinner.succeed(
+        `Loaded ${insertedAirports.length} existing airports`
+      );
+    } else {
+      const airportsSpinner = ora("Seeding airports...").start();
+      /**
+       * Generate airport data using Faker.js Airline module
+       * faker.airline.airport() returns: { name: string, iataCode: string }
+       * We supplement with faker.location for missing fields (city, country, timezone)
+       * IATA code uniqueness is enforced to prevent database constraint violations
+       */
+      const airportData = [];
+      const usedAirportIataCodes = new Set<string>();
 
-    for (let i = 0; i < 70; i++) {
-      let airport;
-      // Ensure IATA code is unique (3-character code)
-      do {
-        airport = faker.airline.airport();
-      } while (usedAirportIataCodes.has(airport.iataCode));
+      for (let i = 0; i < config.counts.airports; i++) {
+        let airport;
+        // Ensure IATA code is unique (3-character code)
+        do {
+          airport = faker.airline.airport();
+        } while (usedAirportIataCodes.has(airport.iataCode));
 
-      usedAirportIataCodes.add(airport.iataCode);
+        usedAirportIataCodes.add(airport.iataCode);
 
-      airportData.push({
-        iata_code: airport.iataCode,
-        name: airport.name,
-        city: faker.location.city(),
-        country: faker.location.country(),
-        timezone: faker.location.timeZone(),
-      });
+        // Randomly select a city for this airport
+        const city = faker.helpers.arrayElement(insertedCities);
+
+        airportData.push({
+          iataCode: airport.iataCode,
+          name: airport.name,
+          cityId: city.id,
+        });
+      }
+
+      insertedAirports = await db
+        .insert(airports)
+        .values(airportData)
+        .returning();
+      airportsSpinner.succeed(`Seeded ${insertedAirports.length} airports`);
     }
-
-    const insertedAirports = await db
-      .insert(airports)
-      .values(airportData)
-      .returning();
-    console.log(`[SEED] Seeded ${insertedAirports.length} airports`);
 
     // Seed Airlines
-    console.log("[SEED] Seeding airlines...");
-    /**
-     * Generate airline data using Faker.js Airline module
-     * faker.airline.airline() returns: { name: string, iataCode: string }
-     * We use a placeholder template for logo_url
-     * IATA code uniqueness is enforced to prevent database constraint violations
-     *
-     * Note: Database constraint requires IATA codes to be exactly 2 uppercase letters (A-Z)
-     * Faker may generate codes with digits (e.g., "6E", "9R"), so we filter those out
-     */
-    const airlineData = [];
-    const usedAirlineIataCodes = new Set<string>();
-
-    for (let i = 0; i < 30; i++) {
-      let airline;
-      // Ensure IATA code is unique AND matches pattern ^[A-Z]{2}$ (2 uppercase letters only)
-      do {
-        airline = faker.airline.airline();
-      } while (
-        usedAirlineIataCodes.has(airline.iataCode) ||
-        !/^[A-Z]{2}$/.test(airline.iataCode)
+    let insertedAirlines;
+    if (config.mode === "incremental") {
+      const airlinesSpinner = ora("Loading existing airlines...").start();
+      insertedAirlines = await db.select().from(airlines);
+      airlinesSpinner.succeed(
+        `Loaded ${insertedAirlines.length} existing airlines`
       );
+    } else {
+      const airlinesSpinner = ora("Seeding airlines...").start();
+      /**
+       * Generate airline data using Faker.js Airline module
+       * faker.airline.airline() returns: { name: string, iataCode: string }
+       * We use a placeholder template for logo_url
+       * IATA code uniqueness is enforced to prevent database constraint violations
+       *
+       * Note: Database constraint requires IATA codes to be exactly 2 uppercase letters (A-Z)
+       * Faker may generate codes with digits (e.g., "6E", "9R"), so we filter those out
+       */
+      const airlineData = [];
+      const usedAirlineIataCodes = new Set<string>();
 
-      usedAirlineIataCodes.add(airline.iataCode);
+      for (let i = 0; i < config.counts.airlines; i++) {
+        let airline;
+        // Ensure IATA code is unique AND matches pattern ^[A-Z]{2}$ (2 uppercase letters only)
+        do {
+          airline = faker.airline.airline();
+        } while (
+          usedAirlineIataCodes.has(airline.iataCode) ||
+          !/^[A-Z]{2}$/.test(airline.iataCode)
+        );
 
-      airlineData.push({
-        iata_code: airline.iataCode,
-        name: airline.name,
-        logo_url: `https://example.com/logos/${airline.iataCode.toLowerCase()}.png`,
-      });
+        usedAirlineIataCodes.add(airline.iataCode);
+
+        const bgColor = faker.helpers.arrayElement(brandColors);
+
+        airlineData.push({
+          iataCode: airline.iataCode,
+          name: airline.name,
+          logoUrl: `https://ui-avatars.com/api/?name=${airline.iataCode}&background=${bgColor}&color=fff&size=256&bold=true&rounded=true&format=svg`,
+        });
+      }
+
+      insertedAirlines = await db
+        .insert(airlines)
+        .values(airlineData)
+        .returning();
+      airlinesSpinner.succeed(`Seeded ${insertedAirlines.length} airlines`);
     }
 
-    const insertedAirlines = await db
-      .insert(airlines)
-      .values(airlineData)
-      .returning();
-    console.log(`[SEED] Seeded ${insertedAirlines.length} airlines`);
-
     // Seed Flights
-    console.log("[SEED] Seeding flights...");
+    const flightsSpinner = ora("Seeding flights...").start();
     /**
      * Generate flight data using Faker.js Airline module for realistic aviation data
      * - faker.airline.flightNumber() returns industry-standard flight number format
@@ -121,10 +230,8 @@ async function seed() {
      * Flight status and timing use existing Faker methods for consistency
      */
     const flightData = [];
-    const statuses = ["SCHEDULED", "DELAYED", "CANCELLED", "COMPLETED"];
 
-    // Generate 50 flights
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < config.counts.flights; i++) {
       const airline = faker.helpers.arrayElement(insertedAirlines);
       const departureAirport = faker.helpers.arrayElement(insertedAirports);
       let arrivalAirport = faker.helpers.arrayElement(insertedAirports);
@@ -155,14 +262,13 @@ async function seed() {
       const aircraftData = faker.airline.airplane();
 
       flightData.push({
-        flight_number: `${airline.iata_code}${flightNumberData.slice(-4)}`, // Use airline's IATA code with generated number
-        airline_id: airline.id,
-        departure_airport_id: departureAirport.id,
-        arrival_airport_id: arrivalAirport.id,
-        departure_datetime: departureDate,
-        arrival_datetime: arrivalDate,
-        aircraft_type: aircraftData.name,
-        status: faker.helpers.arrayElement(statuses),
+        flightNumber: `${airline.iataCode}${flightNumberData.slice(-4)}`, // Use airline's IATA code with generated number
+        airlineId: airline.id,
+        departureAirportId: departureAirport.id,
+        arrivalAirportId: arrivalAirport.id,
+        departureDatetime: departureDate,
+        arrivalDatetime: arrivalDate,
+        aircraftType: aircraftData.name,
       });
     }
 
@@ -170,10 +276,10 @@ async function seed() {
       .insert(flights)
       .values(flightData)
       .returning();
-    console.log(`[SEED] Seeded ${insertedFlights.length} flights`);
+    flightsSpinner.succeed(`Seeded ${insertedFlights.length} flights`);
 
     // Seed Flight Seat Classes
-    console.log("[SEED] Seeding flight seat classes...");
+    const seatClassesSpinner = ora("Seeding flight seat classes...").start();
     const seatClassData = [];
     const classTypes = [
       { type: "ECONOMY", basePrice: 200, baseSeats: 150 },
@@ -182,8 +288,8 @@ async function seed() {
     ];
 
     for (const flight of insertedFlights) {
-      // Randomly decide how many classes to add (2-4 classes per flight)
-      const numClasses = faker.number.int({ min: 2, max: 4 });
+      // Randomly decide how many classes to add (2-3 classes per flight)
+      const numClasses = faker.number.int({ min: 2, max: 3 });
       const selectedClasses = faker.helpers
         .shuffle(classTypes)
         .slice(0, numClasses);
@@ -203,10 +309,10 @@ async function seed() {
         const price = (classType.basePrice * priceVariation).toFixed(2);
 
         seatClassData.push({
-          flight_id: flight.id,
-          class_type: classType.type,
-          total_seats: totalSeats,
-          available_seats: availableSeats,
+          flightId: flight.id,
+          classType: classType.type,
+          totalSeats,
+          availableSeats,
           price,
         });
       }
@@ -216,16 +322,15 @@ async function seed() {
       .insert(flightSeatClasses)
       .values(seatClassData)
       .returning();
-    console.log(
-      `[SEED] Seeded ${insertedSeatClasses.length} flight seat classes`
+    seatClassesSpinner.succeed(
+      `Seeded ${insertedSeatClasses.length} flight seat classes`
     );
 
     // Seed Users
-    console.log("[SEED] Seeding users...");
-    const numberOfUsers = 10;
+    const usersSpinner = ora("Seeding users...").start();
     const userData = [];
 
-    for (let i = 0; i < numberOfUsers; i++) {
+    for (let i = 0; i < config.counts.users; i++) {
       const firstName = faker.person.firstName();
       const lastName = faker.person.lastName();
 
@@ -254,15 +359,18 @@ async function seed() {
     }
 
     const insertedUsers = await db.insert(user).values(userData).returning();
-    console.log(`[SEED] Seeded ${insertedUsers.length} users`);
+    usersSpinner.succeed(`Seeded ${insertedUsers.length} users`);
 
     // Seed Passengers for each user
-    console.log("[SEED] Seeding passengers...");
+    const passengersSpinner = ora("Seeding passengers...").start();
     const passengerData = [];
 
     for (const currentUser of insertedUsers) {
-      // Each user gets 1-5 passengers
-      const numberOfPassengers = faker.number.int({ min: 1, max: 5 });
+      // Each user gets a random number of passengers based on config
+      const numberOfPassengers = faker.number.int({
+        min: config.counts.passengersPerUser.min,
+        max: config.counts.passengersPerUser.max,
+      });
 
       for (let i = 0; i < numberOfPassengers; i++) {
         const hasChineseName = faker.datatype.boolean();
@@ -359,12 +467,13 @@ async function seed() {
       .insert(passengers)
       .values(passengerData)
       .returning();
-    console.log(`[SEED] Seeded ${insertedPassengers.length} passengers`);
+    passengersSpinner.succeed(`Seeded ${insertedPassengers.length} passengers`);
 
-    console.log("[SEED] Database seeding completed successfully!");
-    console.log("\n[SEED] Summary:");
+    console.log("\nDatabase seeding completed successfully!\n");
+    console.log("Summary:");
     console.log(`   - Users: ${insertedUsers.length}`);
     console.log(`   - Passengers: ${insertedPassengers.length}`);
+    console.log(`   - Cities: ${insertedCities.length}`);
     console.log(`   - Airports: ${insertedAirports.length}`);
     console.log(`   - Airlines: ${insertedAirlines.length}`);
     console.log(`   - Flights: ${insertedFlights.length}`);

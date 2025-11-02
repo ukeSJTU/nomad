@@ -1,4 +1,5 @@
 import { Separator } from "@/components/ui/separator";
+import { formatDateString } from "@/utils/date";
 
 export interface PassengerDetailData {
   chineseName?: string;
@@ -35,12 +36,6 @@ const documentTypeLabels = {
 export default function PassengerDetailView({
   passenger,
 }: PassengerDetailViewProps) {
-  const formatDate = (date?: Date | string | null) => {
-    if (!date) return "未设置";
-    if (typeof date === "string") return date;
-    return date.toISOString().split("T")[0];
-  };
-
   return (
     <div className="space-y-6 bg-white">
       {/* Passenger Information Section */}
@@ -94,7 +89,7 @@ export default function PassengerDetailView({
           <div className="grid grid-cols-[120px_1fr] items-start gap-4">
             <label className="pt-1 text-sm text-gray-600">生日</label>
             <div className="text-sm text-gray-900">
-              {formatDate(passenger.dateOfBirth)}
+              {formatDateString(passenger.dateOfBirth)}
             </div>
           </div>
 
@@ -164,7 +159,7 @@ export default function PassengerDetailView({
           <div className="space-y-1">
             <label className="text-sm text-gray-600">有效期:</label>
             <div className="text-sm text-gray-900">
-              {formatDate(passenger.documentExpiryDate)}
+              {formatDateString(passenger.documentExpiryDate)}
             </div>
           </div>
         </div>
