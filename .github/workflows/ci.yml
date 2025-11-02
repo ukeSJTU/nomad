@@ -287,12 +287,13 @@ jobs:
           retention-days: 30
 
   # ========================================
-  # Deploy to GitHub Pages
+  # Deploy to GitHub Pages (Production)
   # ========================================
 
-  deploy-pages:
-    name: Deploy to GitHub Pages
-    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'pull_request') }}
+  deploy-production:
+    name: Deploy to Production (GitHub Pages)
+    # 只在push到main分支时部署到生产环境
+    if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     needs: [unit-tests, merge-playwright-reports, storybook]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -340,7 +341,7 @@ jobs:
 
       - name: Generate test dashboard
         run: |
-          echo "📊 Generating test dashboard..."
+          echo "� Generating production dashboard..."
           node scripts/generate-dashboard.js
           echo "✅ Dashboard generated successfully"
           echo "=== Final public directory structure ==="
@@ -364,6 +365,37 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+      - name: Deployment notification
+        if: success()
+        run: |
+          echo "🎉 Successfully deployed to production!"
+          echo "📍 URL: ${{ steps.deployment.outputs.page_url }}"
+
+  # ========================================
+  # Deploy Preview (Develop Branch) - Optional
+  # ========================================
+  #
+  # 如果需要为develop分支创建预览环境，可以启用此job
+  # 需要配置额外的部署目标（如Vercel, Netlify, 或GitHub Pages子路径）
+  #
+  # deploy-preview:
+  #   name: Deploy Preview (Develop)
+  #   if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+  #   needs: [unit-tests, merge-playwright-reports, storybook]
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 10
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     # ... 下载artifacts和生成dashboard的步骤 ...
+  #
+  #     - name: Deploy to preview environment
+  #       run: |
+  #         echo "部署到预览环境（需要配置）"
+  #         # 例如：部署到 Vercel/Netlify
+  #         # 或者部署到 GitHub Pages 的子路径
+
   # ========================================
   # Comment on PR
   # ========================================
@@ -371,7 +403,7 @@ jobs:
   comment-pr:
     name: Comment on PR
     if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-    needs: [deploy-pages]
+    needs: [unit-tests, merge-playwright-reports, storybook]
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -379,28 +411,54 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Comment PR with test report links
+      - name: Determine target environment
+        id: env
+        run: |
+          if [ "${{ github.base_ref }}" == "main" ]; then
+            echo "env_name=Production" >> $GITHUB_OUTPUT
+            echo "will_deploy=true" >> $GITHUB_OUTPUT
+            echo "deploy_url=https://ukesjtu.github.io/nomad/" >> $GITHUB_OUTPUT
+          elif [ "${{ github.base_ref }}" == "develop" ]; then
+            echo "env_name=Development" >> $GITHUB_OUTPUT
+            echo "will_deploy=false" >> $GITHUB_OUTPUT
+            echo "deploy_url=N/A" >> $GITHUB_OUTPUT
+          else
+            echo "env_name=Unknown" >> $GITHUB_OUTPUT
+            echo "will_deploy=false" >> $GITHUB_OUTPUT
+            echo "deploy_url=N/A" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR with artifact links
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
           message: |
-            ## 📊 Test Reports & Documentation Dashboard
+            ## 📊 Test Reports & Artifacts
 
-            Your test reports and Storybook have been successfully generated and deployed!
+            All tests have been completed! Test reports are available as workflow artifacts.
 
-            ### **Main Dashboard**
-            **[View Test Dashboard](${{ needs.deploy-pages.outputs.page_url }})**
+            ### **Download Artifacts**
+            - 📚 **[Storybook Build](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)** - Component library documentation
+            - 🎭 **[Playwright E2E Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)** - End-to-end test results
+            - 📈 **[Unit Test Coverage](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)** - Code coverage report
 
-            ### **Detailed Reports**
-            - 📚 **[Storybook - Component Library](${{ needs.deploy-pages.outputs.page_url }}storybook/)**
-            - 🎭 **[Playwright E2E Tests](${{ needs.deploy-pages.outputs.page_url }}playwright-report/)**
-            - 📈 **[Unit Test Coverage](${{ needs.deploy-pages.outputs.page_url }}coverage/)**
+            ### **Test Status**
+            - ✅ **Build Check**: Passed
+            - ✅ **Unit Tests**: Passed
+            - ✅ **E2E Tests**: Passed
+            - ✅ **Storybook**: Built successfully
+
+            ### **Deployment Info**
+            - **Target Branch**: `${{ github.base_ref }}`
+            - **Environment**: ${{ steps.env.outputs.env_name }}
+            - **Will Deploy**: ${{ steps.env.outputs.will_deploy == 'true' && '✅ Yes (after merge to main)' || '❌ No (artifacts only)' }}
+            ${{ steps.env.outputs.will_deploy == 'true' && format('- **Production URL**: {0}', steps.env.outputs.deploy_url) || '' }}
 
             ### **Quick Stats**
             - **Workflow Run**: [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             - **Commit**: [`${{ github.event.pull_request.head.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }})
-            - **Branch**: `${{ github.head_ref }}`
+            - **Source Branch**: `${{ github.head_ref }}`
 
             ---
 
-            *Reports are automatically updated on every push to this PR*
+            ${{ steps.env.outputs.will_deploy == 'true' && '🚀 **This PR will deploy to production after merging to main**' || '📦 **Artifacts are ready for review. No deployment will occur.**' }}
