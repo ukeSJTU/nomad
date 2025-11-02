@@ -21,7 +21,7 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
   ({ steps, currentStep, className, variant = "default", ...props }, ref) => {
     return (
       <div ref={ref} className={cn("w-full", className)} {...props}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           {steps.map((step, index) => {
             const stepNumber = index + 1;
             const isActive = stepNumber === currentStep;
@@ -88,12 +88,15 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
 
                 {/* Connector Line */}
                 {!isLast && (
-                  <div className="flex-1 mx-4">
+                  <div className="flex-1 mx-4 flex items-center h-8">
                     <div
-                      className={cn("h-0.5 transition-all duration-200", {
-                        "bg-primary": stepNumber < currentStep,
-                        "bg-muted-foreground/30": stepNumber >= currentStep,
-                      })}
+                      className={cn(
+                        "h-0.5 w-full transition-all duration-200",
+                        {
+                          "bg-primary": stepNumber < currentStep,
+                          "bg-muted-foreground/30": stepNumber >= currentStep,
+                        }
+                      )}
                     />
                   </div>
                 )}
