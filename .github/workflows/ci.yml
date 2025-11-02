@@ -1,0 +1,406 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  pages: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: "ci-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  # ========================================
+  # Parallel Jobs: Build & Tests
+  # ========================================
+
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run build
+        run: pnpm build --experimental-build-mode compile
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy?sslmode=disable"
+          DATABASE_SSL: "false"
+          BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
+          BETTER_AUTH_URL: "http://localhost:3000"
+
+      - name: Build status
+        if: success()
+        run: echo "✅ Build completed successfully!"
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps
+
+      - name: Run unit tests
+        run: pnpm test:coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+            !coverage/tmp/
+          retention-days: 30
+
+  playwright-tests:
+    name: Playwright E2E (Shard ${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps
+
+      - name: Run Playwright tests
+        run: pnpm exec playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+
+      - name: Upload blob report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ matrix.shard }}
+          path: blob-report/
+          retention-days: 30
+
+  storybook:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook
+        run: pnpm build-storybook
+        env:
+          NODE_ENV: production
+
+      - name: Run Storybook accessibility tests
+        run: pnpm test:run --project=storybook
+        continue-on-error: true
+
+      - name: Upload Storybook artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-static
+          path: storybook-static/
+          retention-days: 30
+
+      - name: Build status
+        if: success()
+        run: echo "✅ Storybook built successfully!"
+
+  # ========================================
+  # Merge Playwright Reports
+  # ========================================
+
+  merge-playwright-reports:
+    name: Merge Playwright Reports
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download all blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-reports
+          pattern: playwright-report-*
+
+      - name: Merge reports
+        run: |
+          echo "📊 Merging Playwright reports..."
+          ls -la all-reports/
+          ls -la all-reports/*/
+
+          mkdir -p blob-reports
+          find all-reports -name "*.zip" -exec cp {} blob-reports/ \; || true
+          find all-reports -name "*.jsonl" -exec cp {} blob-reports/ \; || true
+
+          ls -la blob-reports/
+
+          if [ "$(ls -A blob-reports/)" ]; then
+            pnpm exec playwright merge-reports --reporter=html blob-reports
+            echo "✅ Reports merged successfully"
+          else
+            echo "⚠️ No blob reports found, creating empty report"
+            mkdir -p playwright-report
+            echo "<html><body><h1>No test reports available</h1></body></html>" > playwright-report/index.html
+          fi
+
+      - name: Upload merged report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-merged
+          path: playwright-report/
+          retention-days: 30
+
+  # ========================================
+  # Deploy to GitHub Pages
+  # ========================================
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'pull_request') }}
+    needs: [unit-tests, merge-playwright-reports, storybook]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: ./public/coverage/
+
+      - name: Download Playwright report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-merged
+          path: ./public/playwright-report/
+
+      - name: Download Storybook
+        uses: actions/download-artifact@v4
+        with:
+          name: storybook-static
+          path: ./public/storybook/
+
+      - name: Generate test dashboard
+        run: |
+          echo "📊 Generating test dashboard..."
+          node scripts/generate-dashboard.js
+          echo "✅ Dashboard generated successfully"
+          echo "=== Final public directory structure ==="
+          ls -la public/
+          echo "=== Storybook files ==="
+          ls -la public/storybook/ | head -10
+          echo "=== Playwright report files ==="
+          ls -la public/playwright-report/ | head -10
+          echo "=== Coverage files ==="
+          ls -la public/coverage/ | head -10
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./public"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # ========================================
+  # Comment on PR
+  # ========================================
+
+  comment-pr:
+    name: Comment on PR
+    if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+    needs: [deploy-pages]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Comment PR with test report links
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            ## 📊 Test Reports & Documentation Dashboard
+
+            Your test reports and Storybook have been successfully generated and deployed!
+
+            ### **Main Dashboard**
+            **[View Test Dashboard](${{ needs.deploy-pages.outputs.page_url }})**
+
+            ### **Detailed Reports**
+            - 📚 **[Storybook - Component Library](${{ needs.deploy-pages.outputs.page_url }}storybook/)**
+            - 🎭 **[Playwright E2E Tests](${{ needs.deploy-pages.outputs.page_url }}playwright-report/)**
+            - 📈 **[Unit Test Coverage](${{ needs.deploy-pages.outputs.page_url }}coverage/)**
+
+            ### **Quick Stats**
+            - **Workflow Run**: [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - **Commit**: [`${{ github.event.pull_request.head.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }})
+            - **Branch**: `${{ github.head_ref }}`
+
+            ---
+
+            *Reports are automatically updated on every push to this PR*
