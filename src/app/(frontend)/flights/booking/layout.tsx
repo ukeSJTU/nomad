@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
 
 import { Stepper, type StepperStep } from "@/components/common/stepper";
 
@@ -46,7 +45,7 @@ export default function BookingLayout({
   const pathname = usePathname();
 
   // Determine current step based on pathname
-  const currentStep = useMemo(() => getStepFromPathname(pathname), [pathname]);
+  const currentStep = getStepFromPathname(pathname);
 
   return (
     <div className="min-h-screen bg-gray-50">
