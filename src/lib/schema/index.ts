@@ -1,6 +1,7 @@
 export * from "../../../auth-schema";
 export * from "./airlines";
 export * from "./airports";
+export * from "./ancillary";
 export * from "./cities";
 export * from "./enums";
 export * from "./flight-search-history";
