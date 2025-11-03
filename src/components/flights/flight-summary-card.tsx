@@ -1,4 +1,4 @@
-import { ArrowRight, Plane } from "lucide-react";
+import { Clock, Plane } from "lucide-react";
 
 import type { FlightSeatClassDetails } from "@/app/(frontend)/flights/booking/passengers/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -85,10 +85,10 @@ function FlightSegment({ flight }: FlightSegmentProps) {
         {/* Duration */}
         <div className="flex flex-col items-center flex-1 px-4">
           <div className="text-xs text-gray-400 mb-1">
-            <Plane className="h-3 w-3 inline" /> {hours}h{minutes}m
+            <Clock className="h-3 w-3 inline" /> {hours}h{minutes}m
           </div>
           <div className="w-full border-t border-gray-300 relative">
-            <ArrowRight className="h-4 w-4 text-gray-400 absolute -top-2 left-1/2 -translate-x-1/2 bg-white" />
+            <Plane className="h-4 w-4 text-gray-400 absolute -top-2 left-1/2 -translate-x-1/2 bg-white" />
           </div>
         </div>
 
