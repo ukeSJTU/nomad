@@ -29,7 +29,8 @@ const mockOutboundFlight = {
       id: "airline-1",
       name: "东方航空",
       iataCode: "MU",
-      logoUrl: null,
+      logoUrl:
+        "https://ui-avatars.com/api/?name=MU&background=0D8ABC&color=fff&size=256&bold=true&rounded=true&format=svg",
     },
     departure: {
       datetime: "2025-01-18T07:30:00Z",
@@ -78,7 +79,8 @@ const mockInboundFlight = {
       id: "airline-1",
       name: "东方航空",
       iataCode: "MU",
-      logoUrl: null,
+      logoUrl:
+        "https://ui-avatars.com/api/?name=MU&background=0D8ABC&color=fff&size=256&bold=true&rounded=true&format=svg",
     },
     departure: {
       datetime: "2025-01-25T14:30:00Z",
