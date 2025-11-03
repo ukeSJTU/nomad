@@ -37,7 +37,7 @@ function FlightSegment({ flight }: FlightSegmentProps) {
         : "头等舱";
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 flex flex-col items-center">
       {/* Date and Route Header */}
       <div className="text-base font-medium">
         {format(departure, "MM-dd EEEE", { locale: zhCN })}
