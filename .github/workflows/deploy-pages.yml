@@ -70,7 +70,7 @@ jobs:
 
       - name: Extract and organize artifacts
         run: |
-          mkdir -p public/playwright-report public/coverage public/storybook reports/playwright reports/coverage
+          mkdir -p _pages/playwright-report _pages/coverage _pages/storybook reports/playwright reports/coverage
 
           echo "=== Checking downloaded artifacts ==="
           ls -la artifacts/ || echo "No artifacts directory found"
@@ -78,10 +78,10 @@ jobs:
           # Move and organize Playwright reports
           if [ -d "artifacts/playwright-report-merged" ]; then
             echo "Moving Playwright reports..."
-            cp -r artifacts/playwright-report-merged/* public/playwright-report/ 2>/dev/null || true
+            cp -r artifacts/playwright-report-merged/* _pages/playwright-report/ 2>/dev/null || true
             cp -r artifacts/playwright-report-merged/* reports/playwright/ 2>/dev/null || true
             echo "Playwright reports organized"
-            ls -la public/playwright-report/
+            ls -la _pages/playwright-report/
           else
             echo "No Playwright reports found"
           fi
@@ -89,10 +89,10 @@ jobs:
           # Move and organize test coverage reports
           if [ -d "artifacts/test-results" ]; then
             echo "Moving test coverage reports..."
-            cp -r artifacts/test-results/* public/coverage/ 2>/dev/null || true
+            cp -r artifacts/test-results/* _pages/coverage/ 2>/dev/null || true
             cp -r artifacts/test-results/* reports/coverage/ 2>/dev/null || true
             echo "Coverage reports organized"
-            ls -la public/coverage/
+            ls -la _pages/coverage/
           else
             echo "No test coverage reports found"
           fi
@@ -100,9 +100,9 @@ jobs:
           # Move and organize Storybook
           if [ -d "artifacts/storybook-static" ]; then
             echo "Moving Storybook..."
-            cp -r artifacts/storybook-static/* public/storybook/ 2>/dev/null || true
+            cp -r artifacts/storybook-static/* _pages/storybook/ 2>/dev/null || true
             echo "Storybook organized"
-            ls -la public/storybook/
+            ls -la _pages/storybook/
           else
             echo "No Storybook build found"
           fi
@@ -112,8 +112,8 @@ jobs:
           echo "Generating test dashboard..."
           node scripts/generate-dashboard.js
           echo "Dashboard generated successfully"
-          echo "=== Final public directory ==="
-          ls -la public/
+          echo "=== Final _pages directory ==="
+          ls -la _pages/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -121,7 +121,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./public"
+          path: "./_pages"
 
   deploy:
     environment:

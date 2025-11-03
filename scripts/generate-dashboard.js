@@ -316,14 +316,14 @@ const main = () => {
   // eslint-disable-next-line no-console
   console.log("Generating test dashboard...");
 
-  // Ensure public directory exists
-  ensureDir("public");
+  // Ensure _pages directory exists
+  ensureDir("_pages");
 
   // Copy Playwright reports
-  copyDir("reports/playwright", "public/playwright");
+  copyDir("reports/playwright", "_pages/playwright");
 
   // Copy coverage reports
-  copyDir("reports/coverage", "public/coverage");
+  copyDir("reports/coverage", "_pages/coverage");
 
   // Read test data
   const playwrightData = readJsonFile("reports/playwright/results.json");
@@ -333,7 +333,7 @@ const main = () => {
   const dashboardHtml = generateDashboard(playwrightData, coverageData);
 
   // Write dashboard
-  fs.writeFileSync("public/index.html", dashboardHtml);
+  fs.writeFileSync("_pages/index.html", dashboardHtml);
 
   // eslint-disable-next-line no-console
   console.log("Dashboard generated successfully!");
