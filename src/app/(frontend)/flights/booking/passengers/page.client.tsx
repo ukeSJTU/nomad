@@ -10,30 +10,13 @@ import {
   type ContactInfoValidationErrors,
   validateContactInfo,
 } from "@/components/flights/contact-info-card";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+  PassengerFormCard,
+  type PassengerFormData,
+} from "@/components/flights/passenger-form-card";
+import { Button } from "@/components/ui/button";
 
 import type { SavedPassenger } from "./queries";
-
-interface PassengerFormData {
-  chineseName: string;
-  englishFirstName: string;
-  englishLastName: string;
-  documentType: string;
-  documentNumber: string;
-  phone: string;
-}
 
 interface BookingPassengersPageClientProps {
   seatClassId?: string;
@@ -50,6 +33,10 @@ export function BookingPassengersPageClient({
 }: BookingPassengersPageClientProps) {
   const router = useRouter();
   const [selectedPassengers, setSelectedPassengers] = useState<string[]>([]);
+  // Map to track which passenger form is filled by which saved passenger
+  const [passengerFormMapping, setPassengerFormMapping] = useState<
+    Map<number, string>
+  >(new Map());
   const [passengers, setPassengers] = useState<PassengerFormData[]>([
     {
       chineseName: "",
@@ -84,7 +71,31 @@ export function BookingPassengersPageClient({
 
   const handleRemovePassenger = (index: number) => {
     if (passengers.length > 1) {
+      // Check if this form was filled by a saved passenger
+      const savedPassengerId = passengerFormMapping.get(index);
+      if (savedPassengerId) {
+        // Deselect the saved passenger
+        setSelectedPassengers(
+          selectedPassengers.filter(id => id !== savedPassengerId)
+        );
+      }
+
+      // Remove the passenger form
       setPassengers(passengers.filter((_, i) => i !== index));
+
+      // Update mapping: remove the deleted index and adjust indices after it
+      const newMapping = new Map<number, string>();
+      passengerFormMapping.forEach((passengerId, formIndex) => {
+        if (formIndex < index) {
+          // Keep indices before the deleted one
+          newMapping.set(formIndex, passengerId);
+        } else if (formIndex > index) {
+          // Shift down indices after the deleted one
+          newMapping.set(formIndex - 1, passengerId);
+        }
+        // Skip the deleted index
+      });
+      setPassengerFormMapping(newMapping);
     }
   };
 
@@ -96,15 +107,96 @@ export function BookingPassengersPageClient({
     const updated = [...passengers];
     updated[index][field] = value;
     setPassengers(updated);
+
+    // If this form was filled by a saved passenger, unlink it
+    const savedPassengerId = passengerFormMapping.get(index);
+    if (savedPassengerId) {
+      // Remove from selected passengers
+      setSelectedPassengers(
+        selectedPassengers.filter(id => id !== savedPassengerId)
+      );
+      // Remove from mapping
+      const newMapping = new Map(passengerFormMapping);
+      newMapping.delete(index);
+      setPassengerFormMapping(newMapping);
+    }
   };
 
   const handleSelectSavedPassenger = (passengerId: string) => {
-    if (selectedPassengers.includes(passengerId)) {
+    const isCurrentlySelected = selectedPassengers.includes(passengerId);
+
+    if (isCurrentlySelected) {
+      // Deselect: Remove from selected list and clear the form
       setSelectedPassengers(
         selectedPassengers.filter(id => id !== passengerId)
       );
+
+      // Find which form index was filled by this saved passenger
+      const formIndex = Array.from(passengerFormMapping.entries()).find(
+        ([, id]) => id === passengerId
+      )?.[0];
+
+      if (formIndex !== undefined) {
+        // Clear the form
+        const updated = [...passengers];
+        updated[formIndex] = {
+          chineseName: "",
+          englishFirstName: "",
+          englishLastName: "",
+          documentType: "id_card",
+          documentNumber: "",
+          phone: "",
+        };
+        setPassengers(updated);
+
+        // Remove from mapping
+        const newMapping = new Map(passengerFormMapping);
+        newMapping.delete(formIndex);
+        setPassengerFormMapping(newMapping);
+      }
     } else {
+      // Select: Add to selected list and auto-fill a form
       setSelectedPassengers([...selectedPassengers, passengerId]);
+
+      // Find the saved passenger data
+      const savedPassenger = savedPassengers.find(p => p.id === passengerId);
+      if (!savedPassenger) return;
+
+      // Find the first empty form or create a new one
+      let targetFormIndex = passengers.findIndex(
+        p =>
+          !p.chineseName &&
+          !p.englishFirstName &&
+          !p.englishLastName &&
+          !p.documentNumber
+      );
+
+      const newPassengerData: PassengerFormData = {
+        chineseName: savedPassenger.chineseName || "",
+        englishFirstName: savedPassenger.englishFirstName || "",
+        englishLastName: savedPassenger.englishLastName || "",
+        documentType: savedPassenger.documentType,
+        documentNumber: savedPassenger.documentNumber,
+        phone: savedPassenger.phone || "",
+      };
+
+      let updatedPassengers: PassengerFormData[];
+      if (targetFormIndex === -1) {
+        // No empty form found, add a new one with the data
+        targetFormIndex = passengers.length;
+        updatedPassengers = [...passengers, newPassengerData];
+      } else {
+        // Fill the existing empty form
+        updatedPassengers = [...passengers];
+        updatedPassengers[targetFormIndex] = newPassengerData;
+      }
+
+      setPassengers(updatedPassengers);
+
+      // Update mapping
+      const newMapping = new Map(passengerFormMapping);
+      newMapping.set(targetFormIndex, passengerId);
+      setPassengerFormMapping(newMapping);
     }
   };
 
@@ -136,151 +228,21 @@ export function BookingPassengersPageClient({
 
   return (
     <div className="space-y-6">
-      {/* Saved Passengers Section */}
-      {savedPassengers.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">常用旅客</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-3">
-              {savedPassengers.map(passenger => (
-                <div
-                  key={passenger.id}
-                  className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handleSelectSavedPassenger(passenger.id)}
-                >
-                  <Checkbox
-                    checked={selectedPassengers.includes(passenger.id)}
-                    onCheckedChange={() =>
-                      handleSelectSavedPassenger(passenger.id)
-                    }
-                  />
-                  <span className="text-sm">{passenger.name}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Passenger Information Forms */}
       {passengers.map((passenger, index) => (
-        <Card key={index}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">乘机人 {index + 1}</CardTitle>
-              {passengers.length > 1 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRemovePassenger(index)}
-                >
-                  删除
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Name Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>
-                  中文名 <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  value={passenger.chineseName}
-                  onChange={e =>
-                    handlePassengerChange(index, "chineseName", e.target.value)
-                  }
-                  placeholder="请输入中文名"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>英文姓</Label>
-                <Input
-                  value={passenger.englishLastName}
-                  onChange={e =>
-                    handlePassengerChange(
-                      index,
-                      "englishLastName",
-                      e.target.value
-                    )
-                  }
-                  placeholder="Last Name"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>英文名</Label>
-                <Input
-                  value={passenger.englishFirstName}
-                  onChange={e =>
-                    handlePassengerChange(
-                      index,
-                      "englishFirstName",
-                      e.target.value
-                    )
-                  }
-                  placeholder="First Name"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>手机号</Label>
-                <Input
-                  value={passenger.phone}
-                  onChange={e =>
-                    handlePassengerChange(index, "phone", e.target.value)
-                  }
-                  placeholder="请输入手机号"
-                />
-              </div>
-            </div>
-
-            {/* Document Information */}
-            <Separator />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>
-                  证件类型 <span className="text-red-500">*</span>
-                </Label>
-                <Select
-                  value={passenger.documentType}
-                  onValueChange={value =>
-                    handlePassengerChange(index, "documentType", value)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="id_card">身份证</SelectItem>
-                    <SelectItem value="passport">护照</SelectItem>
-                    <SelectItem value="other">其他</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>
-                  证件号码 <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  value={passenger.documentNumber}
-                  onChange={e =>
-                    handlePassengerChange(
-                      index,
-                      "documentNumber",
-                      e.target.value
-                    )
-                  }
-                  placeholder="请输入证件号码"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <PassengerFormCard
+          key={index}
+          passengerNumber={index + 1}
+          data={passenger}
+          savedPassengers={savedPassengers}
+          selectedPassengerIds={selectedPassengers}
+          onChange={(field, value) =>
+            handlePassengerChange(index, field, value)
+          }
+          onToggleSavedPassenger={handleSelectSavedPassenger}
+          onRemove={() => handleRemovePassenger(index)}
+          showRemove={passengers.length > 1}
+        />
       ))}
 
       {/* Add Passenger Button */}
