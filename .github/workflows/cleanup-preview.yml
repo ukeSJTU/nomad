@@ -1,0 +1,72 @@
+name: Cleanup PR Preview
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [develop]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup-preview:
+    name: Remove Preview Deployment
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Remove preview directory
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          BRANCH_NAME="${{ github.head_ref }}"
+          SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/\//-/g' | cut -c1-50)
+          PREVIEW_PATH="preview/pr-${PR_NUMBER}-${SANITIZED_BRANCH}"
+
+          echo "🗑️  Cleaning up preview deployment..."
+          echo "📍 Path: ${PREVIEW_PATH}"
+
+          if [ -d "$PREVIEW_PATH" ]; then
+            rm -rf "$PREVIEW_PATH"
+            echo "✅ Removed preview directory: ${PREVIEW_PATH}"
+            
+            # Clean up empty preview directory if no other previews exist
+            if [ -d "preview" ] && [ -z "$(ls -A preview)" ]; then
+              rm -rf preview
+              echo "✅ Removed empty preview directory"
+            fi
+          else
+            echo "⚠️  Preview directory not found: ${PREVIEW_PATH}"
+            echo "This is normal if the preview was never deployed."
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "🗑️ Cleanup preview for PR #${{ github.event.pull_request.number }}"
+            git push origin gh-pages
+            echo "✅ Preview cleanup committed and pushed"
+          else
+            echo "ℹ️  No changes to commit"
+          fi
+
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            ## 🗑️ Preview Deployment Cleaned Up
+
+            The preview deployment for this PR has been removed from GitHub Pages.
+
+            - **PR**: #${{ github.event.pull_request.number }}
+            - **Branch**: `${{ github.head_ref }}`
+            - **Status**: ${{ github.event.pull_request.merged && '✅ Merged' || '❌ Closed without merging' }}

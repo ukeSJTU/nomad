@@ -11,18 +11,6 @@ const ensureDir = dir => {
   }
 };
 
-// Read JSON file safely
-const readJsonFile = filePath => {
-  try {
-    if (fs.existsSync(filePath)) {
-      return JSON.parse(fs.readFileSync(filePath, "utf8"));
-    }
-  } catch (error) {
-    console.warn(`Failed to read ${filePath}:`, error.message);
-  }
-  return null;
-};
-
 // Copy directory recursively
 const copyDir = (src, dest) => {
   if (!fs.existsSync(src)) return;
@@ -43,8 +31,23 @@ const copyDir = (src, dest) => {
 };
 
 // Generate dashboard HTML
-const generateDashboard = (playwrightData, coverageData) => {
-  const timestamp = new Date().toISOString();
+const generateDashboard = (metadata = {}) => {
+  const {
+    basePath = "",
+    branchName = "main",
+    deployTime = new Date().toISOString(),
+  } = metadata;
+  // Ensure basePath ends with / if not empty
+  const base = basePath ? `${basePath.replace(/\/$/, "")}/` : "";
+
+  const formattedDate = new Date(deployTime).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -52,263 +55,163 @@ const generateDashboard = (playwrightData, coverageData) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Dashboard - Nomad Project</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        body {
+            min-height: 100vh;
+            padding: 2rem 0;
         }
-        .card-hover {
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .report-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        .report-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .btn-report {
+            width: 100%;
+            padding: 0.75rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
             transition: all 0.3s ease;
         }
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .btn-storybook {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
         }
-        .pulse-dot {
-            animation: pulse 2s infinite;
+        .btn-storybook:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .btn-playwright {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            border: none;
+            color: white;
+        }
+        .btn-playwright:hover {
+            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
+            color: white;
+        }
+        .btn-coverage {
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            border: none;
+            color: white;
+        }
+        .btn-coverage:hover {
+            background: linear-gradient(135deg, #388E3C 0%, #4CAF50 100%);
+            color: white;
+        }
+        .metadata-badge {
+            background: #f8f9fa;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #6c757d;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <header class="mb-12 text-center">
-            <div class="gradient-bg text-white rounded-2xl p-8 shadow-xl">
-                <h1 class="text-5xl font-bold mb-4 flex items-center justify-center">
-                    <span class="mr-4">🧪</span>
-                    Test Dashboard
-                    <span class="ml-4">📊</span>
-                </h1>
-                <p class="text-xl opacity-90 mb-2">Nomad Project - Quality Assurance Hub</p>
-                <div class="flex items-center justify-center space-x-4 text-sm">
-                    <span class="flex items-center">
-                        <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot mr-2"></span>
-                        Live Status
-                    </span>
-                    <span>•</span>
-                    <span>Last updated: ${new Date(timestamp).toLocaleString()}</span>
-                </div>
+<body>
+    <div class="container dashboard-container">
+        <!-- Header -->
+        <div class="header-card text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                🧪 Test Dashboard 📊
+            </h1>
+            <p class="lead text-muted mb-4">Nomad Project - Quality Assurance Hub</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <span class="metadata-badge">
+                    <strong>Branch:</strong> ${branchName}
+                </span>
+                <span class="metadata-badge">
+                    <strong>Deployed:</strong> ${formattedDate}
+                </span>
             </div>
-        </header>
+        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <!-- Report Cards -->
+        <div class="row g-4 mb-4">
             <!-- Storybook Card -->
-            <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                        <span class="text-3xl mr-3">📚</span>
-                        Storybook
-                    </h2>
-                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Components</span>
-                </div>
-                <div class="space-y-3">
-                    <p class="text-gray-600">Interactive component library and documentation</p>
-                    <div class="flex flex-col space-y-2 text-sm text-gray-500">
-                        <div class="flex items-center">
-                            <span class="mr-2">✓</span>
-                            <span>Component Showcase</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="mr-2">✓</span>
-                            <span>Interactive Props</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="mr-2">✓</span>
-                            <span>Accessibility Tests</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="mr-2">✓</span>
-                            <span>Auto-generated Docs</span>
-                        </div>
+            <div class="col-md-4">
+                <div class="report-card">
+                    <div class="text-center">
+                        <div class="report-icon">📚</div>
+                        <h3 class="h4 fw-bold mb-3">Storybook</h3>
+                        <p class="text-muted mb-4">
+                            Interactive component library and documentation
+                        </p>
+                        <a href="${base}storybook/index.html" class="btn btn-storybook">
+                            📖 View Storybook
+                        </a>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <a href="../storybook/index.html" class="inline-flex items-center bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
-                        <span class="mr-2">📖</span>
-                        View Storybook
-                    </a>
+            </div>
+
+            <!-- Playwright E2E Card -->
+            <div class="col-md-4">
+                <div class="report-card">
+                    <div class="text-center">
+                        <div class="report-icon">🎭</div>
+                        <h3 class="h4 fw-bold mb-3">E2E Tests</h3>
+                        <p class="text-muted mb-4">
+                            End-to-end test results with Playwright
+                        </p>
+                        <a href="${base}playwright-report/index.html" class="btn btn-playwright">
+                            📋 View Test Report
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Playwright Tests Card -->
-            <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                        <span class="text-3xl mr-3">🎭</span>
-                        E2E Tests
-                    </h2>
-                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Playwright</span>
-                </div>
-                ${generatePlaywrightSection(playwrightData)}
-                <div class="mt-6">
-                    <a href="../playwright-report/index.html" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
-                        <span class="mr-2">📋</span>
-                        View Detailed Report
-                    </a>
-                </div>
-            </div>
-
-            <!-- Unit Tests Card -->
-            <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                        <span class="text-3xl mr-3">🧪</span>
-                        Unit Tests
-                    </h2>
-                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Vitest</span>
-                </div>
-                ${generateCoverageSection(coverageData)}
-                <div class="mt-6">
-                    <a href="../coverage/index.html" class="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
-                        <span class="mr-2">📊</span>
-                        View Coverage Report
-                    </a>
+            <!-- Coverage Card -->
+            <div class="col-md-4">
+                <div class="report-card">
+                    <div class="text-center">
+                        <div class="report-icon">📊</div>
+                        <h3 class="h4 fw-bold mb-3">Test Coverage</h3>
+                        <p class="text-muted mb-4">
+                            Unit test coverage report with Vitest
+                        </p>
+                        <a href="${base}coverage/index.html" class="btn btn-coverage">
+                            📈 View Coverage
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Coverage Chart -->
-        <div class="bg-white rounded-xl shadow-lg p-8 mb-12 card-hover border border-gray-100">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                    <span class="text-3xl mr-3">📈</span>
-                    Coverage Overview
-                </h2>
-                <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Real-time</span>
-            </div>
-            <div class="w-full h-80">
-                <canvas id="coverageChart"></canvas>
-            </div>
+        <!-- Footer -->
+        <div class="text-center">
+            <p class="text-white-50 small mb-0">
+                Generated automatically by GitHub Actions
+            </p>
         </div>
-
-        <footer class="text-center text-gray-500 text-sm">
-            <p>Generated automatically by GitHub Actions</p>
-        </footer>
     </div>
 
-    <script>
-        ${generateChartScript(coverageData)}
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>`;
-};
-
-const generatePlaywrightSection = data => {
-  if (!data) {
-    return '<p class="text-gray-500">No Playwright test data available</p>';
-  }
-
-  const stats = data.stats || {};
-  const total = stats.expected || 0;
-  const passed = stats.passed || 0;
-  const failed = stats.failed || 0;
-  const skipped = stats.skipped || 0;
-
-  return `
-    <div class="space-y-3">
-        <div class="flex justify-between">
-            <span>Total Tests:</span>
-            <span class="font-semibold">${total}</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Passed:</span>
-            <span class="font-semibold text-green-600">${passed}</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Failed:</span>
-            <span class="font-semibold text-red-600">${failed}</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Skipped:</span>
-            <span class="font-semibold text-yellow-600">${skipped}</span>
-        </div>
-        <div class="mt-4">
-            <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-green-500 h-2 rounded-full" style="width: ${total > 0 ? (passed / total) * 100 : 0}%"></div>
-            </div>
-            <p class="text-sm text-gray-600 mt-1">Success Rate: ${total > 0 ? Math.round((passed / total) * 100) : 0}%</p>
-        </div>
-    </div>
-  `;
-};
-
-const generateCoverageSection = data => {
-  if (!data || !data.total) {
-    return '<p class="text-gray-500">No coverage data available</p>';
-  }
-
-  const { lines, statements, functions, branches } = data.total;
-
-  return `
-    <div class="space-y-3">
-        <div class="flex justify-between">
-            <span>Lines:</span>
-            <span class="font-semibold">${lines.pct}%</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Statements:</span>
-            <span class="font-semibold">${statements.pct}%</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Functions:</span>
-            <span class="font-semibold">${functions.pct}%</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Branches:</span>
-            <span class="font-semibold">${branches.pct}%</span>
-        </div>
-    </div>
-  `;
-};
-
-const generateChartScript = coverageData => {
-  if (!coverageData || !coverageData.total) {
-    return 'console.log("No coverage data for chart");';
-  }
-
-  const { lines, statements, functions, branches } = coverageData.total;
-
-  return `
-    const ctx = document.getElementById('coverageChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Lines', 'Statements', 'Functions', 'Branches'],
-            datasets: [{
-                label: 'Coverage %',
-                data: [${lines.pct}, ${statements.pct}, ${functions.pct}, ${branches.pct}],
-                backgroundColor: [
-                    'rgba(34, 197, 94, 0.8)',
-                    'rgba(59, 130, 246, 0.8)',
-                    'rgba(168, 85, 247, 0.8)',
-                    'rgba(245, 158, 11, 0.8)'
-                ],
-                borderColor: [
-                    'rgba(34, 197, 94, 1)',
-                    'rgba(59, 130, 246, 1)',
-                    'rgba(168, 85, 247, 1)',
-                    'rgba(245, 158, 11, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100
-                }
-            }
-        }
-    });
-  `;
 };
 
 // Main execution
@@ -319,24 +222,48 @@ const main = () => {
   // Ensure public directory exists
   ensureDir("public");
 
-  // Copy Playwright reports
-  copyDir("reports/playwright", "public/playwright");
+  // In CI, artifacts are already downloaded to public/ directory
+  // In local development, copy from reports/ directory
+  const isCI = process.env.CI === "true";
 
-  // Copy coverage reports
-  copyDir("reports/coverage", "public/coverage");
+  if (!isCI) {
+    // Copy Playwright reports
+    copyDir("reports/playwright", "public/playwright-report");
 
-  // Read test data
-  const playwrightData = readJsonFile("reports/playwright/results.json");
-  const coverageData = readJsonFile("reports/coverage/coverage-summary.json");
+    // Copy coverage reports
+    copyDir("reports/coverage", "public/coverage");
+
+    // Copy Storybook
+    copyDir("storybook-static", "public/storybook");
+  }
+
+  // Get metadata from environment variables
+  const basePath = process.env.BASE_PATH || "";
+  const branchName =
+    process.env.BRANCH_NAME || process.env.GITHUB_REF_NAME || "main";
+  const deployTime = new Date().toISOString();
+
+  // eslint-disable-next-line no-console
+  console.log("Metadata:");
+  // eslint-disable-next-line no-console
+  console.log("  Base Path:", basePath);
+  // eslint-disable-next-line no-console
+  console.log("  Branch:", branchName);
+  // eslint-disable-next-line no-console
+  console.log("  Deploy Time:", deployTime);
 
   // Generate dashboard
-  const dashboardHtml = generateDashboard(playwrightData, coverageData);
+  const dashboardHtml = generateDashboard({
+    basePath,
+    branchName,
+    deployTime,
+  });
 
   // Write dashboard
   fs.writeFileSync("public/index.html", dashboardHtml);
 
   // eslint-disable-next-line no-console
-  console.log("Dashboard generated successfully!");
+  console.log("✅ Dashboard generated successfully!");
 };
 
 if (require.main === module) {
