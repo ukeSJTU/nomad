@@ -292,19 +292,25 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     # Deploy to GitHub Pages:
-    # If push to main, deploy to username.github.io/repo/
-    # If push to develop, deploy to username.github.io/repo/develop
-    if: ${{ !cancelled() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')}}
+    # - Push to main → username.github.io/repo/
+    # - Push to develop → username.github.io/repo/develop/
+    # - PR to develop → username.github.io/repo/preview/pr-{number}-{branch}/
+    if: |
+      !cancelled() && (
+        (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
+        (github.event_name == 'pull_request' && github.base_ref == 'develop' && github.head_ref != 'main')
+      )
     needs: [unit-tests, merge-playwright-reports, storybook]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'github-pages-production' || 'github-pages-develop' }}
+      name: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' && 'github-pages-production' || 'github-pages-develop') || 'github-pages-preview' }}
       url: ${{ steps.set-url.outputs.page_url }}
     outputs:
       page_url: ${{ steps.set-url.outputs.page_url }}
+      is_preview: ${{ steps.set-path.outputs.is_preview }}
 
     steps:
       - name: Checkout code
@@ -356,19 +362,36 @@ jobs:
           echo "=== Coverage files ==="
           ls -la public/coverage/ | head -10
         env:
-          BASE_PATH: ${{ github.ref == 'refs/heads/main' && '' || '/nomad/develop' }}
+          BASE_PATH: ${{ github.event_name == 'pull_request' && format('/nomad/preview/pr-{0}-{1}', github.event.pull_request.number, github.head_ref) || (github.ref == 'refs/heads/main' && '/nomad' || '/nomad/develop') }}
 
       - name: Set deployment path and URL
         id: set-path
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # PR Preview deployment
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+            BRANCH_NAME="${{ github.head_ref }}"
+            # Sanitize branch name: replace / with -, limit length to 50 chars
+            SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/\//-/g' | cut -c1-50)
+            DEPLOY_PATH="preview/pr-${PR_NUMBER}-${SANITIZED_BRANCH}"
+
+            echo "deploy_path=${DEPLOY_PATH}" >> $GITHUB_OUTPUT
+            echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/${DEPLOY_PATH}/" >> $GITHUB_OUTPUT
+            echo "is_preview=true" >> $GITHUB_OUTPUT
+            echo "📍 Deploying PR preview to: /${DEPLOY_PATH}"
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            # Production deployment
             echo "deploy_path=." >> $GITHUB_OUTPUT
             echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/" >> $GITHUB_OUTPUT
+            echo "is_preview=false" >> $GITHUB_OUTPUT
             echo "📍 Deploying to: ROOT (production)"
           else
+            # Develop deployment
             echo "deploy_path=develop" >> $GITHUB_OUTPUT
             echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/develop/" >> $GITHUB_OUTPUT
+            echo "is_preview=false" >> $GITHUB_OUTPUT
             echo "📍 Deploying to: /develop (staging)"
           fi
 
@@ -394,7 +417,14 @@ jobs:
         run: |
           echo "🎉 Successfully deployed!"
           echo "📍 URL: ${{ steps.set-path.outputs.page_url }}"
-          echo "🌿 Branch: ${{ github.ref_name }}"
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "🔍 Type: PR Preview"
+            echo "🌿 PR: #${{ github.event.pull_request.number }}"
+            echo "🌿 Branch: ${{ github.head_ref }}"
+          else
+            echo "🔍 Type: Branch Deployment"
+            echo "🌿 Branch: ${{ github.ref_name }}"
+          fi
 
   # ========================================
   # Comment on PR
@@ -403,7 +433,7 @@ jobs:
   comment-pr:
     name: Comment on PR
     if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-    needs: [unit-tests, merge-playwright-reports, storybook]
+    needs: [unit-tests, merge-playwright-reports, storybook, deploy]
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -437,6 +467,8 @@ jobs:
 
             All tests have been completed! Test reports are available as workflow artifacts.
 
+            ${{ needs.deploy.outputs.is_preview == 'true' && format('### **🚀 Live Preview**\n\n✨ **[View Preview Deployment]({0})** ✨\n\nThis preview includes:\n- 📚 [Storybook]({0}storybook/) - Component library\n- 🎭 [E2E Test Report]({0}playwright-report/) - Playwright results\n- 📈 [Coverage Report]({0}coverage/) - Unit test coverage\n- 📊 [Test Dashboard]({0}) - Overview of all reports\n', needs.deploy.outputs.page_url) || '' }}
+
             ### **Download Artifacts**
             - 📚 **[Storybook Build](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)** - Component library documentation
             - 🎭 **[Playwright E2E Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)** - End-to-end test results
@@ -451,6 +483,7 @@ jobs:
             ### **Deployment Info**
             - **Target Branch**: `${{ github.base_ref }}`
             - **Environment**: ${{ steps.env.outputs.env_name }}
+            ${{ needs.deploy.outputs.is_preview == 'true' && format('- **Preview URL**: {0}', needs.deploy.outputs.page_url) || '' }}
             - **Will Deploy**: ${{ steps.env.outputs.will_deploy == 'true' && '✅ Yes (after merge)' || '❌ No (artifacts only)' }}
             ${{ steps.env.outputs.will_deploy == 'true' && format('- **Deployment URL**: {0}', steps.env.outputs.deploy_url) || '' }}
 
@@ -461,4 +494,4 @@ jobs:
 
             ---
 
-            ${{ steps.env.outputs.will_deploy == 'true' && format('🚀 **This PR will deploy to {0} after merging to {1}**', steps.env.outputs.env_name, github.base_ref) || '📦 **Artifacts are ready for review. No deployment will occur.**' }}
+            ${{ needs.deploy.outputs.is_preview == 'true' && '🎉 **Preview deployment is live! Click the link above to review your changes.**' || (steps.env.outputs.will_deploy == 'true' && format('🚀 **This PR will deploy to {0} after merging to {1}**', steps.env.outputs.env_name, github.base_ref) || '📦 **Artifacts are ready for review. No deployment will occur.**') }}
