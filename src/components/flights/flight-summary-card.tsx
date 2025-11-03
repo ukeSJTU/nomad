@@ -1,10 +1,9 @@
-import { format } from "date-fns";
-import { zhCN } from "date-fns/locale";
 import { ArrowRight, Plane } from "lucide-react";
 
 import type { FlightSeatClassDetails } from "@/app/(frontend)/flights/booking/passengers/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { formatDateWithWeekday } from "@/utils/date";
 
 type FlightSummaryCardProps = {
   outboundFlight: FlightSeatClassDetails | null;
@@ -15,6 +14,15 @@ type FlightSummaryCardProps = {
 type FlightSegmentProps = {
   flight: FlightSeatClassDetails;
 };
+
+/**
+ * Format time to HH:mm format
+ */
+function formatFlightTime(date: Date): string {
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
 
 /**
  * Flight segment component - displays a single flight leg information
@@ -40,7 +48,7 @@ function FlightSegment({ flight }: FlightSegmentProps) {
     <div className="space-y-3 flex flex-col items-center">
       {/* Date and Route Header */}
       <div className="text-base font-medium">
-        {format(departure, "MM-dd EEEE", { locale: zhCN })}
+        {formatDateWithWeekday(departure)}
         <span className="mx-2">
           {flight.flight.departure.city.name} →{" "}
           {flight.flight.arrival.city.name}
@@ -67,7 +75,7 @@ function FlightSegment({ flight }: FlightSegmentProps) {
         {/* Departure */}
         <div className="flex flex-col items-start">
           <div className="text-2xl font-semibold">
-            {format(departure, "HH:mm")}
+            {formatFlightTime(departure)}
           </div>
           <div className="text-sm text-gray-500">
             {flight.flight.departure.airport.name}
@@ -87,7 +95,7 @@ function FlightSegment({ flight }: FlightSegmentProps) {
         {/* Arrival */}
         <div className="flex flex-col items-end">
           <div className="text-2xl font-semibold">
-            {format(arrival, "HH:mm")}
+            {formatFlightTime(arrival)}
           </div>
           <div className="text-sm text-gray-500">
             {flight.flight.arrival.airport.name}
