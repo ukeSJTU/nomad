@@ -52,7 +52,11 @@ export default function BookingLayout({
       <div className="container mx-auto px-4 py-8">
         {/* Stepper - Top Progress Indicator */}
         <div className="mb-8">
-          <Stepper steps={BOOKING_STEPS} currentStep={currentStep} />
+          <Stepper
+            steps={BOOKING_STEPS}
+            currentStep={currentStep}
+            variant="compact"
+          />
         </div>
 
         {/* Main Content */}
