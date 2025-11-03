@@ -100,7 +100,6 @@ export const orders = pgTable(
 
     // Passenger and Contact Information (Snapshot)
     passengerCount: integer("passenger_count").notNull(),
-    contactName: varchar("contact_name", { length: 100 }).notNull(),
     contactPhone: varchar("contact_phone", { length: 20 }),
     contactEmail: varchar("contact_email", { length: 255 }),
 
