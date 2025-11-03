@@ -1,6 +1,6 @@
 import { format } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
-import { Plane } from "lucide-react";
+import { zhCN } from "date-fns/locale";
+import { ArrowRight, Plane } from "lucide-react";
 
 import type { FlightSeatClassDetails } from "@/app/(frontend)/flights/booking/passengers/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,293 +12,148 @@ type FlightSummaryCardProps = {
   passengerCount?: number;
 };
 
-/**
- * Format datetime to local time in the city's timezone
- */
-function formatFlightTime(datetime: string, timezone: string): string {
-  const date = new Date(datetime);
-  const zonedDate = toZonedTime(date, timezone);
-  return format(zonedDate, "HH:mm");
-}
+type FlightSegmentProps = {
+  flight: FlightSeatClassDetails;
+};
 
 /**
- * Format date to display format
+ * Flight segment component - displays a single flight leg information
+ * Similar to the screenshot layout: date + route, airline info, time display
  */
-function formatFlightDate(datetime: string, timezone: string): string {
-  const date = new Date(datetime);
-  const zonedDate = toZonedTime(date, timezone);
-  return format(zonedDate, "yyyy-MM-dd");
+function FlightSegment({ flight }: FlightSegmentProps) {
+  // Calculate flight duration
+  const departure = new Date(flight.flight.departure.datetime);
+  const arrival = new Date(flight.flight.arrival.datetime);
+  const durationMs = arrival.getTime() - departure.getTime();
+  const hours = Math.floor(durationMs / (1000 * 60 * 60));
+  const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  // Format seat class
+  const seatClassText =
+    flight.classType === "ECONOMY"
+      ? "经济舱"
+      : flight.classType === "BUSINESS"
+        ? "商务舱"
+        : "头等舱";
+
+  return (
+    <div className="space-y-3">
+      {/* Date and Route Header */}
+      <div className="text-base font-medium">
+        {format(departure, "MM-dd EEEE", { locale: zhCN })}
+        <span className="mx-2">
+          {flight.flight.departure.city.name} →{" "}
+          {flight.flight.arrival.city.name}
+        </span>
+      </div>
+
+      {/* Airline Info */}
+      <div className="flex items-center gap-2 text-sm text-gray-600">
+        {flight.flight.airline.logoUrl && (
+          <img
+            src={flight.flight.airline.logoUrl}
+            alt={flight.flight.airline.name}
+            className="h-5 w-5 object-contain"
+          />
+        )}
+        <span className="text-red-500">{flight.flight.airline.name}</span>
+        <span>{flight.flight.flightNumber}</span>
+        <span>空客{flight.flight.aircraftType || "330"}</span>
+        <span>{seatClassText}</span>
+      </div>
+
+      {/* Time and Airport Info */}
+      <div className="flex items-center justify-between">
+        {/* Departure */}
+        <div className="flex flex-col items-start">
+          <div className="text-2xl font-semibold">
+            {format(departure, "HH:mm")}
+          </div>
+          <div className="text-sm text-gray-500">
+            {flight.flight.departure.airport.name}
+          </div>
+        </div>
+
+        {/* Duration */}
+        <div className="flex flex-col items-center flex-1 px-4">
+          <div className="text-xs text-gray-400 mb-1">
+            <Plane className="h-3 w-3 inline" /> {hours}h{minutes}m
+          </div>
+          <div className="w-full border-t border-gray-300 relative">
+            <ArrowRight className="h-4 w-4 text-gray-400 absolute -top-2 left-1/2 -translate-x-1/2 bg-white" />
+          </div>
+        </div>
+
+        {/* Arrival */}
+        <div className="flex flex-col items-end">
+          <div className="text-2xl font-semibold">
+            {format(arrival, "HH:mm")}
+          </div>
+          <div className="text-sm text-gray-500">
+            {flight.flight.arrival.airport.name}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-/**
- * Get seat class display name in Chinese
- */
-function getSeatClassDisplayName(classType: string): string {
-  const classNames: Record<string, string> = {
-    ECONOMY: "经济舱",
-    BUSINESS: "商务舱",
-    FIRST: "头等舱",
-  };
-  return classNames[classType] || classType;
-}
-
-/**
- * Flight Summary Card Component
- * Displays flight information in the booking flow sidebar
- */
 export function FlightSummaryCard({
   outboundFlight,
   inboundFlight,
   passengerCount = 1,
 }: FlightSummaryCardProps) {
   if (!outboundFlight) {
-    return (
-      <Card className="sticky top-4">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Plane className="h-5 w-5" />
-            航班信息
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-gray-500">加载中...</p>
-        </CardContent>
-      </Card>
-    );
+    return null;
   }
 
-  const calculateTotal = () => {
-    const outboundPrice = parseFloat(outboundFlight.price);
-    const inboundPrice = inboundFlight ? parseFloat(inboundFlight.price) : 0;
-    return ((outboundPrice + inboundPrice) * passengerCount).toFixed(2);
-  };
+  const outboundPrice = parseFloat(outboundFlight.price);
+  const inboundPrice = inboundFlight ? parseFloat(inboundFlight.price) : 0;
+  const totalPrice = (outboundPrice + inboundPrice) * passengerCount;
 
   return (
     <Card className="sticky top-4">
       <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Plane className="h-5 w-5" />
-          航班信息
-        </CardTitle>
+        <CardTitle className="text-lg">航班信息</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Outbound Flight */}
-        <div className="space-y-3">
-          <div className="font-medium text-sm text-gray-500">
-            {inboundFlight ? "去程航班" : "航班"}
-          </div>
+        <FlightSegment flight={outboundFlight} />
 
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-500">航班号</span>
-            <span className="font-medium">
-              {outboundFlight.flight.flightNumber}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-500">航空公司</span>
-            <span className="font-medium">
-              {outboundFlight.flight.airline.name}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-500">机型</span>
-            <span className="font-medium">
-              {outboundFlight.flight.aircraftType || "N/A"}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-500">舱位</span>
-            <span className="font-medium">
-              {getSeatClassDisplayName(outboundFlight.classType)}
-            </span>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">出发</span>
-              <div className="text-right">
-                <div className="font-medium">
-                  {formatFlightTime(
-                    outboundFlight.flight.departure.datetime,
-                    outboundFlight.flight.departure.city.timezone
-                  )}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {formatFlightDate(
-                    outboundFlight.flight.departure.datetime,
-                    outboundFlight.flight.departure.city.timezone
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">
-                {outboundFlight.flight.departure.city.name}
-              </span>
-              <span className="text-xs text-gray-500">
-                {outboundFlight.flight.departure.airport.name}
-                {outboundFlight.flight.departure.terminal &&
-                  ` ${outboundFlight.flight.departure.terminal}`}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">到达</span>
-              <div className="text-right">
-                <div className="font-medium">
-                  {formatFlightTime(
-                    outboundFlight.flight.arrival.datetime,
-                    outboundFlight.flight.arrival.city.timezone
-                  )}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {formatFlightDate(
-                    outboundFlight.flight.arrival.datetime,
-                    outboundFlight.flight.arrival.city.timezone
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">
-                {outboundFlight.flight.arrival.city.name}
-              </span>
-              <span className="text-xs text-gray-500">
-                {outboundFlight.flight.arrival.airport.name}
-                {outboundFlight.flight.arrival.terminal &&
-                  ` ${outboundFlight.flight.arrival.terminal}`}
-              </span>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-500">票价</span>
-            <span className="font-medium text-lg">
-              ¥{parseFloat(outboundFlight.price).toFixed(2)}
-            </span>
-          </div>
-        </div>
-
-        {/* Inbound Flight (if round-trip) */}
+        {/* Inbound Flight */}
         {inboundFlight && (
           <>
-            <Separator className="my-4" />
-
-            <div className="space-y-3">
-              <div className="font-medium text-sm text-gray-500">返程航班</div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">航班号</span>
-                <span className="font-medium">
-                  {inboundFlight.flight.flightNumber}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">航空公司</span>
-                <span className="font-medium">
-                  {inboundFlight.flight.airline.name}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">舱位</span>
-                <span className="font-medium">
-                  {getSeatClassDisplayName(inboundFlight.classType)}
-                </span>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">出发</span>
-                  <div className="text-right">
-                    <div className="font-medium">
-                      {formatFlightTime(
-                        inboundFlight.flight.departure.datetime,
-                        inboundFlight.flight.departure.city.timezone
-                      )}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {formatFlightDate(
-                        inboundFlight.flight.departure.datetime,
-                        inboundFlight.flight.departure.city.timezone
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">
-                    {inboundFlight.flight.departure.city.name}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {inboundFlight.flight.departure.airport.name}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">到达</span>
-                  <div className="text-right">
-                    <div className="font-medium">
-                      {formatFlightTime(
-                        inboundFlight.flight.arrival.datetime,
-                        inboundFlight.flight.arrival.city.timezone
-                      )}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {formatFlightDate(
-                        inboundFlight.flight.arrival.datetime,
-                        inboundFlight.flight.arrival.city.timezone
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">
-                    {inboundFlight.flight.arrival.city.name}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {inboundFlight.flight.arrival.airport.name}
-                  </span>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">票价</span>
-                <span className="font-medium text-lg">
-                  ¥{parseFloat(inboundFlight.price).toFixed(2)}
-                </span>
-              </div>
-            </div>
+            <Separator />
+            <FlightSegment flight={inboundFlight} />
           </>
         )}
 
-        {/* Total Price */}
-        <Separator className="my-4" />
+        <Separator />
 
+        {/* Price Summary */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">乘客人数</span>
-            <span>{passengerCount}</span>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">去程票价</span>
+            <span className="font-medium">¥{outboundPrice.toFixed(2)}</span>
           </div>
 
-          <div className="flex items-center justify-between font-semibold text-lg">
+          {inboundFlight && (
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">返程票价</span>
+              <span className="font-medium">¥{inboundPrice.toFixed(2)}</span>
+            </div>
+          )}
+
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">乘客人数</span>
+            <span className="font-medium">{passengerCount}</span>
+          </div>
+
+          <Separator />
+
+          <div className="flex justify-between text-base font-semibold">
             <span>总计</span>
-            <span className="text-primary">¥{calculateTotal()}</span>
+            <span className="text-blue-600">¥{totalPrice.toFixed(2)}</span>
           </div>
         </div>
       </CardContent>
