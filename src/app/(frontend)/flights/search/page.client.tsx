@@ -61,6 +61,10 @@ export function FlightSearchPageClient({
     "outbound" | "return"
   >("outbound");
 
+  // Store selected outbound flight seat class ID for round-trip
+  const [selectedOutboundSeatClassId, setSelectedOutboundSeatClassId] =
+    useState<string | null>(null);
+
   // Parse and validate URL parameters
   const parsedParams = useMemo(() => {
     const tripType = searchParams.get("tripType");
@@ -356,8 +360,17 @@ export function FlightSearchPageClient({
                   price={lowestPrice}
                   buttonText="订票"
                   onButtonClick={() => {
-                    // TODO: Navigate to booking page
-                    console.log("Book flight:", flight.id);
+                    // For one-way flights, find the seat class matching the selected class type
+                    const selectedSeatClass = flight.seatClasses.find(
+                      sc => sc.classType === seatClass.toUpperCase()
+                    );
+
+                    if (selectedSeatClass) {
+                      // Navigate to passengers page with flight seat class ID
+                      router.push(
+                        `/flights/booking/passengers?seatClassId=${selectedSeatClass.id}`
+                      );
+                    }
                   }}
                 />
               );
@@ -410,11 +423,25 @@ export function FlightSearchPageClient({
                   activeRoundTripTab === "outbound" ? "选择去程" : "选择返程"
                 }
                 onButtonClick={() => {
-                  // TODO: Navigate to return flight selection or booking
-                  console.log(
-                    `Select ${activeRoundTripTab} flight:`,
-                    flight.id
+                  // Find the seat class matching the selected class type
+                  const selectedSeatClass = flight.seatClasses.find(
+                    sc => sc.classType === seatClass.toUpperCase()
                   );
+
+                  if (!selectedSeatClass) return;
+
+                  if (activeRoundTripTab === "outbound") {
+                    // Store outbound selection and switch to return tab
+                    setSelectedOutboundSeatClassId(selectedSeatClass.id);
+                    setActiveRoundTripTab("return");
+                  } else {
+                    // Both flights selected, navigate to booking with both IDs
+                    if (selectedOutboundSeatClassId) {
+                      router.push(
+                        `/flights/booking/passengers?outboundSeatClassId=${selectedOutboundSeatClassId}&inboundSeatClassId=${selectedSeatClass.id}`
+                      );
+                    }
+                  }
                 }}
               />
             );
