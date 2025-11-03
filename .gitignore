@@ -68,3 +68,4 @@ public/index.html
 .source
 *storybook.log
 storybook-static
+public/storybook/
