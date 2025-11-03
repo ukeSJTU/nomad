@@ -344,7 +344,7 @@ jobs:
 
       - name: Generate test dashboard
         run: |
-          echo "� Generating production dashboard..."
+          echo "📊 Generating dashboard..."
           node scripts/generate-dashboard.js
           echo "✅ Dashboard generated successfully"
           echo "=== Final public directory structure ==="
@@ -355,6 +355,8 @@ jobs:
           ls -la public/playwright-report/ | head -10
           echo "=== Coverage files ==="
           ls -la public/coverage/ | head -10
+        env:
+          BASE_PATH: ${{ github.ref == 'refs/heads/main' && '' || '/nomad/develop' }}
 
       - name: Set deployment path and URL
         id: set-path

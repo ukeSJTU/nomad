@@ -43,8 +43,10 @@ const copyDir = (src, dest) => {
 };
 
 // Generate dashboard HTML
-const generateDashboard = (playwrightData, coverageData) => {
+const generateDashboard = (playwrightData, coverageData, basePath = "") => {
   const timestamp = new Date().toISOString();
+  // Ensure basePath ends with / if not empty
+  const base = basePath ? `${basePath.replace(/\/$/, "")}/` : "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -128,7 +130,7 @@ const generateDashboard = (playwrightData, coverageData) => {
                     </div>
                 </div>
                 <div class="mt-6">
-                    <a href="../storybook/index.html" class="inline-flex items-center bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
+                    <a href="${base}storybook/index.html" class="inline-flex items-center bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
                         <span class="mr-2">📖</span>
                         View Storybook
                     </a>
@@ -146,7 +148,7 @@ const generateDashboard = (playwrightData, coverageData) => {
                 </div>
                 ${generatePlaywrightSection(playwrightData)}
                 <div class="mt-6">
-                    <a href="../playwright-report/index.html" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
+                    <a href="${base}playwright-report/index.html" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
                         <span class="mr-2">📋</span>
                         View Detailed Report
                     </a>
@@ -164,7 +166,7 @@ const generateDashboard = (playwrightData, coverageData) => {
                 </div>
                 ${generateCoverageSection(coverageData)}
                 <div class="mt-6">
-                    <a href="../coverage/index.html" class="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
+                    <a href="${base}coverage/index.html" class="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
                         <span class="mr-2">📊</span>
                         View Coverage Report
                     </a>
@@ -329,8 +331,15 @@ const main = () => {
   const playwrightData = readJsonFile("reports/playwright/results.json");
   const coverageData = readJsonFile("reports/coverage/coverage-summary.json");
 
+  // Get base path from environment variable (for branch-specific deployments)
+  const basePath = process.env.BASE_PATH || "";
+
   // Generate dashboard
-  const dashboardHtml = generateDashboard(playwrightData, coverageData);
+  const dashboardHtml = generateDashboard(
+    playwrightData,
+    coverageData,
+    basePath
+  );
 
   // Write dashboard
   fs.writeFileSync("public/index.html", dashboardHtml);
