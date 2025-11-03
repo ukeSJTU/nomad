@@ -47,7 +47,7 @@ function FlightSegment({ flight }: FlightSegmentProps) {
   return (
     <div className="space-y-3 flex flex-col items-center">
       {/* Date and Route Header */}
-      <div className="text-base font-medium">
+      <div className="font-medium text-lg">
         {formatDateWithWeekday(departure)}
         <span className="mx-2">
           {flight.flight.departure.city.name} →{" "}
