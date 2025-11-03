@@ -189,7 +189,10 @@ export async function getFlightSeatClassesByIds(
  */
 export type SavedPassenger = {
   id: string;
-  name: string;
+  name: string; // Display name (for UI)
+  chineseName: string | null;
+  englishFirstName: string | null;
+  englishLastName: string | null;
   documentType: "passport" | "id_card" | "other";
   documentNumber: string;
   phone: string | null;
@@ -223,6 +226,9 @@ export async function getSavedPassengers(
       (p.englishFirstName && p.englishLastName
         ? `${p.englishLastName} ${p.englishFirstName}`
         : ""),
+    chineseName: p.chineseName,
+    englishFirstName: p.englishFirstName,
+    englishLastName: p.englishLastName,
     documentType: p.documentType,
     documentNumber: p.documentNumber,
     phone: p.phone,
