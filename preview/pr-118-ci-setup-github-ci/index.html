@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dashboard - Nomad Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-12 text-center">
+            <div class="gradient-bg text-white rounded-2xl p-8 shadow-xl">
+                <h1 class="text-5xl font-bold mb-4 flex items-center justify-center">
+                    <span class="mr-4">🧪</span>
+                    Test Dashboard
+                    <span class="ml-4">📊</span>
+                </h1>
+                <p class="text-xl opacity-90 mb-2">Nomad Project - Quality Assurance Hub</p>
+                <div class="flex items-center justify-center space-x-4 text-sm">
+                    <span class="flex items-center">
+                        <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot mr-2"></span>
+                        Live Status
+                    </span>
+                    <span>•</span>
+                    <span>Last updated: 11/3/2025, 4:31:29 AM</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Storybook Card -->
+            <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <span class="text-3xl mr-3">📚</span>
+                        Storybook
+                    </h2>
+                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Components</span>
+                </div>
+                <div class="space-y-3">
+                    <p class="text-gray-600">Interactive component library and documentation</p>
+                    <div class="flex flex-col space-y-2 text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Component Showcase</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Interactive Props</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Accessibility Tests</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">✓</span>
+                            <span>Auto-generated Docs</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <a href="/nomad/preview/pr-118-ci/setup-github-ci/storybook/index.html" class="inline-flex items-center bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
+                        <span class="mr-2">📖</span>
+                        View Storybook
+                    </a>
+                </div>
+            </div>
+
+            <!-- Playwright Tests Card -->
+            <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <span class="text-3xl mr-3">🎭</span>
+                        E2E Tests
+                    </h2>
+                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Playwright</span>
+                </div>
+                <p class="text-gray-500">No Playwright test data available</p>
+                <div class="mt-6">
+                    <a href="/nomad/preview/pr-118-ci/setup-github-ci/playwright-report/index.html" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
+                        <span class="mr-2">📋</span>
+                        View Detailed Report
+                    </a>
+                </div>
+            </div>
+
+            <!-- Unit Tests Card -->
+            <div class="bg-white rounded-xl shadow-lg p-8 card-hover border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <span class="text-3xl mr-3">🧪</span>
+                        Unit Tests
+                    </h2>
+                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Vitest</span>
+                </div>
+                <p class="text-gray-500">No coverage data available</p>
+                <div class="mt-6">
+                    <a href="/nomad/preview/pr-118-ci/setup-github-ci/coverage/index.html" class="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg w-full justify-center">
+                        <span class="mr-2">📊</span>
+                        View Coverage Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coverage Chart -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-12 card-hover border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                    <span class="text-3xl mr-3">📈</span>
+                    Coverage Overview
+                </h2>
+                <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Real-time</span>
+            </div>
+            <div class="w-full h-80">
+                <canvas id="coverageChart"></canvas>
+            </div>
+        </div>
+
+        <footer class="text-center text-gray-500 text-sm">
+            <p>Generated automatically by GitHub Actions</p>
+        </footer>
+    </div>
+
+    <script>
+        console.log("No coverage data for chart");
+    </script>
+</body>
+</html>
