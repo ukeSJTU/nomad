@@ -388,6 +388,7 @@ jobs:
         run: |
           echo "📊 Generating dashboard..."
           echo "Using BASE_PATH: $BASE_PATH"
+          echo "Using BRANCH_NAME: $BRANCH_NAME"
           node scripts/generate-dashboard.js
           echo "✅ Dashboard generated successfully"
           echo "=== Final public directory structure ==="
@@ -400,6 +401,7 @@ jobs:
           ls -la public/coverage/ | head -10
         env:
           BASE_PATH: ${{ steps.set-path.outputs.base_path }}
+          BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
       - name: Deploy to GitHub Pages
         # Here we use peaceiris/actions-gh-pages because official actions/deploy-pages and actions/configure-pages does not support setting custom destination_dir which we need for our branch-specific deployment.
