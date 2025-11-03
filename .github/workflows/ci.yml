@@ -287,21 +287,24 @@ jobs:
           retention-days: 30
 
   # ========================================
-  # Deploy to GitHub Pages (Production)
+  # Deploy Test Reports / Storybook - Optional
   # ========================================
-
-  deploy-production:
-    name: Deploy to Production (GitHub Pages)
-    # 只在push到main分支时部署到生产环境
-    if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+  deploy:
+    name: Deploy to GitHub Pages
+    # Deploy to GitHub Pages:
+    # If push to main, deploy to username.github.io/repo/
+    # If push to develop, deploy to username.github.io/repo/develop
+    if: ${{ !cancelled() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')}}
     needs: [unit-tests, merge-playwright-reports, storybook]
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: ${{ github.ref == 'refs/heads/main' && 'github-pages-production' || 'github-pages-develop' }}
+      url: ${{ steps.set-url.outputs.page_url }}
     outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
+      page_url: ${{ steps.set-url.outputs.page_url }}
 
     steps:
       - name: Checkout code
@@ -353,173 +356,42 @@ jobs:
           echo "=== Coverage files ==="
           ls -la public/coverage/ | head -10
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "./public"
+      - name: Set deployment path and URL
+        id: set-path
+        run: |
+          REPO_NAME="${{ github.event.repository.name }}"
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "deploy_path=." >> $GITHUB_OUTPUT
+            echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/" >> $GITHUB_OUTPUT
+            echo "📍 Deploying to: ROOT (production)"
+          else
+            echo "deploy_path=develop" >> $GITHUB_OUTPUT
+            echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/develop/" >> $GITHUB_OUTPUT
+            echo "📍 Deploying to: /develop (staging)"
+          fi
 
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          destination_dir: ${{ steps.set-path.outputs.deploy_path }}
+          keep_files: true # Keep other files to avoid overwriting
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: ${{ github.event.head_commit.message }}
+
+      - name: Set URL output
+        id: set-url
+        run: |
+          echo "page_url=${{ steps.set-path.outputs.page_url }}" >> $GITHUB_OUTPUT
 
       - name: Deployment notification
         if: success()
         run: |
-          echo "🎉 Successfully deployed to production!"
-          echo "📍 URL: ${{ steps.deployment.outputs.page_url }}"
-
-  # ========================================
-  # Deploy Preview (Develop Branch) - Optional
-  # ========================================
-
-  deploy-preview:
-    name: Deploy Preview (Develop)
-    # 在push到develop分支时部署预览环境
-    if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
-    needs: [unit-tests, merge-playwright-reports, storybook]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    # environment:
-    #   name: develop-preview
-    #   url: ${{ steps.preview-url.outputs.url }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report
-          path: ./public/coverage/
-
-      - name: Download Playwright report
-        uses: actions/download-artifact@v4
-        with:
-          name: playwright-report-merged
-          path: ./public/playwright-report/
-
-      - name: Download Storybook
-        uses: actions/download-artifact@v4
-        with:
-          name: storybook-static
-          path: ./public/storybook/
-
-      - name: Generate test dashboard
-        run: |
-          echo "🔍 Generating preview dashboard..."
-          node scripts/generate-dashboard.js
-          echo "✅ Preview dashboard generated successfully"
-          echo "=== Preview directory structure ==="
-          ls -la public/
-
-      # ========================================
-      # 选项1: 部署到Vercel (推荐)
-      # ========================================
-      #
-      # 需要配置 VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID secrets
-      #
-      # - name: Deploy to Vercel
-      #   uses: amondnet/vercel-action@v25
-      #   id: vercel-deployment
-      #   with:
-      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
-      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-      #     working-directory: ./public
-      #     alias-domains: |
-      #       nomad-develop.vercel.app
-      #
-      # - name: Set preview URL
-      #   id: preview-url
-      #   run: echo "url=${{ steps.vercel-deployment.outputs.preview-url }}" >> $GITHUB_OUTPUT
-
-      # ========================================
-      # 选项2: 部署到Netlify
-      # ========================================
-      #
-      # 需要配置 NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID secrets
-      #
-      # - name: Deploy to Netlify
-      #   uses: nwtgck/actions-netlify@v2
-      #   id: netlify-deployment
-      #   with:
-      #     publish-dir: './public'
-      #     production-branch: develop
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     deploy-message: "Deploy from GitHub Actions - ${{ github.sha }}"
-      #     alias: develop
-      #   env:
-      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-      #     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      #
-      # - name: Set preview URL
-      #   id: preview-url
-      #   run: echo "url=${{ steps.netlify-deployment.outputs.deploy-url }}" >> $GITHUB_OUTPUT
-
-      # ========================================
-      # 选项3: 部署到Cloudflare Pages
-      # ========================================
-      #
-      # 需要配置 CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID secrets
-      #
-      # - name: Deploy to Cloudflare Pages
-      #   uses: cloudflare/pages-action@v1
-      #   id: cloudflare-deployment
-      #   with:
-      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      #     projectName: nomad-preview
-      #     directory: ./public
-      #     branch: develop
-      #
-      # - name: Set preview URL
-      #   id: preview-url
-      #   run: echo "url=${{ steps.cloudflare-deployment.outputs.url }}" >> $GITHUB_OUTPUT
-
-      # ========================================
-      # 选项4: 仅上传为Artifact（默认启用）
-      # ========================================
-
-      - name: Upload preview build as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: preview-build-develop
-          path: ./public/
-          retention-days: 7
-
-      - name: Set preview URL (artifact only)
-        id: preview-url
-        run: |
-          echo "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts" >> $GITHUB_OUTPUT
-          echo "⚠️ Preview build uploaded as artifact. To enable live preview, uncomment one of the deployment options above."
-
-      - name: Preview deployment summary
-        run: |
-          echo "📦 Preview build created for develop branch"
-          echo "🔗 Download artifact: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts"
-          echo ""
-          echo "💡 To enable live preview deployment:"
-          echo "   1. Choose a deployment platform (Vercel/Netlify/Cloudflare)"
-          echo "   2. Configure required secrets in repository settings"
-          echo "   3. Uncomment the corresponding deployment step in ci.yml"
+          echo "🎉 Successfully deployed!"
+          echo "📍 URL: ${{ steps.set-path.outputs.page_url }}"
+          echo "🌿 Branch: ${{ github.ref_name }}"
 
   # ========================================
   # Comment on PR
