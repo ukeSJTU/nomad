@@ -13,6 +13,7 @@ type FlightSummaryCardProps = {
 
 type FlightSegmentProps = {
   flight: FlightSeatClassDetails;
+  type?: "outbound" | "inbound";
 };
 
 /**
@@ -28,7 +29,7 @@ function formatFlightTime(date: Date): string {
  * Flight segment component - displays a single flight leg information
  * Similar to the screenshot layout: date + route, airline info, time display
  */
-function FlightSegment({ flight }: FlightSegmentProps) {
+function FlightSegment({ flight, type = "outbound" }: FlightSegmentProps) {
   // Calculate flight duration
   const departure = new Date(flight.flight.departure.datetime);
   const arrival = new Date(flight.flight.arrival.datetime);
@@ -47,7 +48,10 @@ function FlightSegment({ flight }: FlightSegmentProps) {
   return (
     <div className="space-y-3 flex flex-col items-center">
       {/* Date and Route Header */}
-      <div className="font-medium text-lg">
+      <div className="font-medium text-lg flex items-center gap-2">
+        <span className="bg-black text-white px-2 py-0.5 text-sm rounded">
+          {type === "outbound" ? "去" : "返"}
+        </span>
         {formatDateWithWeekday(departure)}
         <span className="mx-2">
           {flight.flight.departure.city.name} →{" "}
@@ -122,13 +126,13 @@ export function FlightSummaryCard({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Outbound Flight */}
-        <FlightSegment flight={outboundFlight} />
+        <FlightSegment flight={outboundFlight} type="outbound" />
 
         {/* Inbound Flight */}
         {inboundFlight && (
           <>
             <Separator />
-            <FlightSegment flight={inboundFlight} />
+            <FlightSegment flight={inboundFlight} type="inbound" />
           </>
         )}
 
