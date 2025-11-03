@@ -348,22 +348,6 @@ jobs:
           name: storybook-static
           path: ./public/storybook/
 
-      - name: Generate test dashboard
-        run: |
-          echo "📊 Generating dashboard..."
-          node scripts/generate-dashboard.js
-          echo "✅ Dashboard generated successfully"
-          echo "=== Final public directory structure ==="
-          ls -la public/
-          echo "=== Storybook files ==="
-          ls -la public/storybook/ | head -10
-          echo "=== Playwright report files ==="
-          ls -la public/playwright-report/ | head -10
-          echo "=== Coverage files ==="
-          ls -la public/coverage/ | head -10
-        env:
-          BASE_PATH: ${{ github.event_name == 'pull_request' && format('/nomad/preview/pr-{0}-{1}', github.event.pull_request.number, github.head_ref) || (github.ref == 'refs/heads/main' && '/nomad' || '/nomad/develop') }}
-
       - name: Set deployment path and URL
         id: set-path
         run: |
@@ -376,24 +360,46 @@ jobs:
             # Sanitize branch name: replace / with -, limit length to 50 chars
             SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/\//-/g' | cut -c1-50)
             DEPLOY_PATH="preview/pr-${PR_NUMBER}-${SANITIZED_BRANCH}"
+            BASE_PATH="/nomad/${DEPLOY_PATH}"
 
             echo "deploy_path=${DEPLOY_PATH}" >> $GITHUB_OUTPUT
             echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/${DEPLOY_PATH}/" >> $GITHUB_OUTPUT
+            echo "base_path=${BASE_PATH}" >> $GITHUB_OUTPUT
             echo "is_preview=true" >> $GITHUB_OUTPUT
             echo "📍 Deploying PR preview to: /${DEPLOY_PATH}"
+            echo "📍 BASE_PATH: ${BASE_PATH}"
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
             # Production deployment
             echo "deploy_path=." >> $GITHUB_OUTPUT
             echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/" >> $GITHUB_OUTPUT
+            echo "base_path=/nomad" >> $GITHUB_OUTPUT
             echo "is_preview=false" >> $GITHUB_OUTPUT
             echo "📍 Deploying to: ROOT (production)"
           else
             # Develop deployment
             echo "deploy_path=develop" >> $GITHUB_OUTPUT
             echo "page_url=https://${{ github.repository_owner }}.github.io/${REPO_NAME}/develop/" >> $GITHUB_OUTPUT
+            echo "base_path=/nomad/develop" >> $GITHUB_OUTPUT
             echo "is_preview=false" >> $GITHUB_OUTPUT
             echo "📍 Deploying to: /develop (staging)"
           fi
+
+      - name: Generate test dashboard
+        run: |
+          echo "📊 Generating dashboard..."
+          echo "Using BASE_PATH: $BASE_PATH"
+          node scripts/generate-dashboard.js
+          echo "✅ Dashboard generated successfully"
+          echo "=== Final public directory structure ==="
+          ls -la public/
+          echo "=== Storybook files ==="
+          ls -la public/storybook/ | head -10
+          echo "=== Playwright report files ==="
+          ls -la public/playwright-report/ | head -10
+          echo "=== Coverage files ==="
+          ls -la public/coverage/ | head -10
+        env:
+          BASE_PATH: ${{ steps.set-path.outputs.base_path }}
 
       - name: Deploy to GitHub Pages
         # Here we use peaceiris/actions-gh-pages because official actions/deploy-pages and actions/configure-pages does not support setting custom destination_dir which we need for our branch-specific deployment.
