@@ -70,36 +70,32 @@ function FlightSegment({ flight }: FlightSegmentProps) {
         <span>{seatClassText}</span>
       </div>
 
-      {/* Time and Airport Info */}
-      <div className="flex items-center justify-between">
-        {/* Departure */}
-        <div className="flex flex-col items-start">
-          <div className="text-2xl font-semibold">
-            {formatFlightTime(departure)}
-          </div>
-          <div className="text-sm text-gray-500">
-            {flight.flight.departure.airport.name}
-          </div>
+      {/* Time and Duration Info */}
+      <div className="flex items-center justify-center gap-12">
+        <div className="text-2xl font-semibold">
+          {formatFlightTime(departure)}
         </div>
-
-        {/* Duration */}
-        <div className="flex flex-col items-center flex-1 px-4">
-          <div className="text-xs text-gray-400 mb-1">
-            <Clock className="h-3 w-3 inline" /> {hours}h{minutes}m
-          </div>
-          <div className="w-full border-t border-gray-300 relative">
-            <Plane className="h-4 w-4 text-gray-400 absolute -top-2 left-1/2 -translate-x-1/2 bg-white" />
-          </div>
+        <div className="flex items-center text-xs text-gray-400 gap-1">
+          <Clock className="h-3 w-3 inline" />{" "}
+          <span className="font-medium text-gray-500">
+            {hours}h{minutes}m
+          </span>
         </div>
+        <div className="text-2xl font-semibold">
+          {formatFlightTime(arrival)}
+        </div>
+      </div>
 
-        {/* Arrival */}
-        <div className="flex flex-col items-end">
-          <div className="text-2xl font-semibold">
-            {formatFlightTime(arrival)}
-          </div>
-          <div className="text-sm text-gray-500">
-            {flight.flight.arrival.airport.name}
-          </div>
+      {/* Airport Info */}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 w-full max-w-md">
+        <div className="text-sm font-bold text-right">
+          {flight.flight.departure.airport.name}
+        </div>
+        <div className="w-32 border-t border-gray-300 relative">
+          <Plane className="h-6 w-6 text-gray-400 absolute -top-3 left-1/2 -translate-x-1/2 bg-white rotate-45" />
+        </div>
+        <div className="text-sm font-bold text-left">
+          {flight.flight.arrival.airport.name}
         </div>
       </div>
     </div>
