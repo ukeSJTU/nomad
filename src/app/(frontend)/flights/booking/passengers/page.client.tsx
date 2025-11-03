@@ -4,6 +4,12 @@ import { Plus, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import {
+  type ContactInfo,
+  ContactInfoCard,
+  type ContactInfoValidationErrors,
+  validateContactInfo,
+} from "@/components/flights/contact-info-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -66,9 +72,13 @@ export function BookingPassengersPageClient({
       phone: "",
     },
   ]);
-  const [contactName, setContactName] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
+    method: "email",
+    email: "",
+    phone: "",
+  });
+  const [contactErrors, setContactErrors] =
+    useState<ContactInfoValidationErrors>({});
 
   const handleAddPassenger = () => {
     setPassengers([
@@ -111,7 +121,16 @@ export function BookingPassengersPageClient({
   };
 
   const handleNext = () => {
-    // TODO: Validate form data
+    // Validate contact information
+    const errors = validateContactInfo(contactInfo);
+    setContactErrors(errors);
+
+    // If there are validation errors, don't proceed
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+
+    // TODO: Validate passenger data
 
     // Build URL with flight seat class IDs
     const params = new URLSearchParams();
@@ -288,52 +307,16 @@ export function BookingPassengersPageClient({
       </Button>
 
       {/* Contact Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">联系人信息</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>
-              联系人姓名 <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              value={contactName}
-              onChange={e => setContactName(e.target.value)}
-              placeholder="请输入联系人姓名"
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>
-                联系电话 <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                value={contactPhone}
-                onChange={e => setContactPhone(e.target.value)}
-                placeholder="请输入联系电话"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>联系邮箱</Label>
-              <Input
-                type="email"
-                value={contactEmail}
-                onChange={e => setContactEmail(e.target.value)}
-                placeholder="请输入联系邮箱"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <ContactInfoCard
+        value={contactInfo}
+        onChange={setContactInfo}
+        errors={contactErrors}
+      />
 
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-4">
-        <Button variant="outline" onClick={() => router.back()}>
-          返回
-        </Button>
+      {/* Action Button */}
+      <div className="flex justify-end">
         <Button onClick={handleNext} size="lg">
-          下一步：选择增值服务
+          下一步
         </Button>
       </div>
     </div>
