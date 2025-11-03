@@ -1,8 +1,8 @@
 "use client";
 
 import { Plane, Plus, User } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,6 +67,13 @@ interface PassengerFormData {
 
 export default function BookingPassengersPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get flight seat class IDs from URL params
+  const seatClassId = searchParams.get("seatClassId"); // One-way
+  const outboundSeatClassId = searchParams.get("outboundSeatClassId"); // Round-trip outbound
+  const inboundSeatClassId = searchParams.get("inboundSeatClassId"); // Round-trip inbound
+
   const [selectedPassengers, setSelectedPassengers] = useState<string[]>([]);
   const [passengers, setPassengers] = useState<PassengerFormData[]>([
     {
@@ -81,6 +88,19 @@ export default function BookingPassengersPage() {
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
+
+  // Redirect to search page if no flight seat class IDs are provided
+  useEffect(() => {
+    if (!seatClassId && !outboundSeatClassId) {
+      router.replace("/flights");
+    }
+  }, [seatClassId, outboundSeatClassId, router]);
+
+  // TODO: Fetch actual flight details using these IDs
+  // For now, we're using mock data, but in the future:
+  // - Use seatClassId for one-way flights
+  // - Use outboundSeatClassId + inboundSeatClassId for round-trip flights
+  // - Query the database to get flight details, pricing, etc.
 
   const handleAddPassenger = () => {
     setPassengers([
@@ -124,7 +144,19 @@ export default function BookingPassengersPage() {
 
   const handleNext = () => {
     // TODO: Validate form data
-    router.push("/flights/booking/ancillary");
+
+    // Build URL with flight seat class IDs
+    const params = new URLSearchParams();
+    if (seatClassId) {
+      params.set("seatClassId", seatClassId);
+    } else if (outboundSeatClassId) {
+      params.set("outboundSeatClassId", outboundSeatClassId);
+      if (inboundSeatClassId) {
+        params.set("inboundSeatClassId", inboundSeatClassId);
+      }
+    }
+
+    router.push(`/flights/booking/ancillary?${params.toString()}`);
   };
 
   return (
