@@ -193,6 +193,7 @@ export const orderPassengers = pgTable(
     name: varchar({ length: 100 }).notNull(),
     identityType: documentTypeEnum("identity_type").notNull(),
     identityNumber: varchar("identity_number", { length: 50 }).notNull(),
+    phone: varchar({ length: 20 }), // Optional phone number
 
     // Timestamps
     createdAt: timestamp("created_at").notNull().defaultNow(),
