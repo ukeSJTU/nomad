@@ -417,9 +417,9 @@ jobs:
             echo "will_deploy=true" >> $GITHUB_OUTPUT
             echo "deploy_url=https://ukesjtu.github.io/nomad/" >> $GITHUB_OUTPUT
           elif [ "${{ github.base_ref }}" == "develop" ]; then
-            echo "env_name=Development" >> $GITHUB_OUTPUT
-            echo "will_deploy=false" >> $GITHUB_OUTPUT
-            echo "deploy_url=N/A" >> $GITHUB_OUTPUT
+            echo "env_name=Development (Staging)" >> $GITHUB_OUTPUT
+            echo "will_deploy=true" >> $GITHUB_OUTPUT
+            echo "deploy_url=https://ukesjtu.github.io/nomad/develop/" >> $GITHUB_OUTPUT
           else
             echo "env_name=Unknown" >> $GITHUB_OUTPUT
             echo "will_deploy=false" >> $GITHUB_OUTPUT
@@ -449,8 +449,8 @@ jobs:
             ### **Deployment Info**
             - **Target Branch**: `${{ github.base_ref }}`
             - **Environment**: ${{ steps.env.outputs.env_name }}
-            - **Will Deploy**: ${{ steps.env.outputs.will_deploy == 'true' && '✅ Yes (after merge to main)' || '❌ No (artifacts only)' }}
-            ${{ steps.env.outputs.will_deploy == 'true' && format('- **Production URL**: {0}', steps.env.outputs.deploy_url) || '' }}
+            - **Will Deploy**: ${{ steps.env.outputs.will_deploy == 'true' && '✅ Yes (after merge)' || '❌ No (artifacts only)' }}
+            ${{ steps.env.outputs.will_deploy == 'true' && format('- **Deployment URL**: {0}', steps.env.outputs.deploy_url) || '' }}
 
             ### **Quick Stats**
             - **Workflow Run**: [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
@@ -459,4 +459,4 @@ jobs:
 
             ---
 
-            ${{ steps.env.outputs.will_deploy == 'true' && '🚀 **This PR will deploy to production after merging to main**' || '📦 **Artifacts are ready for review. No deployment will occur.**' }}
+            ${{ steps.env.outputs.will_deploy == 'true' && format('🚀 **This PR will deploy to {0} after merging to {1}**', steps.env.outputs.env_name, github.base_ref) || '📦 **Artifacts are ready for review. No deployment will occur.**' }}
