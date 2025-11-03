@@ -371,6 +371,7 @@ jobs:
           fi
 
       - name: Deploy to GitHub Pages
+        # Here we use peaceiris/actions-gh-pages because official actions/deploy-pages and actions/configure-pages does not support setting custom destination_dir which we need for our branch-specific deployment.
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
