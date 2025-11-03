@@ -52,10 +52,12 @@ export const paymentStatusEnum = pgEnum("payment_status", [
  * - Track order status and payment lifecycle
  * - Snapshot pricing information at order creation time
  * - Support ancillary services (insurance, meals, etc.)
+ * - Support both one-way and round-trip bookings
  *
  * Relationships:
  * - Order → User (Many-to-One)
- * - Order → FlightSeatClass (Many-to-One) - Key: links to seat class, not flight
+ * - Order → Outbound FlightSeatClass (Many-to-One) - For one-way or round-trip outbound
+ * - Order → Inbound FlightSeatClass (Many-to-One, optional) - For round-trip inbound
  * - Order → OrderPassengers (One-to-Many)
  * - Order → Payment (One-to-One)
  *
@@ -65,6 +67,8 @@ export const paymentStatusEnum = pgEnum("payment_status", [
  * - Price snapshot: pricePerTicket is captured from FlightSeatClass.price at order creation
  * - Total amount = baseAmount + ancillaryAmount
  * - Soft delete: deletedAt is null for active orders, has value for deleted orders
+ * - For one-way trips: only outboundFlightSeatClassId is set, inboundFlightSeatClassId is NULL
+ * - For round-trip: both outboundFlightSeatClassId and inboundFlightSeatClassId are set
  */
 export const orders = pgTable(
   "orders",
@@ -78,9 +82,15 @@ export const orders = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "restrict" }),
-    flightSeatClassId: uuid("flight_seat_class_id")
+
+    // Flight Seat Class Relationships (supports both one-way and round-trip)
+    outboundFlightSeatClassId: uuid("outbound_flight_seat_class_id")
       .notNull()
       .references(() => flightSeatClasses.id, { onDelete: "restrict" }),
+    inboundFlightSeatClassId: uuid("inbound_flight_seat_class_id").references(
+      () => flightSeatClasses.id,
+      { onDelete: "restrict" }
+    ),
 
     // Status and Timing
     status: orderStatusEnum().notNull().default("PENDING_PAYMENT"),
@@ -126,7 +136,12 @@ export const orders = pgTable(
     index("idx_orders_user_id").on(table.userId),
     index("idx_orders_order_number").on(table.orderNumber),
     index("idx_orders_status").on(table.status),
-    index("idx_orders_flight_seat_class_id").on(table.flightSeatClassId),
+    index("idx_orders_outbound_flight_seat_class_id").on(
+      table.outboundFlightSeatClassId
+    ),
+    index("idx_orders_inbound_flight_seat_class_id").on(
+      table.inboundFlightSeatClassId
+    ),
     index("idx_orders_payment_deadline").on(table.paymentDeadline),
     index("idx_orders_deleted_at").on(table.deletedAt),
     index("idx_orders_created_at").on(table.createdAt),
