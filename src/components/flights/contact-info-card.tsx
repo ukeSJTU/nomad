@@ -138,7 +138,7 @@ export function ContactInfoCard({
               type="email"
               value={value.email}
               onChange={e => handleEmailChange(e.target.value)}
-              placeholder="example@email.com"
+              placeholder="邮箱地址，接收航变信息"
               className={errors.email ? "border-red-500" : ""}
             />
             {errors.email && (
@@ -158,7 +158,7 @@ export function ContactInfoCard({
               type="tel"
               value={value.phone}
               onChange={e => handlePhoneChange(e.target.value)}
-              placeholder="13800138000"
+              placeholder="手机号，接收航变信息"
               className={errors.phone ? "border-red-500" : ""}
             />
             {errors.phone && (
