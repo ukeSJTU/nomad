@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
 import { db } from "@/lib/db";
@@ -9,6 +9,7 @@ import {
   flights,
   flightSeatClasses,
 } from "@/lib/schema";
+import { passengers } from "@/lib/schema/passengers";
 
 /**
  * Flight seat class details with full flight information
@@ -181,4 +182,49 @@ export async function getFlightSeatClassesByIds(
   return results.filter(
     (result): result is FlightSeatClassDetails => result !== null
   );
+}
+
+/**
+ * Saved passenger information for quick selection
+ */
+export type SavedPassenger = {
+  id: string;
+  name: string;
+  documentType: "passport" | "id_card" | "other";
+  documentNumber: string;
+  phone: string | null;
+};
+
+/**
+ * Get user's saved passengers (frequent travelers)
+ * Only returns non-deleted passengers
+ */
+export async function getSavedPassengers(
+  userId: string
+): Promise<SavedPassenger[]> {
+  const result = await db
+    .select({
+      id: passengers.id,
+      chineseName: passengers.chineseName,
+      englishFirstName: passengers.englishFirstName,
+      englishLastName: passengers.englishLastName,
+      documentType: passengers.documentType,
+      documentNumber: passengers.documentNumber,
+      phone: passengers.phone,
+    })
+    .from(passengers)
+    .where(and(eq(passengers.userId, userId), eq(passengers.isDeleted, false)));
+
+  return result.map(p => ({
+    id: p.id,
+    // Prefer Chinese name, fallback to English name
+    name:
+      p.chineseName ||
+      (p.englishFirstName && p.englishLastName
+        ? `${p.englishLastName} ${p.englishFirstName}`
+        : ""),
+    documentType: p.documentType,
+    documentNumber: p.documentNumber,
+    phone: p.phone,
+  }));
 }
