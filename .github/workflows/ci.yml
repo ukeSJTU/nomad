@@ -464,6 +464,25 @@ jobs:
             echo "deploy_url=N/A" >> $GITHUB_OUTPUT
           fi
 
+      - name: Build preview message
+        id: preview-msg
+        if: needs.deploy.outputs.is_preview == 'true'
+        run: |
+          cat << 'EOF' >> $GITHUB_OUTPUT
+          preview_section<<PREVIEW_EOF
+          ### **🚀 Live Preview**
+
+          ✨ **[View Preview Deployment](${{ needs.deploy.outputs.page_url }})** ✨
+
+          This preview includes:
+          - 📚 [Storybook](${{ needs.deploy.outputs.page_url }}storybook/) - Component library
+          - 🎭 [E2E Test Report](${{ needs.deploy.outputs.page_url }}playwright-report/) - Playwright results
+          - 📈 [Coverage Report](${{ needs.deploy.outputs.page_url }}coverage/) - Unit test coverage
+          - 📊 [Test Dashboard](${{ needs.deploy.outputs.page_url }}) - Overview of all reports
+
+          PREVIEW_EOF
+          EOF
+
       - name: Comment PR with artifact links
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -473,7 +492,7 @@ jobs:
 
             All tests have been completed! Test reports are available as workflow artifacts.
 
-            ${{ needs.deploy.outputs.is_preview == 'true' && format('### **🚀 Live Preview**\n\n✨ **[View Preview Deployment]({0})** ✨\n\nThis preview includes:\n- 📚 [Storybook]({0}storybook/) - Component library\n- 🎭 [E2E Test Report]({0}playwright-report/) - Playwright results\n- 📈 [Coverage Report]({0}coverage/) - Unit test coverage\n- 📊 [Test Dashboard]({0}) - Overview of all reports\n', needs.deploy.outputs.page_url) || '' }}
+            ${{ steps.preview-msg.outputs.preview_section }}
 
             ### **Download Artifacts**
             - 📚 **[Storybook Build](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)** - Component library documentation
