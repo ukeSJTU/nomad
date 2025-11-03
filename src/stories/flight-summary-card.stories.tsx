@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { FlightSummaryCard } from "./flight-summary-card";
+import { FlightSummaryCard } from "@/components/flights/flight-summary-card";
 
 const meta: Meta<typeof FlightSummaryCard> = {
   title: "Flights/FlightSummaryCard",
