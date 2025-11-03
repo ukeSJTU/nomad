@@ -1,9 +1,11 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { FlightSummaryCard } from "@/components/flights/flight-summary-card";
+import { auth } from "@/lib/auth";
 
 import { BookingPassengersPageClient } from "./page.client";
-import { getFlightSeatClassById, getFlightSeatClassesByIds } from "./queries";
+import { getFlightSeatClassById, getSavedPassengers } from "./queries";
 
 interface BookingPassengersPageProps {
   searchParams: Promise<{
@@ -23,23 +25,33 @@ export default async function BookingPassengersPage({
     redirect("/flights");
   }
 
-  // Fetch flight details based on trip type
-  let outboundFlight = null;
-  let inboundFlight = null;
+  // Get user session
+  const headersList = await headers();
+  const session = await auth.api.getSession({
+    headers: headersList,
+  });
 
-  if (params.seatClassId) {
-    // One-way flight
-    outboundFlight = await getFlightSeatClassById(params.seatClassId);
-  } else if (params.outboundSeatClassId) {
-    // Round-trip flight
-    const flights = await getFlightSeatClassesByIds([
-      params.outboundSeatClassId,
-      ...(params.inboundSeatClassId ? [params.inboundSeatClassId] : []),
+  // Redirect to sign-in if not authenticated
+  if (!session?.user?.id) {
+    redirect("/auth/sign-in");
+  }
+
+  // Fetch flight details and saved passengers in parallel
+  const [outboundFlightData, inboundFlightData, savedPassengers] =
+    await Promise.all([
+      params.seatClassId
+        ? getFlightSeatClassById(params.seatClassId)
+        : params.outboundSeatClassId
+          ? getFlightSeatClassById(params.outboundSeatClassId)
+          : null,
+      params.inboundSeatClassId
+        ? getFlightSeatClassById(params.inboundSeatClassId)
+        : null,
+      getSavedPassengers(session.user.id),
     ]);
 
-    outboundFlight = flights[0] || null;
-    inboundFlight = flights[1] || null;
-  }
+  const outboundFlight = outboundFlightData;
+  const inboundFlight = inboundFlightData;
 
   // If flight data not found, redirect back to search
   if (!outboundFlight) {
@@ -54,6 +66,7 @@ export default async function BookingPassengersPage({
           seatClassId={params.seatClassId}
           outboundSeatClassId={params.outboundSeatClassId}
           inboundSeatClassId={params.inboundSeatClassId}
+          savedPassengers={savedPassengers}
         />
       </div>
 

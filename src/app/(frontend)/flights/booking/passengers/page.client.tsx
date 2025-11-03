@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, User } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -24,21 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-// Mock saved passengers
-const MOCK_SAVED_PASSENGERS = [
-  {
-    id: "1",
-    name: "张三",
-    documentType: "身份证",
-    documentNumber: "110101199001011234",
-  },
-  {
-    id: "2",
-    name: "李四",
-    documentType: "护照",
-    documentNumber: "E12345678",
-  },
-];
+import type { SavedPassenger } from "./queries";
 
 interface PassengerFormData {
   chineseName: string;
@@ -53,12 +39,14 @@ interface BookingPassengersPageClientProps {
   seatClassId?: string;
   outboundSeatClassId?: string;
   inboundSeatClassId?: string;
+  savedPassengers: SavedPassenger[];
 }
 
 export function BookingPassengersPageClient({
   seatClassId,
   outboundSeatClassId,
   inboundSeatClassId,
+  savedPassengers,
 }: BookingPassengersPageClientProps) {
   const router = useRouter();
   const [selectedPassengers, setSelectedPassengers] = useState<string[]>([]);
@@ -149,34 +137,29 @@ export function BookingPassengersPageClient({
   return (
     <div className="space-y-6">
       {/* Saved Passengers Section */}
-      {MOCK_SAVED_PASSENGERS.length > 0 && (
+      {savedPassengers.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <User className="h-5 w-5" />
-              选择常用旅客
-            </CardTitle>
+            <CardTitle className="text-lg">常用旅客</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {MOCK_SAVED_PASSENGERS.map(passenger => (
-              <div
-                key={passenger.id}
-                className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50"
-              >
-                <Checkbox
-                  checked={selectedPassengers.includes(passenger.id)}
-                  onCheckedChange={() =>
-                    handleSelectSavedPassenger(passenger.id)
-                  }
-                />
-                <div className="flex-1">
-                  <div className="font-medium">{passenger.name}</div>
-                  <div className="text-sm text-gray-500">
-                    {passenger.documentType} {passenger.documentNumber}
-                  </div>
+          <CardContent>
+            <div className="flex flex-wrap gap-3">
+              {savedPassengers.map(passenger => (
+                <div
+                  key={passenger.id}
+                  className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handleSelectSavedPassenger(passenger.id)}
+                >
+                  <Checkbox
+                    checked={selectedPassengers.includes(passenger.id)}
+                    onCheckedChange={() =>
+                      handleSelectSavedPassenger(passenger.id)
+                    }
+                  />
+                  <span className="text-sm">{passenger.name}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </CardContent>
         </Card>
       )}
