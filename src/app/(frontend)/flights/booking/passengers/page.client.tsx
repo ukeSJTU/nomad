@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import {
   type ContactInfo,
@@ -49,41 +49,39 @@ export function BookingPassengersPageClient({
   });
   const [contactErrors, setContactErrors] =
     useState<ContactInfoValidationErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleNext = async () => {
-    // Clear previous errors
-    setSubmitError(null);
+  // Use useActionState for form submission
+  const [state, formAction, isPending] = useActionState(
+    async (_prevState: unknown, _formData: FormData) => {
+      // Clear previous errors
+      setContactErrors({});
 
-    // Validate contact information
-    const errors = validateContactInfo(contactInfo);
-    setContactErrors(errors);
+      // Validate contact information
+      const errors = validateContactInfo(contactInfo);
+      setContactErrors(errors);
 
-    // If there are validation errors, don't proceed
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
+      // If there are validation errors, don't proceed
+      if (Object.keys(errors).length > 0) {
+        return { success: false, error: "Please check contact information" };
+      }
 
-    // TODO: Validate passenger data
-    // For now, basic validation: check if all required fields are filled
-    const hasEmptyFields = passengers.some(
-      p =>
-        !p.englishFirstName ||
-        !p.englishLastName ||
-        !p.documentType ||
-        !p.documentNumber
-    );
+      // Validate passenger data
+      const hasEmptyFields = passengers.some(
+        p =>
+          !p.englishFirstName ||
+          !p.englishLastName ||
+          !p.documentType ||
+          !p.documentNumber
+      );
 
-    if (hasEmptyFields) {
-      setSubmitError("Please fill in all required passenger information");
-      return;
-    }
+      if (hasEmptyFields) {
+        return {
+          success: false,
+          error: "Please fill in all required passenger information",
+        };
+      }
 
-    // Create order
-    setIsSubmitting(true);
-
-    try {
+      // Create order
       const result = await createOrderAction({
         outboundSeatClassId: seatClassId || outboundSeatClassId!,
         inboundSeatClassId,
@@ -91,57 +89,64 @@ export function BookingPassengersPageClient({
         contactInfo,
       });
 
-      if (!result.success) {
-        setSubmitError(result.error || "Failed to create order");
-        setIsSubmitting(false);
-        return;
-      }
+      return result;
+    },
+    null
+  );
 
-      // Navigate to ancillary page with order ID
+  // Navigate on successful order creation
+  useEffect(() => {
+    if (state?.success && state.data?.orderId) {
       const params = new URLSearchParams();
-      params.set("orderId", result.data!.orderId);
-
+      params.set("orderId", state.data.orderId);
       router.push(`/flights/booking/ancillary?${params.toString()}`);
-    } catch (error) {
-      console.error("Error creating order:", error);
-      setSubmitError("An unexpected error occurred. Please try again.");
-      setIsSubmitting(false);
+    }
+  }, [state, router]);
+
+  const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // Trigger the form action
+    const form = e.currentTarget.form;
+    if (form) {
+      form.requestSubmit();
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Passenger Information Section */}
-      <PassengerFormCard
-        passengers={passengers}
-        savedPassengers={savedPassengers}
-        selectedPassengerIds={selectedPassengers}
-        onChange={handlePassengerChange}
-        onToggleSavedPassenger={handleSelectSavedPassenger}
-        onRemovePassenger={handleRemovePassenger}
-        onAddPassenger={handleAddPassenger}
-      />
+    <form action={formAction}>
+      <div className="space-y-6">
+        {/* Passenger Information Section */}
+        <PassengerFormCard
+          passengers={passengers}
+          savedPassengers={savedPassengers}
+          selectedPassengerIds={selectedPassengers}
+          onChange={handlePassengerChange}
+          onToggleSavedPassenger={handleSelectSavedPassenger}
+          onRemovePassenger={handleRemovePassenger}
+          onAddPassenger={handleAddPassenger}
+        />
 
-      {/* Contact Information */}
-      <ContactInfoCard
-        value={contactInfo}
-        onChange={setContactInfo}
-        errors={contactErrors}
-      />
+        {/* Contact Information */}
+        <ContactInfoCard
+          value={contactInfo}
+          onChange={setContactInfo}
+          errors={contactErrors}
+        />
 
-      {/* Error Message */}
-      {submitError && (
-        <Alert variant="destructive">
-          <AlertDescription>{submitError}</AlertDescription>
-        </Alert>
-      )}
+        {/* Error Message */}
+        {state?.error && (
+          <Alert variant="destructive">
+            <AlertDescription>{state.error}</AlertDescription>
+          </Alert>
+        )}
 
-      {/* Action Button */}
-      <div className="flex justify-end">
-        <Button onClick={handleNext} size="lg" disabled={isSubmitting}>
-          {isSubmitting ? "创建订单中..." : "下一步"}
-        </Button>
+        {/* Action Button */}
+        <div className="flex justify-end">
+          <Button onClick={handleNext} size="lg" disabled={isPending}>
+            {isPending ? "创建订单中..." : "下一步"}
+          </Button>
+        </div>
       </div>
-    </div>
+    </form>
   );
 }
