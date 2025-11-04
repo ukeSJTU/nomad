@@ -54,7 +54,13 @@ export function AncillarySelection({
       <div
         key={service.code}
         className="flex items-start space-x-3 p-4 rounded-lg border hover:bg-accent/50 cursor-pointer transition-colors"
-        onClick={() => onToggleService(service.code)}
+        onClick={e => {
+          // Prevent double-firing when clicking on checkbox
+          if ((e.target as HTMLElement).closest('button[role="checkbox"]')) {
+            return;
+          }
+          onToggleService(service.code);
+        }}
       >
         <Checkbox
           id={service.code}

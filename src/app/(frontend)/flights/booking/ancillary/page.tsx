@@ -8,7 +8,10 @@ import { AncillarySelection } from "@/components/flights/ancillary-selection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
+import {
+  getAncillaryServiceByCode,
+  getAncillaryServicesByCategory,
+} from "@/lib/schema/ancillary";
 
 // Mock flight data
 const MOCK_FLIGHT = {
@@ -23,11 +26,28 @@ export default function BookingAncillaryPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   const handleToggleService = (code: string) => {
-    if (selectedServices.includes(code)) {
-      setSelectedServices(selectedServices.filter(c => c !== code));
-    } else {
-      setSelectedServices([...selectedServices, code]);
-    }
+    setSelectedServices(prevSelected => {
+      // If already selected, deselect it
+      if (prevSelected.includes(code)) {
+        return prevSelected.filter(c => c !== code);
+      }
+
+      // Get the service being selected
+      const service = getAncillaryServiceByCode(code);
+      if (!service) return prevSelected;
+
+      // Get all services in the same category
+      const categoryServices = getAncillaryServicesByCategory(service.category);
+      const categoryServiceCodes = categoryServices.map(s => s.code);
+
+      // Remove any previously selected service from the same category
+      const filteredServices = prevSelected.filter(
+        c => !categoryServiceCodes.includes(c)
+      );
+
+      // Add the new service
+      return [...filteredServices, code];
+    });
   };
 
   const calculateTotal = () => {
