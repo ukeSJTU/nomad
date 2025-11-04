@@ -5,7 +5,7 @@ import {
   type ContactInfo,
   ContactInfoCard,
   type ContactInfoValidationErrors,
-} from "./contact-info-card";
+} from "@/components/flights/contact-info-card";
 
 const meta: Meta<typeof ContactInfoCard> = {
   title: "Flights/ContactInfoCard",

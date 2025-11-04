@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   PassengerFormCard,
   type PassengerFormData,
-} from "./passenger-form-card";
+} from "@/components/flights/passenger-form-card";
 
 const meta: Meta<typeof PassengerFormCard> = {
   title: "Flights/PassengerFormCard",
