@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { usePassengerForms } from "@/hooks/use-passenger-forms";
 import { createOrderAction } from "@/lib/actions/orders";
+import type { CreateOrderResult } from "@/types/actions/orders";
 
 import type { SavedPassenger } from "./queries";
 
@@ -52,7 +53,10 @@ export function BookingPassengersPageClient({
 
   // Use useActionState for form submission
   const [state, formAction, isPending] = useActionState(
-    async (_prevState: unknown, _formData: FormData) => {
+    async (
+      _prevState: CreateOrderResult | null,
+      _formData: FormData
+    ): Promise<CreateOrderResult> => {
       // Clear previous errors
       setContactErrors({});
 
