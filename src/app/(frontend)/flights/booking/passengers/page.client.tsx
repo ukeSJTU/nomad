@@ -1,6 +1,5 @@
 "use client";
 
-import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -228,28 +227,16 @@ export function BookingPassengersPageClient({
 
   return (
     <div className="space-y-6">
-      {/* Passenger Information Forms */}
-      {passengers.map((passenger, index) => (
-        <PassengerFormCard
-          key={index}
-          passengerNumber={index + 1}
-          data={passenger}
-          savedPassengers={savedPassengers}
-          selectedPassengerIds={selectedPassengers}
-          onChange={(field, value) =>
-            handlePassengerChange(index, field, value)
-          }
-          onToggleSavedPassenger={handleSelectSavedPassenger}
-          onRemove={() => handleRemovePassenger(index)}
-          showRemove={passengers.length > 1}
-        />
-      ))}
-
-      {/* Add Passenger Button */}
-      <Button variant="outline" className="w-full" onClick={handleAddPassenger}>
-        <Plus className="h-4 w-4 mr-2" />
-        添加乘机人
-      </Button>
+      {/* Passenger Information Section */}
+      <PassengerFormCard
+        passengers={passengers}
+        savedPassengers={savedPassengers}
+        selectedPassengerIds={selectedPassengers}
+        onChange={handlePassengerChange}
+        onToggleSavedPassenger={handleSelectSavedPassenger}
+        onRemovePassenger={handleRemovePassenger}
+        onAddPassenger={handleAddPassenger}
+      />
 
       {/* Contact Information */}
       <ContactInfoCard

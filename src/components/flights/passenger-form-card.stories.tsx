@@ -56,82 +56,105 @@ const mockSavedPassengers = [
  * Wrapper component to manage state for the story
  */
 function PassengerFormCardWrapper({
-  initialData,
+  initialPassengers,
   savedPassengers,
-  passengerNumber = 1,
-  showRemove = false,
 }: {
-  initialData: PassengerFormData;
+  initialPassengers: PassengerFormData[];
   savedPassengers: typeof mockSavedPassengers;
-  passengerNumber?: number;
-  showRemove?: boolean;
 }) {
-  const [data, setData] = useState<PassengerFormData>(initialData);
+  const [passengers, setPassengers] =
+    useState<PassengerFormData[]>(initialPassengers);
   const [selectedPassengerIds, setSelectedPassengerIds] = useState<string[]>(
     []
   );
 
-  const handleChange = (field: keyof PassengerFormData, value: string) => {
-    setData(prev => ({ ...prev, [field]: value }));
+  const handleChange = (
+    index: number,
+    field: keyof PassengerFormData,
+    value: string
+  ) => {
+    const updated = [...passengers];
+    updated[index][field] = value;
+    setPassengers(updated);
   };
 
   const handleToggleSavedPassenger = (passengerId: string) => {
     if (selectedPassengerIds.includes(passengerId)) {
-      // Deselect: remove from list and clear form
+      // Deselect: remove from list
       setSelectedPassengerIds(prev => prev.filter(id => id !== passengerId));
-      setData({
+    } else {
+      // Select: add to list and fill first empty form
+      setSelectedPassengerIds(prev => [...prev, passengerId]);
+      const savedPassenger = savedPassengers.find(p => p.id === passengerId);
+      if (savedPassenger) {
+        const emptyIndex = passengers.findIndex(
+          p => !p.chineseName && !p.documentNumber
+        );
+        if (emptyIndex !== -1) {
+          const updated = [...passengers];
+          updated[emptyIndex] = {
+            chineseName: savedPassenger.chineseName || "",
+            englishFirstName: savedPassenger.englishFirstName || "",
+            englishLastName: savedPassenger.englishLastName || "",
+            documentType: savedPassenger.documentType,
+            documentNumber: savedPassenger.documentNumber,
+            phone: savedPassenger.phone || "",
+          };
+          setPassengers(updated);
+        }
+      }
+    }
+  };
+
+  const handleAddPassenger = () => {
+    setPassengers([
+      ...passengers,
+      {
         chineseName: "",
         englishFirstName: "",
         englishLastName: "",
         documentType: "id_card",
         documentNumber: "",
         phone: "",
-      });
-    } else {
-      // Select: add to list and fill form
-      setSelectedPassengerIds(prev => [...prev, passengerId]);
-      const savedPassenger = savedPassengers.find(p => p.id === passengerId);
-      if (savedPassenger) {
-        setData({
-          chineseName: savedPassenger.chineseName || "",
-          englishFirstName: savedPassenger.englishFirstName || "",
-          englishLastName: savedPassenger.englishLastName || "",
-          documentType: savedPassenger.documentType,
-          documentNumber: savedPassenger.documentNumber,
-          phone: savedPassenger.phone || "",
-        });
-      }
+      },
+    ]);
+  };
+
+  const handleRemovePassenger = (index: number) => {
+    if (passengers.length > 1) {
+      setPassengers(passengers.filter((_, i) => i !== index));
     }
   };
 
   return (
     <PassengerFormCard
-      passengerNumber={passengerNumber}
-      data={data}
+      passengers={passengers}
       savedPassengers={savedPassengers}
       selectedPassengerIds={selectedPassengerIds}
       onChange={handleChange}
       onToggleSavedPassenger={handleToggleSavedPassenger}
-      onRemove={() => alert("Remove passenger")}
-      showRemove={showRemove}
+      onRemovePassenger={handleRemovePassenger}
+      onAddPassenger={handleAddPassenger}
     />
   );
 }
 
 /**
- * Default state - Empty form with saved passengers
+ * Default state - Single empty passenger with saved passengers
  */
 export const Default: Story = {
   render: () => (
     <PassengerFormCardWrapper
-      initialData={{
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
-        documentType: "id_card",
-        documentNumber: "",
-        phone: "",
-      }}
+      initialPassengers={[
+        {
+          chineseName: "",
+          englishFirstName: "",
+          englishLastName: "",
+          documentType: "id_card",
+          documentNumber: "",
+          phone: "",
+        },
+      ]}
       savedPassengers={mockSavedPassengers}
     />
   ),
@@ -143,91 +166,67 @@ export const Default: Story = {
 export const NoSavedPassengers: Story = {
   render: () => (
     <PassengerFormCardWrapper
-      initialData={{
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
-        documentType: "id_card",
-        documentNumber: "",
-        phone: "",
-      }}
-      savedPassengers={[]}
-    />
-  ),
-};
-
-/**
- * Form with pre-filled data
- */
-export const PreFilled: Story = {
-  render: () => (
-    <PassengerFormCardWrapper
-      initialData={{
-        chineseName: "张三",
-        englishFirstName: "San",
-        englishLastName: "Zhang",
-        documentType: "id_card",
-        documentNumber: "110101199001011234",
-        phone: "13800138000",
-      }}
-      savedPassengers={mockSavedPassengers}
-    />
-  ),
-};
-
-/**
- * Second passenger with remove button
- */
-export const SecondPassengerWithRemove: Story = {
-  render: () => (
-    <PassengerFormCardWrapper
-      initialData={{
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
-        documentType: "id_card",
-        documentNumber: "",
-        phone: "",
-      }}
-      savedPassengers={mockSavedPassengers}
-      passengerNumber={2}
-      showRemove={true}
-    />
-  ),
-};
-
-/**
- * Multiple passengers in a list
- */
-export const MultiplePassengers: Story = {
-  render: () => (
-    <div className="space-y-6">
-      <PassengerFormCardWrapper
-        initialData={{
-          chineseName: "张三",
-          englishFirstName: "San",
-          englishLastName: "Zhang",
-          documentType: "id_card",
-          documentNumber: "110101199001011234",
-          phone: "13800138000",
-        }}
-        savedPassengers={mockSavedPassengers}
-        passengerNumber={1}
-        showRemove={false}
-      />
-      <PassengerFormCardWrapper
-        initialData={{
+      initialPassengers={[
+        {
           chineseName: "",
           englishFirstName: "",
           englishLastName: "",
           documentType: "id_card",
           documentNumber: "",
           phone: "",
-        }}
-        savedPassengers={mockSavedPassengers}
-        passengerNumber={2}
-        showRemove={true}
-      />
-    </div>
+        },
+      ]}
+      savedPassengers={[]}
+    />
+  ),
+};
+
+/**
+ * Single passenger with pre-filled data
+ */
+export const PreFilled: Story = {
+  render: () => (
+    <PassengerFormCardWrapper
+      initialPassengers={[
+        {
+          chineseName: "张三",
+          englishFirstName: "San",
+          englishLastName: "Zhang",
+          documentType: "id_card",
+          documentNumber: "110101199001011234",
+          phone: "13800138000",
+        },
+      ]}
+      savedPassengers={mockSavedPassengers}
+    />
+  ),
+};
+
+/**
+ * Multiple passengers - one filled, one empty
+ */
+export const MultiplePassengers: Story = {
+  render: () => (
+    <PassengerFormCardWrapper
+      initialPassengers={[
+        {
+          chineseName: "张三",
+          englishFirstName: "San",
+          englishLastName: "Zhang",
+          documentType: "id_card",
+          documentNumber: "110101199001011234",
+          phone: "13800138000",
+        },
+        {
+          chineseName: "李四",
+          englishFirstName: "Si",
+          englishLastName: "Li",
+          documentType: "passport",
+          documentNumber: "E12345678",
+          phone: "13900139000",
+        },
+      ]}
+      savedPassengers={mockSavedPassengers}
+    />
   ),
 };
