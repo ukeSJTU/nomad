@@ -2,7 +2,7 @@
 
 import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import { AncillarySelection } from "@/components/flights/ancillary-selection";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -14,9 +14,12 @@ import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
 } from "@/lib/schema/ancillary";
+import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
+
+import type { OrderWithDetails } from "./queries";
 
 interface BookingAncillaryPageClientProps {
-  order: any; // TODO: Type this properly
+  order: OrderWithDetails;
 }
 
 export function BookingAncillaryPageClient({
@@ -24,8 +27,28 @@ export function BookingAncillaryPageClient({
 }: BookingAncillaryPageClientProps) {
   const router = useRouter();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Use React 19's useActionState for form submission
+  const [state, formAction, isPending] = useActionState(
+    async (
+      _prevState: UpdateOrderAncillaryResult | null,
+      _formData: FormData
+    ): Promise<UpdateOrderAncillaryResult> => {
+      const result = await updateOrderAncillaryAction({
+        orderId: order.id,
+        ancillaryServiceCodes: selectedServices,
+      });
+      return result;
+    },
+    null
+  );
+
+  // Navigate to payment page on successful submission
+  useEffect(() => {
+    if (state?.success) {
+      router.push(`/flights/booking/payment?orderId=${order.id}`);
+    }
+  }, [state, router, order.id]);
 
   const handleToggleService = (code: string) => {
     setSelectedServices(prevSelected => {
@@ -63,29 +86,9 @@ export function BookingAncillaryPageClient({
     return total;
   };
 
-  const handleNext = async () => {
-    setSubmitError(null);
-    setIsSubmitting(true);
-
-    try {
-      const result = await updateOrderAncillaryAction(
-        order.id,
-        selectedServices
-      );
-
-      if (!result.success) {
-        setSubmitError(result.error || "Failed to update order");
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Navigate to payment page with order ID
-      router.push(`/flights/booking/payment?orderId=${order.id}`);
-    } catch (error) {
-      console.error("Error updating order:", error);
-      setSubmitError("An unexpected error occurred. Please try again.");
-      setIsSubmitting(false);
-    }
+  const handleNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    formAction(new FormData());
   };
 
   return (
@@ -98,25 +101,28 @@ export function BookingAncillaryPageClient({
         />
 
         {/* Error Message */}
-        {submitError && (
+        {state && !state.success && (
           <Alert variant="destructive">
-            <AlertDescription>{submitError}</AlertDescription>
+            <AlertDescription>{state.error}</AlertDescription>
           </Alert>
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-between gap-4">
-          <Button
-            variant="outline"
-            onClick={() => router.back()}
-            disabled={isSubmitting}
-          >
-            上一步
-          </Button>
-          <Button onClick={handleNext} size="lg" disabled={isSubmitting}>
-            {isSubmitting ? "更新订单中..." : "下一步：确认支付"}
-          </Button>
-        </div>
+        <form onSubmit={handleNext}>
+          <div className="flex justify-between gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+              disabled={isPending}
+            >
+              上一步
+            </Button>
+            <Button type="submit" size="lg" disabled={isPending}>
+              {isPending ? "更新订单中..." : "下一步：确认支付"}
+            </Button>
+          </div>
+        </form>
       </div>
 
       {/* Right Sidebar - Order Summary */}
