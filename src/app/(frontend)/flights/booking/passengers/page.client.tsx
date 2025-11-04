@@ -13,7 +13,9 @@ import {
   PassengerFormCard,
   type PassengerFormData,
 } from "@/components/flights/passenger-form-card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { createOrderAction } from "@/lib/actions/orders";
 
 import type { SavedPassenger } from "./queries";
 
@@ -53,6 +55,8 @@ export function BookingPassengersPageClient({
   });
   const [contactErrors, setContactErrors] =
     useState<ContactInfoValidationErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleAddPassenger = () => {
     setPassengers([
@@ -199,7 +203,10 @@ export function BookingPassengersPageClient({
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // Clear previous errors
+    setSubmitError(null);
+
     // Validate contact information
     const errors = validateContactInfo(contactInfo);
     setContactErrors(errors);
@@ -210,19 +217,47 @@ export function BookingPassengersPageClient({
     }
 
     // TODO: Validate passenger data
+    // For now, basic validation: check if all required fields are filled
+    const hasEmptyFields = passengers.some(
+      p =>
+        !p.englishFirstName ||
+        !p.englishLastName ||
+        !p.documentType ||
+        !p.documentNumber
+    );
 
-    // Build URL with flight seat class IDs
-    const params = new URLSearchParams();
-    if (seatClassId) {
-      params.set("seatClassId", seatClassId);
-    } else if (outboundSeatClassId) {
-      params.set("outboundSeatClassId", outboundSeatClassId);
-      if (inboundSeatClassId) {
-        params.set("inboundSeatClassId", inboundSeatClassId);
-      }
+    if (hasEmptyFields) {
+      setSubmitError("Please fill in all required passenger information");
+      return;
     }
 
-    router.push(`/flights/booking/ancillary?${params.toString()}`);
+    // Create order
+    setIsSubmitting(true);
+
+    try {
+      const result = await createOrderAction({
+        outboundSeatClassId: seatClassId || outboundSeatClassId!,
+        inboundSeatClassId,
+        passengers,
+        contactInfo,
+      });
+
+      if (!result.success) {
+        setSubmitError(result.error || "Failed to create order");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Navigate to ancillary page with order ID
+      const params = new URLSearchParams();
+      params.set("orderId", result.data!.orderId);
+
+      router.push(`/flights/booking/ancillary?${params.toString()}`);
+    } catch (error) {
+      console.error("Error creating order:", error);
+      setSubmitError("An unexpected error occurred. Please try again.");
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -245,10 +280,17 @@ export function BookingPassengersPageClient({
         errors={contactErrors}
       />
 
+      {/* Error Message */}
+      {submitError && (
+        <Alert variant="destructive">
+          <AlertDescription>{submitError}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Action Button */}
       <div className="flex justify-end">
-        <Button onClick={handleNext} size="lg">
-          下一步
+        <Button onClick={handleNext} size="lg" disabled={isSubmitting}>
+          {isSubmitting ? "创建订单中..." : "下一步"}
         </Button>
       </div>
     </div>
