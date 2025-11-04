@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { shouldShowDeleteButton } from "@/hooks/use-passenger-forms";
 
 export interface PassengerFormData {
   chineseName: string;
@@ -23,6 +24,7 @@ export interface PassengerFormData {
   documentType: string;
   documentNumber: string;
   phone: string;
+  linkedSavedPassengerId?: string; // Tracks if this form is linked to a saved passenger
 }
 
 interface QuickPassengerSelectProps {
@@ -58,7 +60,11 @@ function QuickPassengerSelect({
         >
           <Checkbox
             checked={selectedPassengerIds.includes(passenger.id)}
-            onCheckedChange={() => onTogglePassenger(passenger.id)}
+            onCheckedChange={() => {
+              // Prevent event bubbling to avoid double trigger
+              onTogglePassenger(passenger.id);
+            }}
+            onClick={e => e.stopPropagation()}
           />
           <span className="text-sm">{passenger.name}</span>
         </div>
@@ -112,12 +118,14 @@ function PassengerInfoForm({
         <div className="flex-1 space-y-5">
           {/* Header with delete button */}
           <div className="flex items-center justify-between gap-2">
-            <Input
-              type="text"
-              value={displayName}
-              readOnly
-              placeholder="请与登机证件姓名保持一致"
-            />
+            <h3 className="text-lg font-semibold text-gray-900">
+              乘机人 {passengerNumber}
+              {displayName && (
+                <span className="ml-2 text-sm font-normal text-gray-500">
+                  ({displayName})
+                </span>
+              )}
+            </h3>
             {showRemove && onRemove && (
               <Button
                 variant="ghost"
@@ -129,6 +137,48 @@ function PassengerInfoForm({
                 删除
               </Button>
             )}
+          </div>
+
+          {/* Chinese Name */}
+          <div>
+            <Label htmlFor={`chinese-name-${passengerNumber}`}>
+              中文姓名（选填）
+            </Label>
+            <Input
+              id={`chinese-name-${passengerNumber}`}
+              value={data.chineseName}
+              onChange={e => onChange("chineseName", e.target.value)}
+              placeholder="请输入中文姓名"
+              className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
+            />
+          </div>
+
+          {/* English Name */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor={`english-first-name-${passengerNumber}`}>
+                英文名 *
+              </Label>
+              <Input
+                id={`english-first-name-${passengerNumber}`}
+                value={data.englishFirstName}
+                onChange={e => onChange("englishFirstName", e.target.value)}
+                placeholder="First Name"
+                className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
+              />
+            </div>
+            <div>
+              <Label htmlFor={`english-last-name-${passengerNumber}`}>
+                英文姓 *
+              </Label>
+              <Input
+                id={`english-last-name-${passengerNumber}`}
+                value={data.englishLastName}
+                onChange={e => onChange("englishLastName", e.target.value)}
+                placeholder="Last Name"
+                className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
+              />
+            </div>
           </div>
 
           {/* Document Type and Number */}
@@ -261,7 +311,7 @@ export function PassengerFormCard({
               data={passenger}
               onChange={(field, value) => onChange(index, field, value)}
               onRemove={() => onRemovePassenger(index)}
-              showRemove={passengers.length > 1}
+              showRemove={shouldShowDeleteButton(passengers)}
             />
           ))}
         </div>

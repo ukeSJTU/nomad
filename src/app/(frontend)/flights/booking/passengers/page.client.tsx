@@ -36,7 +36,7 @@ export function BookingPassengersPageClient({
   // Use custom hook for passenger form management
   const {
     passengers,
-    selectedPassengers,
+    selectedPassengerIds,
     handleAddPassenger,
     handleRemovePassenger,
     handlePassengerChange,
@@ -123,7 +123,7 @@ export function BookingPassengersPageClient({
         <PassengerFormCard
           passengers={passengers}
           savedPassengers={savedPassengers}
-          selectedPassengerIds={selectedPassengers}
+          selectedPassengerIds={selectedPassengerIds}
           onChange={handlePassengerChange}
           onToggleSavedPassenger={handleSelectSavedPassenger}
           onRemovePassenger={handleRemovePassenger}
