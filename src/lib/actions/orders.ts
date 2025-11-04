@@ -10,6 +10,10 @@ import { db } from "@/lib/db";
 import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/lib/schema/orders";
+import type {
+  CreateOrderResult,
+  UpdateOrderAncillaryResult,
+} from "@/types/actions/orders";
 
 /**
  * Validation schema for passenger data
@@ -77,7 +81,9 @@ function calculatePaymentDeadline(): Date {
  * @param formData - Order creation data including seat class IDs, passengers, and contact info
  * @returns Object with success status, orderId if successful, or error message
  */
-export async function createOrderAction(formData: unknown) {
+export async function createOrderAction(
+  formData: unknown
+): Promise<CreateOrderResult> {
   try {
     // 1. Check authentication
     const headersList = await headers();
@@ -87,7 +93,7 @@ export async function createOrderAction(formData: unknown) {
 
     if (!session?.user?.id) {
       return {
-        success: false,
+        success: false as const,
         error: "Authentication required. Please log in first.",
       };
     }
@@ -97,7 +103,7 @@ export async function createOrderAction(formData: unknown) {
 
     if (!result.success) {
       return {
-        success: false,
+        success: false as const,
         error: "Validation failed",
         fieldErrors: result.error.flatten().fieldErrors,
       };
@@ -110,14 +116,14 @@ export async function createOrderAction(formData: unknown) {
     if (validatedData.contactInfo.method === "email") {
       if (!validatedData.contactInfo.email) {
         return {
-          success: false,
+          success: false as const,
           error: "Email is required when contact method is email",
         };
       }
     } else if (validatedData.contactInfo.method === "phone") {
       if (!validatedData.contactInfo.phone) {
         return {
-          success: false,
+          success: false as const,
           error: "Phone is required when contact method is phone",
         };
       }
@@ -141,7 +147,7 @@ export async function createOrderAction(formData: unknown) {
 
     if (seatClasses.length !== seatClassIds.length) {
       return {
-        success: false,
+        success: false as const,
         error: "One or more seat classes not found",
       };
     }
@@ -150,7 +156,7 @@ export async function createOrderAction(formData: unknown) {
     for (const seatClass of seatClasses) {
       if (seatClass.availableSeats < passengerCount) {
         return {
-          success: false,
+          success: false as const,
           error: `Not enough seats available. Only ${seatClass.availableSeats} seats remaining.`,
         };
       }
@@ -228,7 +234,7 @@ export async function createOrderAction(formData: unknown) {
     });
 
     return {
-      success: true,
+      success: true as const,
       data: {
         orderId: createdOrder.id,
         orderNumber: createdOrder.orderNumber,
@@ -238,27 +244,45 @@ export async function createOrderAction(formData: unknown) {
   } catch (error) {
     console.error("Error creating order:", error);
     return {
-      success: false,
+      success: false as const,
       error: "Failed to create order. Please try again.",
     };
   }
 }
 
 /**
+ * Validation schema for update order ancillary request
+ */
+const updateOrderAncillarySchema = z.object({
+  orderId: z.string().uuid("Invalid order ID"),
+  ancillaryServiceCodes: z.array(z.string()).default([]),
+});
+
+/**
  * Server action to update order ancillary services
  *
  * This is invoked after the ancillary selection step
  *
- * @param orderId - Order ID to update
- * @param ancillaryServiceCodes - Array of selected ancillary service codes
+ * @param formData - Object containing orderId and ancillaryServiceCodes
  * @returns Object with success status or error message
  */
 export async function updateOrderAncillaryAction(
-  orderId: string,
-  ancillaryServiceCodes: string[]
-) {
+  formData: unknown
+): Promise<UpdateOrderAncillaryResult> {
   try {
-    // 1. Check authentication
+    // 1. Validate input
+    const result = updateOrderAncillarySchema.safeParse(formData);
+    if (!result.success) {
+      return {
+        success: false as const,
+        error: "Validation failed",
+        fieldErrors: result.error.flatten().fieldErrors,
+      };
+    }
+
+    const { orderId, ancillaryServiceCodes } = result.data;
+
+    // 2. Check authentication
     const headersList = await headers();
     const session = await auth.api.getSession({
       headers: headersList,
@@ -266,12 +290,12 @@ export async function updateOrderAncillaryAction(
 
     if (!session?.user?.id) {
       return {
-        success: false,
+        success: false as const,
         error: "Authentication required. Please log in first.",
       };
     }
 
-    // 2. Validate order exists and belongs to user
+    // 3. Validate order exists and belongs to user
     const [order] = await db
       .select()
       .from(orders)
@@ -279,7 +303,7 @@ export async function updateOrderAncillaryAction(
 
     if (!order) {
       return {
-        success: false,
+        success: false as const,
         error: "Order not found",
       };
     }
@@ -306,7 +330,7 @@ export async function updateOrderAncillaryAction(
       .where(eq(orders.id, orderId));
 
     return {
-      success: true,
+      success: true as const,
       data: {
         orderId: order.id,
         totalAmount: totalAmount.toFixed(2),
@@ -315,7 +339,7 @@ export async function updateOrderAncillaryAction(
   } catch (error) {
     console.error("Error updating order ancillary:", error);
     return {
-      success: false,
+      success: false as const,
       error: "Failed to update order. Please try again.",
     };
   }
