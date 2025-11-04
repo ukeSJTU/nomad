@@ -91,6 +91,11 @@ function PassengerInfoForm({
   onRemove,
   showRemove,
 }: PassengerInfoFormProps) {
+  // Compute display name: use Chinese name if present, otherwise English name
+  const displayName = data.chineseName
+    ? data.chineseName
+    : [data.englishFirstName, data.englishLastName].filter(Boolean).join(" ");
+
   return (
     <div className="relative bg-white border border-gray-200 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex gap-6">
@@ -107,7 +112,12 @@ function PassengerInfoForm({
         <div className="flex-1 space-y-5">
           {/* Header with delete button */}
           <div className="flex items-center justify-between gap-2">
-            <Input type="text" placeholder="请与登机证件姓名保持一致" />
+            <Input
+              type="text"
+              value={displayName}
+              readOnly
+              placeholder="请与登机证件姓名保持一致"
+            />
             {showRemove && onRemove && (
               <Button
                 variant="ghost"
