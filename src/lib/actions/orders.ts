@@ -10,6 +10,13 @@ import { db } from "@/lib/db";
 import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/lib/schema/orders";
+import {
+  addCurrency,
+  getCurrencyValue,
+  multiplyCurrency,
+  parseCurrency,
+  toDatabaseValue,
+} from "@/lib/utils/currency";
 import type {
   CreateOrderResult,
   UpdateOrderAncillaryResult,
@@ -162,7 +169,7 @@ export async function createOrderAction(
       }
     }
 
-    // 5. Calculate pricing
+    // 5. Calculate pricing using currency.js for precision
     const outboundSeatClass = seatClasses.find(
       sc => sc.id === validatedData.outboundSeatClassId
     )!;
@@ -170,12 +177,18 @@ export async function createOrderAction(
       ? seatClasses.find(sc => sc.id === validatedData.inboundSeatClassId)
       : null;
 
-    const pricePerTicket = parseFloat(outboundSeatClass.price);
-    const inboundPricePerTicket = inboundSeatClass
-      ? parseFloat(inboundSeatClass.price)
-      : 0;
-    const totalPricePerTicket = pricePerTicket + inboundPricePerTicket;
-    const baseAmount = totalPricePerTicket * passengerCount;
+    const outboundPrice = parseCurrency(outboundSeatClass.price);
+    const inboundPrice = inboundSeatClass
+      ? parseCurrency(inboundSeatClass.price)
+      : parseCurrency(0);
+    const totalPricePerTicket = addCurrency(
+      getCurrencyValue(outboundPrice),
+      getCurrencyValue(inboundPrice)
+    );
+    const baseAmount = multiplyCurrency(
+      getCurrencyValue(totalPricePerTicket),
+      passengerCount
+    );
 
     // 6. Create order in a transaction
     const orderNumber = generateOrderNumber();
@@ -195,10 +208,10 @@ export async function createOrderAction(
           contactPhone: validatedData.contactInfo.phone || null,
           contactEmail: validatedData.contactInfo.email || null,
           passengerCount,
-          pricePerTicket: totalPricePerTicket.toFixed(2),
-          baseAmount: baseAmount.toFixed(2),
+          pricePerTicket: toDatabaseValue(totalPricePerTicket),
+          baseAmount: toDatabaseValue(baseAmount),
           ancillaryAmount: "0.00", // Will be updated in ancillary step
-          totalAmount: baseAmount.toFixed(2), // Will be updated in ancillary step
+          totalAmount: toDatabaseValue(baseAmount), // Will be updated in ancillary step
           ancillaryDetails: null, // Will be updated in ancillary step
         })
         .returning();
@@ -308,15 +321,18 @@ export async function updateOrderAncillaryAction(
       };
     }
 
-    // 3. Calculate ancillary amount
-    let ancillaryAmount = 0;
+    // 3. Calculate ancillary amount using currency.js for precision
+    let ancillaryAmount = parseCurrency(0);
     for (const code of ancillaryServiceCodes) {
       const service = getAncillaryServiceByCode(code);
       if (service) {
-        ancillaryAmount += service.price;
+        ancillaryAmount = addCurrency(
+          getCurrencyValue(ancillaryAmount),
+          service.price
+        );
       }
     }
-    const totalAmount = parseFloat(order.baseAmount) + ancillaryAmount;
+    const totalAmount = addCurrency(order.baseAmount, ancillaryAmount);
 
     // 4. Update order
     await db
@@ -324,8 +340,8 @@ export async function updateOrderAncillaryAction(
       .set({
         ancillaryDetails:
           ancillaryServiceCodes.length > 0 ? ancillaryServiceCodes : null,
-        ancillaryAmount: ancillaryAmount.toFixed(2),
-        totalAmount: totalAmount.toFixed(2),
+        ancillaryAmount: toDatabaseValue(ancillaryAmount),
+        totalAmount: toDatabaseValue(totalAmount),
       })
       .where(eq(orders.id, orderId));
 
@@ -333,7 +349,7 @@ export async function updateOrderAncillaryAction(
       success: true as const,
       data: {
         orderId: order.id,
-        totalAmount: totalAmount.toFixed(2),
+        totalAmount: toDatabaseValue(totalAmount),
       },
     };
   } catch (error) {
