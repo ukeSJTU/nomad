@@ -52,21 +52,15 @@ export function AncillarySelection({
     const isSelected = selectedServices.includes(service.code);
 
     return (
-      <div
+      <Label
         key={service.code}
         className="flex items-start space-x-3 p-4 rounded-lg border hover:bg-accent/50 cursor-pointer transition-colors"
-        onClick={e => {
-          // Prevent double-firing when clicking on checkbox
-          if ((e.target as HTMLElement).closest('button[role="checkbox"]')) {
-            return;
-          }
-          onToggleService(service.code);
-        }}
       >
         <Checkbox
           id={service.code}
           checked={isSelected}
           onCheckedChange={() => onToggleService(service.code)}
+          onClick={e => e.stopPropagation()}
           className="mt-1"
         />
         <div className="flex-1 space-y-1">
@@ -87,7 +81,7 @@ export function AncillarySelection({
             {formatCurrency(service.price)}
           </div>
         </div>
-      </div>
+      </Label>
     );
   };
 
