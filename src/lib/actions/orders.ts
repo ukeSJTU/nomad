@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { headers } from "next/headers";
 import { z } from "zod";
@@ -140,7 +140,7 @@ export async function createOrderAction(
       .from(flightSeatClasses)
       .where(
         and(
-          sql`${flightSeatClasses.id} = ANY(${seatClassIds})`,
+          inArray(flightSeatClasses.id, seatClassIds),
           eq(flightSeatClasses.isDeleted, false)
         )
       );
