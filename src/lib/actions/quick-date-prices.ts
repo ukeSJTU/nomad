@@ -5,6 +5,11 @@ import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { airports, cities, flights, flightSeatClasses } from "@/lib/schema";
 import {
+  addCurrency,
+  getCurrencyValue,
+  parseCurrency,
+} from "@/lib/utils/currency";
+import {
   calculateQuickSelectDateRange,
   getBookingDateRange,
 } from "@/utils/date";
@@ -194,7 +199,7 @@ async function getOneWayQuickPrices(params: {
       );
 
     const lowestPrice = result[0]?.lowestPrice
-      ? parseFloat(result[0].lowestPrice)
+      ? getCurrencyValue(parseCurrency(result[0].lowestPrice))
       : null;
 
     return {
@@ -319,16 +324,16 @@ async function getRoundTripQuickPrices(params: {
     ]);
 
     const outboundPrice = outboundResult[0]?.lowestPrice
-      ? parseFloat(outboundResult[0].lowestPrice)
+      ? getCurrencyValue(parseCurrency(outboundResult[0].lowestPrice))
       : null;
     const returnPrice = returnResult[0]?.lowestPrice
-      ? parseFloat(returnResult[0].lowestPrice)
+      ? getCurrencyValue(parseCurrency(returnResult[0].lowestPrice))
       : null;
 
-    // Sum prices (null if either is null)
+    // Sum prices using currency.js for precision (null if either is null)
     const totalPrice =
       outboundPrice !== null && returnPrice !== null
-        ? outboundPrice + returnPrice
+        ? getCurrencyValue(addCurrency(outboundPrice, returnPrice))
         : null;
 
     return {
