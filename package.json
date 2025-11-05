@@ -36,7 +36,8 @@
     "postinstall": "fumadocs-mdx",
     "setup:dev": "node scripts/setup-dev.mjs",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "email": "email dev --dir ./src/components/emails --port 6007"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.22",
@@ -133,6 +134,7 @@
     "@inquirer/prompts": "^7.9.0",
     "@neondatabase/api-client": "^2.2.0",
     "@playwright/test": "^1.56.0",
+    "@react-email/preview-server": "4.3.2",
     "@storybook/addon-a11y": "^9.1.15",
     "@storybook/addon-docs": "^9.1.15",
     "@storybook/addon-onboarding": "^9.1.15",
