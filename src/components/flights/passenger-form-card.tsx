@@ -53,10 +53,10 @@ function QuickPassengerSelect({
   return (
     <div className="flex flex-wrap gap-3 items-center">
       {displayedPassengers.map(passenger => (
-        <div
+        // Please note that we must use label instead of div here to prevent radix ui bug
+        <Label
           key={passenger.id}
           className="flex items-center gap-2 px-4 py-2 border rounded-md hover:bg-gray-50 cursor-pointer transition-colors"
-          onClick={() => onTogglePassenger(passenger.id)}
         >
           <Checkbox
             checked={selectedPassengerIds.includes(passenger.id)}
@@ -67,7 +67,7 @@ function QuickPassengerSelect({
             onClick={e => e.stopPropagation()}
           />
           <span className="text-sm">{passenger.name}</span>
-        </div>
+        </Label>
       ))}
       {hasMore && (
         <Button variant="outline" className="px-4 py-2">
