@@ -15,6 +15,7 @@ import {
   type AncillaryService,
   getAncillaryServicesByCategory,
 } from "@/lib/schema/ancillary";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export interface AncillarySelectionProps {
   /**
@@ -83,7 +84,7 @@ export function AncillarySelection({
         </div>
         <div className="text-right">
           <div className="text-lg font-bold text-orange-500">
-            ¥{service.price}
+            {formatCurrency(service.price)}
           </div>
         </div>
       </div>

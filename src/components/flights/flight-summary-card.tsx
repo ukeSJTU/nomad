@@ -3,6 +3,13 @@ import { Clock, Plane } from "lucide-react";
 import type { FlightSeatClassDetails } from "@/app/(frontend)/flights/booking/passengers/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  addCurrency,
+  formatCurrency,
+  getCurrencyValue,
+  multiplyCurrency,
+  parseCurrency,
+} from "@/lib/utils/currency";
 import { formatDateWithWeekday } from "@/utils/date";
 
 type FlightSummaryCardProps = {
@@ -115,9 +122,18 @@ export function FlightSummaryCard({
     return null;
   }
 
-  const outboundPrice = parseFloat(outboundFlight.price);
-  const inboundPrice = inboundFlight ? parseFloat(inboundFlight.price) : 0;
-  const totalPrice = (outboundPrice + inboundPrice) * passengerCount;
+  const outboundPrice = parseCurrency(outboundFlight.price);
+  const inboundPrice = inboundFlight
+    ? parseCurrency(inboundFlight.price)
+    : parseCurrency(0);
+  const totalPricePerTicket = addCurrency(
+    getCurrencyValue(outboundPrice),
+    getCurrencyValue(inboundPrice)
+  );
+  const totalPrice = multiplyCurrency(
+    getCurrencyValue(totalPricePerTicket),
+    passengerCount
+  );
 
   return (
     <Card className="sticky top-4">
@@ -142,13 +158,15 @@ export function FlightSummaryCard({
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">去程票价</span>
-            <span className="font-medium">¥{outboundPrice.toFixed(2)}</span>
+            <span className="font-medium">{formatCurrency(outboundPrice)}</span>
           </div>
 
           {inboundFlight && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">返程票价</span>
-              <span className="font-medium">¥{inboundPrice.toFixed(2)}</span>
+              <span className="font-medium">
+                {formatCurrency(inboundPrice)}
+              </span>
             </div>
           )}
 
@@ -161,7 +179,7 @@ export function FlightSummaryCard({
 
           <div className="flex justify-between text-base font-semibold">
             <span>总计</span>
-            <span className="text-blue-600">¥{totalPrice.toFixed(2)}</span>
+            <span className="text-blue-600">{formatCurrency(totalPrice)}</span>
           </div>
         </div>
       </CardContent>

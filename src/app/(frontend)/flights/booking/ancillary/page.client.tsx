@@ -14,6 +14,12 @@ import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
 } from "@/lib/schema/ancillary";
+import {
+  addCurrency,
+  formatCurrency,
+  getCurrencyValue,
+  parseCurrency,
+} from "@/lib/utils/currency";
 import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
 
 import type { OrderWithDetails } from "./queries";
@@ -76,14 +82,14 @@ export function BookingAncillaryPageClient({
   };
 
   const calculateTotal = () => {
-    let total = parseFloat(order.baseAmount);
+    let total = parseCurrency(order.baseAmount);
     selectedServices.forEach(code => {
       const service = getAncillaryServiceByCode(code);
       if (service) {
-        total += service.price;
+        total = addCurrency(getCurrencyValue(total), service.price);
       }
     });
-    return total;
+    return getCurrencyValue(total);
   };
 
   const handleNext = (e: React.FormEvent) => {
@@ -152,7 +158,8 @@ export function BookingAncillaryPageClient({
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">机票</span>
                 <span>
-                  ¥{order.pricePerTicket} × {order.passengerCount}
+                  {formatCurrency(order.pricePerTicket)} ×{" "}
+                  {order.passengerCount}
                 </span>
               </div>
 
@@ -169,7 +176,7 @@ export function BookingAncillaryPageClient({
                         className="flex items-center justify-between text-sm"
                       >
                         <span className="text-gray-600">{service.name}</span>
-                        <span>¥{service.price}</span>
+                        <span>{formatCurrency(service.price)}</span>
                       </div>
                     );
                   })}
@@ -179,7 +186,9 @@ export function BookingAncillaryPageClient({
               <Separator />
               <div className="flex items-center justify-between text-lg font-bold">
                 <span>总计</span>
-                <span className="text-orange-500">¥{calculateTotal()}</span>
+                <span className="text-orange-500">
+                  {formatCurrency(calculateTotal())}
+                </span>
               </div>
             </div>
           </CardContent>

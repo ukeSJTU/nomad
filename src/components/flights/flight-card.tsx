@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export interface FlightCardProps {
   /** Airline logo URL */
@@ -136,7 +137,7 @@ export function FlightCard({
           <div className="flex items-center gap-4 ml-auto">
             {/* Price */}
             <div className="text-2xl font-bold text-orange-500 leading-none">
-              ¥{price.toLocaleString()}
+              {formatCurrency(price)}
             </div>
 
             {/* Book button */}
