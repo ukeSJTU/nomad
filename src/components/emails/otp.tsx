@@ -30,7 +30,7 @@ export const OtpEmailTemplate = ({ username, otp }: OtpEmailTemplateProps) => {
             <Text style={subheading}>您的验证码已准备就绪</Text>
 
             <Text style={description}>
-              请使用此验证码完成您的身份验证。此验证码将在 10 分钟后过期。
+              请使用此验证码完成您的身份验证。此验证码将在 5 分钟后过期。
             </Text>
 
             {/* OTP Code Box */}
