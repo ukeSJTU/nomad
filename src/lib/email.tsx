@@ -1,5 +1,7 @@
 import { Resend } from "resend";
 
+import { OtpEmailTemplate } from "@/components/emails";
+
 /**
  * Resend Email Client for sending verification emails
  * Singleton pattern to ensure only one instance is created
@@ -35,12 +37,12 @@ export class ResendEmailClient {
 
   /**
    * Send email verification code
-   * @param email Email address
+   * @param emailAddr Email address
    * @param code Verification code
    * @returns Promise<boolean> Whether sending was successful
    */
   public async sendVerificationEmail(
-    email: string,
+    emailAddr: string,
     code: string
   ): Promise<boolean> {
     try {
@@ -48,10 +50,12 @@ export class ResendEmailClient {
         process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
       console.log(
-        `Resend Email config: fromEmail=${fromEmail}, toEmail=${email}`
+        `Resend Email config: fromEmail=${fromEmail}, toEmail=${emailAddr}`
       );
 
-      console.log(`Sending verification email to ${email} with code ${code}`);
+      console.log(
+        `Sending verification email to ${emailAddr} with code ${code}`
+      );
 
       if (!process.env.RESEND_API_KEY) {
         throw new Error("Missing required email configuration: RESEND_API_KEY");
@@ -60,9 +64,9 @@ export class ResendEmailClient {
       // Send email using Resend
       const { data, error } = await this.client.emails.send({
         from: fromEmail,
-        to: email,
+        to: emailAddr,
         subject: "Nomad - 验证您的邮箱",
-        html: this.getVerificationEmailTemplate(code),
+        react: <OtpEmailTemplate otp={code} />,
       });
 
       if (error) {
@@ -70,7 +74,9 @@ export class ResendEmailClient {
         return false;
       }
 
-      console.log(`Email sent successfully to ${email}, Email ID: ${data?.id}`);
+      console.log(
+        `Email sent successfully to ${emailAddr}, Email ID: ${data?.id}`
+      );
       return true;
     } catch (error: unknown) {
       console.error("Error sending email:", error);
