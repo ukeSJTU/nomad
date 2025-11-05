@@ -12,11 +12,10 @@ import {
 import * as React from "react";
 
 interface OtpEmailTemplateProps {
-  username: string;
   otp: string;
 }
 
-export const OtpEmailTemplate = ({ username, otp }: OtpEmailTemplateProps) => {
+export const OtpEmailTemplate = ({ otp }: OtpEmailTemplateProps) => {
   return (
     <Html>
       <Head />
@@ -25,7 +24,7 @@ export const OtpEmailTemplate = ({ username, otp }: OtpEmailTemplateProps) => {
         <Container style={container}>
           {/* Content Section */}
           <Section style={content}>
-            <Heading style={heading}>你好，{username}！</Heading>
+            <Heading style={heading}>你好</Heading>
 
             <Text style={subheading}>您的验证码已准备就绪</Text>
 
@@ -80,7 +79,6 @@ export const OtpEmailTemplate = ({ username, otp }: OtpEmailTemplateProps) => {
 };
 
 OtpEmailTemplate.PreviewProps = {
-  username: "张三",
   otp: "114514",
 } as OtpEmailTemplateProps;
 
