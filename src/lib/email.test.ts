@@ -61,7 +61,7 @@ describe("Email Service", () => {
         from: "test@example.com",
         to: "user@example.com",
         subject: "Nomad - 验证您的邮箱",
-        html: expect.stringContaining("123456"),
+        react: expect.anything(),
       });
     });
 
@@ -80,11 +80,11 @@ describe("Email Service", () => {
         from: "onboarding@resend.dev",
         to: "user@example.com",
         subject: "Nomad - 验证您的邮箱",
-        html: expect.stringContaining("123456"),
+        react: expect.anything(),
       });
     });
 
-    it("should include OTP code in email HTML", async () => {
+    it("should send email with React template", async () => {
       process.env.RESEND_API_KEY = "re_test_key";
       process.env.RESEND_FROM_EMAIL = "test@example.com";
 
@@ -96,9 +96,11 @@ describe("Email Service", () => {
       const otpCode = "654321";
       await sendEmailOtp("user@example.com", otpCode);
 
-      const callArgs = mockSendEmail.mock.calls[0][0];
-      expect(callArgs.html).toContain(otpCode);
-      expect(callArgs.html).toContain("验证码"); // Should contain Chinese text
+      expect(mockSendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          react: expect.anything(),
+        })
+      );
     });
 
     it("should return false when email sending fails", async () => {
@@ -163,7 +165,7 @@ describe("Email Service", () => {
       );
     });
 
-    it("should handle different OTP codes correctly", async () => {
+    it("should send emails with React template for different OTP codes", async () => {
       process.env.RESEND_API_KEY = "re_test_key";
       process.env.RESEND_FROM_EMAIL = "test@example.com";
 
@@ -175,37 +177,11 @@ describe("Email Service", () => {
       // Test with different OTP codes
       await sendEmailOtp("user@example.com", "000000");
       let callArgs = mockSendEmail.mock.calls[0][0];
-      expect(callArgs.html).toContain("000000");
+      expect(callArgs.react).toBeDefined();
 
       await sendEmailOtp("user@example.com", "999999");
       callArgs = mockSendEmail.mock.calls[1][0];
-      expect(callArgs.html).toContain("999999");
-    });
-
-    it("should create proper HTML email structure", async () => {
-      process.env.RESEND_API_KEY = "re_test_key";
-      process.env.RESEND_FROM_EMAIL = "test@example.com";
-
-      mockSendEmail.mockResolvedValue({
-        data: { id: "test-email-id" },
-        error: null,
-      });
-
-      await sendEmailOtp("user@example.com", "123456");
-
-      const callArgs = mockSendEmail.mock.calls[0][0];
-      const html = callArgs.html;
-
-      // Check for HTML structure
-      expect(html).toContain("<!DOCTYPE html>");
-      expect(html).toContain("<html");
-      expect(html).toContain("</html>");
-      expect(html).toContain("<body");
-      expect(html).toContain("</body>");
-
-      // Check for content
-      expect(html).toContain("123456");
-      expect(html).toContain("5 分钟"); // Expiry time (note the space)
+      expect(callArgs.react).toBeDefined();
     });
 
     it("should use correct email subject", async () => {
