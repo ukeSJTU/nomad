@@ -78,8 +78,8 @@
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.wordWrap": "on",
-    "editor.rulers": []
+    "editor.rulers": [],
+    "editor.wordWrap": "on"
   },
   "[mdx]": {
     "editor.formatOnSave": false,
