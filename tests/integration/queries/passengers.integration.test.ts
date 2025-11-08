@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { user } from "@/../auth-schema";
 import { db } from "@/lib/db";
 import { getPassengers } from "@/lib/queries/passengers";
+import { user } from "@/lib/schema";
 import { passengers } from "@/lib/schema/passengers";
 import {
   chinesePassengerFactory,
