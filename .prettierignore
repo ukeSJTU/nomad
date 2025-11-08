@@ -49,5 +49,9 @@ next-env.d.ts
 # MDX documents content
 content/docs/**/*.mdx
 
-# Markdown files
-*.md
+# Openspec files
+.github/prompts/openspec-apply.prompt.md
+.github/prompts/openspec-archive.prompt.md
+.github/prompts/openspec-proposal.prompt.md
+openspec/AGENTS.md
+AGENTS.md
