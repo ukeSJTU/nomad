@@ -161,9 +161,11 @@ Before submitting to implementation team:
 
 **What implementation team will do:**
 
-- Phase 5: Implement functionality to make tests pass
-- Phase 6: Refactor and update documentation
+- Phase 5: Implement functionality to make tests pass (using `apply-tasks-template.md`)
+- Phase 6: Refactor and update documentation (using `apply-tasks-template.md`)
 - Archive: Update specifications and archive change
+
+**Reference:** Implementation team should follow `openspec/templates/apply-tasks-template.md`
 
 ---
 

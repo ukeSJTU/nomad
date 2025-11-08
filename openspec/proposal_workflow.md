@@ -10,6 +10,8 @@ This document explains how to create a proper change proposal following the 6-ph
 
 **You are NOT responsible for:** Phase 5 (Implementation to make tests pass), Phase 6 (Refactoring & Documentation), or archiving changes
 
+**Task Template:** Use `openspec/templates/proposal-tasks-template.md` for reference when creating proposals
+
 **Core Principles:**
 
 - ✅ Analyze requirements thoroughly before design
@@ -84,7 +86,7 @@ When you request a feature, AI creates:
 ```
 openspec/changes/[feature-name]/
 ├── proposal.md          # Why, what, impact
-├── tasks.md            # 6-phase task breakdown
+├── tasks.md            # 6-phase task breakdown (based on proposal-tasks-template.md)
 ├── design.md           # Technical decisions
 └── specs/
     └── [domain]/

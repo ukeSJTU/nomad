@@ -18,9 +18,12 @@ Use this template when implementing approved change proposals (Phases 5-6 only).
 - [ ] 0.2 Review `proposal.md` - understand why, what, and impact
 - [ ] 0.3 Review `design.md` - understand technical decisions
 - [ ] 0.4 Review `specs/` - understand requirements deltas
-- [ ] 0.5 Run existing tests: `pnpm test` (should show failing tests)
-- [ ] 0.6 Verify test failures are expected
-- [ ] 0.7 Understand test assertions and expected behavior
+- [ ] 0.5 Review `tasks.md` - check completed Phases 1-4 (from `proposal-tasks-template.md`)
+- [ ] 0.6 Run existing tests: `pnpm test` (should show failing tests)
+- [ ] 0.7 Verify test failures are expected
+- [ ] 0.8 Understand test assertions and expected behavior
+
+**Note:** Phases 1-4 were completed by proposal team using `proposal-tasks-template.md`
 
 ---
 
