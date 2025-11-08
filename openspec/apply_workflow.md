@@ -10,8 +10,6 @@ This document explains how to implement change proposals following the 6-phase d
 
 **You are NOT responsible for:** Phases 1-4 (these are completed in the proposal)
 
-**Task Template:** Use `openspec/templates/apply-tasks-template.md` for reference when implementing changes
-
 **Core Principles:**
 
 - ✅ Follow the test-driven approach (make failing tests pass)
@@ -129,7 +127,7 @@ These phases were completed by the proposal team:
 2. **Read all proposal documents:**
    - `proposal.md` - Understand why, what, and impact
    - `design.md` - Review technical decisions and API design
-   - `tasks.md` - Follow the structured implementation tasks (based on `apply-tasks-template.md`)
+   - `tasks.md` - Review completed Phases 1-4, follow Phases 5-6 (from `unified-tasks-template.md`)
    - `specs/` - Check requirements deltas
 
 3. **Run existing tests:**
@@ -330,10 +328,11 @@ Before marking complete, verify:
 **As an implementation developer, you MUST:**
 
 1. Read the complete proposal before starting
-2. Follow the implementation order strictly
-3. Make all tests pass before refactoring
-4. Run quality checks before requesting review
-5. Update all documentation using proposal's document IDs
+2. Review all 6 phases in `tasks.md` (from `unified-tasks-template.md`)
+3. Follow the implementation order strictly (Phases 5-6)
+4. Make all tests pass before refactoring
+5. Run quality checks before requesting review
+6. Update all documentation using proposal's document IDs
 
 **🛑 CRITICAL:** Do not skip the implementation order. Schema → Types → API → Logic → UI ensures proper dependency management and reduces errors.
 

@@ -10,7 +10,7 @@ This document explains how to create a proper change proposal following the 6-ph
 
 **You are NOT responsible for:** Phase 5 (Implementation to make tests pass), Phase 6 (Refactoring & Documentation), or archiving changes
 
-**Task Template:** Use `openspec/templates/proposal-tasks-template.md` for reference when creating proposals
+**Task Template:** Use `openspec/templates/unified-tasks-template.md` when creating proposals - it contains all 6 phases for complete visibility
 
 **Core Principles:**
 
@@ -86,12 +86,14 @@ When you request a feature, AI creates:
 ```
 openspec/changes/[feature-name]/
 ├── proposal.md          # Why, what, impact
-├── tasks.md            # 6-phase task breakdown (based on proposal-tasks-template.md)
+├── tasks.md            # Complete 6-phase workflow (based on unified-tasks-template.md)
 ├── design.md           # Technical decisions
 └── specs/
     └── [domain]/
         └── spec.md     # Requirements deltas
 ```
+
+**Note:** The `tasks.md` file now contains ALL 6 phases from the start, giving everyone visibility into the complete workflow.
 
 ### Workflow Commands
 
@@ -148,7 +150,7 @@ Before submitting your proposal, verify:
 - [ ] Tests written (unit, integration, E2E skeletons - should fail initially)
 - [ ] `proposal.md` clearly explains why, what, and impact
 - [ ] `design.md` includes technical decisions and rationale
-- [ ] `tasks.md` structured with all 6 phases (even if you only completed 1-4)
+- [ ] `tasks.md` created from `unified-tasks-template.md` with Phases 1-4 completed
 - [ ] Proposal validated with `openspec validate --strict`
 
 ## Guidelines

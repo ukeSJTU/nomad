@@ -1,29 +1,163 @@
-# Implementation Tasks Template
+# Complete Development Tasks Template
 
-Use this template when implementing approved change proposals (Phases 5-6 only).
+Use this template when creating change proposals. It covers the entire 6-phase development workflow.
 
-**Your Role:** Implementation developer - building features following approved designs and making tests pass.
-
-**Your Responsibilities:** Complete Phases 5-6 (Implementation, Refactoring & Documentation) and prepare for archiving.
-
-**Already Completed by Proposal Team:** Phases 1-4 (Requirements, Design, Spec Planning, Tests)
+**Proposal Stage:** Complete Phases 1-4, document entire workflow
+**Implementation Stage:** Execute Phases 5-6 following the documented plan
 
 ---
 
-## Prerequisites: Review Proposal
+## Phase 1: Requirements Analysis 📋
 
-**Before starting implementation:**
+**Goal:** Understand what to build based on user's request
 
-- [ ] 0.1 Read complete proposal: `openspec show [change-name]`
-- [ ] 0.2 Review `proposal.md` - understand why, what, and impact
-- [ ] 0.3 Review `design.md` - understand technical decisions
-- [ ] 0.4 Review `specs/` - understand requirements deltas
-- [ ] 0.5 Review `tasks.md` - check completed Phases 1-4 (from `proposal-tasks-template.md`)
-- [ ] 0.6 Run existing tests: `pnpm test` (should show failing tests)
-- [ ] 0.7 Verify test failures are expected
-- [ ] 0.8 Understand test assertions and expected behavior
+**Responsible:** Proposal Author
 
-**Note:** Phases 1-4 were completed by proposal team using `proposal-tasks-template.md`
+- [ ] 1.1 Read user's requirements request thoroughly
+- [ ] 1.2 Review existing requirements documents in `content/docs/requirements/`
+- [ ] 1.3 Identify affected requirement sections and document IDs
+- [ ] 1.4 Record document references in `proposal.md`
+  - [ ] Functional requirements affected
+  - [ ] Non-functional requirements affected
+  - [ ] User stories impacted
+- [ ] 1.5 List assumptions and constraints
+- [ ] 1.6 Identify any ambiguities requiring clarification
+- [ ] 1.7 Ask user 1-2 clarifying questions if needed
+
+**Deliverable:** `proposal.md` with clear requirements understanding and document IDs
+
+---
+
+## Phase 2: API/Action Design 🎨
+
+**Goal:** Design technical approach before coding
+
+**Responsible:** Proposal Author
+
+### 2.1 Analyze Existing Code
+
+- [ ] 2.1.1 Review existing API routes in `src/app/api/`
+- [ ] 2.1.2 Review existing Server Actions in `src/app/[route]/actions.ts`
+- [ ] 2.1.3 Review related Drizzle schemas in `src/lib/schema/`
+- [ ] 2.1.4 Review related utilities in `src/lib/queries/` and `src/lib/utils/`
+- [ ] 2.1.5 Search for similar patterns: `rg "keyword" src/`
+
+### 2.2 Design Decision
+
+- [ ] 2.2.1 **Decision:** Reuse existing APIs vs create new
+- [ ] 2.2.2 Document rationale in `design.md`
+  - [ ] If reusing: explain why existing API fits
+  - [ ] If new: explain why existing APIs insufficient
+- [ ] 2.2.3 List pros and cons of chosen approach
+
+### 2.3 API/Action Specification
+
+- [ ] 2.3.1 Define request/response schemas (Zod)
+- [ ] 2.3.2 Document error codes and messages
+- [ ] 2.3.3 Specify authentication/authorization requirements
+- [ ] 2.3.4 Define rate limiting needs (if applicable)
+- [ ] 2.3.5 Document any breaking changes
+
+### 2.4 Database Schema Design (if needed)
+
+- [ ] 2.4.1 Plan table structure
+- [ ] 2.4.2 Define relationships and foreign keys
+- [ ] 2.4.3 Plan indexes for performance
+- [ ] 2.4.4 Consider data migration strategy (if modifying existing tables)
+
+**Deliverable:** `design.md` with complete technical design and rationale
+
+---
+
+## Phase 3: Update API Specification 📝
+
+**Goal:** Plan API documentation updates
+
+**Responsible:** Proposal Author
+
+- [ ] 3.1 Identify which API documentation needs updates
+  - [ ] Server Actions JSDoc comments
+  - [ ] OpenAPI specs (if using REST APIs)
+  - [ ] Backend API documentation in `content/docs/technical-design/backend/`
+- [ ] 3.2 Plan JSDoc comment structure
+  - [ ] Parameters documentation
+  - [ ] Return types documentation
+  - [ ] Example usage
+  - [ ] Error cases
+- [ ] 3.3 Plan OpenAPI spec updates (if applicable)
+- [ ] 3.4 Document the planned changes in `design.md`
+- [ ] 3.5 Note: Actual spec updates will happen during Phase 6
+
+**Deliverable:** Documentation update plan in `design.md`
+
+---
+
+## Phase 4: Test Design & Writing 🧪
+
+**Goal:** Write tests before implementation (TDD approach)
+
+**Responsible:** Proposal Author
+
+### 4.1 Test Planning
+
+- [ ] 4.1.1 Write test scenarios based on requirements
+- [ ] 4.1.2 Define test data fixtures using `@faker-js/faker`
+- [ ] 4.1.3 Document test plan in this file
+- [ ] 4.1.4 Organize tests: unit → integration → E2E
+
+### 4.2 Unit Tests
+
+- [ ] 4.2.1 Write unit tests for business logic
+  - [ ] Happy path scenarios
+  - [ ] Error cases
+  - [ ] Edge cases
+- [ ] 4.2.2 Write unit tests for utilities
+- [ ] 4.2.3 Co-locate tests with source (`*.test.ts`)
+- [ ] 4.2.4 Tests should fail initially (no implementation yet)
+
+### 4.3 Integration Tests
+
+- [ ] 4.3.1 Write tests for API + Database interactions
+- [ ] 4.3.2 Write tests for authentication/authorization
+- [ ] 4.3.3 Write tests for error handling
+- [ ] 4.3.4 Tests should fail initially
+
+### 4.4 E2E Test Skeletons
+
+- [ ] 4.4.1 Write Playwright test structure in `tests/`
+- [ ] 4.4.2 Document complete user flows
+- [ ] 4.4.3 Define page object models (if needed)
+- [ ] 4.4.4 Tests should fail initially
+
+### 4.5 Test Verification
+
+- [ ] 4.5.1 Run `pnpm test` - tests should fail for right reasons
+- [ ] 4.5.2 Verify test failures match expectations
+- [ ] 4.5.3 Fix any test syntax/compilation errors
+- [ ] 4.5.4 Document expected test failures
+
+**Deliverable:** Complete test suite (failing tests ready for implementation)
+
+---
+
+## 🛑 CHECKPOINT: Proposal Complete
+
+**Proposal author verification before handoff:**
+
+- [ ] ✅ `proposal.md` complete with requirements and document IDs
+- [ ] ✅ `design.md` complete with technical decisions and rationale
+- [ ] ✅ API specification update plan documented
+- [ ] ✅ Test suite written (failing tests)
+- [ ] ✅ All tests fail for expected reasons
+- [ ] ✅ Validate proposal: `openspec validate [change-name] --strict`
+- [ ] ✅ Review proposal with user (if needed)
+
+**Handoff Package:**
+1. `proposal.md` - Requirements analysis with document IDs
+2. `design.md` - Technical design with rationale
+3. `tasks.md` - This file with complete workflow
+4. `specs/[domain]/spec.md` - Requirements deltas
+5. Test suite - Failing tests ready for implementation
 
 ---
 
@@ -31,7 +165,20 @@ Use this template when implementing approved change proposals (Phases 5-6 only).
 
 **Goal:** Make the failing tests pass by implementing the required functionality
 
+**Responsible:** Implementation Developer
+
 **CRITICAL:** Follow implementation order strictly - Schema → Types → API → Logic → UI
+
+### 5.0 Prerequisites: Review Proposal
+
+- [ ] 5.0.1 Read complete proposal: `openspec show [change-name]`
+- [ ] 5.0.2 Review `proposal.md` - understand why, what, and impact
+- [ ] 5.0.3 Review `design.md` - understand technical decisions
+- [ ] 5.0.4 Review `specs/` - understand requirements deltas
+- [ ] 5.0.5 Review Phases 1-4 in this file
+- [ ] 5.0.6 Run existing tests: `pnpm test` (should show failing tests)
+- [ ] 5.0.7 Verify test failures are expected
+- [ ] 5.0.8 Understand test assertions and expected behavior
 
 ### 5.1 Database Schema (if needed)
 
@@ -143,6 +290,8 @@ Use this template when implementing approved change proposals (Phases 5-6 only).
 ## Phase 6: Refactoring & Documentation ✅
 
 **Goal:** Clean up code and ensure complete documentation
+
+**Responsible:** Implementation Developer
 
 ### 6.1 Code Refactoring
 
@@ -257,7 +406,7 @@ Use this template when implementing approved change proposals (Phases 5-6 only).
 
 ---
 
-## Final Validation Checklist
+## 🎯 Final Validation Checklist
 
 Before marking implementation as complete:
 
@@ -303,16 +452,19 @@ Before marking implementation as complete:
 
 ---
 
-## Implementation Complete
+## Change Complete ✅
 
-**You have delivered:**
+**Deliverables:**
 
-1. ✅ Working implementation (all tests passing)
-2. ✅ Refactored, clean code
-3. ✅ Complete documentation (API, requirements, user guides)
-4. ✅ Production-ready code
+1. ✅ Requirements analyzed with document IDs (`proposal.md`)
+2. ✅ Technical design documented (`design.md`)
+3. ✅ Tests written and passing (TDD complete)
+4. ✅ Working implementation (all phases 1-6 complete)
+5. ✅ Refactored, clean code
+6. ✅ Complete documentation (API, requirements, user guides)
+7. ✅ Production-ready code
 
-**Next steps (handled by archiving process):**
+**Next steps (archiving process):**
 
 - Update specification with changes
 - Archive change proposal
@@ -320,12 +472,31 @@ Before marking implementation as complete:
 
 ---
 
-## Notes
+## Notes & Best Practices
+
+### For Proposal Authors (Phases 1-4)
+
+- Complete ALL Phase 1-4 tasks before submission
+- Document all decisions with clear rationale
+- Write actual test code, not just scenarios
+- Tests SHOULD fail at this stage (red phase of TDD)
+- Use TypeScript `any` or mock types temporarily if types don't exist yet
+- Review existing tests in `src/**/*.test.ts` and `tests/` for patterns
+- Validate proposal: `openspec validate [change-name] --strict`
+
+### For Implementation Developers (Phases 5-6)
 
 - Follow implementation order strictly: Schema → Types → API → Logic → UI
 - Run tests frequently during implementation
 - Refactor continuously while keeping tests green
 - Don't skip documentation - it's critical for maintenance
-- Add additional tasks if needed, but maintain phase structure
 - Keep commits atomic and well-described
 - Use feature branch and PR workflow (if applicable)
+
+### General Guidelines
+
+- Add additional tasks if needed, but maintain phase structure
+- Document deviations from plan with rationale
+- Keep this tasks file updated as source of truth
+- Use checkboxes to track progress
+- Reference this file in PR descriptions
