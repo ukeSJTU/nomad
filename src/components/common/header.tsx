@@ -1,6 +1,7 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
@@ -22,9 +23,13 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between gap-4 px-4">
         {/* Left section: Favicon/Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-semibold">
-            N
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Nomad Logo"
+            width={64}
+            height={64}
+            className="rounded-lg"
+          />
           <span className="hidden font-semibold sm:inline-block">Nomad</span>
         </Link>
 
