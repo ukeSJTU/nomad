@@ -24,7 +24,7 @@ export default function Header() {
         {/* Left section: Favicon/Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/icon.png"
+            src="/logo.png"
             alt="Nomad Logo"
             width={64}
             height={64}
