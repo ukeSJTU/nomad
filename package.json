@@ -14,6 +14,8 @@
     "test": "vitest",
     "test:run": "vitest --run",
     "test:unit": "vitest --run --project=unit",
+    "test:integration": "vitest --run --project=integration",
+    "test:integration:watch": "vitest --project=integration",
     "test:storybook": "vitest --run --project=storybook",
     "test:coverage": "vitest --run --coverage",
     "test:report": "pnpm test:coverage && pnpm e2e && node scripts/generate-dashboard.js",

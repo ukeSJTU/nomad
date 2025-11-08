@@ -23,8 +23,8 @@ export default defineConfig({
       "**/cypress/**",
       "**/.{idea,git,cache,output,temp}/**",
       "**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*",
-      "**/tests/**",
-      // Exclude Playwright tests
+      "**/tests/**/*.spec.ts",
+      // Exclude Playwright E2E tests (*.spec.ts files in tests/)
       "**/test-results/**",
       "**/playwright-report/**",
       "src/lib/fumadocs/**", // These are fumadocs configuration files
@@ -100,6 +100,16 @@ export default defineConfig({
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from unit tests
           ],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "integration",
+          include: ["tests/integration/**/*.integration.test.ts"],
+          environment: "node", // Integration tests use real database, no jsdom needed
+          globals: true,
+          setupFiles: [], // No setup files needed for integration tests
         },
       },
       {
