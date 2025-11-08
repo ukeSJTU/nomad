@@ -1,7 +1,42 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+
+/**
+ * Helper function to mock user session for testing
+ * This simulates a logged-in user by mocking the session API endpoint
+ */
+async function mockUserSession(page: Page) {
+  // Mock the session endpoint to return a logged-in user
+  await page.route("**/api/auth/get-session", async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        user: {
+          id: "test-user-id",
+          name: "测试用户",
+          email: "test@example.com",
+          emailVerified: false,
+          image: null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        session: {
+          id: "test-session-id",
+          userId: "test-user-id",
+          expiresAt: new Date(Date.now() + 86400000).toISOString(), // 24 hours from now
+          token: "test-token",
+          ipAddress: "127.0.0.1",
+          userAgent: "test-agent",
+        },
+      }),
+    });
+  });
+}
 
 test.describe("UserMenu Component E2E", () => {
   test.beforeEach(async ({ page }) => {
+    // Set up mock session before navigating
+    await mockUserSession(page);
     // Navigate to home page where Header with UserMenu is displayed
     await page.goto("/");
   });
@@ -9,9 +44,6 @@ test.describe("UserMenu Component E2E", () => {
   test("should navigate to /home when clicking UserMenu trigger area", async ({
     page,
   }) => {
-    // TODO: Login as a user first (implement login flow)
-    // For now, this test assumes user is already logged in
-
     // Find the UserMenu link by text "尊敬的用户"
     const userMenuLink = page.getByRole("link", { name: /尊敬的用户/i });
 
@@ -29,8 +61,6 @@ test.describe("UserMenu Component E2E", () => {
   });
 
   test("should display dropdown menu on hover", async ({ page }) => {
-    // TODO: Login as a user first
-
     // Find the UserMenu trigger
     const userMenuTrigger = page.getByRole("link", { name: /尊敬的用户/i });
 
@@ -47,8 +77,6 @@ test.describe("UserMenu Component E2E", () => {
   });
 
   test("should show ChevronDown icon in UserMenu", async ({ page }) => {
-    // TODO: Login as a user first
-
     // Find the UserMenu link
     const userMenuLink = page.getByRole("link", { name: /尊敬的用户/i });
 
@@ -60,23 +88,22 @@ test.describe("UserMenu Component E2E", () => {
   test("should display '尊敬的用户' text instead of username", async ({
     page,
   }) => {
-    // TODO: Login as a user with a known username (e.g., "张三")
-
     // Verify standardized text is displayed
     await expect(page.getByText("尊敬的用户")).toBeVisible();
 
     // Verify actual username is NOT displayed in Header (collapsed state)
     // Note: Username might appear in expanded menu, but not in Header text
     const headerElement = page.locator("header");
-    await expect(headerElement.getByText("张三")).not.toBeVisible();
+    // The mock user has name "测试用户", verify it's not shown in header
+    await expect(headerElement.getByText("测试用户")).not.toBeVisible();
   });
 
   test("hover and click should both work without conflict", async ({
     page,
   }) => {
-    // TODO: Login as a user first
-
-    const userMenuLink = page.getByRole("link", { name: /尊敬的用户/i });
+    const userMenuLink = page
+      .getByRole("link", { name: /尊敬的用户/i })
+      .first();
 
     // Test 1: Hover to see menu
     await userMenuLink.hover();
@@ -88,7 +115,9 @@ test.describe("UserMenu Component E2E", () => {
     await page.waitForTimeout(200);
 
     // Test 2: Click to navigate
-    await userMenuLink.click();
+    // Use the trigger link specifically (not the one in dropdown)
+    const triggerLink = page.locator('header a[href="/home"]').first();
+    await triggerLink.click();
     await expect(page).toHaveURL("/home");
   });
 });
@@ -97,9 +126,7 @@ test.describe("UserMenu - Not Logged In State", () => {
   test("should show Sign In and Sign Up buttons when not logged in", async ({
     page,
   }) => {
-    // Navigate to a page where user is not logged in
-    // TODO: Ensure user is logged out first
-
+    // Don't mock session for this test - user should be logged out
     await page.goto("/");
 
     // Verify Sign In and Sign Up buttons are visible
