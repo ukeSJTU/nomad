@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, User, Wallet } from "lucide-react";
+import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,6 +24,31 @@ const getInitials = (name?: string) => {
     .slice(0, 2);
 };
 
+/**
+ * UserMenu component displays user authentication status and navigation options.
+ *
+ * @description
+ * This component shows different states based on authentication status:
+ * - Loading state: Shows a skeleton loader while checking session
+ * - Not logged in: Displays "Sign In" and "Sign Up" buttons
+ * - Logged in: Shows "尊敬的用户" (Respected User) with dropdown menu on hover
+ *
+ * Features when logged in:
+ * - Displays standardized greeting text "尊敬的用户" (complies with course requirements)
+ * - ChevronDown icon indicates dropdown availability
+ * - Click trigger area to navigate to /home page
+ * - Hover to view user menu with options: wallet, passenger info, sign out
+ * - Avatar shows user image or fallback with user initials
+ *
+ * @returns {JSX.Element} The rendered UserMenu component
+ *
+ * @example
+ * ```tsx
+ * <Header>
+ *   <UserMenu />
+ * </Header>
+ * ```
+ */
 export default function UserMenu() {
   const { data: session, isPending } = authClient.useSession();
 
@@ -55,7 +80,7 @@ export default function UserMenu() {
   return (
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
-        <div className="flex items-center gap-2 cursor-pointer">
+        <Link href="/home" className="flex items-center gap-2 cursor-pointer">
           <Avatar className="size-8">
             <AvatarImage
               src={session.user.image || undefined}
@@ -64,9 +89,10 @@ export default function UserMenu() {
             <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
           </Avatar>
           <span className="hidden text-sm font-medium md:inline-block">
-            {session.user.name || "Anonymous"}
+            尊敬的用户
           </span>
-        </div>
+          <ChevronDown className="hidden size-3.5 text-muted-foreground md:inline-block" />
+        </Link>
       </HoverCardTrigger>
       <HoverCardContent align="end" className="w-52 p-2">
         <div className="flex flex-col gap-1">
@@ -83,7 +109,7 @@ export default function UserMenu() {
                 href="/home"
                 className="text-sm font-medium hover:underline cursor-pointer"
               >
-                尊敬的{session.user.name || "Anonymous"}
+                尊敬的用户
               </Link>
               <Badge className="w-fit">贵宾</Badge>
             </div>

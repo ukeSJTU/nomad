@@ -91,10 +91,9 @@ describe("UserMenu Component", () => {
 
       render(<UserMenu />);
 
-      // Avatar fallback should show initials "ZS" for "张三"
-      // Note: getInitials logic should extract first letter of each name part
-      const avatar = screen.getByRole("img", { hidden: true });
-      expect(avatar).toBeInTheDocument();
+      // Avatar fallback should show initials "张" for "张三"
+      // Check that the avatar fallback text is rendered
+      expect(screen.getByText("张")).toBeInTheDocument();
     });
   });
 
