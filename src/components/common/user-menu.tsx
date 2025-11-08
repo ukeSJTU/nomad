@@ -14,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/client";
 
-const getInitials = (name?: string) => {
+export const getInitials = (name?: string) => {
   if (!name) return "A"; // Anonymous
   return name
     .split(" ")

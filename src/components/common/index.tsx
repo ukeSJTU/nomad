@@ -12,3 +12,4 @@ export {
 } from "./data-table-with-actions";
 export { default as Footer } from "./footer";
 export { default as Header } from "./header";
+export { getInitials, default as UserMenu } from "./user-menu";

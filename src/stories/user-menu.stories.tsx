@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
 import Link from "next/link";
 
+import { getInitials } from "@/components/common";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,17 +12,6 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-
-// Helper function to get user initials
-const getInitials = (name?: string) => {
-  if (!name) return "A"; // Anonymous
-  return name
-    .split(" ")
-    .map(n => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-};
 
 // Mock component for Storybook that accepts controlled props
 interface UserMenuProps {
