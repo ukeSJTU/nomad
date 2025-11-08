@@ -79,7 +79,10 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.wordWrap": "on",
-    "editor.rulers": []
+    "editor.rulers": [],
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false
   },
   "[mdx]": {
     "editor.formatOnSave": false,
