@@ -1,20 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { vi } from "vitest";
 
-import UserMenu from "@/components/common/user-menu";
-
-// Mock auth client
-const mockUseSession = vi.fn();
-vi.mock("@/lib/auth/client", () => ({
-  authClient: {
-    useSession: () => mockUseSession(),
-    signOut: vi.fn(),
-  },
-}));
+import UserMenuDemo from "@/components/common/user-menu-demo";
 
 const meta = {
   title: "Common/UserMenu",
-  component: UserMenu,
+  component: UserMenuDemo,
   parameters: {
     layout: "centered",
     docs: {
@@ -24,22 +14,25 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof UserMenu>;
+  argTypes: {
+    state: {
+      control: "select",
+      options: ["not-logged-in", "logged-in", "loading"],
+      description: "The authentication state to display",
+    },
+  },
+} satisfies Meta<typeof UserMenuDemo>;
 
 export default meta;
-type Story = Omit<StoryObj<typeof meta>, "args">;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Default story showing the UserMenu component in not logged in state.
  * Displays "Sign In" and "Sign Up" buttons.
  */
 export const Default: Story = {
-  render: () => {
-    mockUseSession.mockReturnValue({
-      data: null,
-      isPending: false,
-    });
-    return <UserMenu />;
+  args: {
+    state: "not-logged-in",
   },
 };
 
@@ -48,53 +41,35 @@ export const Default: Story = {
  *
  * Features when logged in:
  * - Displays standardized text "尊敬的用户" (instead of username)
- * - Shows user avatar with fallback initials
+ * - Shows user avatar with image
  * - ChevronDown icon indicates dropdown availability
  * - Click to navigate to /home page
  * - Hover to view user menu with options (wallet, passenger info, sign out)
  */
 export const LoggedIn: Story = {
-  render: () => {
-    mockUseSession.mockReturnValue({
-      data: {
-        user: {
-          id: "user-123",
-          name: "张三",
-          email: "zhangsan@example.com",
-          image: "https://github.com/shadcn.png",
-        },
-        session: {
-          token: "mock-token",
-          expiresAt: new Date(Date.now() + 86400000),
-        },
-      },
-      isPending: false,
-    });
-    return <UserMenu />;
+  args: {
+    state: "logged-in",
+    user: {
+      id: "user-123",
+      name: "张三",
+      email: "zhangsan@example.com",
+      image: "https://github.com/shadcn.png",
+    },
   },
 };
 
 /**
  * Story showing the UserMenu component when user is logged in without avatar image.
- * Shows fallback with user initials.
+ * Shows fallback with user initials (张).
  */
 export const LoggedInWithoutAvatar: Story = {
-  render: () => {
-    mockUseSession.mockReturnValue({
-      data: {
-        user: {
-          id: "user-456",
-          name: "李四",
-          email: "lisi@example.com",
-        },
-        session: {
-          token: "mock-token",
-          expiresAt: new Date(Date.now() + 86400000),
-        },
-      },
-      isPending: false,
-    });
-    return <UserMenu />;
+  args: {
+    state: "logged-in",
+    user: {
+      id: "user-456",
+      name: "李四",
+      email: "lisi@example.com",
+    },
   },
 };
 
@@ -103,11 +78,7 @@ export const LoggedInWithoutAvatar: Story = {
  * Displays a skeleton loader while checking session.
  */
 export const Loading: Story = {
-  render: () => {
-    mockUseSession.mockReturnValue({
-      data: null,
-      isPending: true,
-    });
-    return <UserMenu />;
+  args: {
+    state: "loading",
   },
 };
