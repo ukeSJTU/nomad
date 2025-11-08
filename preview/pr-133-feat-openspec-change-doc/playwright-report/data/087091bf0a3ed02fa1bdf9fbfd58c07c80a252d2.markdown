@@ -1,0 +1,94 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Nomad Logo Nomad" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Nomad Logo" [ref=e6]
+          - generic [ref=e7]: Nomad
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e10]
+            - searchbox "搜索任何旅游相关" [ref=e13]
+          - button "Search" [ref=e14]:
+            - img
+            - generic [ref=e15]: Search
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - link "Sign In" [ref=e18] [cursor=pointer]:
+              - /url: /auth/sign-in
+            - link "Sign Up" [ref=e19] [cursor=pointer]:
+              - /url: /auth/sign-up
+          - button "我的订单" [ref=e20] [cursor=pointer]
+          - button "联系客服" [ref=e21]
+          - button "Toggle theme" [ref=e22]:
+            - img
+            - generic [ref=e23]: Toggle theme
+    - main [ref=e24]:
+      - generic [ref=e25]:
+        - main [ref=e26]:
+          - img "Next.js logo" [ref=e27]
+          - list [ref=e28]:
+            - listitem [ref=e29]:
+              - text: Get started by editing
+              - code [ref=e30]: src/app/page.tsx
+              - text: .
+            - listitem [ref=e31]: Save and see your changes instantly.
+          - generic [ref=e32]:
+            - link "Vercel logomark Deploy now" [ref=e33] [cursor=pointer]:
+              - /url: https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+              - img "Vercel logomark" [ref=e34]
+              - text: Deploy now
+            - link "Read our docs" [ref=e35] [cursor=pointer]:
+              - /url: https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+        - generic [ref=e36]:
+          - link "Learn" [ref=e37] [cursor=pointer]:
+            - /url: https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+            - img [ref=e38]
+            - text: Learn
+          - link "Examples" [ref=e39] [cursor=pointer]:
+            - /url: https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+            - img [ref=e40]
+            - text: Examples
+          - link "Go to nextjs.org →" [ref=e41] [cursor=pointer]:
+            - /url: https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+            - img [ref=e42]
+            - text: Go to nextjs.org →
+    - contentinfo [ref=e43]:
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e48]: "N"
+              - generic [ref=e49]: Nomad
+            - paragraph [ref=e50]: 您的在线旅行服务平台
+          - generic [ref=e51]:
+            - heading "快速链接" [level=3] [ref=e52]
+            - list [ref=e53]:
+              - listitem [ref=e54]:
+                - link "首页" [ref=e55] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e56]:
+                - link "常旅客管理" [ref=e57] [cursor=pointer]:
+                  - /url: /home/passengers
+          - generic [ref=e58]:
+            - heading "法律信息" [level=3] [ref=e59]
+            - list [ref=e60]:
+              - listitem [ref=e61]:
+                - link "服务协议" [ref=e62] [cursor=pointer]:
+                  - /url: /terms
+              - listitem [ref=e63]:
+                - link "个人信息保护政策" [ref=e64] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e65]:
+                - link "免责声明" [ref=e66] [cursor=pointer]:
+                  - /url: /disclaimer
+        - paragraph [ref=e68]: © 2025 Nomad. 保留所有权利。
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e74] [cursor=pointer]:
+    - img [ref=e75]
+  - alert [ref=e78]
+```
