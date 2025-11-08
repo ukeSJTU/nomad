@@ -1,10 +1,151 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
+import Link from "next/link";
 
-import UserMenuDemo from "@/components/common/user-menu-demo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Separator } from "@/components/ui/separator";
+
+// Helper function to get user initials
+const getInitials = (name?: string) => {
+  if (!name) return "A"; // Anonymous
+  return name
+    .split(" ")
+    .map(n => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+// Mock component for Storybook that accepts controlled props
+interface UserMenuProps {
+  isPending?: boolean;
+  session?: {
+    user: {
+      id: string;
+      name?: string;
+      email?: string;
+      image?: string;
+    };
+  } | null;
+}
+
+function UserMenuStory({ isPending = false, session = null }: UserMenuProps) {
+  const handleSignOut = async () => {
+    console.log("Sign out clicked");
+  };
+
+  if (isPending) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="size-8 animate-pulse rounded-full bg-muted" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="flex items-center gap-2">
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/auth/sign-in">Sign In</Link>
+        </Button>
+        <Button variant="secondary" size="sm" asChild>
+          <Link href="/auth/sign-up">Sign Up</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <HoverCard openDelay={200} closeDelay={100}>
+      <HoverCardTrigger asChild>
+        <Link href="/home" className="flex items-center gap-2 cursor-pointer">
+          <Avatar className="size-8">
+            <AvatarImage
+              src={session.user.image || undefined}
+              alt={session.user.name || "User"}
+            />
+            <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
+          </Avatar>
+          <span className="hidden text-sm font-medium md:inline-block">
+            尊敬的用户
+          </span>
+          <ChevronDown className="hidden size-3.5 text-muted-foreground md:inline-block" />
+        </Link>
+      </HoverCardTrigger>
+      <HoverCardContent align="end" className="w-52 p-2">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-3 px-2 py-1.5">
+            <Avatar className="size-10">
+              <AvatarImage
+                src={session.user.image || undefined}
+                alt={session.user.name || "User"}
+              />
+              <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col gap-1">
+              <Link
+                href="/home"
+                className="text-sm font-medium hover:underline cursor-pointer"
+              >
+                尊敬的用户
+              </Link>
+              <Badge className="w-fit">贵宾</Badge>
+            </div>
+          </div>
+
+          <Separator className="my-1" />
+
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="justify-start gap-2"
+          >
+            <Link href="/wallet">
+              <Wallet className="size-4" />
+              我的钱包
+            </Link>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="justify-start gap-2"
+          >
+            <Link href="/home/passengers">
+              <User className="size-4" />
+              常用信息
+            </Link>
+          </Button>
+
+          <Separator className="my-1" />
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSignOut}
+            className="justify-start gap-2"
+          >
+            <LogOut className="size-4" />
+            退出登录
+          </Button>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  );
+}
 
 const meta = {
   title: "Common/UserMenu",
-  component: UserMenuDemo,
+  component: UserMenuStory,
   parameters: {
     layout: "centered",
     docs: {
@@ -15,13 +156,16 @@ const meta = {
     },
   },
   argTypes: {
-    state: {
-      control: "select",
-      options: ["not-logged-in", "logged-in", "loading"],
-      description: "The authentication state to display",
+    isPending: {
+      control: "boolean",
+      description: "Loading state while checking session",
+    },
+    session: {
+      control: "object",
+      description: "User session data (null for logged out)",
     },
   },
-} satisfies Meta<typeof UserMenuDemo>;
+} satisfies Meta<typeof UserMenuStory>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -32,7 +176,8 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: {
-    state: "not-logged-in",
+    isPending: false,
+    session: null,
   },
 };
 
@@ -48,12 +193,14 @@ export const Default: Story = {
  */
 export const LoggedIn: Story = {
   args: {
-    state: "logged-in",
-    user: {
-      id: "user-123",
-      name: "张三",
-      email: "zhangsan@example.com",
-      image: "https://github.com/shadcn.png",
+    isPending: false,
+    session: {
+      user: {
+        id: "user-123",
+        name: "张三",
+        email: "zhangsan@example.com",
+        image: "https://github.com/shadcn.png",
+      },
     },
   },
 };
@@ -64,11 +211,13 @@ export const LoggedIn: Story = {
  */
 export const LoggedInWithoutAvatar: Story = {
   args: {
-    state: "logged-in",
-    user: {
-      id: "user-456",
-      name: "李四",
-      email: "lisi@example.com",
+    isPending: false,
+    session: {
+      user: {
+        id: "user-456",
+        name: "李四",
+        email: "lisi@example.com",
+      },
     },
   },
 };
@@ -79,6 +228,7 @@ export const LoggedInWithoutAvatar: Story = {
  */
 export const Loading: Story = {
   args: {
-    state: "loading",
+    isPending: true,
+    session: null,
   },
 };
