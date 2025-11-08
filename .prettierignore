@@ -48,3 +48,6 @@ next-env.d.ts
 
 # MDX documents content
 content/docs/**/*.mdx
+
+# Markdown files
+*.md
