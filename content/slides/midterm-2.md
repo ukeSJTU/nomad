@@ -17,7 +17,7 @@ background: https://sli.dev/demo-cover.png
 drawings:
   enabled: false
 fonts:
-  mono: 'Fira Code, monospace'
+  mono: "Fira Code, monospace"
 layout: cover
 transition: slide-left
 ---
@@ -37,13 +37,12 @@ This page should contain what we are going to talk about for today
 
 1. 目前项目进度
 2. 项目特殊之处-CI/CD，完善的测试框架
-3. 协作：收录了常见问题
-4. 项目的展望-Redis高并发
+3. 协作：收录了常见问题（high-risk）
+4. 项目的展望-Redis高并发 + 消息队列
 
 <!--
 这是我们今天准备介绍的几点内容。首先是目前的项目进度
 -->
-
 
 ---
 layout: center
