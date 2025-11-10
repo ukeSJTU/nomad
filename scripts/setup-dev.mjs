@@ -78,7 +78,7 @@ function commandExists(command) {
   try {
     if (process.platform === "win32") {
       // Windows: use 'where' command
-      execCommand(`where ${command}`, { silent: true });
+      execCommand(`where /q ${command}`, { silent: true });
     } else {
       // Unix/Linux: use 'command -v' (POSIX shell built-in)
       execCommand(`command -v ${command}`, { silent: true, shell: true });
