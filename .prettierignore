@@ -50,7 +50,7 @@ next-env.d.ts
 content/docs/**/*.mdx
 
 # Slidev markdown files
-content/slides/**/*.md
+# content/slides/**/*.md
 
 # Openspec files
 .github/prompts/openspec-apply.prompt.md
