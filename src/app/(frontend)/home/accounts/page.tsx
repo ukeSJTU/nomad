@@ -53,19 +53,12 @@ export default async function AccountsPage() {
   });
 
   /**
-   * Check if a provider is linked
+   * Create a map of linked accounts for efficient O(1) lookup
+   * This avoids O(n) traversal for each provider in the render loop
    */
-  const isLinked = (providerId: string): boolean => {
-    return (accounts || []).some(acc => acc.providerId === providerId);
-  };
-
-  /**
-   * Get account ID for a linked provider
-   */
-  const getAccountId = (providerId: string): string | undefined => {
-    const account = (accounts || []).find(acc => acc.providerId === providerId);
-    return account?.accountId;
-  };
+  const linkedAccountsMap = new Map(
+    (accounts || []).map(acc => [acc.providerId, acc])
+  );
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -81,8 +74,10 @@ export default async function AccountsPage() {
         {/* Social Account Cards */}
         <div className="flex flex-wrap gap-6">
           {PROVIDERS.map(provider => {
-            const linked = isLinked(provider.id);
-            const accountId = getAccountId(provider.id);
+            // O(1) lookup from the Map instead of O(n) traversal
+            const account = linkedAccountsMap.get(provider.id);
+            const linked = !!account;
+            const accountId = account?.accountId;
 
             return (
               <SocialAccountCard
