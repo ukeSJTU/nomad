@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>52/52</span>
+                <span class='fraction'>55/55</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>5/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>3/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>52/52</span>
+                <span class='fraction'>55/55</span>
             </div>
         
             
@@ -197,8 +197,13 @@
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
 <a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -294,22 +299,19 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -319,14 +321,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -334,8 +342,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use client";
 &nbsp;
 import { Check } from "lucide-react";
+import { useState } from "react";
 &nbsp;
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 &nbsp;
 /**
  * Props for SocialAccountCard component
@@ -405,9 +414,10 @@ function GoogleIcon({ className }: { className?: string }) {
  *
  * Features:
  * - Provider-specific icon (GitHub or Google)
- * - Visual indication of linked status with checkmark
- * - Bind/Unbind action button
- * - Displays account ID when linked
+ * - Shows "已绑定" (Linked) status with checkmark when linked
+ * - On hover over linked card, shows unlink button instead
+ * - Shows link button when not linked
+ * - Compact vertical layout
  *
  * @example
  * ```tsx
@@ -415,7 +425,6 @@ function GoogleIcon({ className }: { className?: string }) {
  *   provider="github"
  *   providerName="GitHub"
  *   isLinked={true}
- *   accountId="username123"
  *   unlinkButton={&lt;UnlinkButton providerId="github" providerName="GitHub" /&gt;}
  * /&gt;
  * ```
@@ -424,44 +433,47 @@ export default function SocialAccountCard({
   provider,
   providerName,
   isLinked,
-  accountId,
   linkButton,
   unlinkButton,
 }: SocialAccountCardProps) {
-  // Select the appropriate icon based on provider
+  const [isHovered, setIsHovered] = useState(false);
   const Icon = provider === "github" ? GithubIcon : GoogleIcon;
 &nbsp;
   return (
-    &lt;Card className="w-[180px] text-center"&gt;
-      &lt;CardHeader className="pb-4"&gt;
+    &lt;Card
+      className="w-[180px] text-center transition-shadow hover:shadow-md"
+      onMouseEnter={<span class="fstat-no" title="function not covered" >() =&gt; setIsHovered(true)}</span>
+      onMouseLeave={<span class="fstat-no" title="function not covered" >() =&gt; setIsHovered(false)}</span>
+    &gt;
+      &lt;div className="p-4 space-y-3"&gt;
         {/* Provider Icon */}
-        &lt;div className="flex justify-center mb-2"&gt;
-          &lt;div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center relative"&gt;
-            &lt;Icon className="w-10 h-10 text-gray-700" /&gt;
-            {/* Linked Status Badge */}
-            {isLinked &amp;&amp; (
-              &lt;div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center"&gt;
-                &lt;Check className="w-4 h-4 text-white" /&gt;
-              &lt;/div&gt;
-            )}
+        &lt;div className="flex justify-center"&gt;
+          &lt;div className="w-12 h-12 rounded-full flex items-center justify-center"&gt;
+            &lt;Icon className="w-8 h-8 text-gray-700" /&gt;
           &lt;/div&gt;
         &lt;/div&gt;
 &nbsp;
         {/* Provider Name */}
-        &lt;CardTitle className="text-base"&gt;{providerName}&lt;/CardTitle&gt;
+        &lt;h3 className="text-sm font-medium"&gt;{providerName}&lt;/h3&gt;
 &nbsp;
-        {/* Account ID if linked */}
-        {isLinked &amp;&amp; accountId &amp;&amp; (
-          &lt;p className="text-xs text-muted-foreground mt-1 truncate px-2"&gt;
-            {accountId}
-          &lt;/p&gt;
-        )}
-      &lt;/CardHeader&gt;
-&nbsp;
-      {/* Action Button */}
-      &lt;CardFooter className="flex justify-center pt-0"&gt;
-        {isLinked ? unlinkButton : linkButton}
-      &lt;/CardFooter&gt;
+        {/* Status or Action Button */}
+        &lt;div className="min-h-8 flex items-center justify-center"&gt;
+          {isLinked ? (
+            // Show unlink button on hover, otherwise show "已绑定" status
+<span class="branch-0 cbranch-no" title="branch not covered" >            isHovered ? (</span>
+              unlinkButton
+            ) : (
+              &lt;div className="flex items-center gap-1.5 text-green-600"&gt;
+                &lt;Check className="w-4 h-4" /&gt;
+                &lt;span className="text-xs font-medium"&gt;已绑定&lt;/span&gt;
+              &lt;/div&gt;
+            )
+          ) : (
+            // Show link button when not linked
+            linkButton
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
     &lt;/Card&gt;
   );
 }
@@ -472,7 +484,7 @@ export default function SocialAccountCard({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-11T15:24:51.324Z
+                at 2025-11-11T15:46:51.276Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
