@@ -1,16 +1,16 @@
+import {
+  chinesePassengerFactory,
+  deletedPassengerFactory,
+  passengerFactory,
+  userFactory,
+} from "@tests/factories";
+import { clearDatabase } from "@tests/helpers/db";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@/lib/db";
 import { getPassengers } from "@/lib/queries/passengers";
 import { user } from "@/lib/schema";
 import { passengers } from "@/lib/schema/passengers";
-import {
-  chinesePassengerFactory,
-  deletedPassengerFactory,
-  passengerFactory,
-  userFactory,
-} from "@/tests/factories";
-import { clearDatabase } from "@/tests/helpers/db";
 
 describe("getPassengers Integration Test", () => {
   beforeEach(async () => {
