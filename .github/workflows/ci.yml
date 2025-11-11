@@ -61,10 +61,26 @@ jobs:
         if: success()
         run: echo "✅ Build completed successfully!"
 
-  unit-tests:
-    name: Unit Tests
+  vitest-tests:
+    name: Vitest Tests (Unit + Integration + Storybook)
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    # PostgreSQL service container for integration tests
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: nomad_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: Checkout code
@@ -102,15 +118,31 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps
 
-      - name: Run unit tests
+      - name: Setup test database
+        run: pnpm db:push:test
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/nomad_test
+          DATABASE_SSL: "false"
+
+      - name: Run vitest tests with coverage
         run: pnpm test:coverage
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/nomad_test
+          DATABASE_SSL: "false"
+          BETTER_AUTH_SECRET: "test-secret-for-ci-vitest"
+          BETTER_AUTH_URL: "http://localhost:3000"
+          ENABLE_ALIYUN_SMS: "false"
+          ENABLE_API_DOCS: "false"
+          LOG_LEVEL: "silent"
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         if: always()
         with:
           file: ./coverage/lcov.info
-          flags: unittests
+          flags: vitest
           name: codecov-umbrella
           fail_ci_if_error: false
 
@@ -300,7 +332,7 @@ jobs:
         (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
         (github.event_name == 'pull_request' && github.base_ref == 'develop' && github.head_ref != 'main')
       )
-    needs: [unit-tests, merge-playwright-reports, storybook]
+    needs: [vitest-tests, merge-playwright-reports, storybook]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -441,7 +473,7 @@ jobs:
   comment-pr:
     name: Comment on PR
     if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-    needs: [unit-tests, merge-playwright-reports, storybook, deploy]
+    needs: [vitest-tests, merge-playwright-reports, storybook, deploy]
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -503,7 +535,7 @@ jobs:
 
             ### **Test Status**
             - ✅ **Build Check**: Passed
-            - ✅ **Unit Tests**: Passed
+            - ✅ **Vitest Tests**: Passed (Unit + Integration + Storybook)
             - ✅ **E2E Tests**: Passed
             - ✅ **Storybook**: Built successfully
 

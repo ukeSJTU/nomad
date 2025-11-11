@@ -9,6 +9,28 @@ icon: TestTube
 2. **组件测试**：使用 React Testing Library 测试 React 组件
 3. **端到端测试**：使用 Playwright 测试完整的用户流程
 
+## 测试金字塔
+
+```
+        /\
+       /  \  E2E 测试 (少量)
+      /----\
+     /      \  集成测试 (适量)
+    /--------\
+   /          \  单元测试 (大量)
+  /------------\
+```
+
+## 测试层次配置
+
+| 测试类型 | 运行器 | 环境 | 数据库 | 测试对象 | 文件位置 | 命令 |
+|---------|--------|------|--------|----------|----------|------|
+| 单元测试 | Vitest | jsdom | 否 | 纯函数、组件 | `src/**/*.test.ts` | `pnpm test:unit` |
+| Storybook测试 | Vitest | Browser | 否 | 组件交互 | `**/*.stories.tsx` | `pnpm test:storybook` |
+| 集成测试 | Vitest | Node | 是 | Server Actions + DB | `tests/integration/**/*.integration.test.ts` | `pnpm test:integration` |
+| E2E测试 | Playwright | Browser | 是 | 完整用户流程 | `tests/e2e/**/*.spec.ts` | `pnpm e2e` |
+
+
 ## 技术栈
 
 - **Vitest**：快速的单元测试框架，与 Vite 深度集成

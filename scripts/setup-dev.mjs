@@ -73,10 +73,16 @@ function execCommand(command, options = {}) {
   }
 }
 
-// Check if command exists
+// Check if command exists (cross-platform)
 function commandExists(command) {
   try {
-    execCommand(`command -v ${command}`, { silent: true });
+    if (process.platform === "win32") {
+      // Windows: use 'where' command
+      execCommand(`where /q ${command}`, { silent: true });
+    } else {
+      // Unix/Linux: use 'command -v' (POSIX shell built-in)
+      execCommand(`command -v ${command}`, { silent: true, shell: true });
+    }
     return true;
   } catch {
     return false;
