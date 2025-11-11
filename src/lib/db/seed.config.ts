@@ -110,20 +110,6 @@ export const scenarios = {
       passengersPerUser: { min: 1, max: 3 },
     },
   },
-  testing: {
-    name: "Testing",
-    description: "Fixed data for automated tests (CI/CD)",
-    seed: 12345,
-    mode: "full" as const,
-    counts: {
-      cities: 5,
-      airports: 10,
-      airlines: 10,
-      flights: 30,
-      users: 3,
-      passengersPerUser: { min: 1, max: 3 },
-    },
-  },
   demo: {
     name: "Demo",
     description: "Rich data for demonstrations",
@@ -178,7 +164,7 @@ export const defaultSeedConfig: SeedConfig = {
 /**
  * Parse CLI arguments and merge with default config
  * Supports the following CLI arguments:
- * - --scenario=<name>: Use a predefined scenario (minimal, development, testing, demo, performance)
+ * - --scenario=<name>: Use a predefined scenario (minimal, development, demo, performance)
  * - --seed=<number>: Set the Faker seed for reproducible data
  * - --mode=<mode>: Seeding mode (full or incremental)
  * - --incremental: Shorthand for --mode=incremental
