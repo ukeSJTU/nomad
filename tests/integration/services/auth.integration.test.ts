@@ -104,8 +104,8 @@ describe("unlinkSocialAccount Integration Test", () => {
     });
   });
 
-  describe("Race condition vulnerability", () => {
-    it("should demonstrate the race condition when unlinking accounts concurrently", async () => {
+  describe("Race condition protection", () => {
+    it("should prevent race condition when unlinking accounts concurrently", async () => {
       // Arrange: Create a user with exactly 2 accounts
       const testUser = userFactory.build({
         id: "user-race-test",
@@ -127,35 +127,25 @@ describe("unlinkSocialAccount Integration Test", () => {
       await db.insert(account).values([githubAccount, googleAccount]);
 
       // Act: Simulate concurrent unlink requests
-      // Both requests will pass the "more than 1 account" check
-      // because they both read the database before either deletes
+      // With transaction protection, only ONE should succeed
       const [result1, result2] = await Promise.all([
         unlinkSocialAccount(testUser.id, "github"),
         unlinkSocialAccount(testUser.id, "google"),
       ]);
 
-      // Assert: BOTH operations succeed (this is the bug!)
-      // In a correct implementation, one should fail
-      expect(result1.success).toBe(true);
-      expect(result2.success).toBe(true);
+      // Assert: Only ONE operation should succeed
+      const successCount = [result1, result2].filter(r => r.success).length;
+      expect(successCount).toBe(1);
 
-      // Verify: User now has ZERO accounts (locked out!)
+      // Verify: User still has at least 1 account (NOT locked out!)
       const remainingAccounts = await db.query.account.findMany({
         where: (accounts, { eq }) => eq(accounts.userId, testUser.id),
       });
 
-      // This is the critical bug: user has no way to log in anymore
-      expect(remainingAccounts).toHaveLength(0);
-
-      console.log("\n⚠️  RACE CONDITION DETECTED:");
-      console.log(
-        `   User ${testUser.id} now has ${remainingAccounts.length} accounts`
-      );
-      console.log("   Both unlink operations succeeded concurrently");
-      console.log("   User is now LOCKED OUT of the system!\n");
+      expect(remainingAccounts.length).toBeGreaterThanOrEqual(1);
     });
 
-    it("should demonstrate race condition with 3 concurrent requests", async () => {
+    it("should prevent race condition with 3 concurrent requests", async () => {
       // Arrange: Create a user with 3 accounts
       const testUser = userFactory.build({
         id: "user-race-test-2",
@@ -183,35 +173,25 @@ describe("unlinkSocialAccount Integration Test", () => {
       await db.insert(account).values(accounts);
 
       // Act: Try to unlink all 3 accounts concurrently
+      // With transaction protection, at most 2 should succeed
       const results = await Promise.all([
         unlinkSocialAccount(testUser.id, "github"),
         unlinkSocialAccount(testUser.id, "google"),
         unlinkSocialAccount(testUser.id, "twitter"),
       ]);
 
-      // Assert: All 3 operations succeed (race condition)
+      // Count successful operations
       const successCount = results.filter(r => r.success).length;
-      expect(successCount).toBeGreaterThan(1); // At least 2 should succeed
 
-      // Verify: User might have 0 or 1 account left
+      // Verify: User should have at least 1 account remaining
       const remainingAccounts = await db.query.account.findMany({
         where: (accounts, { eq }) => eq(accounts.userId, testUser.id),
       });
 
-      // Expected: Should have at least 1 account
-      // Actual: Might have 0 accounts due to race condition
-      console.log(`\n⚠️  RACE CONDITION with 3 concurrent requests:`);
-      console.log(`   ${successCount} out of 3 unlink operations succeeded`);
-      console.log(
-        `   User has ${remainingAccounts.length} account(s) remaining`
-      );
-      console.log(
-        `   Expected: At least 1 account, Actual: ${remainingAccounts.length}\n`
-      );
-
-      // This test demonstrates the vulnerability
-      // In a correct implementation, only 2 operations should succeed
-      expect(remainingAccounts.length).toBeLessThan(2);
+      // Assert: User should still have at least 1 account
+      expect(remainingAccounts.length).toBeGreaterThanOrEqual(1);
+      // Assert: At most 2 operations should succeed (can't delete all 3)
+      expect(successCount).toBeLessThanOrEqual(2);
     });
   });
 
