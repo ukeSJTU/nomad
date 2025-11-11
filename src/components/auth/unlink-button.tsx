@@ -4,8 +4,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-
-import { unlinkAccountAction } from "../../app/(frontend)/home/accounts/actions";
+import { unlinkAccountAction } from "@/lib/actions/auth";
 
 /**
  * Props for UnlinkButton component

@@ -1,11 +1,60 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { account } from "@/lib/schema";
+import { unlinkSocialAccount } from "@/lib/services/auth";
+
+/**
+ * Server action to unlink a social account
+ *
+ * This is a thin controller that:
+ * 1. Handles authentication (Next.js specific)
+ * 2. Calls the service layer for business logic
+ * 3. Handles revalidation (Next.js specific)
+ * 4. Formats the response
+ *
+ * @param providerId - The social provider ID (e.g., "github", "google")
+ * @returns Result object with success status and message/error
+ */
+export async function unlinkAccountAction(providerId: string) {
+  try {
+    // 1. Verify authentication (framework-specific)
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "Authentication required. Please log in first.",
+      };
+    }
+
+    // 2. Call service layer for business logic
+    const result = await unlinkSocialAccount(session.user.id, providerId);
+
+    // 3. Revalidate the page if successful (framework-specific)
+    if (result.success) {
+      revalidatePath("/home/accounts");
+    }
+
+    // 4. Return the result
+    return result;
+  } catch (error) {
+    console.error("Failed to unlink account:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Failed to unlink account",
+    };
+  }
+}
 
 /**
  * Server action to set initial password for users who registered via phone/email verification
