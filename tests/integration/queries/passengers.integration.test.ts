@@ -95,7 +95,7 @@ describe("getPassengers Integration Test", () => {
     expect(result[0].englishFirstName).toBe("User1Passenger");
   });
 
-  it("should return deleted passengers (current behavior)", async () => {
+  it("should not return deleted passengers", async () => {
     // Arrange: Create a user with both active and deleted passengers
     const testUser = userFactory.build({ id: "user-1" });
     await db.insert(user).values(testUser);
@@ -116,15 +116,11 @@ describe("getPassengers Integration Test", () => {
     // Act: Get passengers for the user
     const result = await getPassengers(testUser.id);
 
-    // Assert: Should return both active and deleted passengers
-    // Note: This is the current behavior. The function does NOT filter out deleted passengers.
-    // This might be a bug, but we're testing the current implementation.
-    expect(result).toHaveLength(2);
-    expect(result.some(p => p.englishFirstName === "ActivePassenger")).toBe(
-      true
-    );
+    // Assert: Should only return active passengers, not deleted ones
+    expect(result).toHaveLength(1);
+    expect(result[0].englishFirstName).toBe("ActivePassenger");
     expect(result.some(p => p.englishFirstName === "DeletedPassenger")).toBe(
-      true
+      false
     );
   });
 
