@@ -112,6 +112,8 @@ export default defineConfig({
           environment: "node", // Integration tests use real database, no jsdom needed
           globals: true,
           setupFiles: ["./tests/setup/integration.ts"],
+          pool: "forks",
+          poolOptions: { forks: { singleFork: true } },
         },
       },
       {
