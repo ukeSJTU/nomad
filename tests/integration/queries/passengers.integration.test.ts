@@ -20,7 +20,10 @@ describe("getPassengers Integration Test", () => {
 
   it("should return all passengers for a user", async () => {
     // Arrange: Create a user with 3 passengers
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-test-1",
+      email: "test1@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const passenger1 = passengerFactory.build({
@@ -72,8 +75,14 @@ describe("getPassengers Integration Test", () => {
 
   it("should not return passengers from other users", async () => {
     // Arrange: Create two users with their own passengers
-    const user1 = userFactory.build({ id: "user-1" });
-    const user2 = userFactory.build({ id: "user-2" });
+    const user1 = userFactory.build({
+      id: "user-test-3-1",
+      email: "test3-1@test.com",
+    });
+    const user2 = userFactory.build({
+      id: "user-test-3-2",
+      email: "test3-2@test.com",
+    });
     await db.insert(user).values([user1, user2]);
 
     const user1Passenger = passengerFactory.build({
@@ -97,7 +106,10 @@ describe("getPassengers Integration Test", () => {
 
   it("should not return deleted passengers", async () => {
     // Arrange: Create a user with both active and deleted passengers
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-test-4",
+      email: "test4@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const activePassenger = passengerFactory.build({
@@ -126,7 +138,10 @@ describe("getPassengers Integration Test", () => {
 
   it("should correctly map database fields to API format", async () => {
     // Arrange: Create a user with a passenger that has all fields populated
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-test-5",
+      email: "test5@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const fullPassenger = passengerFactory.build({

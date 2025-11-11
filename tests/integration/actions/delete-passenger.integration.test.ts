@@ -29,13 +29,17 @@ describe("Delete Passenger Integration Test", () => {
 
   it("should successfully soft delete a passenger", async () => {
     // Arrange: Create a user with a passenger
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-delete-1",
+      email: "delete1@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const passenger = passengerFactory.build({
       userId: testUser.id,
       englishFirstName: "John",
       englishLastName: "Doe",
+      email: "delete-passenger1@test.com",
       isDeleted: false,
     });
     const [insertedPassenger] = await db
@@ -63,19 +67,24 @@ describe("Delete Passenger Integration Test", () => {
 
   it("should verify deleted passenger is not returned in active queries", async () => {
     // Arrange: Create a user with two passengers
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-delete-2",
+      email: "delete2@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const activePassenger = passengerFactory.build({
       userId: testUser.id,
       englishFirstName: "Active",
       englishLastName: "Passenger",
+      email: "delete-passenger2-active@test.com",
       isDeleted: false,
     });
     const toDeletePassenger = passengerFactory.build({
       userId: testUser.id,
       englishFirstName: "ToDelete",
       englishLastName: "Passenger",
+      email: "delete-passenger2-todelete@test.com",
       isDeleted: false,
     });
 
@@ -105,7 +114,10 @@ describe("Delete Passenger Integration Test", () => {
 
   it("should not find non-existent passenger for deletion", async () => {
     // Arrange: Create a user but no passengers
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-delete-3",
+      email: "delete3@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const nonExistentId = "00000000-0000-0000-0000-000000000000";
@@ -128,20 +140,28 @@ describe("Delete Passenger Integration Test", () => {
 
   it("should not allow deleting another user's passenger", async () => {
     // Arrange: Create two users, each with a passenger
-    const user1 = userFactory.build({ id: "user-1" });
-    const user2 = userFactory.build({ id: "user-2" });
+    const user1 = userFactory.build({
+      id: "user-delete-4-1",
+      email: "delete4-1@test.com",
+    });
+    const user2 = userFactory.build({
+      id: "user-delete-4-2",
+      email: "delete4-2@test.com",
+    });
     await db.insert(user).values([user1, user2]);
 
     const user1Passenger = passengerFactory.build({
       userId: user1.id,
       englishFirstName: "User1",
       englishLastName: "Passenger",
+      email: "delete-passenger4-user1@test.com",
       isDeleted: false,
     });
     const user2Passenger = passengerFactory.build({
       userId: user2.id,
       englishFirstName: "User2",
       englishLastName: "Passenger",
+      email: "delete-passenger4-user2@test.com",
       isDeleted: false,
     });
 
@@ -183,13 +203,17 @@ describe("Delete Passenger Integration Test", () => {
 
   it("should not find already deleted passenger for deletion", async () => {
     // Arrange: Create a user with an already deleted passenger
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-delete-5",
+      email: "delete5@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const deletedPassenger = passengerFactory.build({
       userId: testUser.id,
       englishFirstName: "Deleted",
       englishLastName: "Passenger",
+      email: "delete-passenger5@test.com",
       isDeleted: true, // Already deleted
     });
 
@@ -225,7 +249,10 @@ describe("Delete Passenger Integration Test", () => {
 
   it("should update the updatedAt timestamp when deleting", async () => {
     // Arrange: Create a user with a passenger
-    const testUser = userFactory.build({ id: "user-1" });
+    const testUser = userFactory.build({
+      id: "user-delete-6",
+      email: "delete6@test.com",
+    });
     await db.insert(user).values(testUser);
 
     const passenger = passengerFactory.build({
