@@ -95,6 +95,7 @@ describe("Auth Configuration", () => {
 
     it("should return true in production environment by default", () => {
       // Don't set ENABLE_ALIYUN_SMS, let it use default logic
+      vi.stubEnv("ENABLE_ALIYUN_SMS", "");
       vi.stubEnv("NODE_ENV", "production");
 
       const result = shouldEnableAliyunSms();
@@ -219,6 +220,7 @@ describe("Auth Configuration", () => {
 
     it("should return true in production environment by default", () => {
       // Don't set ENABLE_RESEND, let it use default logic
+      vi.stubEnv("ENABLE_RESEND", "");
       vi.stubEnv("NODE_ENV", "production");
 
       const result = shouldEnableResend();
