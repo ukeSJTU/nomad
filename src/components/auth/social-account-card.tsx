@@ -2,7 +2,6 @@
 
 import { Check } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 /**
@@ -17,10 +16,10 @@ interface SocialAccountCardProps {
   isLinked: boolean;
   /** Account identifier if linked (e.g., username or email) */
   accountId?: string;
-  /** Callback when user clicks bind button */
-  onLink?: () => void;
-  /** Callback when user clicks unbind button */
-  onUnlink?: () => void;
+  /** Link button component to render when account is not linked */
+  linkButton?: React.ReactNode;
+  /** Unlink button component to render when account is linked */
+  unlinkButton?: React.ReactNode;
 }
 
 /**
@@ -84,7 +83,7 @@ function GoogleIcon({ className }: { className?: string }) {
  *   providerName="GitHub"
  *   isLinked={true}
  *   accountId="username123"
- *   onUnlink={() => handleUnbind("github")}
+ *   unlinkButton={<UnlinkButton providerId="github" providerName="GitHub" />}
  * />
  * ```
  */
@@ -93,8 +92,8 @@ export default function SocialAccountCard({
   providerName,
   isLinked,
   accountId,
-  onLink,
-  onUnlink,
+  linkButton,
+  unlinkButton,
 }: SocialAccountCardProps) {
   // Select the appropriate icon based on provider
   const Icon = provider === "github" ? GithubIcon : GoogleIcon;
@@ -128,25 +127,7 @@ export default function SocialAccountCard({
 
       {/* Action Button */}
       <CardFooter className="flex justify-center pt-0">
-        {isLinked ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onUnlink}
-            className="text-sm"
-          >
-            取消绑定
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onLink}
-            className="text-sm"
-          >
-            绑定账号
-          </Button>
-        )}
+        {isLinked ? unlinkButton : linkButton}
       </CardFooter>
     </Card>
   );

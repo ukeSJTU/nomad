@@ -1,12 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import SocialAccountCard from "@/components/auth/social-account-card";
+import { Button } from "@/components/ui/button";
 
 /**
  * SocialAccountCard displays a social provider with binding status.
  *
  * Used in the account binding page to show GitHub and Google account links.
  * Users can bind or unbind their social accounts for quick sign-in.
+ *
+ * Note: In Storybook, we use simple Button components for visual presentation.
+ * In the actual app, LinkButton and UnlinkButton components are used with
+ * real OAuth and Server Action functionality.
  */
 const meta = {
   title: "Auth/SocialAccountCard",
@@ -33,14 +38,6 @@ const meta = {
       control: "text",
       description: "Account identifier if linked (e.g., username or email)",
     },
-    onLink: {
-      action: "link clicked",
-      description: "Callback when user clicks bind button",
-    },
-    onUnlink: {
-      action: "unlink clicked",
-      description: "Callback when user clicks unbind button",
-    },
   },
 } satisfies Meta<typeof SocialAccountCard>;
 
@@ -55,6 +52,11 @@ export const GitHubUnlinked: Story = {
     provider: "github",
     providerName: "GitHub",
     isLinked: false,
+    linkButton: (
+      <Button variant="outline" size="sm" className="text-sm">
+        绑定账号
+      </Button>
+    ),
   },
 };
 
@@ -67,6 +69,11 @@ export const GitHubLinked: Story = {
     providerName: "GitHub",
     isLinked: true,
     accountId: "octocat",
+    unlinkButton: (
+      <Button variant="outline" size="sm" className="text-sm">
+        取消绑定
+      </Button>
+    ),
   },
 };
 
@@ -78,6 +85,11 @@ export const GoogleUnlinked: Story = {
     provider: "google",
     providerName: "Google",
     isLinked: false,
+    linkButton: (
+      <Button variant="outline" size="sm" className="text-sm">
+        绑定账号
+      </Button>
+    ),
   },
 };
 
@@ -90,5 +102,10 @@ export const GoogleLinked: Story = {
     providerName: "Google",
     isLinked: true,
     accountId: "user@gmail.com",
+    unlinkButton: (
+      <Button variant="outline" size="sm" className="text-sm">
+        取消绑定
+      </Button>
+    ),
   },
 };
