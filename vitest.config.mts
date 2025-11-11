@@ -109,7 +109,7 @@ export default defineConfig({
           include: ["tests/integration/**/*.integration.test.ts"],
           environment: "node", // Integration tests use real database, no jsdom needed
           globals: true,
-          setupFiles: [], // No setup files needed for integration tests
+          setupFiles: ["./tests/setup/integration.ts"],
         },
       },
       {
