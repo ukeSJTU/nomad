@@ -14,9 +14,9 @@ const dirname =
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    environment: "jsdom",
+    // Base configuration for all test projects
+    // Each project can override these settings
     globals: true,
-    setupFiles: ["./src/tests/setup/global.ts"],
     exclude: [
       "**/node_modules/**",
       "**/dist/**",
@@ -94,12 +94,14 @@ export default defineConfig({
         extends: true,
         test: {
           name: "unit",
+          environment: "jsdom",
           include: ["src/**/*.{test,spec}.{ts,tsx}"],
           exclude: [
             "**/node_modules/**",
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from unit tests
           ],
+          setupFiles: ["./src/tests/setup/global.ts"],
         },
       },
       {
