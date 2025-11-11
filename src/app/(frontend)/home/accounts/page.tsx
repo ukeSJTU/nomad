@@ -77,7 +77,6 @@ export default async function AccountsPage() {
             // O(1) lookup from the Map instead of O(n) traversal
             const account = linkedAccountsMap.get(provider.id);
             const linked = !!account;
-            const accountId = account?.accountId;
 
             return (
               <SocialAccountCard
@@ -85,7 +84,6 @@ export default async function AccountsPage() {
                 provider={provider.id}
                 providerName={provider.name}
                 isLinked={linked}
-                accountId={accountId}
                 linkButton={
                   <LinkButton
                     providerId={provider.id}
