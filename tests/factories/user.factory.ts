@@ -1,19 +1,12 @@
+import type { InferInsertModel } from "drizzle-orm";
 import { Factory } from "fishery";
+
+import type { user } from "@/lib/schema";
 
 /**
  * User type based on Better Auth schema
  */
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  phoneNumber: string | null;
-  phoneNumberVerified: boolean | null;
-};
+type User = InferInsertModel<typeof user>;
 
 /**
  * Factory for creating test users

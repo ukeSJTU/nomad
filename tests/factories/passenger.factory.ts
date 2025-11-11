@@ -1,29 +1,13 @@
 import { randomUUID } from "crypto";
+import type { InferInsertModel } from "drizzle-orm";
 import { Factory } from "fishery";
+
+import type { passengers } from "@/lib/schema";
 
 /**
  * Passenger type based on passengers schema
  */
-type Passenger = {
-  id: string;
-  userId: string;
-  chineseName: string | null;
-  englishFirstName: string | null;
-  englishLastName: string | null;
-  nationality: string | null;
-  gender: "male" | "female" | "other" | null;
-  dateOfBirth: string | null; // YYYY-MM-DD format
-  placeOfBirth: string | null;
-  phone: string | null;
-  fax: string | null;
-  email: string | null;
-  documentType: "passport" | "id_card" | "other";
-  documentNumber: string;
-  documentExpiryDate: string; // YYYY-MM-DD format
-  isDeleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-};
+type Passenger = InferInsertModel<typeof passengers>;
 
 /**
  * Factory for creating test passengers
