@@ -1,8 +1,9 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { useState } from "react";
 
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 /**
  * Props for SocialAccountCard component
@@ -72,9 +73,10 @@ function GoogleIcon({ className }: { className?: string }) {
  *
  * Features:
  * - Provider-specific icon (GitHub or Google)
- * - Visual indication of linked status with checkmark
- * - Bind/Unbind action button
- * - Displays account ID when linked
+ * - Shows "已绑定" (Linked) status with checkmark when linked
+ * - On hover over linked card, shows unlink button instead
+ * - Shows link button when not linked
+ * - Compact vertical layout
  *
  * @example
  * ```tsx
@@ -82,7 +84,6 @@ function GoogleIcon({ className }: { className?: string }) {
  *   provider="github"
  *   providerName="GitHub"
  *   isLinked={true}
- *   accountId="username123"
  *   unlinkButton={<UnlinkButton providerId="github" providerName="GitHub" />}
  * />
  * ```
@@ -91,44 +92,47 @@ export default function SocialAccountCard({
   provider,
   providerName,
   isLinked,
-  accountId,
   linkButton,
   unlinkButton,
 }: SocialAccountCardProps) {
-  // Select the appropriate icon based on provider
+  const [isHovered, setIsHovered] = useState(false);
   const Icon = provider === "github" ? GithubIcon : GoogleIcon;
 
   return (
-    <Card className="w-[180px] text-center">
-      <CardHeader className="pb-4">
+    <Card
+      className="w-[180px] text-center transition-shadow hover:shadow-md"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="p-4 space-y-3">
         {/* Provider Icon */}
-        <div className="flex justify-center mb-2">
-          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center relative">
-            <Icon className="w-10 h-10 text-gray-700" />
-            {/* Linked Status Badge */}
-            {isLinked && (
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                <Check className="w-4 h-4 text-white" />
-              </div>
-            )}
+        <div className="flex justify-center">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center">
+            <Icon className="w-8 h-8 text-gray-700" />
           </div>
         </div>
 
         {/* Provider Name */}
-        <CardTitle className="text-base">{providerName}</CardTitle>
+        <h3 className="text-sm font-medium">{providerName}</h3>
 
-        {/* Account ID if linked */}
-        {isLinked && accountId && (
-          <p className="text-xs text-muted-foreground mt-1 truncate px-2">
-            {accountId}
-          </p>
-        )}
-      </CardHeader>
-
-      {/* Action Button */}
-      <CardFooter className="flex justify-center pt-0">
-        {isLinked ? unlinkButton : linkButton}
-      </CardFooter>
+        {/* Status or Action Button */}
+        <div className="min-h-8 flex items-center justify-center">
+          {isLinked ? (
+            // Show unlink button on hover, otherwise show "已绑定" status
+            isHovered ? (
+              unlinkButton
+            ) : (
+              <div className="flex items-center gap-1.5 text-green-600">
+                <Check className="w-4 h-4" />
+                <span className="text-xs font-medium">已绑定</span>
+              </div>
+            )
+          ) : (
+            // Show link button when not linked
+            linkButton
+          )}
+        </div>
+      </div>
     </Card>
   );
 }
