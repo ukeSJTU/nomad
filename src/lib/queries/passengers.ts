@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { passengers } from "@/lib/schema/passengers";
@@ -8,7 +8,7 @@ export async function getPassengers(userId: string): Promise<Passenger[]> {
   const result = await db
     .select()
     .from(passengers)
-    .where(eq(passengers.userId, userId));
+    .where(and(eq(passengers.userId, userId), eq(passengers.isDeleted, false)));
 
   // Convert database result to API format
   return result.map(p => ({
