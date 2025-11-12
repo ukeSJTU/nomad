@@ -5,24 +5,12 @@ import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
 
 // Type definition for menu items
 type MenuItem = {
@@ -106,31 +94,34 @@ export default function UserSidebar() {
       // Parent item with children - only expand/collapse, no navigation
       return (
         <Collapsible key={item.title} className="group/collapsible">
-          <SidebarMenuItem>
+          <div>
             <CollapsibleTrigger asChild>
-              <SidebarMenuButton>
+              <Button
+                variant="ghost"
+                className="w-full justify-between font-medium"
+              >
                 <span>{item.title}</span>
                 <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
-              </SidebarMenuButton>
+              </Button>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <SidebarMenuSub>
+              <div className="ml-4 space-y-1 mt-1">
                 {item.children!.map(child => {
                   const isChildActive = pathname === child.href;
                   return (
-                    <SidebarMenuSubItem key={child.title}>
-                      <SidebarMenuSubButton
-                        isActive={isChildActive}
-                        onClick={e => handleNavigation(child, e)}
-                      >
-                        <span>{child.title}</span>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
+                    <Button
+                      key={child.title}
+                      variant={isChildActive ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={e => handleNavigation(child, e)}
+                    >
+                      <span>{child.title}</span>
+                    </Button>
                   );
                 })}
-              </SidebarMenuSub>
+              </div>
             </CollapsibleContent>
-          </SidebarMenuItem>
+          </div>
         </Collapsible>
       );
     }
@@ -138,28 +129,16 @@ export default function UserSidebar() {
     // Leaf item without children - can navigate
     const isActive = pathname === item.href;
     return (
-      <SidebarMenuItem key={item.title}>
-        <SidebarMenuButton
-          isActive={isActive}
-          onClick={e => handleNavigation(item, e)}
-        >
-          <span>{item.title}</span>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
+      <Button
+        key={item.title}
+        variant={isActive ? "default" : "ghost"}
+        className="w-full justify-start font-medium"
+        onClick={e => handleNavigation(item, e)}
+      >
+        <span>{item.title}</span>
+      </Button>
     );
   };
 
-  return (
-    <SidebarProvider>
-      <Sidebar className="w-[200px]">
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu>{menuItems.map(renderMenuItem)}</SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-    </SidebarProvider>
-  );
+  return <div className="space-y-1">{menuItems.map(renderMenuItem)}</div>;
 }
