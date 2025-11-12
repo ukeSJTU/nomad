@@ -14,8 +14,8 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { user } from "../../../auth-schema";
+import { documentTypeEnum } from "./enums";
 import { flightSeatClasses } from "./flight-seat-classes";
-import { documentTypeEnum } from "./passengers";
 
 /**
  * Order Status Enum
