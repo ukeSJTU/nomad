@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { FlightSummaryCard } from "@/components/flights/flight-summary-card";
 import { auth } from "@/lib/auth";
 
 import { BookingPassengersPageClient } from "./page.client";
@@ -59,25 +58,13 @@ export default async function BookingPassengersPage({
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Main Content - Left Side */}
-      <div className="lg:col-span-2">
-        <BookingPassengersPageClient
-          seatClassId={params.seatClassId}
-          outboundSeatClassId={params.outboundSeatClassId}
-          inboundSeatClassId={params.inboundSeatClassId}
-          savedPassengers={savedPassengers}
-        />
-      </div>
-
-      {/* Right Sidebar - Flight Summary */}
-      <div className="lg:col-span-1">
-        <FlightSummaryCard
-          outboundFlight={outboundFlight}
-          inboundFlight={inboundFlight}
-          passengerCount={1}
-        />
-      </div>
-    </div>
+    <BookingPassengersPageClient
+      seatClassId={params.seatClassId}
+      outboundSeatClassId={params.outboundSeatClassId}
+      inboundSeatClassId={params.inboundSeatClassId}
+      savedPassengers={savedPassengers}
+      outboundFlight={outboundFlight}
+      inboundFlight={inboundFlight}
+    />
   );
 }

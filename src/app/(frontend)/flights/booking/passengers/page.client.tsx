@@ -9,6 +9,7 @@ import {
   type ContactInfoValidationErrors,
   validateContactInfo,
 } from "@/components/flights/contact-info-card";
+import { FlightSummaryCard } from "@/components/flights/flight-summary-card";
 import { PassengerFormCard } from "@/components/flights/passenger-form-card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -16,13 +17,15 @@ import { usePassengerForms } from "@/hooks/use-passenger-forms";
 import { createOrderAction } from "@/lib/actions/orders";
 import type { CreateOrderResult } from "@/types/actions/orders";
 
-import type { SavedPassenger } from "./queries";
+import type { FlightSeatClassDetails, SavedPassenger } from "./queries";
 
 interface BookingPassengersPageClientProps {
   seatClassId?: string;
   outboundSeatClassId?: string;
   inboundSeatClassId?: string;
   savedPassengers: SavedPassenger[];
+  outboundFlight: FlightSeatClassDetails;
+  inboundFlight: FlightSeatClassDetails | null;
 }
 
 export function BookingPassengersPageClient({
@@ -30,6 +33,8 @@ export function BookingPassengersPageClient({
   outboundSeatClassId,
   inboundSeatClassId,
   savedPassengers,
+  outboundFlight,
+  inboundFlight,
 }: BookingPassengersPageClientProps) {
   const router = useRouter();
 
@@ -117,40 +122,54 @@ export function BookingPassengersPageClient({
   };
 
   return (
-    <form action={formAction}>
-      <div className="space-y-6">
-        {/* Passenger Information Section */}
-        <PassengerFormCard
-          passengers={passengers}
-          savedPassengers={savedPassengers}
-          selectedPassengerIds={selectedPassengerIds}
-          onChange={handlePassengerChange}
-          onToggleSavedPassenger={handleSelectSavedPassenger}
-          onRemovePassenger={handleRemovePassenger}
-          onAddPassenger={handleAddPassenger}
-        />
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Content - Left Side */}
+      <div className="lg:col-span-2">
+        <form action={formAction}>
+          <div className="space-y-6">
+            {/* Passenger Information Section */}
+            <PassengerFormCard
+              passengers={passengers}
+              savedPassengers={savedPassengers}
+              selectedPassengerIds={selectedPassengerIds}
+              onChange={handlePassengerChange}
+              onToggleSavedPassenger={handleSelectSavedPassenger}
+              onRemovePassenger={handleRemovePassenger}
+              onAddPassenger={handleAddPassenger}
+            />
 
-        {/* Contact Information */}
-        <ContactInfoCard
-          value={contactInfo}
-          onChange={setContactInfo}
-          errors={contactErrors}
-        />
+            {/* Contact Information */}
+            <ContactInfoCard
+              value={contactInfo}
+              onChange={setContactInfo}
+              errors={contactErrors}
+            />
 
-        {/* Error Message */}
-        {state?.error && (
-          <Alert variant="destructive">
-            <AlertDescription>{state.error}</AlertDescription>
-          </Alert>
-        )}
+            {/* Error Message */}
+            {state?.error && (
+              <Alert variant="destructive">
+                <AlertDescription>{state.error}</AlertDescription>
+              </Alert>
+            )}
 
-        {/* Action Button */}
-        <div className="flex justify-end">
-          <Button onClick={handleNext} size="lg" disabled={isPending}>
-            {isPending ? "创建订单中..." : "下一步"}
-          </Button>
-        </div>
+            {/* Action Button */}
+            <div className="flex justify-end">
+              <Button onClick={handleNext} size="lg" disabled={isPending}>
+                {isPending ? "创建订单中..." : "下一步"}
+              </Button>
+            </div>
+          </div>
+        </form>
       </div>
-    </form>
+
+      {/* Right Sidebar - Flight Summary */}
+      <div className="lg:col-span-1">
+        <FlightSummaryCard
+          outboundFlight={outboundFlight}
+          inboundFlight={inboundFlight}
+          passengerCount={passengers.length}
+        />
+      </div>
+    </div>
   );
 }
