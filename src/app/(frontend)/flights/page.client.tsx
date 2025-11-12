@@ -1,7 +1,7 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { UnderConstruction } from "@/components/common";
 import {
@@ -25,6 +25,9 @@ export function FlightsPageClient({
   searchHistory,
 }: FlightsPageClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const defaultTab = tabParam || "domestic";
 
   const handleSearch = (data: SearchFormData) => {
     // Build search parameters
@@ -52,7 +55,7 @@ export function FlightsPageClient({
     <div className="container mx-auto px-4 py-8 max-w-8xl">
       {/* Search Form Card */}
 
-      <Tabs defaultValue="domestic">
+      <Tabs defaultValue={defaultTab}>
         <TabsList className="w-full h-12 grid grid-cols-6">
           <TabsTrigger value="domestic">国内、国际/中国港澳台</TabsTrigger>
           <TabsTrigger value="special">特价机票</TabsTrigger>
