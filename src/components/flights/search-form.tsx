@@ -56,9 +56,7 @@ export function SearchForm({
   const [returnDate, setReturnDate] = useState<Date | null>(
     initialValues?.returnDate || null
   );
-  const [seatClass, setSeatClass] = useState(
-    initialValues?.seatClass || "economy"
-  );
+  const [seatClass, setSeatClass] = useState(initialValues?.seatClass || "any");
 
   // Track if this is the initial mount to prevent triggering onChange on mount
   const isInitialMount = useRef(true);
@@ -212,6 +210,7 @@ export function SearchForm({
               <SelectValue placeholder="选择舱位等级" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="any">不限座舱</SelectItem>
               <SelectItem value="economy">经济舱</SelectItem>
               <SelectItem value="business">商务舱</SelectItem>
               <SelectItem value="first">头等舱</SelectItem>
