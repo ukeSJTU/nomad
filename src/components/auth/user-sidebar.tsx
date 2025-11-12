@@ -1,7 +1,8 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -61,7 +62,6 @@ const menuItems: MenuItem[] = [
 
 export default function UserSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
 
   // Check if parent item should be open or not
   const shouldBeOpen = (item: MenuItem): boolean => {
@@ -69,31 +69,15 @@ export default function UserSidebar() {
     return item.children.some(child => child.href === pathname);
   };
 
-  // Handle navigation with implementation check (only for items without children)
-  const handleNavigation = (item: MenuItem, e: React.MouseEvent) => {
-    // If item has children, don't navigate - let collapsible handle it
-    if (item.children && item.children.length > 0) {
-      return;
-    }
-
-    e.preventDefault();
-
-    // Check if the page is implemented
-    if (item.implemented === false) {
-      toast.info("功能开发中", {
-        description: `${item.title} 功能正在开发中,敬请期待!`,
-      });
-      return;
-    }
-
-    // Navigate to the page if implemented and has href
-    if (item.href) {
-      router.push(item.href);
-    }
+  // Handle click for unimplemented features
+  const handleUnimplementedClick = (title: string) => {
+    toast.info("功能开发中", {
+      description: `${title} 功能正在开发中,敬请期待!`,
+    });
   };
 
-  // Render menu item with optional children
-  const renderMenuItem = (item: MenuItem) => {
+  // Render menu item with optional children (recursive)
+  const renderMenuItem = (item: MenuItem): React.ReactNode => {
     const hasChildren = item.children && item.children.length > 0;
 
     if (hasChildren) {
@@ -118,19 +102,7 @@ export default function UserSidebar() {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="ml-4 space-y-1 mt-1">
-                {item.children!.map(child => {
-                  const isChildActive = pathname === child.href;
-                  return (
-                    <Button
-                      key={child.title}
-                      variant={isChildActive ? "default" : "ghost"}
-                      className="w-full justify-start"
-                      onClick={e => handleNavigation(child, e)}
-                    >
-                      <span>{child.title}</span>
-                    </Button>
-                  );
-                })}
+                {item.children!.map(child => renderMenuItem(child))}
               </div>
             </CollapsibleContent>
           </div>
@@ -138,18 +110,42 @@ export default function UserSidebar() {
       );
     }
 
-    // Leaf item without children - can navigate
+    // Leaf item without children
     const isActive = pathname === item.href;
-    return (
-      <Button
-        key={item.title}
-        variant={isActive ? "default" : "ghost"}
-        className="w-full justify-start font-medium"
-        onClick={e => handleNavigation(item, e)}
-      >
-        <span>{item.title}</span>
-      </Button>
-    );
+    const isImplemented = item.implemented !== false;
+
+    // If not implemented, use Button with onClick
+    if (!isImplemented) {
+      return (
+        <Button
+          key={item.title}
+          variant="ghost"
+          className="w-full justify-start font-medium"
+          onClick={() => handleUnimplementedClick(item.title)}
+        >
+          <span>{item.title}</span>
+        </Button>
+      );
+    }
+
+    // If implemented and has href, use Link with Button
+    if (item.href) {
+      return (
+        <Button
+          key={item.title}
+          variant={isActive ? "default" : "ghost"}
+          className="w-full justify-start font-medium"
+          asChild
+        >
+          <Link href={item.href}>
+            <span>{item.title}</span>
+          </Link>
+        </Button>
+      );
+    }
+
+    // Fallback (shouldn't happen)
+    return null;
   };
 
   return <div className="space-y-1">{menuItems.map(renderMenuItem)}</div>;
