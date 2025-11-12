@@ -236,7 +236,7 @@ export function FlightCard({
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-xl font-bold text-orange-500">
-                    ¥{seatClass.price.toLocaleString()}
+                    {formatCurrency(seatClass.price)}
                   </div>
                   <Button
                     onClick={() => onSeatClassClick?.(seatClass)}
