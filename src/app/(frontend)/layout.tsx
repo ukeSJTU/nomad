@@ -1,15 +1,27 @@
 import "./globals.css";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-import { Footer, Header } from "@/components/common";
+import { Footer, Header, MainSidebar } from "@/components/common";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function FrontendLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </div>
+    <SidebarProvider
+      defaultOpen={false}
+      style={
+        {
+          "--sidebar-width": "clamp(11rem, 18vw, 15rem)",
+          "--sidebar-width-icon": "4rem",
+        } as CSSProperties
+      }
+    >
+      <MainSidebar />
+      <SidebarInset>
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

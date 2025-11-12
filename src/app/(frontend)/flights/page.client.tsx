@@ -1,7 +1,8 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { UnderConstruction } from "@/components/common";
 import {
@@ -15,6 +16,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CityData } from "@/lib/queries/cities";
 import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
 
+type TabKey = "domestic" | "special" | "status" | "seat" | "refund" | "more";
+const allowedTabs: TabKey[] = [
+  "domestic",
+  "special",
+  "status",
+  "seat",
+  "refund",
+  "more",
+];
+
 interface FlightsPageClientProps {
   cities: CityData[];
   searchHistory: SearchHistoryRecord[];
@@ -25,6 +36,25 @@ export function FlightsPageClient({
   searchHistory,
 }: FlightsPageClientProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const initialTab = useMemo<TabKey>(() => {
+    const t = searchParams.get("tab");
+    return t && allowedTabs.includes(t as TabKey) ? (t as TabKey) : "domestic";
+  }, [searchParams]);
+  const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
+
+  // Note: We update URL directly in Tabs onValueChange to avoid race conditions.
+
+  useEffect(() => {
+    // Reflect external URL changes (e.g., sidebar clicks) into activeTab
+    const t = searchParams.get("tab");
+    const next =
+      t && allowedTabs.includes(t as TabKey) ? (t as TabKey) : "domestic";
+    if (next !== activeTab) {
+      setActiveTab(next);
+    }
+  }, [searchParams, activeTab]);
 
   const handleSearch = (data: SearchFormData) => {
     // Build search parameters
@@ -52,7 +82,19 @@ export function FlightsPageClient({
     <div className="container mx-auto px-4 py-8 max-w-8xl">
       {/* Search Form Card */}
 
-      <Tabs defaultValue="domestic">
+      <Tabs
+        value={activeTab}
+        onValueChange={(v: string) => {
+          const next = v as TabKey;
+          setActiveTab(next);
+          const currentTab = searchParams.get("tab");
+          if (currentTab !== next) {
+            const nextParams = new URLSearchParams(searchParams.toString());
+            nextParams.set("tab", next);
+            router.replace(`${pathname}?${nextParams.toString()}`);
+          }
+        }}
+      >
         <TabsList className="w-full h-12 grid grid-cols-6">
           <TabsTrigger value="domestic">国内、国际/中国港澳台</TabsTrigger>
           <TabsTrigger value="special">特价机票</TabsTrigger>
@@ -106,41 +148,45 @@ export function FlightsPageClient({
         </TabsContent>
       </Tabs>
 
-      {/* Search History Section */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Label>你搜索过的机票</Label>
-          <Button
-            variant="link"
-            size="lg"
-            className="gap-2"
-            onClick={() => {
-              // TODO: Implement clear history logic
-              console.log("Clear search history");
-            }}
-          >
-            <Trash2 className="h-4 w-4" />
-            清空历史
-          </Button>
-        </div>
-      </div>
-      {searchHistory.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          <p>暂无搜索历史</p>
-          <p className="text-sm mt-2">
-            开始搜索航班后，您的搜索记录将显示在这里
-          </p>
-        </div>
-      ) : (
-        <div className="relative">
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
-            {searchHistory.map(record => (
-              <div key={record.id} className="shrink-0">
-                <FlightSearchHistoryCard record={record} />
-              </div>
-            ))}
+      {/* Search History Section (only show on domestic tab) */}
+      {activeTab === "domestic" && (
+        <>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Label>你搜索过的机票</Label>
+              <Button
+                variant="link"
+                size="lg"
+                className="gap-2"
+                onClick={() => {
+                  // TODO: Implement clear history logic
+                  console.warn("Clear search history");
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+                清空历史
+              </Button>
+            </div>
           </div>
-        </div>
+          {searchHistory.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <p>暂无搜索历史</p>
+              <p className="text-sm mt-2">
+                开始搜索航班后，您的搜索记录将显示在这里
+              </p>
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+                {searchHistory.map(record => (
+                  <div key={record.id} className="shrink-0">
+                    <FlightSearchHistoryCard record={record} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
