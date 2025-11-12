@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import UpdateEmailForm from "@/components/security/update-email-form";
@@ -104,14 +104,14 @@ export default function EmailPageClient({
   };
 
   // Countdown timer effect
-  useState(() => {
+  useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => {
         setCountdown(countdown - 1);
       }, 1000);
       return () => clearTimeout(timer);
     }
-  });
+  }, [countdown]);
 
   return (
     <Card>

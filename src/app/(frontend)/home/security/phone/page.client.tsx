@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import UpdatePhoneForm from "@/components/security/update-phone-form";
@@ -109,14 +109,14 @@ export default function PhonePageClient({
   };
 
   // Countdown timer effect
-  useState(() => {
+  useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => {
         setCountdown(countdown - 1);
       }, 1000);
       return () => clearTimeout(timer);
     }
-  });
+  }, [countdown]);
 
   return (
     <Card>
