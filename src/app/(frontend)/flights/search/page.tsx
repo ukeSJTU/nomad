@@ -57,11 +57,7 @@ export default async function FlightSearchPage({
         arrivalCityIata: params.to,
         departureDate: params.departDate,
         tripType: "one-way",
-        seatClass: (params.class || "any") as
-          | "any"
-          | "economy"
-          | "business"
-          | "first",
+        seatClass: params.class || "any",
         lowestPrice:
           Array.isArray(flights) && flights.length > 0
             ? Math.min(
@@ -94,11 +90,7 @@ export default async function FlightSearchPage({
         departureDate: params.departDate,
         returnDate: params.returnDate,
         tripType: "round-trip",
-        seatClass: (params.class || "any") as
-          | "any"
-          | "economy"
-          | "business"
-          | "first",
+        seatClass: params.class || "any",
         lowestPrice:
           flights && "outbound" in flights
             ? Math.min(
@@ -128,11 +120,7 @@ export default async function FlightSearchPage({
         arrivalCityIata: params.to,
         departureDate: params.departDate,
         tripType: "one-way",
-        seatClass: (params.class || "any") as
-          | "any"
-          | "economy"
-          | "business"
-          | "first",
+        seatClass: params.class || "any",
         lowestPrice:
           Array.isArray(flights) && flights.length > 0
             ? Math.min(

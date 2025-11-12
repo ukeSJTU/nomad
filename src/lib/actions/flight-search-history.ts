@@ -14,7 +14,7 @@ interface RecordSearchHistoryParams {
   departureDate: string; // YYYY-MM-DD format
   returnDate?: string; // YYYY-MM-DD format (optional for one-way)
   tripType: "one-way" | "round-trip";
-  seatClass?: "economy" | "business" | "first";
+  seatClass?: "any" | "economy" | "business" | "first";
   lowestPrice?: number; // Optional: lowest price found in search results
 }
 
@@ -69,6 +69,7 @@ export async function recordSearchHistory(
 
     // Normalize seat class
     const seatClass = params.seatClass?.toLowerCase() as
+      | "any"
       | "economy"
       | "business"
       | "first"
@@ -114,7 +115,7 @@ export async function recordSearchHistory(
         tripType: params.tripType,
         departureDate: params.departureDate,
         returnDate: params.returnDate || null,
-        seatClass: seatClass || "economy",
+        seatClass: seatClass || "any", // Default to "any" to match database schema default
         lowestPriceAtSearch: params.lowestPrice?.toString() || null,
         currentLowestPrice: params.lowestPrice?.toString() || null,
         searchCount: 1,
