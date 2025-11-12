@@ -223,6 +223,81 @@ export const MultipleFlights: Story = {
   ),
 };
 
+// Multi-seat class flight (expandable)
+export const MultiSeatClass: Story = {
+  args: {
+    airlineLogo:
+      "https://ui-avatars.com/api/?name=MU&background=0D8ABC&color=fff",
+    airlineName: "China Eastern Airlines",
+    flightNumber: "MU277",
+    aircraftType: "Airbus 321 (M)",
+    departureTime: "17:05",
+    departureAirport: "Beijing Daxing Int'l T1",
+    arrivalTime: "21:00",
+    arrivalAirport: "Kansai Int'l T1",
+    duration: "2h 55m",
+    seatClasses: [
+      {
+        id: "1",
+        classType: "ECONOMY",
+        totalSeats: 150,
+        availableSeats: 45,
+        price: 804,
+      },
+      {
+        id: "2",
+        classType: "BUSINESS",
+        totalSeats: 30,
+        availableSeats: 8,
+        price: 3200,
+      },
+      {
+        id: "3",
+        classType: "FIRST",
+        totalSeats: 12,
+        availableSeats: 2,
+        price: 8500,
+      },
+    ],
+    lowestPrice: 804,
+    buttonText: "预订",
+    onSeatClassClick: seatClass => {
+      console.log("Selected seat class:", seatClass);
+    },
+  },
+};
+
+// Single seat class flight (no expand button)
+export const SingleSeatClass: Story = {
+  args: {
+    airlineLogo:
+      "https://ui-avatars.com/api/?name=CA&background=E30000&color=fff",
+    airlineName: "Air China",
+    flightNumber: "CA183",
+    aircraftType: "Boeing 777 (L)",
+    departureTime: "23:30",
+    departureAirport: "Beijing Capital Int'l T3",
+    arrivalTime: "05:15",
+    arrivalAirport: "Narita Int'l T2",
+    daysOffset: 1,
+    duration: "3h 45m",
+    seatClasses: [
+      {
+        id: "1",
+        classType: "ECONOMY",
+        totalSeats: 200,
+        availableSeats: 120,
+        price: 1250,
+      },
+    ],
+    lowestPrice: 1250,
+    buttonText: "预订",
+    onSeatClassClick: seatClass => {
+      console.log("Selected seat class:", seatClass);
+    },
+  },
+};
+
 // Loading skeleton state
 export const Skeleton: Story = {
   args: {
@@ -237,7 +312,7 @@ export const Skeleton: Story = {
     arrivalAirport: "Kansai Int'l T1",
     duration: "2h 55m",
     price: 804,
-    buttonText: "订票",
+    buttonText: "预订",
   },
   render: () => (
     <div className="space-y-4 w-full max-w-5xl p-4">

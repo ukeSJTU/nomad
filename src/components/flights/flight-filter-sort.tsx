@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowDownAZ, ArrowUpAZ, Clock, DollarSign, Plane } from "lucide-react";
+import {
+  Armchair,
+  ArrowDownAZ,
+  ArrowUpAZ,
+  Clock,
+  DollarSign,
+  Plane,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -24,9 +31,11 @@ export type SortOption =
   | "departure-desc";
 
 export type TimeRange = "0-6" | "6-12" | "12-18" | "18-24";
+export type SeatClassType = "ECONOMY" | "BUSINESS" | "FIRST";
 
 export interface FlightFilters {
   airlines: string[]; // Array of airline IDs
+  seatClasses: SeatClassType[]; // Array of seat class types
   departureTimeRanges: TimeRange[];
   arrivalTimeRanges: TimeRange[];
 }
@@ -34,15 +43,19 @@ export interface FlightFilters {
 interface FlightFilterSortProps {
   flights: FlightSearchResult[];
   onFilteredFlightsChange: (flights: FlightSearchResult[]) => void;
+  /** Initial seat classes to filter by (for linking with search form) */
+  initialSeatClasses?: SeatClassType[];
 }
 
 export function FlightFilterSort({
   flights,
   onFilteredFlightsChange,
+  initialSeatClasses = [],
 }: FlightFilterSortProps) {
   const [sortOption, setSortOption] = useState<SortOption>("price-asc");
   const [filters, setFilters] = useState<FlightFilters>({
     airlines: [],
+    seatClasses: initialSeatClasses,
     departureTimeRanges: [],
     arrivalTimeRanges: [],
   });
@@ -96,6 +109,15 @@ export function FlightFilterSort({
       );
     }
 
+    // Filter by seat classes
+    if (filters.seatClasses.length > 0) {
+      filtered = filtered.filter(flight =>
+        flight.seatClasses.some(seatClass =>
+          filters.seatClasses.includes(seatClass.classType)
+        )
+      );
+    }
+
     // Filter by departure time ranges
     if (filters.departureTimeRanges.length > 0) {
       filtered = filtered.filter(flight =>
@@ -117,24 +139,10 @@ export function FlightFilterSort({
     // Apply sorting
     const sorted = [...filtered].sort((a, b) => {
       switch (sortOption) {
-        case "price-asc": {
-          const priceA = Math.min(
-            ...a.seatClasses.map(sc => parseFloat(sc.price))
-          );
-          const priceB = Math.min(
-            ...b.seatClasses.map(sc => parseFloat(sc.price))
-          );
-          return priceA - priceB;
-        }
-        case "price-desc": {
-          const priceA = Math.min(
-            ...a.seatClasses.map(sc => parseFloat(sc.price))
-          );
-          const priceB = Math.min(
-            ...b.seatClasses.map(sc => parseFloat(sc.price))
-          );
-          return priceB - priceA;
-        }
+        case "price-asc":
+          return a.lowestPrice - b.lowestPrice;
+        case "price-desc":
+          return b.lowestPrice - a.lowestPrice;
         case "duration-asc": {
           const durationA =
             new Date(a.arrival.datetime).getTime() -
@@ -186,6 +194,16 @@ export function FlightFilterSort({
     }));
   };
 
+  // Toggle seat class filter
+  const toggleSeatClass = (seatClass: SeatClassType) => {
+    setFilters(prev => ({
+      ...prev,
+      seatClasses: prev.seatClasses.includes(seatClass)
+        ? prev.seatClasses.filter(sc => sc !== seatClass)
+        : [...prev.seatClasses, seatClass],
+    }));
+  };
+
   // Toggle time range filter
   const toggleTimeRange = (type: "departure" | "arrival", range: TimeRange) => {
     const key =
@@ -206,7 +224,14 @@ export function FlightFilterSort({
   ];
 
   const [airlineSelectOpen, setAirlineSelectOpen] = useState(false);
+  const [seatClassSelectOpen, setSeatClassSelectOpen] = useState(false);
   const [timeSelectOpen, setTimeSelectOpen] = useState(false);
+
+  const seatClassOptions: { value: SeatClassType; label: string }[] = [
+    { value: "ECONOMY", label: "经济舱" },
+    { value: "BUSINESS", label: "商务舱" },
+    { value: "FIRST", label: "头等舱" },
+  ];
 
   return (
     <div className="sticky top-0 z-10 bg-background pb-6">
@@ -246,6 +271,45 @@ export function FlightFilterSort({
                         className="text-sm font-normal cursor-pointer flex-1"
                       >
                         {airline.name} ({airline.iataCode})
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </SelectContent>
+            </Select>
+
+            {/* Seat Class Filter */}
+            <Select
+              open={seatClassSelectOpen}
+              onOpenChange={setSeatClassSelectOpen}
+            >
+              <SelectTrigger className="w-auto min-w-[140px]">
+                <Armchair className="h-5 w-5 mr-2" />
+                <SelectValue placeholder="座舱类型" />
+                {filters.seatClasses.length > 0 && (
+                  <span className="ml-2 text-xs bg-primary text-primary-foreground rounded-full px-2 py-0.5">
+                    {filters.seatClasses.length}
+                  </span>
+                )}
+              </SelectTrigger>
+              <SelectContent className="w-64">
+                <div className="p-3 space-y-2">
+                  <div className="text-sm font-semibold mb-2">选择座舱类型</div>
+                  {seatClassOptions.map(option => (
+                    <div
+                      key={option.value}
+                      className="flex items-center space-x-2 py-1"
+                    >
+                      <Checkbox
+                        id={`seat-class-${option.value}`}
+                        checked={filters.seatClasses.includes(option.value)}
+                        onCheckedChange={() => toggleSeatClass(option.value)}
+                      />
+                      <Label
+                        htmlFor={`seat-class-${option.value}`}
+                        className="text-sm font-normal cursor-pointer flex-1"
+                      >
+                        {option.label}
                       </Label>
                     </div>
                   ))}

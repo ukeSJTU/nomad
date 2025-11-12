@@ -43,6 +43,7 @@ export type TripType = (typeof TripType)[keyof typeof TripType];
  * Seat classes for flights (lowercase - used in search history)
  */
 export const SeatClass = {
+  ANY: "any", // No seat class filter - show all classes
   ECONOMY: "economy",
   BUSINESS: "business",
   FIRST: "first",

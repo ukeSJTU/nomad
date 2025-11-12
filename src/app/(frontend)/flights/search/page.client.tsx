@@ -37,7 +37,6 @@ import {
   formatAirportDisplay,
   formatDuration,
   formatFlightTime,
-  getLowestPrice,
 } from "@/utils/flight";
 
 interface FlightSearchPageClientProps {
@@ -96,6 +95,30 @@ export function FlightSearchPageClient({
       seatClass,
     };
   }, [searchParams, cities]);
+
+  // Calculate initial seat class filter based on URL parameter
+  // According to Issue #134 linking rules:
+  // - "any" -> no seat classes selected (empty array)
+  // - "economy" -> only ECONOMY selected
+  // - "business" -> only BUSINESS selected
+  // - "first" -> only FIRST selected
+  // Must be called before any conditional returns to follow React Hooks rules
+  const initialSeatClassFilter = useMemo(() => {
+    if (!parsedParams) {
+      return [];
+    }
+    const seatClass = parsedParams.seatClass;
+    if (seatClass === "any") {
+      return [];
+    }
+    const classTypeMap: Record<string, "ECONOMY" | "BUSINESS" | "FIRST"> = {
+      economy: "ECONOMY",
+      business: "BUSINESS",
+      first: "FIRST",
+    };
+    const classType = classTypeMap[seatClass];
+    return classType ? [classType] : [];
+  }, [parsedParams]);
 
   // Redirect to /flights if params are invalid
   useEffect(() => {
@@ -180,10 +203,12 @@ export function FlightSearchPageClient({
             returnDate={parsedParams.returnDate?.toISOString().split("T")[0]}
             tripType={parsedParams.tripType}
             classType={
-              parsedParams.seatClass.toUpperCase() as
-                | "ECONOMY"
-                | "BUSINESS"
-                | "FIRST"
+              parsedParams.seatClass === "any"
+                ? undefined
+                : (parsedParams.seatClass.toUpperCase() as
+                    | "ECONOMY"
+                    | "BUSINESS"
+                    | "FIRST")
             }
           />
         </div>
@@ -302,6 +327,7 @@ export function FlightSearchPageClient({
               <FlightFilterSort
                 flights={flights}
                 onFilteredFlightsChange={setFilteredFlights}
+                initialSeatClasses={initialSeatClassFilter}
               />
             )
           : (flights.outbound.length > 0 || flights.inbound.length > 0) && (
@@ -312,6 +338,7 @@ export function FlightSearchPageClient({
                     : flights.inbound
                 }
                 onFilteredFlightsChange={setFilteredFlights}
+                initialSeatClasses={initialSeatClassFilter}
               />
             ))}
 
@@ -336,7 +363,6 @@ export function FlightSearchPageClient({
                 flight.departure.datetime,
                 flight.arrival.datetime
               );
-              const lowestPrice = getLowestPrice(flight.seatClasses);
 
               return (
                 <FlightCard
@@ -357,20 +383,37 @@ export function FlightSearchPageClient({
                   )}
                   daysOffset={daysOffset > 0 ? daysOffset : undefined}
                   duration={formatDuration(durationMinutes)}
-                  price={lowestPrice}
+                  seatClasses={flight.seatClasses.map(sc => ({
+                    id: sc.id,
+                    classType: sc.classType,
+                    totalSeats: sc.totalSeats,
+                    availableSeats: sc.availableSeats,
+                    price: parseFloat(sc.price),
+                  }))}
+                  lowestPrice={flight.lowestPrice}
                   buttonText="订票"
-                  onButtonClick={() => {
-                    // For one-way flights, find the seat class matching the selected class type
-                    const selectedSeatClass = flight.seatClasses.find(
-                      sc => sc.classType === seatClass.toUpperCase()
-                    );
+                  onButtonClick={
+                    seatClass === "any"
+                      ? undefined // When "any" is selected, card should be expandable, no direct booking
+                      : () => {
+                          // For specific seat class, find the matching seat class
+                          const selectedSeatClass = flight.seatClasses.find(
+                            sc => sc.classType === seatClass.toUpperCase()
+                          );
 
-                    if (selectedSeatClass) {
-                      // Navigate to passengers page with flight seat class ID
-                      router.push(
-                        `/flights/booking/passengers?seatClassId=${selectedSeatClass.id}`
-                      );
-                    }
+                          if (selectedSeatClass) {
+                            // Navigate to passengers page with flight seat class ID
+                            router.push(
+                              `/flights/booking/passengers?seatClassId=${selectedSeatClass.id}`
+                            );
+                          }
+                        }
+                  }
+                  onSeatClassClick={seatClassOption => {
+                    // When user clicks on a specific seat class in expanded view
+                    router.push(
+                      `/flights/booking/passengers?seatClassId=${seatClassOption.id}`
+                    );
                   }}
                 />
               );
@@ -397,7 +440,6 @@ export function FlightSearchPageClient({
               flight.departure.datetime,
               flight.arrival.datetime
             );
-            const lowestPrice = getLowestPrice(flight.seatClasses);
 
             return (
               <FlightCard
@@ -418,27 +460,53 @@ export function FlightSearchPageClient({
                 )}
                 daysOffset={daysOffset > 0 ? daysOffset : undefined}
                 duration={formatDuration(durationMinutes)}
-                price={lowestPrice}
+                seatClasses={flight.seatClasses.map(sc => ({
+                  id: sc.id,
+                  classType: sc.classType,
+                  totalSeats: sc.totalSeats,
+                  availableSeats: sc.availableSeats,
+                  price: parseFloat(sc.price),
+                }))}
+                lowestPrice={flight.lowestPrice}
                 buttonText={
                   activeRoundTripTab === "outbound" ? "选择去程" : "选择返程"
                 }
-                onButtonClick={() => {
-                  // Find the seat class matching the selected class type
-                  const selectedSeatClass = flight.seatClasses.find(
-                    sc => sc.classType === seatClass.toUpperCase()
-                  );
+                onButtonClick={
+                  seatClass === "any"
+                    ? undefined // When "any" is selected, card should be expandable, no direct booking
+                    : () => {
+                        // Find the seat class matching the selected class type
+                        const selectedSeatClass = flight.seatClasses.find(
+                          sc => sc.classType === seatClass.toUpperCase()
+                        );
 
-                  if (!selectedSeatClass) return;
+                        if (!selectedSeatClass) return;
 
+                        if (activeRoundTripTab === "outbound") {
+                          // Store outbound selection and switch to return tab
+                          setSelectedOutboundSeatClassId(selectedSeatClass.id);
+                          setActiveRoundTripTab("return");
+                        } else {
+                          // Both flights selected, navigate to booking with both IDs
+                          if (selectedOutboundSeatClassId) {
+                            router.push(
+                              `/flights/booking/passengers?outboundSeatClassId=${selectedOutboundSeatClassId}&inboundSeatClassId=${selectedSeatClass.id}`
+                            );
+                          }
+                        }
+                      }
+                }
+                onSeatClassClick={seatClassOption => {
+                  // When user clicks on a specific seat class in expanded view
                   if (activeRoundTripTab === "outbound") {
                     // Store outbound selection and switch to return tab
-                    setSelectedOutboundSeatClassId(selectedSeatClass.id);
+                    setSelectedOutboundSeatClassId(seatClassOption.id);
                     setActiveRoundTripTab("return");
                   } else {
                     // Both flights selected, navigate to booking with both IDs
                     if (selectedOutboundSeatClassId) {
                       router.push(
-                        `/flights/booking/passengers?outboundSeatClassId=${selectedOutboundSeatClassId}&inboundSeatClassId=${selectedSeatClass.id}`
+                        `/flights/booking/passengers?outboundSeatClassId=${selectedOutboundSeatClassId}&inboundSeatClassId=${seatClassOption.id}`
                       );
                     }
                   }

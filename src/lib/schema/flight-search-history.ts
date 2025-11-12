@@ -67,9 +67,7 @@ export const flightSearchHistory = pgTable(
     tripType: varchar("trip_type", { length: 20 }).notNull(), // "one-way" or "round-trip"
     departureDate: date("departure_date").notNull(), // Departure date in YYYY-MM-DD format
     returnDate: date("return_date"), // Return date (NULL for one-way trips)
-    seatClass: varchar("seat_class", { length: 20 })
-      .notNull()
-      .default("economy"), // "economy", "business", or "first"
+    seatClass: varchar("seat_class", { length: 20 }).notNull().default("any"), // "any", "economy", "business", or "first"
 
     // Price Tracking (optional but valuable for "price changed" badges)
     lowestPriceAtSearch: numeric("lowest_price_at_search", {
@@ -130,7 +128,7 @@ export const flightSearchHistory = pgTable(
     ), // Trip type must be one of allowed values
     check(
       "search_history_seat_class_valid",
-      sql`${table.seatClass} IN ('economy', 'business', 'first')`
+      sql`${table.seatClass} IN ('any', 'economy', 'business', 'first')`
     ), // Seat class must be one of allowed values
     check(
       "search_history_search_count_positive",

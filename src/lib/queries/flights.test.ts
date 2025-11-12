@@ -492,4 +492,602 @@ describe("Flight Search Queries", () => {
       expect(result).toEqual([]);
     });
   });
+
+  describe("Seat Class Filtering and Lowest Price Calculation", () => {
+    describe("when classType is not specified", () => {
+      it("should return all seat classes for each flight", async () => {
+        const mockDepartureCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockDepartureAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+                cityId: "city-1",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-2",
+                iataCode: "SHA",
+                name: "上海",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+                cityId: "city-2",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockFlightQuery = {
+          from: vi.fn().mockReturnThis(),
+          innerJoin: vi.fn().mockReturnThis(),
+          leftJoin: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          orderBy: vi.fn().mockResolvedValue([
+            {
+              flight: {
+                id: "flight-1",
+                flightNumber: "CA123",
+                airlineId: "airline-1",
+                departureAirportId: "airport-1",
+                arrivalAirportId: "airport-2",
+                departureDatetime: new Date("2025-12-01T10:00:00Z"),
+                arrivalDatetime: new Date("2025-12-01T12:00:00Z"),
+                departureTerminal: "T3",
+                arrivalTerminal: "T2",
+                aircraftType: "Boeing 737",
+                isDeleted: false,
+              },
+              airline: {
+                id: "airline-1",
+                iataCode: "CA",
+                name: "Air China",
+                logoUrl: null,
+              },
+              departureAirport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+              },
+              arrivalAirport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+              },
+              seatClass: {
+                id: "seat-1",
+                flightId: "flight-1",
+                classType: "ECONOMY",
+                totalSeats: 100,
+                availableSeats: 50,
+                price: "650.00",
+              },
+            },
+            {
+              flight: {
+                id: "flight-1",
+                flightNumber: "CA123",
+                airlineId: "airline-1",
+                departureAirportId: "airport-1",
+                arrivalAirportId: "airport-2",
+                departureDatetime: new Date("2025-12-01T10:00:00Z"),
+                arrivalDatetime: new Date("2025-12-01T12:00:00Z"),
+                departureTerminal: "T3",
+                arrivalTerminal: "T2",
+                aircraftType: "Boeing 737",
+                isDeleted: false,
+              },
+              airline: {
+                id: "airline-1",
+                iataCode: "CA",
+                name: "Air China",
+                logoUrl: null,
+              },
+              departureAirport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+              },
+              arrivalAirport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+              },
+              seatClass: {
+                id: "seat-2",
+                flightId: "flight-1",
+                classType: "BUSINESS",
+                totalSeats: 20,
+                availableSeats: 10,
+                price: "3230.00",
+              },
+            },
+          ]),
+        };
+
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockDepartureCityQuery as any)
+          .mockReturnValueOnce(mockDepartureAirportsQuery as any)
+          .mockReturnValueOnce(mockArrivalCityQuery as any)
+          .mockReturnValueOnce(mockArrivalAirportsQuery as any)
+          .mockReturnValueOnce(mockFlightQuery as any);
+
+        const result = await searchFlights({
+          from: "BJS",
+          to: "SHA",
+          departureDate: "2025-12-01",
+          // classType not specified
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result[0].seatClasses).toHaveLength(2);
+        expect(result[0].seatClasses[0].classType).toBe("ECONOMY");
+        expect(result[0].seatClasses[1].classType).toBe("BUSINESS");
+      });
+
+      it("should calculate lowestPrice correctly", async () => {
+        const mockDepartureCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockDepartureAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+                cityId: "city-1",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-2",
+                iataCode: "SHA",
+                name: "上海",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+                cityId: "city-2",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockFlightQuery = {
+          from: vi.fn().mockReturnThis(),
+          innerJoin: vi.fn().mockReturnThis(),
+          leftJoin: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          orderBy: vi.fn().mockResolvedValue([
+            {
+              flight: {
+                id: "flight-1",
+                flightNumber: "CA123",
+                airlineId: "airline-1",
+                departureAirportId: "airport-1",
+                arrivalAirportId: "airport-2",
+                departureDatetime: new Date("2025-12-01T10:00:00Z"),
+                arrivalDatetime: new Date("2025-12-01T12:00:00Z"),
+                departureTerminal: "T3",
+                arrivalTerminal: "T2",
+                aircraftType: "Boeing 737",
+                isDeleted: false,
+              },
+              airline: {
+                id: "airline-1",
+                iataCode: "CA",
+                name: "Air China",
+                logoUrl: null,
+              },
+              departureAirport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+              },
+              arrivalAirport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+              },
+              seatClass: {
+                id: "seat-1",
+                flightId: "flight-1",
+                classType: "ECONOMY",
+                totalSeats: 100,
+                availableSeats: 50,
+                price: "650.00",
+              },
+            },
+            {
+              flight: {
+                id: "flight-1",
+                flightNumber: "CA123",
+                airlineId: "airline-1",
+                departureAirportId: "airport-1",
+                arrivalAirportId: "airport-2",
+                departureDatetime: new Date("2025-12-01T10:00:00Z"),
+                arrivalDatetime: new Date("2025-12-01T12:00:00Z"),
+                departureTerminal: "T3",
+                arrivalTerminal: "T2",
+                aircraftType: "Boeing 737",
+                isDeleted: false,
+              },
+              airline: {
+                id: "airline-1",
+                iataCode: "CA",
+                name: "Air China",
+                logoUrl: null,
+              },
+              departureAirport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+              },
+              arrivalAirport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+              },
+              seatClass: {
+                id: "seat-2",
+                flightId: "flight-1",
+                classType: "BUSINESS",
+                totalSeats: 20,
+                availableSeats: 10,
+                price: "3230.00",
+              },
+            },
+          ]),
+        };
+
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockDepartureCityQuery as any)
+          .mockReturnValueOnce(mockDepartureAirportsQuery as any)
+          .mockReturnValueOnce(mockArrivalCityQuery as any)
+          .mockReturnValueOnce(mockArrivalAirportsQuery as any)
+          .mockReturnValueOnce(mockFlightQuery as any);
+
+        const result = await searchFlights({
+          from: "BJS",
+          to: "SHA",
+          departureDate: "2025-12-01",
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result[0].lowestPrice).toBe(650);
+        expect(result[0].lowestPriceClassType).toBe("ECONOMY");
+      });
+
+      it("should handle flights with only one seat class", async () => {
+        const mockDepartureCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockDepartureAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+                cityId: "city-1",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-2",
+                iataCode: "SHA",
+                name: "上海",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+                cityId: "city-2",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockFlightQuery = {
+          from: vi.fn().mockReturnThis(),
+          innerJoin: vi.fn().mockReturnThis(),
+          leftJoin: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          orderBy: vi.fn().mockResolvedValue([
+            {
+              flight: {
+                id: "flight-1",
+                flightNumber: "CA123",
+                airlineId: "airline-1",
+                departureAirportId: "airport-1",
+                arrivalAirportId: "airport-2",
+                departureDatetime: new Date("2025-12-01T10:00:00Z"),
+                arrivalDatetime: new Date("2025-12-01T12:00:00Z"),
+                departureTerminal: "T3",
+                arrivalTerminal: "T2",
+                aircraftType: "Boeing 737",
+                isDeleted: false,
+              },
+              airline: {
+                id: "airline-1",
+                iataCode: "CA",
+                name: "Air China",
+                logoUrl: null,
+              },
+              departureAirport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+              },
+              arrivalAirport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+              },
+              seatClass: {
+                id: "seat-1",
+                flightId: "flight-1",
+                classType: "ECONOMY",
+                totalSeats: 100,
+                availableSeats: 50,
+                price: "800.00",
+              },
+            },
+          ]),
+        };
+
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockDepartureCityQuery as any)
+          .mockReturnValueOnce(mockDepartureAirportsQuery as any)
+          .mockReturnValueOnce(mockArrivalCityQuery as any)
+          .mockReturnValueOnce(mockArrivalAirportsQuery as any)
+          .mockReturnValueOnce(mockFlightQuery as any);
+
+        const result = await searchFlights({
+          from: "BJS",
+          to: "SHA",
+          departureDate: "2025-12-01",
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result[0].seatClasses).toHaveLength(1);
+        expect(result[0].lowestPrice).toBe(800);
+        expect(result[0].lowestPriceClassType).toBe("ECONOMY");
+      });
+    });
+
+    describe("when classType is specified", () => {
+      it("should return only the specified seat class (backward compatibility)", async () => {
+        const mockDepartureCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-1",
+                iataCode: "BJS",
+                name: "北京",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockDepartureAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+                cityId: "city-1",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([
+            {
+              city: {
+                id: "city-2",
+                iataCode: "SHA",
+                name: "上海",
+                timezone: "Asia/Shanghai",
+              },
+            },
+          ]),
+        };
+
+        const mockArrivalAirportsQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockResolvedValue([
+            {
+              airport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+                cityId: "city-2",
+                isDeleted: false,
+              },
+            },
+          ]),
+        };
+
+        const mockFlightQuery = {
+          from: vi.fn().mockReturnThis(),
+          innerJoin: vi.fn().mockReturnThis(),
+          leftJoin: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          orderBy: vi.fn().mockResolvedValue([
+            {
+              flight: {
+                id: "flight-1",
+                flightNumber: "CA123",
+                airlineId: "airline-1",
+                departureAirportId: "airport-1",
+                arrivalAirportId: "airport-2",
+                departureDatetime: new Date("2025-12-01T10:00:00Z"),
+                arrivalDatetime: new Date("2025-12-01T12:00:00Z"),
+                departureTerminal: "T3",
+                arrivalTerminal: "T2",
+                aircraftType: "Boeing 737",
+                isDeleted: false,
+              },
+              airline: {
+                id: "airline-1",
+                iataCode: "CA",
+                name: "Air China",
+                logoUrl: null,
+              },
+              departureAirport: {
+                id: "airport-1",
+                iataCode: "PEK",
+                name: "Beijing Capital",
+              },
+              arrivalAirport: {
+                id: "airport-2",
+                iataCode: "PVG",
+                name: "Shanghai Pudong",
+              },
+              seatClass: {
+                id: "seat-1",
+                flightId: "flight-1",
+                classType: "ECONOMY",
+                totalSeats: 100,
+                availableSeats: 50,
+                price: "650.00",
+              },
+            },
+          ]),
+        };
+
+        vi.mocked(db.select)
+          .mockReturnValueOnce(mockDepartureCityQuery as any)
+          .mockReturnValueOnce(mockDepartureAirportsQuery as any)
+          .mockReturnValueOnce(mockArrivalCityQuery as any)
+          .mockReturnValueOnce(mockArrivalAirportsQuery as any)
+          .mockReturnValueOnce(mockFlightQuery as any);
+
+        const result = await searchFlights({
+          from: "BJS",
+          to: "SHA",
+          departureDate: "2025-12-01",
+          classType: "ECONOMY",
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result[0].seatClasses).toHaveLength(1);
+        expect(result[0].seatClasses[0].classType).toBe("ECONOMY");
+        expect(result[0].lowestPrice).toBe(650);
+        expect(result[0].lowestPriceClassType).toBe("ECONOMY");
+      });
+    });
+  });
 });

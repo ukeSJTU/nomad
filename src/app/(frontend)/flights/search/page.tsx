@@ -33,11 +33,11 @@ export default async function FlightSearchPage({
   }
 
   // Handle cabin class type
-  const classType = params.class?.toUpperCase() as
-    | "ECONOMY"
-    | "BUSINESS"
-    | "FIRST"
-    | undefined;
+  // If class is "any", pass undefined to backend to get all seat classes
+  const classType =
+    params.class === "any" || !params.class
+      ? undefined
+      : (params.class.toUpperCase() as "ECONOMY" | "BUSINESS" | "FIRST");
 
   let flights: FlightSearchResult[] | RoundTripFlightSearchResult | undefined;
 
@@ -57,11 +57,7 @@ export default async function FlightSearchPage({
         arrivalCityIata: params.to,
         departureDate: params.departDate,
         tripType: "one-way",
-        seatClass: classType?.toLowerCase() as
-          | "economy"
-          | "business"
-          | "first"
-          | undefined,
+        seatClass: params.class || "any",
         lowestPrice:
           Array.isArray(flights) && flights.length > 0
             ? Math.min(
@@ -94,11 +90,7 @@ export default async function FlightSearchPage({
         departureDate: params.departDate,
         returnDate: params.returnDate,
         tripType: "round-trip",
-        seatClass: classType?.toLowerCase() as
-          | "economy"
-          | "business"
-          | "first"
-          | undefined,
+        seatClass: params.class || "any",
         lowestPrice:
           flights && "outbound" in flights
             ? Math.min(
@@ -128,11 +120,7 @@ export default async function FlightSearchPage({
         arrivalCityIata: params.to,
         departureDate: params.departDate,
         tripType: "one-way",
-        seatClass: classType?.toLowerCase() as
-          | "economy"
-          | "business"
-          | "first"
-          | undefined,
+        seatClass: params.class || "any",
         lowestPrice:
           Array.isArray(flights) && flights.length > 0
             ? Math.min(
