@@ -7,7 +7,11 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { account } from "@/lib/schema";
-import { unlinkSocialAccount } from "@/lib/services/auth";
+import {
+  changePassword,
+  setPasswordForOAuthUser,
+  unlinkSocialAccount,
+} from "@/lib/services/auth";
 
 /**
  * Server action to unlink a social account
@@ -119,6 +123,147 @@ export async function setInitialPasswordAction(password: string) {
     return {
       success: false,
       error: "Failed to set password. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server action to change password for users who already have a password
+ *
+ * This is a thin controller that:
+ * 1. Handles authentication (Next.js specific)
+ * 2. Calls the service layer for business logic validation
+ * 3. Calls better-auth API to change the password
+ * 4. Handles revalidation (Next.js specific)
+ * 5. Formats the response
+ *
+ * @param currentPassword - The user's current password
+ * @param newPassword - The new password to set
+ * @returns Result object with success status and message/error
+ */
+export async function changePasswordAction(
+  currentPassword: string,
+  newPassword: string
+) {
+  try {
+    // 1. Verify authentication (framework-specific)
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "请先登录",
+      };
+    }
+
+    // 2. Call service layer for business logic validation
+    const validationResult = await changePassword(
+      session.user.id,
+      currentPassword,
+      newPassword
+    );
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    // 3. Call better-auth API to change the password
+    const changeResult = await auth.api.changePassword({
+      body: {
+        currentPassword,
+        newPassword,
+        revokeOtherSessions: false, // Don't log out other sessions
+      },
+      headers: headersList,
+    });
+
+    // Check if the API call was successful
+    if (!changeResult) {
+      return {
+        success: false,
+        error: "当前密码不正确",
+      };
+    }
+
+    // 4. Revalidate the security page (framework-specific)
+    revalidatePath("/home/security");
+
+    // 5. Return success result
+    return {
+      success: true,
+      message: "密码修改成功",
+    };
+  } catch (error) {
+    console.error("Change password error:", error);
+    return {
+      success: false,
+      error: "修改密码失败，请重试",
+    };
+  }
+}
+
+/**
+ * Server action to set password for OAuth users who don't have a password yet
+ *
+ * This is a thin controller that:
+ * 1. Handles authentication (Next.js specific)
+ * 2. Calls the service layer for business logic validation
+ * 3. Calls better-auth API to set the password
+ * 4. Handles revalidation (Next.js specific)
+ * 5. Formats the response
+ *
+ * @param password - The password to set
+ * @returns Result object with success status and message/error
+ */
+export async function setPasswordForOAuthUserAction(password: string) {
+  try {
+    // 1. Verify authentication (framework-specific)
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "请先登录",
+      };
+    }
+
+    // 2. Call service layer for business logic validation
+    const validationResult = await setPasswordForOAuthUser(
+      session.user.id,
+      password
+    );
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    // 3. Call better-auth API to set the password
+    await auth.api.setPassword({
+      body: {
+        newPassword: password,
+      },
+      headers: headersList,
+    });
+
+    // 4. Revalidate the security page (framework-specific)
+    revalidatePath("/home/security");
+
+    // 5. Return success result
+    return {
+      success: true,
+      message: "密码设置成功",
+    };
+  } catch (error) {
+    console.error("Set password for OAuth user error:", error);
+    return {
+      success: false,
+      error: "设置密码失败，请重试",
     };
   }
 }
