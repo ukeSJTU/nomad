@@ -48,12 +48,7 @@ export async function updateUserInfoAction(
     }
 
     // 2. Convert FormData to object
-    const data = {
-      nickname: formData.get("nickname") as string | undefined,
-      name: formData.get("name") as string | undefined,
-      gender: formData.get("gender") as "male" | "female" | "other" | undefined,
-      birthday: formData.get("birthday") as string | undefined,
-    };
+    const data = Object.fromEntries(formData.entries());
 
     // 3. Validate input data
     const validation = userInfoUpdateSchema.safeParse(data);
