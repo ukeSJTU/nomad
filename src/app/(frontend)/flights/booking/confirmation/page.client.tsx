@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
 import {
   formatCurrencyWithoutSymbol,
   getCurrencyValue,
@@ -15,19 +16,6 @@ import {
 } from "@/lib/utils/currency";
 
 import type { OrderConfirmationDetails } from "./queries";
-
-// Ancillary service definitions (same as payment page)
-const ANCILLARY_SERVICES = [
-  { code: "insurance_basic", name: "基础旅行险", price: 50 },
-  { code: "insurance_premium", name: "高级旅行险", price: 150 },
-  { code: "meal_standard", name: "标准餐食", price: 50 },
-  { code: "meal_premium", name: "高级餐食", price: 100 },
-  { code: "transfer_economy", name: "经济型接送机", price: 80 },
-  { code: "transfer_business", name: "商务型接送机", price: 200 },
-  { code: "lounge", name: "贵宾休息室", price: 120 },
-  { code: "priority_boarding", name: "优先登机", price: 30 },
-  { code: "extra_baggage", name: "额外行李额", price: 100 },
-];
 
 // Identity type mapping
 const IDENTITY_TYPE_MAP = {
@@ -51,11 +39,9 @@ export default function ConfirmationPageClient({ order }: Props) {
   const router = useRouter();
 
   // Parse ancillary services
-  const ancillaryServices =
-    order.ancillaryDetails?.map(code => {
-      const service = ANCILLARY_SERVICES.find(s => s.code === code);
-      return service || { code, name: code, price: 0 };
-    }) || [];
+  const ancillaryServices = (order.ancillaryDetails || [])
+    .map(code => getAncillaryServiceByCode(code))
+    .filter(Boolean);
 
   // Format contact name (use first passenger's name if no contact phone)
   const contactName = order.passengers[0]?.name || "未提供";
@@ -306,8 +292,8 @@ export default function ConfirmationPageClient({ order }: Props) {
                         key={idx}
                         className="flex items-center justify-between text-sm"
                       >
-                        <span>{service.name}</span>
-                        <span className="font-medium">¥{service.price}</span>
+                        <span>{service!.name}</span>
+                        <span className="font-medium">¥{service!.price}</span>
                       </div>
                     ))}
                   </div>
