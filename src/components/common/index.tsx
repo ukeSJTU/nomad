@@ -1,6 +1,7 @@
 import { Stepper, type StepperStep } from "@/components/common/stepper";
 
 export { Stepper, type StepperStep };
+export { AppSidebar as MainSidebar } from "./app-sidebar";
 export { default as UnderConstruction } from "./construction";
 export {
   type BatchAction,
