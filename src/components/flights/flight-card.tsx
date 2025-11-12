@@ -73,7 +73,7 @@ export function FlightCard({
   price,
   seatClasses,
   lowestPrice,
-  buttonText = "订票",
+  buttonText = "预订",
   onButtonClick,
   onSeatClassClick,
   className,
@@ -203,7 +203,7 @@ export function FlightCard({
                   </>
                 ) : (
                   <>
-                    展开 <ChevronDown className="ml-2 h-4 w-4" />
+                    订票 <ChevronDown className="ml-2 h-4 w-4" />
                   </>
                 )}
               </Button>
