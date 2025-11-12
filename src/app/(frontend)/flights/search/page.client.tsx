@@ -37,7 +37,6 @@ import {
   formatAirportDisplay,
   formatDuration,
   formatFlightTime,
-  getLowestPrice,
 } from "@/utils/flight";
 
 interface FlightSearchPageClientProps {
@@ -338,7 +337,6 @@ export function FlightSearchPageClient({
                 flight.departure.datetime,
                 flight.arrival.datetime
               );
-              const lowestPrice = getLowestPrice(flight.seatClasses);
 
               return (
                 <FlightCard
@@ -359,7 +357,14 @@ export function FlightSearchPageClient({
                   )}
                   daysOffset={daysOffset > 0 ? daysOffset : undefined}
                   duration={formatDuration(durationMinutes)}
-                  price={lowestPrice}
+                  seatClasses={flight.seatClasses.map(sc => ({
+                    id: sc.id,
+                    classType: sc.classType,
+                    totalSeats: sc.totalSeats,
+                    availableSeats: sc.availableSeats,
+                    price: parseFloat(sc.price),
+                  }))}
+                  lowestPrice={flight.lowestPrice}
                   buttonText="订票"
                   onButtonClick={() => {
                     // For one-way flights, find the seat class matching the selected class type
@@ -399,7 +404,6 @@ export function FlightSearchPageClient({
               flight.departure.datetime,
               flight.arrival.datetime
             );
-            const lowestPrice = getLowestPrice(flight.seatClasses);
 
             return (
               <FlightCard
@@ -420,7 +424,14 @@ export function FlightSearchPageClient({
                 )}
                 daysOffset={daysOffset > 0 ? daysOffset : undefined}
                 duration={formatDuration(durationMinutes)}
-                price={lowestPrice}
+                seatClasses={flight.seatClasses.map(sc => ({
+                  id: sc.id,
+                  classType: sc.classType,
+                  totalSeats: sc.totalSeats,
+                  availableSeats: sc.availableSeats,
+                  price: parseFloat(sc.price),
+                }))}
+                lowestPrice={flight.lowestPrice}
                 buttonText={
                   activeRoundTripTab === "outbound" ? "选择去程" : "选择返程"
                 }
