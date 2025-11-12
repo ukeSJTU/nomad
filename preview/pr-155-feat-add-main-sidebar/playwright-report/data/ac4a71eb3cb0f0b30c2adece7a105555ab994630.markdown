@@ -1,0 +1,185 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - button "Toggle Sidebar" [ref=e9]:
+            - img [ref=e10]
+      - generic [ref=e11]:
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - button "酒店" [ref=e16] [cursor=pointer]:
+              - img [ref=e17]
+              - generic [ref=e19]: 酒店
+          - listitem [ref=e20]:
+            - button "机票" [ref=e21] [cursor=pointer]:
+              - img [ref=e22]
+              - generic [ref=e24]: 机票
+          - listitem [ref=e25]:
+            - button "火车票" [ref=e26] [cursor=pointer]:
+              - img [ref=e27]
+              - generic [ref=e31]: 火车票
+          - listitem [ref=e32]:
+            - button "旅游" [ref=e33] [cursor=pointer]:
+              - img [ref=e34]
+              - generic [ref=e37]: 旅游
+          - listitem [ref=e38]:
+            - button "门票·活动" [ref=e39] [cursor=pointer]:
+              - img [ref=e40]
+              - generic [ref=e42]: 门票·活动
+          - listitem [ref=e43]:
+            - button "汽车·船票" [ref=e44] [cursor=pointer]:
+              - img [ref=e45]
+              - generic [ref=e49]: 汽车·船票
+          - listitem [ref=e50]:
+            - button "用车" [ref=e51] [cursor=pointer]:
+              - img [ref=e52]
+              - generic [ref=e56]: 用车
+        - list [ref=e59]:
+          - listitem [ref=e60]:
+            - button "企业商旅" [ref=e61] [cursor=pointer]:
+              - img [ref=e62]
+              - generic [ref=e66]: 企业商旅
+          - listitem [ref=e67]:
+            - button "老友会" [ref=e68] [cursor=pointer]:
+              - img [ref=e69]
+              - generic [ref=e70]: 老友会
+          - listitem [ref=e71]:
+            - button "关于携程" [ref=e72] [cursor=pointer]:
+              - img [ref=e73]
+              - generic [ref=e75]: 关于携程
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - button "全球购" [ref=e80] [cursor=pointer]:
+              - img [ref=e81]
+              - generic [ref=e85]: 全球购
+          - listitem [ref=e86]:
+            - button "礼品卡" [ref=e87] [cursor=pointer]:
+              - img [ref=e88]
+              - generic [ref=e92]: 礼品卡
+          - listitem [ref=e93]:
+            - button "携程金融" [ref=e94] [cursor=pointer]:
+              - img [ref=e95]
+              - generic [ref=e97]: 携程金融
+        - list [ref=e100]:
+          - listitem [ref=e101]:
+            - button "AI行程助手" [ref=e102] [cursor=pointer]:
+              - img [ref=e103]
+              - generic [ref=e106]: AI行程助手
+          - listitem [ref=e107]:
+            - button "攻略·景点" [ref=e108] [cursor=pointer]:
+              - img [ref=e109]
+              - generic [ref=e112]: 攻略·景点
+          - listitem [ref=e113]:
+            - button "旅游地图" [ref=e114] [cursor=pointer]:
+              - img [ref=e115]
+              - generic [ref=e117]: 旅游地图
+      - button "Toggle Sidebar" [ref=e118]
+    - main [ref=e119]:
+      - generic [ref=e120]:
+        - generic [ref=e122]:
+          - link "Nomad Logo Nomad" [ref=e123] [cursor=pointer]:
+            - /url: /
+            - img "Nomad Logo" [ref=e124]
+            - generic [ref=e125]: Nomad
+          - generic [ref=e126]:
+            - generic [ref=e127]:
+              - img [ref=e128]
+              - searchbox "搜索任何旅游相关" [ref=e131]
+            - button "Search" [ref=e132]:
+              - img
+              - generic [ref=e133]: Search
+          - generic [ref=e134]:
+            - generic [ref=e135]:
+              - link "Sign In" [ref=e136] [cursor=pointer]:
+                - /url: /auth/sign-in
+              - link "Sign Up" [ref=e137] [cursor=pointer]:
+                - /url: /auth/sign-up
+            - button "我的订单" [ref=e138] [cursor=pointer]
+            - button "联系客服" [ref=e139]
+            - button "Toggle theme" [ref=e140]:
+              - img
+              - generic [ref=e141]: Toggle theme
+        - main [ref=e142]:
+          - generic [ref=e145]:
+            - generic [ref=e146]:
+              - heading "验证码登录" [level=1] [ref=e147]
+              - paragraph [ref=e148]:
+                - text: 还没有账户？
+                - link "立即注册" [ref=e149] [cursor=pointer]:
+                  - /url: /auth/sign-up
+            - generic [ref=e150]:
+              - tablist [ref=e151]:
+                - tab "手机号登录" [selected] [ref=e152]
+                - tab "邮箱登录" [ref=e153]
+              - tabpanel "手机号登录" [ref=e154]:
+                - generic [ref=e155]:
+                  - tablist [ref=e156]:
+                    - tab "密码登录" [ref=e157]
+                    - tab "验证码登录" [active] [selected] [ref=e158]
+                  - tabpanel "验证码登录" [ref=e159]:
+                    - generic [ref=e160]:
+                      - generic [ref=e161]:
+                        - generic [ref=e162]:
+                          - generic [ref=e163]: 手机号
+                          - textbox "手机号" [ref=e164]:
+                            - /placeholder: 请输入手机号
+                        - generic [ref=e165]:
+                          - generic [ref=e166]: 短信验证码
+                          - generic [ref=e167]:
+                            - textbox "6位数字" [ref=e169]
+                            - button "发送验证码" [ref=e170]
+                        - generic [ref=e171]:
+                          - checkbox "同意《 服务协议 》和《 隐私政策 》" [ref=e172]
+                          - checkbox
+                          - generic [ref=e174]:
+                            - text: 同意《
+                            - link "服务协议" [ref=e175] [cursor=pointer]:
+                              - /url: /terms
+                            - text: 》和《
+                            - link "隐私政策" [ref=e176] [cursor=pointer]:
+                              - /url: /privacy
+                            - text: 》
+                      - button "登录" [ref=e177]
+            - generic [ref=e178]:
+              - generic [ref=e183]: 或
+              - button "Login With GitHub" [ref=e185]:
+                - img
+                - text: Login With GitHub
+        - generic [ref=e187]:
+          - generic [ref=e188]:
+            - generic [ref=e189]:
+              - generic [ref=e190]:
+                - generic [ref=e191]: "N"
+                - generic [ref=e192]: Nomad
+              - paragraph [ref=e193]: 您的在线旅行服务平台
+            - generic [ref=e194]:
+              - heading "快速链接" [level=3] [ref=e195]
+              - list [ref=e196]:
+                - listitem [ref=e197]:
+                  - link "首页" [ref=e198] [cursor=pointer]:
+                    - /url: /
+                - listitem [ref=e199]:
+                  - link "常旅客管理" [ref=e200] [cursor=pointer]:
+                    - /url: /home/passengers
+            - generic [ref=e201]:
+              - heading "法律信息" [level=3] [ref=e202]
+              - list [ref=e203]:
+                - listitem [ref=e204]:
+                  - link "服务协议" [ref=e205] [cursor=pointer]:
+                    - /url: /terms
+                - listitem [ref=e206]:
+                  - link "个人信息保护政策" [ref=e207] [cursor=pointer]:
+                    - /url: /privacy
+                - listitem [ref=e208]:
+                  - link "免责声明" [ref=e209] [cursor=pointer]:
+                    - /url: /disclaimer
+          - paragraph [ref=e211]: © 2025 Nomad. 保留所有权利。
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e217] [cursor=pointer]:
+    - img [ref=e218]
+  - alert [ref=e221]
+```
