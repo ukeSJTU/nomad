@@ -172,14 +172,15 @@ export async function changePassword(
     }
 
     // 3. Verify user has a credential account (password-based login)
-    const credentialAccounts = await db
-      .select()
+    const [credentialAccount] = await db
+      .select({ id: account.id })
       .from(account)
       .where(
         and(eq(account.userId, userId), eq(account.providerId, "credential"))
-      );
+      )
+      .limit(1);
 
-    if (credentialAccounts.length === 0) {
+    if (!credentialAccount) {
       return {
         success: false,
         error: "您还没有设置密码，请先设置密码",
@@ -228,14 +229,15 @@ export async function setPasswordForOAuthUser(
     }
 
     // 2. Check if user already has a password
-    const credentialAccounts = await db
-      .select()
+    const [credentialAccount] = await db
+      .select({ id: account.id })
       .from(account)
       .where(
         and(eq(account.userId, userId), eq(account.providerId, "credential"))
-      );
+      )
+      .limit(1);
 
-    if (credentialAccounts.length > 0) {
+    if (credentialAccount) {
       return {
         success: false,
         error: "您已经设置过密码了",
