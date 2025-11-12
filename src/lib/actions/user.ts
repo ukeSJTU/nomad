@@ -30,7 +30,7 @@ export interface UpdateUserInfoActionState {
  * @returns Action state with success status and message/error
  */
 export async function updateUserInfoAction(
-  prevState: UpdateUserInfoActionState | null,
+  _prevState: UpdateUserInfoActionState | null,
   formData: FormData
 ): Promise<UpdateUserInfoActionState> {
   try {
