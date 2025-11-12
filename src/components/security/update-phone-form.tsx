@@ -72,20 +72,12 @@ export default function UpdatePhoneForm({
     onSubmit(data);
   };
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     // Validate phone number before sending OTP
-    const phoneNumberValue = form.getValues("phoneNumber");
-    const validation =
-      updatePhoneSchema.shape.phoneNumber.safeParse(phoneNumberValue);
-
-    if (!validation.success) {
-      form.setError("phoneNumber", {
-        message: validation.error.errors[0]?.message || "手机号格式错误",
-      });
-      return;
+    const isValid = await form.trigger("phoneNumber");
+    if (isValid) {
+      onSendOtp(form.getValues("phoneNumber"));
     }
-
-    onSendOtp(phoneNumberValue);
   };
 
   return (

@@ -67,19 +67,12 @@ export default function UpdateEmailForm({
     onSubmit(data);
   };
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     // Validate email before sending OTP
-    const emailValue = form.getValues("email");
-    const validation = updateEmailSchema.shape.email.safeParse(emailValue);
-
-    if (!validation.success) {
-      form.setError("email", {
-        message: validation.error.errors[0]?.message || "邮箱格式错误",
-      });
-      return;
+    const isValid = await form.trigger("email");
+    if (isValid) {
+      onSendOtp(form.getValues("email"));
     }
-
-    onSendOtp(emailValue);
   };
 
   return (
