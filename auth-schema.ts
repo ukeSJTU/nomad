@@ -1,4 +1,6 @@
-import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, date, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+
+import { genderEnum } from "./src/lib/schema/passengers";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -13,6 +15,10 @@ export const user = pgTable("user", {
     .notNull(),
   phoneNumber: text("phone_number").unique(),
   phoneNumberVerified: boolean("phone_number_verified"),
+  // User profile fields
+  nickname: text("nickname"),
+  gender: genderEnum("gender"),
+  birthday: date("birthday"),
 });
 
 export const session = pgTable("session", {
