@@ -85,7 +85,7 @@ export const Default: Story = {
 export const Interactive: Story = {
   args: {
     selectedServices: [],
-    onToggleService: () => {},
+    onToggleService: (code: string) => console.log("Toggled:", code),
   },
   render: args => {
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
