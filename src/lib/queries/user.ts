@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { user } from "@/lib/schema";
+import { account, user } from "@/lib/schema";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
 
 /**
@@ -20,6 +20,17 @@ export interface UserInfo {
   image: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * User security status data structure for frontend display
+ */
+export interface UserSecurityStatus {
+  hasPassword: boolean;
+  email: string;
+  emailVerified: boolean;
+  phoneNumber: string | null;
+  phoneNumberVerified: boolean;
 }
 
 /**
@@ -58,5 +69,53 @@ export async function getUserInfo(userId: string): Promise<UserInfo | null> {
     image: result.image,
     createdAt: result.createdAt.toISOString(),
     updatedAt: result.updatedAt.toISOString(),
+  };
+}
+
+/**
+ * Get user security status by user ID
+ *
+ * This function fetches user security-related data including:
+ * - Whether the user has set a password (by checking account table)
+ * - Email and verification status
+ * - Phone number and verification status
+ *
+ * Data is masked for security.
+ *
+ * @param userId - The ID of the user to fetch
+ * @returns User security status with masked sensitive data, or null if user not found
+ */
+export async function getUserSecurityStatus(
+  userId: string
+): Promise<UserSecurityStatus | null> {
+  // Fetch user data
+  const [userData] = await db.select().from(user).where(eq(user.id, userId));
+
+  if (!userData) {
+    return null;
+  }
+
+  // Check if user has a password by querying account table for credential provider
+  const credentialAccounts = await db
+    .select()
+    .from(account)
+    .where(eq(account.userId, userId));
+
+  const hasPassword = credentialAccounts.some(
+    acc => acc.providerId === "credential"
+  );
+
+  // Apply data masking for sensitive fields
+  const maskedEmail = maskEmail(userData.email);
+  const maskedPhone = userData.phoneNumber
+    ? maskPhoneNumber(userData.phoneNumber)
+    : null;
+
+  return {
+    hasPassword,
+    email: maskedEmail,
+    emailVerified: userData.emailVerified,
+    phoneNumber: maskedPhone,
+    phoneNumberVerified: userData.phoneNumberVerified ?? false,
   };
 }
