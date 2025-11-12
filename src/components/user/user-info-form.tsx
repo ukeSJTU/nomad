@@ -33,9 +33,9 @@ interface UserInfoFormProps {
 }
 
 const genderLabels = {
-  male: "Male",
-  female: "Female",
-  other: "Other",
+  male: "男",
+  female: "女",
+  other: "其他",
 };
 
 export function UserInfoForm({ userData }: UserInfoFormProps) {
@@ -66,11 +66,11 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
       } else {
         // Show error message
         console.error("Update failed:", result.error);
-        alert(result.error || "Failed to update user information");
+        alert(result.error || "更新用户信息失败");
       }
     } catch (error) {
       console.error("Failed to update user info:", error);
-      alert("Failed to update user information");
+      alert("更新用户信息失败");
     } finally {
       setIsLoading(false);
     }
@@ -91,9 +91,7 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
     return (
       <div className="space-y-6 bg-white p-6 rounded-lg border">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Edit Personal Information
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">编辑个人信息</h2>
         </div>
 
         <Separator />
@@ -109,9 +107,9 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
               name="nickname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nickname</FormLabel>
+                  <FormLabel>昵称</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter your nickname" />
+                    <Input {...field} placeholder="请输入昵称" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -124,9 +122,9 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>姓名</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter your name" />
+                    <Input {...field} placeholder="请输入姓名" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,7 +137,7 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel>性别</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -149,19 +147,19 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="male" id="male" />
                         <label htmlFor="male" className="cursor-pointer">
-                          Male
+                          男
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="female" id="female" />
                         <label htmlFor="female" className="cursor-pointer">
-                          Female
+                          女
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="other" id="other" />
                         <label htmlFor="other" className="cursor-pointer">
-                          Other
+                          其他
                         </label>
                       </div>
                     </RadioGroup>
@@ -177,7 +175,7 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
               name="birthday"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Birthday</FormLabel>
+                  <FormLabel>生日</FormLabel>
                   <FormControl>
                     <Input {...field} type="date" placeholder="yyyy-mm-dd" />
                   </FormControl>
@@ -189,7 +187,7 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save"}
+                {isLoading ? "保存中..." : "保存"}
               </Button>
               <Button
                 type="button"
@@ -197,7 +195,7 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
                 onClick={handleCancel}
                 disabled={isLoading}
               >
-                Cancel
+                取消
               </Button>
             </div>
           </form>
@@ -211,10 +209,8 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
     <>
       <div className="space-y-6 bg-white p-6 rounded-lg border">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Personal Information
-          </h2>
-          <Button onClick={() => setIsEditMode(true)}>Edit</Button>
+          <h2 className="text-xl font-semibold text-gray-900">个人信息</h2>
+          <Button onClick={() => setIsEditMode(true)}>编辑</Button>
         </div>
 
         <Separator />
@@ -223,17 +219,17 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
           {/* Nickname */}
           <div className="grid grid-cols-[150px_1fr] items-start gap-4">
             <label className="pt-1 text-sm font-medium text-gray-600">
-              Nickname
+              昵称
             </label>
             <div className="text-sm text-gray-900">
-              {userData.nickname || "Not set"}
+              {userData.nickname || "未设置"}
             </div>
           </div>
 
           {/* Name */}
           <div className="grid grid-cols-[150px_1fr] items-start gap-4">
             <label className="pt-1 text-sm font-medium text-gray-600">
-              Name
+              姓名
             </label>
             <div className="text-sm text-gray-900">{userData.name}</div>
           </div>
@@ -241,35 +237,35 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
           {/* Gender */}
           <div className="grid grid-cols-[150px_1fr] items-start gap-4">
             <label className="pt-1 text-sm font-medium text-gray-600">
-              Gender
+              性别
             </label>
             <div className="text-sm text-gray-900">
-              {userData.gender ? genderLabels[userData.gender] : "Not set"}
+              {userData.gender ? genderLabels[userData.gender] : "未设置"}
             </div>
           </div>
 
           {/* Birthday */}
           <div className="grid grid-cols-[150px_1fr] items-start gap-4">
             <label className="pt-1 text-sm font-medium text-gray-600">
-              Birthday
+              生日
             </label>
             <div className="text-sm text-gray-900">
-              {userData.birthday || "Not set"}
+              {userData.birthday || "未设置"}
             </div>
           </div>
 
           {/* Email */}
           <div className="grid grid-cols-[150px_1fr] items-start gap-4">
             <label className="pt-1 text-sm font-medium text-gray-600">
-              Email
+              邮箱
             </label>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-900">{userData.email}</span>
               {userData.emailVerified && (
-                <span className="text-xs text-green-600">(Verified)</span>
+                <span className="text-xs text-green-600">(已验证)</span>
               )}
               <a href="#" className="text-sm text-blue-600 hover:underline">
-                Modify
+                修改
               </a>
             </div>
           </div>
@@ -277,7 +273,7 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
           {/* Phone Number */}
           <div className="grid grid-cols-[150px_1fr] items-start gap-4">
             <label className="pt-1 text-sm font-medium text-gray-600">
-              Phone Number
+              手机号
             </label>
             <div className="flex items-center gap-2">
               {userData.phoneNumber ? (
@@ -286,17 +282,17 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
                     {userData.phoneNumber}
                   </span>
                   {userData.phoneNumberVerified && (
-                    <span className="text-xs text-green-600">(Verified)</span>
+                    <span className="text-xs text-green-600">(已验证)</span>
                   )}
                   <a href="#" className="text-sm text-blue-600 hover:underline">
-                    Modify
+                    修改
                   </a>
                 </>
               ) : (
                 <>
-                  <span className="text-sm text-gray-500">Not set</span>
+                  <span className="text-sm text-gray-500">未填写</span>
                   <a href="#" className="text-sm text-blue-600 hover:underline">
-                    Verify
+                    验证
                   </a>
                 </>
               )}
@@ -309,13 +305,11 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Success</DialogTitle>
-            <DialogDescription>
-              Your personal information has been updated successfully.
-            </DialogDescription>
+            <DialogTitle>保存成功</DialogTitle>
+            <DialogDescription>您的个人信息已成功更新。</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setShowSuccessDialog(false)}>OK</Button>
+            <Button onClick={() => setShowSuccessDialog(false)}>确定</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
