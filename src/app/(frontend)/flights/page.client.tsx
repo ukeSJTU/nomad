@@ -1,7 +1,7 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { UnderConstruction } from "@/components/common";
 import {
@@ -25,6 +25,9 @@ export function FlightsPageClient({
   searchHistory,
 }: FlightsPageClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const currentTab = tabParam || "domestic";
 
   const handleSearch = (data: SearchFormData) => {
     // Build search parameters
@@ -48,11 +51,25 @@ export function FlightsPageClient({
     router.push(`/flights/search?${params.toString()}`);
   };
 
+  const handleTabChange = (value: string) => {
+    // Update URL with new tab parameter
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === "domestic") {
+      params.delete("tab");
+    } else {
+      params.set("tab", value);
+    }
+    const newUrl = params.toString()
+      ? `/flights?${params.toString()}`
+      : "/flights";
+    router.push(newUrl);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-8xl">
       {/* Search Form Card */}
 
-      <Tabs defaultValue="domestic">
+      <Tabs value={currentTab} onValueChange={handleTabChange}>
         <TabsList className="w-full h-12 grid grid-cols-6">
           <TabsTrigger value="domestic">国内、国际/中国港澳台</TabsTrigger>
           <TabsTrigger value="special">特价机票</TabsTrigger>

@@ -2,14 +2,20 @@ import "./globals.css";
 
 import type { ReactNode } from "react";
 
-import { Footer, Header } from "@/components/common";
+import { Footer, Header, MainSidebar } from "@/components/common";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function FrontendLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </div>
+    <SidebarProvider defaultOpen={true}>
+      <MainSidebar />
+      <SidebarInset>
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
