@@ -20,7 +20,7 @@ import {
   Ticket,
   Train,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -200,13 +200,39 @@ export const data: SidebarData = {
 function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const Icon = item.icon;
   const hasSubItems = item.items && item.items.length > 0;
 
+  // Helper function to check if a URL matches the current location
+  const isUrlActive = (url: string) => {
+    try {
+      const urlObj = new URL(url, window.location.origin);
+      const urlPath = urlObj.pathname;
+      const urlParams = urlObj.searchParams;
+
+      // Check if pathname matches
+      if (pathname !== urlPath) return false;
+
+      // If URL has no query params, just check pathname
+      if (urlParams.toString() === "") return true;
+
+      // Check if all URL params match current search params
+      for (const [key, value] of urlParams.entries()) {
+        if (searchParams.get(key) !== value) return false;
+      }
+
+      return true;
+    } catch {
+      // If URL parsing fails, fall back to simple pathname comparison
+      return pathname === url;
+    }
+  };
+
   // Check if current item or any of its sub-items is active
-  const isMainActive = pathname === item.url;
+  const isMainActive = isUrlActive(item.url);
   const activeSubItem = hasSubItems
-    ? item.items?.find(subItem => pathname === subItem.url)
+    ? item.items?.find(subItem => isUrlActive(subItem.url))
     : null;
   const isExpanded = isMainActive || !!activeSubItem;
 
@@ -246,7 +272,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
         <SidebarMenuItem>{menuButton}</SidebarMenuItem>
         <div className="ml-2 space-y-0">
           {item.items?.map((subItem, index) => {
-            const isSubActive = pathname === subItem.url;
+            const isSubActive = isUrlActive(subItem.url);
             return (
               <Button
                 key={index}
