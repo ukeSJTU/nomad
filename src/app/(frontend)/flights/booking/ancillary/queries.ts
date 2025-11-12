@@ -55,7 +55,6 @@ export type OrderWithDetails = {
       id: string;
       name: string;
       iataCode: string;
-      icaoCode: string | null;
       logoUrl: string | null;
       isDeleted: boolean;
       createdAt: Date;
@@ -110,11 +109,18 @@ export async function getOrderById(
 
   return {
     ...order.order,
+    ancillaryDetails: order.order.ancillaryDetails as string[] | null,
     passengers,
     outboundFlight: {
       ...order.outboundFlight,
       airline: order.outboundAirline,
-      seatClass: order.outboundSeatClass,
+      seatClass: {
+        ...order.outboundSeatClass,
+        classType: order.outboundSeatClass.classType as
+          | "ECONOMY"
+          | "BUSINESS"
+          | "FIRST",
+      },
     },
   };
 }
