@@ -105,7 +105,7 @@ export default function UserSidebar() {
     if (hasChildren) {
       // Parent item with children - only expand/collapse, no navigation
       return (
-        <Collapsible key={item.title} defaultOpen className="group/collapsible">
+        <Collapsible key={item.title} className="group/collapsible">
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton>
