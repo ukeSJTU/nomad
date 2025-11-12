@@ -201,11 +201,15 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { state: sidebarState } = useSidebar();
   const Icon = item.icon;
   const hasSubItems = item.items && item.items.length > 0;
 
   // Helper function to check if a URL matches the current location
   const isUrlActive = (url: string) => {
+    // Don't match "#" URLs
+    if (url === "#") return false;
+
     try {
       const urlObj = new URL(url, window.location.origin);
       const urlPath = urlObj.pathname;
@@ -234,7 +238,10 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   const activeSubItem = hasSubItems
     ? item.items?.find(subItem => isUrlActive(subItem.url))
     : null;
-  const isExpanded = isMainActive || !!activeSubItem;
+  const isActive = isMainActive || !!activeSubItem;
+
+  // Only expand sub-items if active AND sidebar is expanded
+  const shouldExpandSubItems = isActive && sidebarState === "expanded";
 
   const handleClick = (url: string, title: string) => {
     if (url === "#") {
@@ -251,7 +258,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
       onClick={() => handleClick(item.url, item.title)}
       className={cn(
         "h-9 cursor-pointer px-2",
-        isExpanded &&
+        isActive &&
           "bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-full"
       )}
     >
@@ -265,8 +272,8 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     return <SidebarMenuItem>{menuButton}</SidebarMenuItem>;
   }
 
-  // If has sub-items and is expanded, show sub-items below
-  if (isExpanded) {
+  // If has sub-items and should expand, show sub-items below
+  if (shouldExpandSubItems) {
     return (
       <div className="space-y-0">
         <SidebarMenuItem>{menuButton}</SidebarMenuItem>
