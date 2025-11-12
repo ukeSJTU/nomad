@@ -134,7 +134,6 @@ jobs:
           BETTER_AUTH_SECRET: "test-secret-for-ci-vitest"
           BETTER_AUTH_URL: "http://localhost:3000"
           ENABLE_ALIYUN_SMS: "false"
-          ENABLE_API_DOCS: "false"
           LOG_LEVEL: "silent"
 
       - name: Upload coverage reports to Codecov
