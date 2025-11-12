@@ -153,24 +153,17 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
                       value={field.value}
                       className="flex gap-4"
                     >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="male" id="male" />
-                        <label htmlFor="male" className="cursor-pointer">
-                          男
-                        </label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="female" id="female" />
-                        <label htmlFor="female" className="cursor-pointer">
-                          女
-                        </label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="other" id="other" />
-                        <label htmlFor="other" className="cursor-pointer">
-                          其他
-                        </label>
-                      </div>
+                      {Object.entries(genderLabels).map(([value, label]) => (
+                        <div
+                          key={value}
+                          className="flex items-center space-x-2"
+                        >
+                          <RadioGroupItem value={value} id={value} />
+                          <label htmlFor={value} className="cursor-pointer">
+                            {label}
+                          </label>
+                        </div>
+                      ))}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
