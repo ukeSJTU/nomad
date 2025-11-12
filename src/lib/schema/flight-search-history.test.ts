@@ -50,7 +50,7 @@ describe("Flight Search History Schema", () => {
     const searchCountColumn = flightSearchHistory.searchCount;
     const isDeletedColumn = flightSearchHistory.isDeleted;
 
-    expect(seatClassColumn.default).toBe("economy");
+    expect(seatClassColumn.default).toBe("any");
     expect(searchCountColumn.default).toBe(1);
     expect(isDeletedColumn.default).toBe(false);
   });
