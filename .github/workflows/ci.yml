@@ -30,6 +30,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    # PostgreSQL service container for SSG during build
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: build_user
+          POSTGRES_PASSWORD: build_password
+          POSTGRES_DB: nomad_build
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -48,11 +64,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup build database
+        run: pnpm db:push
+        env:
+          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
+          DATABASE_SSL: "false"
+
+      - name: Seed build database
+        run: pnpm db:seed
+        env:
+          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
+          DATABASE_SSL: "false"
+
       - name: Run build
-        run: pnpm build --experimental-build-mode compile
+        run: pnpm build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy?sslmode=disable"
+          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
           DATABASE_SSL: "false"
           BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
           BETTER_AUTH_URL: "http://localhost:3000"

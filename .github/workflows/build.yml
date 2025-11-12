@@ -11,6 +11,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # PostgreSQL service container for SSG during build
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: build_user
+          POSTGRES_PASSWORD: build_password
+          POSTGRES_DB: nomad_build
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,14 +45,26 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup build database
+        run: pnpm db:push
+        env:
+          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
+          DATABASE_SSL: "false"
+
+      - name: Seed build database
+        run: pnpm db:seed
+        env:
+          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
+          DATABASE_SSL: "false"
+
       - name: Run build
-        run: pnpm build --experimental-build-mode compile
+        run: pnpm build
         env:
           # Disable Next.js telemetry in CI
           NEXT_TELEMETRY_DISABLED: 1
-          # Dummy DATABASE_URL for build process (not used for actual DB operations)
-          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy?sslmode=disable"
-          # Explicitly disable SSL for dummy database in CI
+          # Database URL for SSG during build
+          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
+          # Explicitly disable SSL for database in CI
           DATABASE_SSL: "false"
           # Dummy auth secret for build process
           BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
