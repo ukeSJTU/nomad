@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -51,8 +50,6 @@ export default function UpdatePhoneForm({
   isLoading = false,
   countdown = 0,
 }: UpdatePhoneFormProps) {
-  const [phoneNumber, setPhoneNumber] = useState("");
-
   const form = useForm<UpdatePhoneData>({
     resolver: zodResolver(updatePhoneSchema),
     defaultValues: {
@@ -62,11 +59,7 @@ export default function UpdatePhoneForm({
   });
 
   // Watch for changes in phoneNumber
-  const watchedPhoneNumber = form.watch("phoneNumber");
-
-  useEffect(() => {
-    setPhoneNumber(watchedPhoneNumber);
-  }, [watchedPhoneNumber]);
+  const phoneNumber = form.watch("phoneNumber");
 
   const handleSubmit = (data: UpdatePhoneData) => {
     onSubmit(data);

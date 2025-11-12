@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -46,8 +45,6 @@ export default function UpdateEmailForm({
   isLoading = false,
   countdown = 0,
 }: UpdateEmailFormProps) {
-  const [email, setEmail] = useState("");
-
   const form = useForm<UpdateEmailData>({
     resolver: zodResolver(updateEmailSchema),
     defaultValues: {
@@ -57,11 +54,7 @@ export default function UpdateEmailForm({
   });
 
   // Watch for changes in email
-  const watchedEmail = form.watch("email");
-
-  useEffect(() => {
-    setEmail(watchedEmail);
-  }, [watchedEmail]);
+  const email = form.watch("email");
 
   const handleSubmit = (data: UpdateEmailData) => {
     onSubmit(data);
