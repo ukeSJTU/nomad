@@ -1,6 +1,6 @@
 import { boolean, date, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-import { genderEnum } from "./src/lib/schema/passengers";
+import { genderEnum } from "@/lib/schema/enums";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
