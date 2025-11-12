@@ -1,10 +1,12 @@
+import { getTableName } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 
-import { documentTypeEnum, genderEnum, passengers } from "./passengers";
+import { documentTypeEnum, genderEnum } from "./enums";
+import { passengers } from "./passengers";
 
 describe("Passengers Schema", () => {
   it("should have correct table name", () => {
-    expect(passengers[Symbol.for("drizzle:Name")]).toBe("passengers");
+    expect(getTableName(passengers)).toBe("passengers");
   });
 
   it("should have all required fields defined", () => {
