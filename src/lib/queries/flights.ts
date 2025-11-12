@@ -81,6 +81,9 @@ export type FlightSearchResult = {
   };
   aircraftType: string | null;
   seatClasses: SeatClass[];
+  // New fields for "any seat class" search feature
+  lowestPrice: number; // Lowest price across all seat classes (numeric type for easy sorting)
+  lowestPriceClassType: "ECONOMY" | "BUSINESS" | "FIRST"; // Seat class type with the lowest price
 };
 
 export type RoundTripFlightSearchResult = {
@@ -267,7 +270,12 @@ export async function searchFlights(params: {
     .orderBy(flights.departureDatetime);
 
   // Group results by flight and aggregate seat classes
-  const flightMap = new Map<string, FlightSearchResult>();
+  // Use Omit to create a temporary type without lowestPrice fields
+  type FlightWithoutLowestPrice = Omit<
+    FlightSearchResult,
+    "lowestPrice" | "lowestPriceClassType"
+  >;
+  const flightMap = new Map<string, FlightWithoutLowestPrice>();
 
   for (const row of results) {
     const flightId = row.flight.id;
@@ -330,7 +338,30 @@ export async function searchFlights(params: {
     }
   }
 
-  return Array.from(flightMap.values());
+  // Calculate lowestPrice and lowestPriceClassType for each flight
+  const resultsWithLowestPrice = Array.from(flightMap.values())
+    .map(flight => {
+      // Skip flights with no seat classes (shouldn't happen in normal cases)
+      if (flight.seatClasses.length === 0) {
+        return null;
+      }
+
+      // Find the seat class with the lowest price
+      const lowestSeatClass = flight.seatClasses.reduce((min, current) => {
+        const minPrice = parseFloat(min.price);
+        const currentPrice = parseFloat(current.price);
+        return currentPrice < minPrice ? current : min;
+      });
+
+      return {
+        ...flight,
+        lowestPrice: parseFloat(lowestSeatClass.price),
+        lowestPriceClassType: lowestSeatClass.classType,
+      };
+    })
+    .filter((flight): flight is FlightSearchResult => flight !== null);
+
+  return resultsWithLowestPrice;
 }
 
 /**
