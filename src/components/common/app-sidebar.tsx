@@ -213,11 +213,10 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   const menuButton = (
     <SidebarMenuButton
       onClick={() => handleClick(item.url, item.title)}
-      className="h-11 cursor-pointer"
-      tooltip={item.title}
+      className="h-9 cursor-pointer px-2"
     >
-      <Icon className="size-5" />
-      <span>{item.title}</span>
+      <Icon className="size-4" />
+      <span className="text-sm">{item.title}</span>
     </SidebarMenuButton>
   );
 
@@ -265,7 +264,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               aria-label="Toggle Sidebar"
-              className="size-11 p-3.5 justify-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-900 [&>svg]:size-7"
+              className="px-3 py-3 size-8 justify-center rounded-md [&>svg]:size-7"
               onClick={() => toggleSidebar()}
             >
               <Menu strokeWidth={1.5} className="text-black" />
