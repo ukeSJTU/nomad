@@ -55,7 +55,6 @@ export type OrderWithDetails = {
       id: string;
       name: string;
       iataCode: string;
-      icaoCode: string | null;
       logoUrl: string | null;
     };
     departureAirport: {
@@ -94,7 +93,6 @@ export type OrderWithDetails = {
       id: string;
       name: string;
       iataCode: string;
-      icaoCode: string | null;
       logoUrl: string | null;
     };
     departureAirport: {
@@ -223,7 +221,6 @@ export async function getOrderForPayment(
           id: inbound.airline.id,
           name: inbound.airline.name,
           iataCode: inbound.airline.iataCode,
-          icaoCode: inbound.airline.icaoCode,
           logoUrl: inbound.airline.logoUrl,
         },
         departureAirport: inboundDepartureAirport,
@@ -231,7 +228,10 @@ export async function getOrderForPayment(
         seatClass: {
           id: inbound.seatClass.id,
           flightId: inbound.seatClass.flightId,
-          classType: inbound.seatClass.classType,
+          classType: inbound.seatClass.classType as
+            | "ECONOMY"
+            | "BUSINESS"
+            | "FIRST",
           price: inbound.seatClass.price,
           availableSeats: inbound.seatClass.availableSeats,
           totalSeats: inbound.seatClass.totalSeats,
@@ -283,7 +283,6 @@ export async function getOrderForPayment(
         id: orderData.outboundAirline.id,
         name: orderData.outboundAirline.name,
         iataCode: orderData.outboundAirline.iataCode,
-        icaoCode: orderData.outboundAirline.icaoCode,
         logoUrl: orderData.outboundAirline.logoUrl,
       },
       departureAirport: {
@@ -301,7 +300,10 @@ export async function getOrderForPayment(
       seatClass: {
         id: orderData.outboundSeatClass.id,
         flightId: orderData.outboundSeatClass.flightId,
-        classType: orderData.outboundSeatClass.classType,
+        classType: orderData.outboundSeatClass.classType as
+          | "ECONOMY"
+          | "BUSINESS"
+          | "FIRST",
         price: orderData.outboundSeatClass.price,
         availableSeats: orderData.outboundSeatClass.availableSeats,
         totalSeats: orderData.outboundSeatClass.totalSeats,
