@@ -63,6 +63,12 @@ export default function UserSidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  // Check if parent item should be open or not
+  const shouldBeOpen = (item: MenuItem): boolean => {
+    if (!item.children) return false;
+    return item.children.some(child => child.href === pathname);
+  };
+
   // Handle navigation with implementation check (only for items without children)
   const handleNavigation = (item: MenuItem, e: React.MouseEvent) => {
     // If item has children, don't navigate - let collapsible handle it
@@ -91,9 +97,15 @@ export default function UserSidebar() {
     const hasChildren = item.children && item.children.length > 0;
 
     if (hasChildren) {
+      const isOpen = shouldBeOpen(item);
+
       // Parent item with children - only expand/collapse, no navigation
       return (
-        <Collapsible key={item.title} className="group/collapsible">
+        <Collapsible
+          key={item.title}
+          className="group/collapsible"
+          defaultOpen={isOpen}
+        >
           <div>
             <CollapsibleTrigger asChild>
               <Button
