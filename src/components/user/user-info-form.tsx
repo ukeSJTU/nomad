@@ -269,51 +269,6 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
               {userData.birthday || "未设置"}
             </div>
           </div>
-
-          {/* Email */}
-          <div className="grid grid-cols-[150px_1fr] items-start gap-4">
-            <label className="pt-1 text-sm font-medium text-gray-600">
-              邮箱
-            </label>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-900">{userData.email}</span>
-              {userData.emailVerified && (
-                <span className="text-xs text-green-600">(已验证)</span>
-              )}
-              <a href="#" className="text-sm text-blue-600 hover:underline">
-                修改
-              </a>
-            </div>
-          </div>
-
-          {/* Phone Number */}
-          <div className="grid grid-cols-[150px_1fr] items-start gap-4">
-            <label className="pt-1 text-sm font-medium text-gray-600">
-              手机号
-            </label>
-            <div className="flex items-center gap-2">
-              {userData.phoneNumber ? (
-                <>
-                  <span className="text-sm text-gray-900">
-                    {userData.phoneNumber}
-                  </span>
-                  {userData.phoneNumberVerified && (
-                    <span className="text-xs text-green-600">(已验证)</span>
-                  )}
-                  <a href="#" className="text-sm text-blue-600 hover:underline">
-                    修改
-                  </a>
-                </>
-              ) : (
-                <>
-                  <span className="text-sm text-gray-500">未填写</span>
-                  <a href="#" className="text-sm text-blue-600 hover:underline">
-                    验证
-                  </a>
-                </>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 

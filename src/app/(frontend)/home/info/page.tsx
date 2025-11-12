@@ -1,6 +1,8 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { Separator } from "@/components/ui/separator";
 import { UserInfoForm } from "@/components/user";
 import { auth } from "@/lib/auth";
 import { getUserInfo } from "@/lib/queries";
@@ -47,8 +49,77 @@ export default async function UserInfoPage() {
           <p className="text-muted-foreground">查看和管理您的个人信息</p>
         </div>
 
-        {/* User Info Form Component */}
-        <UserInfoForm userData={userData} />
+        <div className="space-y-6">
+          {/* User Info Form Component */}
+          <UserInfoForm userData={userData} />
+
+          {/* Account Security Section */}
+          <div className="space-y-6 bg-white p-6 rounded-lg border">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">账号安全</h2>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-4">
+              {/* Email */}
+              <div className="grid grid-cols-[150px_1fr] items-start gap-4">
+                <label className="pt-1 text-sm font-medium text-gray-600">
+                  邮箱
+                </label>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-900">
+                    {userData.email}
+                  </span>
+                  {userData.emailVerified && (
+                    <span className="text-xs text-green-600">(已验证)</span>
+                  )}
+                  <Link
+                    href="/home/info/email"
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    修改
+                  </Link>
+                </div>
+              </div>
+
+              {/* Phone Number */}
+              <div className="grid grid-cols-[150px_1fr] items-start gap-4">
+                <label className="pt-1 text-sm font-medium text-gray-600">
+                  手机号
+                </label>
+                <div className="flex items-center gap-2">
+                  {userData.phoneNumber ? (
+                    <>
+                      <span className="text-sm text-gray-900">
+                        {userData.phoneNumber}
+                      </span>
+                      {userData.phoneNumberVerified && (
+                        <span className="text-xs text-green-600">(已验证)</span>
+                      )}
+                      <Link
+                        href="/home/info/phone"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        修改
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-sm text-gray-500">未填写</span>
+                      <Link
+                        href="/home/info/phone"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        验证
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
