@@ -180,10 +180,12 @@ export function FlightSearchPageClient({
             returnDate={parsedParams.returnDate?.toISOString().split("T")[0]}
             tripType={parsedParams.tripType}
             classType={
-              parsedParams.seatClass.toUpperCase() as
-                | "ECONOMY"
-                | "BUSINESS"
-                | "FIRST"
+              parsedParams.seatClass === "any"
+                ? undefined
+                : (parsedParams.seatClass.toUpperCase() as
+                    | "ECONOMY"
+                    | "BUSINESS"
+                    | "FIRST")
             }
           />
         </div>
