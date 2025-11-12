@@ -79,7 +79,7 @@ export function QuickDateSelector({
     if (tripType === "round-trip" && price.returnDate) {
       params.set("returnDate", price.returnDate);
     }
-    params.set("class", classType?.toLowerCase() || "economy");
+    params.set("class", classType?.toLowerCase() || "any");
 
     // Navigate to new search
     startTransition(() => {
