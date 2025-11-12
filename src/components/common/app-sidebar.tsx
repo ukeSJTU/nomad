@@ -20,10 +20,11 @@ import {
   Ticket,
   Train,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
 import {
   HoverCard,
   HoverCardContent,
@@ -42,6 +43,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 // Type definitions
 type SubItem = {
@@ -197,8 +199,16 @@ export const data: SidebarData = {
 // Menu item component with hover card for sub-items
 function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   const router = useRouter();
+  const pathname = usePathname();
   const Icon = item.icon;
   const hasSubItems = item.items && item.items.length > 0;
+
+  // Check if current item or any of its sub-items is active
+  const isMainActive = pathname === item.url;
+  const activeSubItem = hasSubItems
+    ? item.items?.find(subItem => pathname === subItem.url)
+    : null;
+  const isExpanded = isMainActive || !!activeSubItem;
 
   const handleClick = (url: string, title: string) => {
     if (url === "#") {
@@ -213,7 +223,11 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   const menuButton = (
     <SidebarMenuButton
       onClick={() => handleClick(item.url, item.title)}
-      className="h-9 cursor-pointer px-2"
+      className={cn(
+        "h-9 cursor-pointer px-2",
+        isExpanded &&
+          "bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-full"
+      )}
     >
       <Icon className="size-4" />
       <span className="text-sm">{item.title}</span>
@@ -225,7 +239,36 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     return <SidebarMenuItem>{menuButton}</SidebarMenuItem>;
   }
 
-  // If has sub-items, wrap with HoverCard
+  // If has sub-items and is expanded, show sub-items below
+  if (isExpanded) {
+    return (
+      <div className="space-y-0">
+        <SidebarMenuItem>{menuButton}</SidebarMenuItem>
+        <div className="ml-2 space-y-0">
+          {item.items?.map((subItem, index) => {
+            const isSubActive = pathname === subItem.url;
+            return (
+              <Button
+                key={index}
+                variant="ghost"
+                onClick={() => handleClick(subItem.url, subItem.title)}
+                className={cn(
+                  "w-full text-left px-3 py-2 text-sm rounded-md transition-colors",
+                  isSubActive
+                    ? "text-blue-500 font-medium"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {subItem.title}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // If has sub-items but not expanded, wrap with HoverCard
   return (
     <SidebarMenuItem>
       <HoverCard openDelay={100} closeDelay={100}>
