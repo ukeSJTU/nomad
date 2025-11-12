@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { account } from "@/lib/schema";
+import { account, user } from "@/lib/schema";
 
 /**
  * Service layer for authentication-related business logic
@@ -254,6 +254,110 @@ export async function setPasswordForOAuthUser(
     return {
       success: false,
       error: error instanceof Error ? error.message : "设置密码失败，请重试",
+    };
+  }
+}
+
+/**
+ * Update user's phone number
+ *
+ * This function updates the phone number in the database.
+ * It performs the following:
+ * 1. Validates the phone number format
+ * 2. Updates the user's phoneNumber and phoneNumberVerified fields
+ *
+ * @param userId - The ID of the user
+ * @param phoneNumber - The new phone number (with +86 prefix)
+ * @returns Result object with success status and message/error
+ */
+export async function updatePhoneNumber(
+  userId: string,
+  phoneNumber: string
+): Promise<ServiceResult> {
+  try {
+    // 1. Validate phone number format (should have +86 prefix)
+    if (!phoneNumber.startsWith("+86")) {
+      return {
+        success: false,
+        error: "手机号格式错误",
+      };
+    }
+
+    // Remove +86 prefix to get the actual phone number
+    const actualPhoneNumber = phoneNumber.substring(3);
+
+    // Validate it's 11 digits
+    if (!/^[0-9]{11}$/.test(actualPhoneNumber)) {
+      return {
+        success: false,
+        error: "手机号必须是11位数字",
+      };
+    }
+
+    // 2. Update the user's phone number in the database
+    await db
+      .update(user)
+      .set({
+        phoneNumber,
+        phoneNumberVerified: true, // Mark as verified since OTP was verified
+      })
+      .where(eq(user.id, userId));
+
+    return {
+      success: true,
+      message: "手机号更新成功",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "更新手机号失败，请重试",
+    };
+  }
+}
+
+/**
+ * Update user's email address
+ *
+ * This function updates the email address in the database.
+ * It performs the following:
+ * 1. Validates the email format
+ * 2. Updates the user's email and emailVerified fields
+ *
+ * @param userId - The ID of the user
+ * @param email - The new email address
+ * @returns Result object with success status and message/error
+ */
+export async function updateEmail(
+  userId: string,
+  email: string
+): Promise<ServiceResult> {
+  try {
+    // 1. Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return {
+        success: false,
+        error: "邮箱格式错误",
+      };
+    }
+
+    // 2. Update the user's email in the database
+    await db
+      .update(user)
+      .set({
+        email,
+        emailVerified: true, // Mark as verified since OTP was verified
+      })
+      .where(eq(user.id, userId));
+
+    return {
+      success: true,
+      message: "邮箱更新成功",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "更新邮箱失败，请重试",
     };
   }
 }
