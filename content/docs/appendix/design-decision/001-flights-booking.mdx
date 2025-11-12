@@ -1,0 +1,325 @@
+---
+title: 机票预订的"四步向导"与库存锁定模型
+---
+
+## 决策 001：机票预订的"四步向导"与库存锁定模型
+
+### 核心思想
+
+**一句话总结**：用户填完乘客信息就立即创建订单并锁定座位，然后给 15 分钟时间选增值服务和支付，超时自动取消并释放座位。
+
+---
+
+### 1. 为什么这么设计？
+
+#### 问题 1：什么时候锁定座位？
+
+**太早锁定**：用户刚点"订票"就锁座位 → 很多人只是看看，不会真买 → 大量座位被浪费锁定
+
+**太晚锁定**：用户填完所有信息、选完增值服务、准备支付时才锁座位 → 两个用户同时抢最后一张票 → 超售！
+
+**我们的选择**：用户填完乘客信息（第一步）就锁定座位
+- 用户已经填了真实信息，说明是认真想买的
+- 避免了超售问题（先到先得）
+- 给用户 15 分钟完成后续步骤，不会太紧张
+
+#### 问题 2：如何防止座位被永久锁定？
+
+如果用户填完信息后不付款，座位会一直被锁定吗？
+
+**解决方案**：15 分钟支付倒计时 + 自动取消机制
+- 创建订单时设置 `paymentDeadline = now + 15分钟`
+- 外部 cron 服务每分钟调用我们的 API
+- API 自动取消超时订单并释放座位
+
+---
+
+### 2. 四步流程详解
+
+```
+搜索结果页 → [1]乘客信息 → [2]增值服务 → [3]支付 → [4]确认
+              ↓ 创建订单
+              ↓ 锁定座位
+              ↓ 开始倒计时
+```
+
+#### 第 1 步：填写乘客信息
+
+**路由**：`/flights/booking/passengers`
+
+**URL 参数**：
+- 单程：`?seatClassId=xxx`
+- 往返：`?outboundSeatClassId=xxx&inboundSeatClassId=xxx`
+
+**页面内容**：
+- 乘客表单（姓名、证件号、手机号等）
+- 联系人信息
+- 航班摘要卡片（显示价格 × 乘客数量）
+
+**点击"下一步"后发生什么**：
+1. 调用 Server Action：`createOrderAction()`
+2. **数据库事务**中完成：
+   - 检查座位是否充足
+   - 创建订单记录（状态：`PENDING_PAYMENT`）
+   - 创建乘客记录
+   - **锁定座位**：`availableSeats = availableSeats - passengerCount`
+   - 设置支付截止时间：`paymentDeadline = now + 15分钟`
+3. 返回 `orderId`
+4. 跳转到：`/flights/booking/ancillary?orderId=xxx`
+
+**关键代码**：
+```typescript
+// src/lib/actions/orders.ts
+await db.transaction(async tx => {
+  // 创建订单
+  const [order] = await tx.insert(orders).values({
+    status: "PENDING_PAYMENT",
+    paymentDeadline: new Date(Date.now() + 15 * 60 * 1000),
+    // ...
+  }).returning();
+
+  // 锁定座位
+  await tx.update(flightSeatClasses)
+    .set({
+      availableSeats: sql`${flightSeatClasses.availableSeats} - ${passengerCount}`
+    })
+    .where(eq(flightSeatClasses.id, seatClassId));
+});
+```
+
+---
+
+#### 第 2 步：选择增值服务（可选）
+
+**路由**：`/flights/booking/ancillary`
+
+**URL 参数**：`?orderId=xxx`
+
+**页面内容**：
+- 增值服务列表（保险、餐食、行李等）
+- 订单摘要（显示基础价格 + 增值服务价格）
+- 支付倒计时
+
+**点击"下一步"后发生什么**：
+1. 调用 Server Action：`updateOrderAncillaryAction()`
+2. 更新订单：
+   - `ancillaryDetails = ["INSURANCE_BASIC", "MEAL_STANDARD"]`
+   - `ancillaryAmount = 计算增值服务总价`
+   - `totalAmount = baseAmount + ancillaryAmount`
+3. 跳转到：`/flights/booking/payment?orderId=xxx`
+
+**关键点**：
+- 这一步**不锁定座位**（座位已在第 1 步锁定）
+- 只是更新订单的增值服务信息
+- 用户可以跳过这一步直接去支付
+
+---
+
+#### 第 3 步：支付
+
+**路由**：`/flights/booking/payment`
+
+**URL 参数**：`?orderId=xxx`
+
+**页面内容**：
+- 订单详情（航班、乘客、增值服务）
+- 支付方式选择（平台余额）
+- 支付倒计时（红色警告）
+
+**点击"确认支付"后发生什么**：
+1. 调用 Server Action：`processPaymentAction()`
+2. **数据库事务**中完成：
+   - 检查余额是否充足
+   - 扣除用户余额
+   - **更新订单状态**：`PENDING_PAYMENT` → `CONFIRMED`
+3. 跳转到：`/flights/booking/confirmation?orderId=xxx`
+
+**关键代码**：
+```typescript
+// src/lib/actions/payments.ts
+await db.transaction(async tx => {
+  // 扣除余额
+  await tx.update(user)
+    .set({ balance: newBalance })
+    .where(eq(user.id, userId));
+
+  // 确认订单
+  await tx.update(orders)
+    .set({ status: "CONFIRMED" })
+    .where(eq(orders.id, orderId));
+});
+```
+
+---
+
+#### 第 4 步：订单确认
+
+**路由**：`/flights/booking/confirmation`
+
+**URL 参数**：`?orderId=xxx`
+
+**页面内容**：
+- 订票成功提示
+- 订单详情（订单号、航班、乘客、价格）
+- 快速跳转到"我的订单"
+
+---
+
+### 3. 订单状态转换
+
+```
+PENDING_PAYMENT  →  CONFIRMED  →  REFUNDED
+       ↓
+   CANCELLED
+```
+
+| 状态 | 说明 | 何时发生 |
+|------|------|---------|
+| `PENDING_PAYMENT` | 待支付 | 第 1 步创建订单时 |
+| `CONFIRMED` | 已确认 | 第 3 步支付成功后 |
+| `CANCELLED` | 已取消 | 超时未支付（cron 自动取消） |
+| `REFUNDED` | 已退款 | 用户申请退款后 |
+
+---
+
+### 4. 自动取消超时订单
+
+#### 为什么需要？
+
+如果用户创建订单后不支付，座位会一直被锁定，其他用户无法购买。
+
+#### 如何实现？
+
+**方案对比**：
+
+| 方案 | 优点 | 缺点 | 是否采用 |
+|------|------|------|---------|
+| Vercel Cron Jobs | 部署在 Vercel 上，集成方便 | Free tier 限制执行频率 | N |
+| GitHub Actions | Public repo 免费 | 不保证准时执行（可能延迟） | N |
+| cron-job.org | 免费、准时、可靠 | 需要外部服务 | Y |
+
+**我们的选择**：[cron-job.org](https://cron-job.org/)
+
+**配置**：
+- 每分钟调用一次：`POST https://nomad.example.com/api/cron/cancel-expiration`
+- 认证方式：`Authorization: Bearer <CRON_SECRET>`
+
+**API 实现**：
+```typescript
+// src/app/api/cron/cancel-expiration/route.ts
+export async function POST(request: Request) {
+  // 1. 验证 Bearer Token
+  if (!verifyCronSecret(request)) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // 2. 调用业务逻辑
+  const result = await cancelExpiredOrders();
+
+  return Response.json(result);
+}
+```
+
+**业务逻辑**：
+```typescript
+// src/lib/services/orders.ts
+export async function cancelExpiredOrders() {
+  const now = new Date();
+
+  // 查找过期订单
+  const expiredOrders = await db.query.orders.findMany({
+    where: and(
+      eq(orders.status, "PENDING_PAYMENT"),
+      lt(orders.paymentDeadline, now)
+    )
+  });
+
+  await db.transaction(async tx => {
+    // 取消订单
+    await tx.update(orders)
+      .set({ status: "CANCELLED" })
+      .where(inArray(orders.id, orderIds));
+
+    // 释放座位
+    for (const order of expiredOrders) {
+      await tx.update(flightSeatClasses)
+        .set({
+          availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`
+        })
+        .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
+    }
+  });
+}
+```
+
+---
+
+### 5. 技术要点
+
+#### 数据库事务
+
+**为什么需要事务？**
+
+防止竞态条件（Race Condition）：
+- 用户 A 和用户 B 同时购买最后一张票
+- 如果不用事务，可能两人都看到"有票"，导致超售
+
+**事务保证**：
+- 原子性：要么全部成功，要么全部失败
+- 隔离性：A 的事务看不到 B 未提交的修改
+- 一致性：座位数量始终正确
+
+**关键操作必须在同一事务内**：
+1. 检查座位是否充足
+2. 创建订单
+3. 锁定座位（减少 `availableSeats`）
+
+#### SQL 原子操作
+
+**错误做法**：
+```typescript
+// 先查询再更新（有竞态条件）
+const seatClass = await db.query.flightSeatClasses.findFirst(...);
+const newSeats = seatClass.availableSeats - passengerCount;
+await db.update(flightSeatClasses).set({ availableSeats: newSeats });
+```
+
+**正确做法**：
+```typescript
+// 使用 SQL 原子操作
+await db.update(flightSeatClasses).set({
+  availableSeats: sql`${flightSeatClasses.availableSeats} - ${passengerCount}`
+});
+```
+
+---
+
+### 6. 与携程的对比
+
+| 特性 | 携程 | Nomad |
+|------|------|-------|
+| 订票流程 | 4 步向导 | 4 步向导（模仿） |
+| 何时创建订单 | 填完乘客信息后 | 填完乘客信息后 |
+| 支付倒计时 | 15 分钟 | 15 分钟 |
+| 座位锁定 | OTA 平台，不直接管理库存 | 自己管理库存，使用数据库事务 |
+| 超时处理 | 自动取消 | 自动取消（cron job）|
+
+**核心区别**：
+- 携程是 OTA 平台，只负责转发订单给航空公司
+- Nomad 既是 OTA 又是数据提供方，需要自己管理库存
+
+---
+
+### 7. 总结
+
+**设计原则**：
+1. **用户体验优先**：模仿携程的成熟流程
+2. **数据一致性**：使用数据库事务防止超售
+3. **资源利用率**：15 分钟倒计时 + 自动取消，避免座位浪费
+4. **技术简洁性**：Server Actions + 外部 cron，符合 Next.js 最佳实践
+
+**关键时间点**：
+- 第 1 步结束：创建订单 + 锁定座位 + 开始倒计时
+- 第 3 步结束：支付成功 + 订单确认
+- 15 分钟后：自动取消 + 释放座位（如果未支付）
+

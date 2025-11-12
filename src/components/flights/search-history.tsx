@@ -7,6 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
 import { cn } from "@/lib/utils";
+import {
+  compareCurrency,
+  formatCurrencyWithoutSymbol,
+  parseCurrency,
+} from "@/lib/utils/currency";
 import { getWeekdayLabel } from "@/utils/date";
 
 interface FlightSearchHistoryCardProps {
@@ -21,7 +26,7 @@ export function FlightSearchHistoryCard({
 }: FlightSearchHistoryCardProps) {
   const router = useRouter();
 
-  // Calculate price change status
+  // Calculate price change status using currency.js for precision
   const getPriceStatus = () => {
     if (
       !record.lowestPriceAtSearch ||
@@ -32,12 +37,13 @@ export function FlightSearchHistoryCard({
       return null;
     }
 
-    const original = parseFloat(record.lowestPriceAtSearch);
-    const current = parseFloat(record.currentLowestPrice);
+    const original = parseCurrency(record.lowestPriceAtSearch);
+    const current = parseCurrency(record.currentLowestPrice);
+    const comparison = compareCurrency(current, original);
 
-    if (current < original) {
+    if (comparison < 0) {
       return { label: "已降价", colorClass: "bg-green-100 text-green-700" };
-    } else if (current > original) {
+    } else if (comparison > 0) {
       return { label: "已涨价", colorClass: "bg-red-100 text-red-700" };
     } else {
       return { label: "价格稳定", colorClass: "bg-gray-100 text-gray-600" };
@@ -127,7 +133,10 @@ export function FlightSearchHistoryCard({
         {record.currentLowestPrice && record.currentLowestPrice !== "0" && (
           <div className="text-right space-y-1 shrink-0">
             <div className="text-xl font-bold text-orange-500">
-              ¥{parseFloat(record.currentLowestPrice).toFixed(0)}
+              ¥
+              {formatCurrencyWithoutSymbol(
+                Math.round(parseCurrency(record.currentLowestPrice).value)
+              )}
               <span className="text-xs font-normal text-gray-500 ml-1">起</span>
             </div>
             {priceStatus && (

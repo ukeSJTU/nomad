@@ -1,4 +1,4 @@
 {
   "title": "附录",
-  "pages": ["original-srs", "high-risk", "presentation"]
+  "pages": ["design-decision", "original-srs", "high-risk", "presentation"]
 }

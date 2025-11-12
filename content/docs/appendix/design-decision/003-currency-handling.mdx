@@ -1,0 +1,120 @@
+---
+title: 货币/价格计算
+description: 使用 currency.js 处理货币价格计算，避免精度问题。
+---
+
+## 背景和问题陈述
+
+Nomad 航班预订系统在整个应用中处理货币值，从显示航班价格到计算包含附加服务的订单总额。JavaScript 的原生 number 类型使用 IEEE 754 浮点运算，这会导致在执行小数计算时出现精度问题。
+
+### 问题描述
+
+```js title="JS 浮点精度问题"
+0.1 + 0.2 === 0.3; // false! 实际结果是 0.30000000000000004
+100.5 * 2 === 201.0; // false! 实际结果是 201.00000000000003
+```
+
+这些精度误差会在财务计算中累积，导致：
+
+- 订单总额不正确
+- 价格显示的舍入误差
+- 潜在的财务差异
+- 客户信任度下降
+
+## 考虑的方案
+
+### 方案 1：currency.js（已选择）
+
+**优点**：
+
+- 专为货币计算而设计
+- 简单直观的 API
+- 体积小（压缩后 5KB）
+- 与 NUMERIC(10,2) 精度完美匹配
+- 自动处理精度
+- 活跃的维护和社区支持
+
+**缺点**：
+
+- 为项目增加一个依赖
+
+**示例**：
+
+```js
+import currency from "currency.js";
+
+const price1 = currency(0.1);
+const price2 = currency(0.2);
+const total = price1.add(price2); // 精确等于 0.3
+```
+
+### 方案 2：BigInt
+
+**优点**：
+
+- 原生 JavaScript 支持（无依赖）
+- 任意精度整数
+
+**缺点**：
+
+- 需要将价格存储为分（例如，$10.50 → 1050）
+- 需要数据库架构迁移
+- 需要手动处理小数点
+- 复杂的类型转换
+- 没有内置格式化
+- 迁移成本高
+
+**示例**：
+
+```js
+// 以分为单位存储
+const price1 = 1050n; // $10.50
+const price2 = 2025n; // $20.25
+const total = price1 + price2; // 3075n ($30.75)
+// 手动转换回美元
+const dollars = Number(total) / 100; // 30.75
+```
+
+### 方案 3：Decimal.js / Big.js
+
+**优点**：
+
+- 高精度任意精度算术
+- 全面的数学运算
+
+**缺点**：
+
+- 体积大（Decimal.js：32KB，Big.js：6KB）
+- 对于仅处理货币的场景过于复杂
+- API 更复杂
+- 学习曲线陡峭
+
+**示例**：
+
+```typescript
+import Decimal from "decimal.js";
+
+const price1 = new Decimal(0.1);
+const price2 = new Decimal(0.2);
+const total = price1.plus(price2); // 0.3
+```
+
+## 决策结果
+
+**选择的方案**：**currency.js**
+
+### 理由
+
+1. **完美匹配**：专为货币计算设计，与我们的使用场景高度契合
+2. **零迁移成本**：与现有 NUMERIC(10,2) 数据库架构无缝集成，无需修改表结构
+3. **开发体验优秀**：API 简洁直观，降低开发者认知负担
+4. **体积合理**：5KB 的包体积相对于其提供的价值完全可接受
+5. **活跃维护**：相比同类库（如 `dinero.js` 或 `wallet.js`），社区更活跃，维护更及时
+
+---
+
+## 参考资料
+
+- [currency.js 文档](https://currency.js.org/)
+- [IEEE 754 浮点数问题](https://0.30000000000000004.com/)
+- [PostgreSQL NUMERIC 类型](https://www.postgresql.org/docs/current/datatype-numeric.html)

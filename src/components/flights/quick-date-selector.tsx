@@ -9,6 +9,7 @@ import {
   type QuickDatePrice,
 } from "@/lib/actions/quick-date-prices";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import { formatDateWithWeekday } from "@/utils/date";
 
 import { Button } from "../ui/button";
@@ -184,7 +185,7 @@ export function QuickDateSelector({
                 <div className="text-sm font-medium mt-0.5">
                   {isAvailable ? (
                     <span className="font-bold text-orange-500">
-                      ¥{Math.round(price.lowestPrice!)}
+                      {formatCurrency(Math.round(price.lowestPrice!))}
                     </span>
                   ) : (
                     <span className="text-muted-foreground">无</span>

@@ -1,4 +1,11 @@
-import { boolean, date, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  date,
+  numeric,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 import { genderEnum } from "@/lib/schema/enums";
 
@@ -15,6 +22,8 @@ export const user = pgTable("user", {
     .notNull(),
   phoneNumber: text("phone_number").unique(),
   phoneNumberVerified: boolean("phone_number_verified"),
+  // User balance for payments (in CNY)
+  balance: numeric({ precision: 10, scale: 2 }).notNull().default("0.00"),
   // User profile fields
   nickname: text("nickname"),
   gender: genderEnum("gender"),
