@@ -11,6 +11,8 @@ import {
   changePassword,
   setPasswordForOAuthUser,
   unlinkSocialAccount,
+  updateEmail,
+  updatePhoneNumber,
 } from "@/lib/services/auth";
 
 /**
@@ -264,6 +266,108 @@ export async function setPasswordForOAuthUserAction(password: string) {
     return {
       success: false,
       error: "设置密码失败，请重试",
+    };
+  }
+}
+
+/**
+ * Server action to update user's phone number
+ *
+ * This is a thin controller that:
+ * 1. Handles authentication (Next.js specific)
+ * 2. Calls the service layer for business logic
+ * 3. Handles revalidation (Next.js specific)
+ * 4. Formats the response
+ *
+ * @param phoneNumber - The new phone number (with +86 prefix)
+ * @returns Result object with success status and message/error
+ */
+export async function updatePhoneNumberAction(phoneNumber: string) {
+  try {
+    // 1. Verify authentication (framework-specific)
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "请先登录",
+      };
+    }
+
+    // 2. Call service layer for business logic
+    const result = await updatePhoneNumber(session.user.id, phoneNumber);
+
+    if (!result.success) {
+      return result;
+    }
+
+    // 3. Revalidate the security page (framework-specific)
+    revalidatePath("/home/security");
+
+    // 4. Return success result
+    return {
+      success: true,
+      message: "手机号更新成功",
+    };
+  } catch (error) {
+    console.error("Update phone number error:", error);
+    return {
+      success: false,
+      error: "更新手机号失败，请重试",
+    };
+  }
+}
+
+/**
+ * Server action to update user's email address
+ *
+ * This is a thin controller that:
+ * 1. Handles authentication (Next.js specific)
+ * 2. Calls the service layer for business logic
+ * 3. Handles revalidation (Next.js specific)
+ * 4. Formats the response
+ *
+ * @param email - The new email address
+ * @returns Result object with success status and message/error
+ */
+export async function updateEmailAction(email: string) {
+  try {
+    // 1. Verify authentication (framework-specific)
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "请先登录",
+      };
+    }
+
+    // 2. Call service layer for business logic
+    const result = await updateEmail(session.user.id, email);
+
+    if (!result.success) {
+      return result;
+    }
+
+    // 3. Revalidate the security page (framework-specific)
+    revalidatePath("/home/security");
+
+    // 4. Return success result
+    return {
+      success: true,
+      message: "邮箱更新成功",
+    };
+  } catch (error) {
+    console.error("Update email error:", error);
+    return {
+      success: false,
+      error: "更新邮箱失败，请重试",
     };
   }
 }
