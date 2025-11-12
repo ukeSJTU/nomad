@@ -15,17 +15,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Environment checks
-  const isProduction = process.env.NODE_ENV === "production";
-  const enableApiDocs = process.env.ENABLE_API_DOCS === "true";
-
-  // Block access in production unless explicitly enabled
-  if (isProduction && !enableApiDocs) {
-    // Return 404 to hide the existence of the endpoint
-    return new NextResponse(null, {
-      status: 404,
-      statusText: "Not Found",
-    });
-  }
+  const _isProduction = process.env.NODE_ENV === "production";
 
   return NextResponse.next();
 }
