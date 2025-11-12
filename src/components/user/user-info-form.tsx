@@ -1,7 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { updateUserInfoAction } from "@/lib/actions";
+import {
+  updateUserInfoAction,
+  type UpdateUserInfoActionState,
+} from "@/lib/actions";
 import type { UserInfo } from "@/lib/queries/user";
 import { type UserInfoUpdateData, userInfoUpdateSchema } from "@/types/user";
 
@@ -39,9 +43,15 @@ const genderLabels = {
 };
 
 export function UserInfoForm({ userData }: UserInfoFormProps) {
+  const router = useRouter();
   const [isEditMode, setIsEditMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+
+  // Use useActionState for better form handling
+  const [state, formAction, isPending] = useActionState<
+    UpdateUserInfoActionState | null,
+    FormData
+  >(updateUserInfoAction, null);
 
   const form = useForm<UserInfoUpdateData>({
     resolver: zodResolver(userInfoUpdateSchema),
@@ -53,27 +63,26 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
     },
   });
 
-  const handleSubmit = async (data: UserInfoUpdateData) => {
-    setIsLoading(true);
-    try {
-      const result = await updateUserInfoAction(data);
-
-      if (result.success) {
-        setShowSuccessDialog(true);
-        setIsEditMode(false);
-        // Refresh the page to show updated data
-        window.location.reload();
-      } else {
-        // Show error message
-        console.error("Update failed:", result.error);
-        alert(result.error || "更新用户信息失败");
-      }
-    } catch (error) {
-      console.error("Failed to update user info:", error);
-      alert("更新用户信息失败");
-    } finally {
-      setIsLoading(false);
+  // Handle successful submission
+  useEffect(() => {
+    if (state?.success) {
+      setShowSuccessDialog(true);
+      setIsEditMode(false);
+      // Refresh the page data without full reload
+      router.refresh();
     }
+  }, [state, router]);
+
+  const handleSubmit = (data: UserInfoUpdateData) => {
+    // Convert data to FormData for useActionState
+    const formData = new FormData();
+    if (data.nickname !== undefined) formData.append("nickname", data.nickname);
+    if (data.name !== undefined) formData.append("name", data.name);
+    if (data.gender !== undefined) formData.append("gender", data.gender);
+    if (data.birthday !== undefined) formData.append("birthday", data.birthday);
+
+    // Submit via formAction
+    formAction(formData);
   };
 
   const handleCancel = () => {
@@ -184,16 +193,23 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
               )}
             />
 
+            {/* Error Message */}
+            {state?.error && (
+              <div className="rounded-md bg-red-50 p-4">
+                <p className="text-sm text-red-800">{state.error}</p>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "保存中..." : "保存"}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "保存中..." : "保存"}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleCancel}
-                disabled={isLoading}
+                disabled={isPending}
               >
                 取消
               </Button>
