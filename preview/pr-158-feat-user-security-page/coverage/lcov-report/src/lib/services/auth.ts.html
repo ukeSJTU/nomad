@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.85% </span>
+                <span class="strong">20.65% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>44/211</span>
+                <span class='fraction'>44/213</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.85% </span>
+                <span class="strong">20.65% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>44/211</span>
+                <span class='fraction'>44/213</span>
             </div>
         
             
@@ -426,7 +426,9 @@
 <a name='L361'></a><a href='#L361'>361</a>
 <a name='L362'></a><a href='#L362'>362</a>
 <a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -606,23 +608,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -632,6 +619,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -644,6 +644,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -656,6 +659,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -963,14 +967,15 @@ export <span class="fstat-no" title="function not covered" >function validatePas
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     // 3. Verify user has a credential account (password-based login)
-<span class="cstat-no" title="statement not covered" >    const credentialAccounts = await db</span>
-<span class="cstat-no" title="statement not covered" >      .select()</span>
+<span class="cstat-no" title="statement not covered" >    const [credentialAccount] = await db</span>
+<span class="cstat-no" title="statement not covered" >      .select({ id: account.id })</span>
 <span class="cstat-no" title="statement not covered" >      .from(account)</span>
 <span class="cstat-no" title="statement not covered" >      .where(</span>
 <span class="cstat-no" title="statement not covered" >        and(eq(account.userId, userId), eq(account.providerId, "credential"))</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >      )</span>
+<span class="cstat-no" title="statement not covered" >      .limit(1);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (credentialAccounts.length === 0) {</span>
+<span class="cstat-no" title="statement not covered" >    if (!credentialAccount) {</span>
 <span class="cstat-no" title="statement not covered" >      return {</span>
 <span class="cstat-no" title="statement not covered" >        success: false,</span>
 <span class="cstat-no" title="statement not covered" >        error: "您还没有设置密码，请先设置密码",</span>
@@ -1019,14 +1024,15 @@ export <span class="fstat-no" title="function not covered" >function validatePas
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     // 2. Check if user already has a password
-<span class="cstat-no" title="statement not covered" >    const credentialAccounts = await db</span>
-<span class="cstat-no" title="statement not covered" >      .select()</span>
+<span class="cstat-no" title="statement not covered" >    const [credentialAccount] = await db</span>
+<span class="cstat-no" title="statement not covered" >      .select({ id: account.id })</span>
 <span class="cstat-no" title="statement not covered" >      .from(account)</span>
 <span class="cstat-no" title="statement not covered" >      .where(</span>
 <span class="cstat-no" title="statement not covered" >        and(eq(account.userId, userId), eq(account.providerId, "credential"))</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >      )</span>
+<span class="cstat-no" title="statement not covered" >      .limit(1);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (credentialAccounts.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >    if (credentialAccount) {</span>
 <span class="cstat-no" title="statement not covered" >      return {</span>
 <span class="cstat-no" title="statement not covered" >        success: false,</span>
 <span class="cstat-no" title="statement not covered" >        error: "您已经设置过密码了",</span>
@@ -1159,7 +1165,7 @@ export <span class="fstat-no" title="function not covered" >function validatePas
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-12T09:53:06.141Z
+                at 2025-11-12T10:04:37.167Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
