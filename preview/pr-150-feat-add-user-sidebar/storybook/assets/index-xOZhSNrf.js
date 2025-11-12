@@ -1,1 +1,0 @@
-import{r as s,W as a}from"./iframe-D5i0_IZ-.js";import{u}from"./index-DGIS240C.js";var i=a[" useId ".trim().toString()]||(()=>{}),d=0;function f(r){const[t,e]=s.useState(i());return u(()=>{e(o=>o??String(d++))},[r]),t?`radix-${t}`:""}export{f as u};
