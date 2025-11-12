@@ -229,7 +229,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   // If has sub-items, wrap with HoverCard
   return (
     <SidebarMenuItem>
-      <HoverCard openDelay={200} closeDelay={100}>
+      <HoverCard openDelay={100} closeDelay={100}>
         <HoverCardTrigger asChild>{menuButton}</HoverCardTrigger>
         <HoverCardContent
           side="right"
@@ -258,8 +258,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="gap-2 p-2">
+    <Sidebar collapsible="icon" className="w-48" {...props}>
+      <SidebarHeader className="gap-2 p-2 flex items-center justify-center">
         {/* Toggle sidebar button */}
         <SidebarMenu>
           <SidebarMenuItem>
@@ -274,7 +274,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-2">
         {/* Travel Group */}
         <SidebarGroup>
           <SidebarGroupContent>
@@ -286,7 +286,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator />
+        <Separator className="mx-2" />
 
         {/* Business Group */}
         <SidebarGroup>
@@ -299,7 +299,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator />
+        <Separator className="mx-2" />
 
         {/* Finance Group */}
         <SidebarGroup>
@@ -312,7 +312,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator />
+        <Separator className="mx-2" />
 
         {/* Extras Group */}
         <SidebarGroup>
