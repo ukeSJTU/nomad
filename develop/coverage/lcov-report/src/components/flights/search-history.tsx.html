@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.04% </span>
+                <span class="strong">85.14% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>79/94</span>
+                <span class='fraction'>86/101</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.04% </span>
+                <span class="strong">85.14% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>79/94</span>
+                <span class='fraction'>86/101</span>
             </div>
         
             
@@ -212,7 +212,16 @@
 <a name='L147'></a><a href='#L147'>147</a>
 <a name='L148'></a><a href='#L148'>148</a>
 <a name='L149'></a><a href='#L149'>149</a>
-<a name='L150'></a><a href='#L150'>150</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -220,6 +229,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -246,6 +260,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -341,7 +356,10 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
@@ -370,6 +388,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
 import { cn } from "@/lib/utils";
+import {
+  compareCurrency,
+  formatCurrencyWithoutSymbol,
+  parseCurrency,
+} from "@/lib/utils/currency";
 import { getWeekdayLabel } from "@/utils/date";
 &nbsp;
 interface FlightSearchHistoryCardProps {
@@ -384,7 +407,7 @@ export function FlightSearchHistoryCard({
 }: FlightSearchHistoryCardProps) {
   const router = useRouter();
 &nbsp;
-  // Calculate price change status
+  // Calculate price change status using currency.js for precision
   const getPriceStatus = () =&gt; {
     if (
       !record.lowestPriceAtSearch ||
@@ -395,12 +418,13 @@ export function FlightSearchHistoryCard({
       return null;
     }
 &nbsp;
-    const original = parseFloat(record.lowestPriceAtSearch);
-    const current = parseFloat(record.currentLowestPrice);
+    const original = parseCurrency(record.lowestPriceAtSearch);
+    const current = parseCurrency(record.currentLowestPrice);
+    const comparison = compareCurrency(current, original);
 &nbsp;
-    if (current &lt; original) {
+    if (comparison &lt; 0) {
       return { label: "已降价", colorClass: "bg-green-100 text-green-700" };
-    } else if (current &gt; original) {
+    } else if (comparison &gt; 0) {
       return { label: "已涨价", colorClass: "bg-red-100 text-red-700" };
     } else {
       return { label: "价格稳定", colorClass: "bg-gray-100 text-gray-600" };
@@ -490,7 +514,10 @@ export function FlightSearchHistoryCard({
         {record.currentLowestPrice &amp;&amp; record.currentLowestPrice !== "0" &amp;&amp; (
           &lt;div className="text-right space-y-1 shrink-0"&gt;
             &lt;div className="text-xl font-bold text-orange-500"&gt;
-              ¥{parseFloat(record.currentLowestPrice).toFixed(0)}
+              ¥
+              {formatCurrencyWithoutSymbol(
+                Math.round(parseCurrency(record.currentLowestPrice).value)
+              )}
               &lt;span className="text-xs font-normal text-gray-500 ml-1"&gt;起&lt;/span&gt;
             &lt;/div&gt;
             {priceStatus &amp;&amp; (
@@ -517,7 +544,7 @@ export function FlightSearchHistoryCard({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-12T10:15:05.697Z
+                at 2025-11-12T14:09:52.821Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
