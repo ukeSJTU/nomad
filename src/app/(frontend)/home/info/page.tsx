@@ -68,18 +68,30 @@ export default async function UserInfoPage() {
                   邮箱
                 </label>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-900">
-                    {userData.email}
-                  </span>
-                  {userData.emailVerified && (
-                    <span className="text-xs text-green-600">(已验证)</span>
+                  {userData.email && userData.emailVerified ? (
+                    <>
+                      <span className="text-sm text-gray-900">
+                        {userData.email}
+                      </span>
+                      <span className="text-xs text-green-600">(已验证)</span>
+                      <Link
+                        href="/home/info/email"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        修改
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-sm text-gray-500">未填写</span>
+                      <Link
+                        href="/home/info/email"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        验证
+                      </Link>
+                    </>
                   )}
-                  <Link
-                    href="/home/info/email"
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    修改
-                  </Link>
                 </div>
               </div>
 
@@ -89,14 +101,12 @@ export default async function UserInfoPage() {
                   手机号
                 </label>
                 <div className="flex items-center gap-2">
-                  {userData.phoneNumber ? (
+                  {userData.phoneNumber && userData.phoneNumberVerified ? (
                     <>
                       <span className="text-sm text-gray-900">
                         {userData.phoneNumber}
                       </span>
-                      {userData.phoneNumberVerified && (
-                        <span className="text-xs text-green-600">(已验证)</span>
-                      )}
+                      <span className="text-xs text-green-600">(已验证)</span>
                       <Link
                         href="/home/info/phone"
                         className="text-sm text-blue-600 hover:underline"
