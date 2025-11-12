@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+import { z } from "zod";
 
 import { db } from "@/lib/db";
 import { user } from "@/lib/schema";
@@ -8,6 +9,12 @@ import { airports } from "@/lib/schema/airports";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { flights } from "@/lib/schema/flights";
 import { orderPassengers, orders } from "@/lib/schema/orders";
+
+/**
+ * Zod schema for validating ancillaryDetails from database
+ * ancillaryDetails should be an array of service codes or null
+ */
+const ancillaryDetailsSchema = z.array(z.string()).nullable();
 
 /**
  * Order with full details for payment page
@@ -55,7 +62,6 @@ export type OrderWithDetails = {
       id: string;
       name: string;
       iataCode: string;
-      icaoCode: string | null;
       logoUrl: string | null;
     };
     departureAirport: {
@@ -94,7 +100,6 @@ export type OrderWithDetails = {
       id: string;
       name: string;
       iataCode: string;
-      icaoCode: string | null;
       logoUrl: string | null;
     };
     departureAirport: {
@@ -223,7 +228,6 @@ export async function getOrderForPayment(
           id: inbound.airline.id,
           name: inbound.airline.name,
           iataCode: inbound.airline.iataCode,
-          icaoCode: inbound.airline.icaoCode,
           logoUrl: inbound.airline.logoUrl,
         },
         departureAirport: inboundDepartureAirport,
@@ -231,13 +235,30 @@ export async function getOrderForPayment(
         seatClass: {
           id: inbound.seatClass.id,
           flightId: inbound.seatClass.flightId,
-          classType: inbound.seatClass.classType,
+          classType: inbound.seatClass.classType as
+            | "ECONOMY"
+            | "BUSINESS"
+            | "FIRST",
           price: inbound.seatClass.price,
           availableSeats: inbound.seatClass.availableSeats,
           totalSeats: inbound.seatClass.totalSeats,
         },
       };
     }
+  }
+
+  // Safely parse ancillaryDetails using Zod
+  const parsedAncillaryDetails = ancillaryDetailsSchema.safeParse(
+    orderData.order.ancillaryDetails
+  );
+
+  // If parsing fails, log the error and use null as fallback
+  if (!parsedAncillaryDetails.success) {
+    console.error(
+      "Failed to parse ancillaryDetails for order:",
+      orderId,
+      parsedAncillaryDetails.error
+    );
   }
 
   return {
@@ -255,7 +276,9 @@ export async function getOrderForPayment(
     baseAmount: orderData.order.baseAmount,
     ancillaryAmount: orderData.order.ancillaryAmount,
     totalAmount: orderData.order.totalAmount,
-    ancillaryDetails: orderData.order.ancillaryDetails as string[] | null,
+    ancillaryDetails: parsedAncillaryDetails.success
+      ? parsedAncillaryDetails.data
+      : null,
     deletedAt: orderData.order.deletedAt,
     createdAt: orderData.order.createdAt,
     updatedAt: orderData.order.updatedAt,
@@ -283,7 +306,6 @@ export async function getOrderForPayment(
         id: orderData.outboundAirline.id,
         name: orderData.outboundAirline.name,
         iataCode: orderData.outboundAirline.iataCode,
-        icaoCode: orderData.outboundAirline.icaoCode,
         logoUrl: orderData.outboundAirline.logoUrl,
       },
       departureAirport: {
@@ -301,7 +323,10 @@ export async function getOrderForPayment(
       seatClass: {
         id: orderData.outboundSeatClass.id,
         flightId: orderData.outboundSeatClass.flightId,
-        classType: orderData.outboundSeatClass.classType,
+        classType: orderData.outboundSeatClass.classType as
+          | "ECONOMY"
+          | "BUSINESS"
+          | "FIRST",
         price: orderData.outboundSeatClass.price,
         availableSeats: orderData.outboundSeatClass.availableSeats,
         totalSeats: orderData.outboundSeatClass.totalSeats,

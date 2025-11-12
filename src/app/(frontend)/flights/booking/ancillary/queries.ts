@@ -1,10 +1,17 @@
 import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 
 import { db } from "@/lib/db";
 import { airlines } from "@/lib/schema/airlines";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { flights } from "@/lib/schema/flights";
 import { orderPassengers, orders } from "@/lib/schema/orders";
+
+/**
+ * Zod schema for validating ancillaryDetails from database
+ * ancillaryDetails should be an array of service codes or null
+ */
+const ancillaryDetailsSchema = z.array(z.string()).nullable();
 
 /**
  * Order with full details for ancillary page
@@ -55,7 +62,6 @@ export type OrderWithDetails = {
       id: string;
       name: string;
       iataCode: string;
-      icaoCode: string | null;
       logoUrl: string | null;
       isDeleted: boolean;
       createdAt: Date;
@@ -108,13 +114,36 @@ export async function getOrderById(
     .from(orderPassengers)
     .where(eq(orderPassengers.orderId, orderId));
 
+  // Safely parse ancillaryDetails using Zod
+  const parsedAncillaryDetails = ancillaryDetailsSchema.safeParse(
+    order.order.ancillaryDetails
+  );
+
+  // If parsing fails, log the error and use null as fallback
+  if (!parsedAncillaryDetails.success) {
+    console.error(
+      "Failed to parse ancillaryDetails for order:",
+      orderId,
+      parsedAncillaryDetails.error
+    );
+  }
+
   return {
     ...order.order,
+    ancillaryDetails: parsedAncillaryDetails.success
+      ? parsedAncillaryDetails.data
+      : null,
     passengers,
     outboundFlight: {
       ...order.outboundFlight,
       airline: order.outboundAirline,
-      seatClass: order.outboundSeatClass,
+      seatClass: {
+        ...order.outboundSeatClass,
+        classType: order.outboundSeatClass.classType as
+          | "ECONOMY"
+          | "BUSINESS"
+          | "FIRST",
+      },
     },
   };
 }

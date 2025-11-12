@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { Suspense } from "react";
 
 import { auth } from "@/lib/auth";
 import { getAllCities } from "@/lib/queries/cities";
@@ -18,5 +19,10 @@ export default async function FlightsPage() {
     : [];
 
   // Pass data to Client Component via props
-  return <FlightsPageClient cities={cities} searchHistory={searchHistory} />;
+  // Wrap in Suspense because FlightsPageClient uses useSearchParams
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FlightsPageClient cities={cities} searchHistory={searchHistory} />
+    </Suspense>
+  );
 }

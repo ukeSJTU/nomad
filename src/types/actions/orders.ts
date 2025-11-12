@@ -99,7 +99,6 @@ export const orderDetailsSchema = z.object({
       id: z.uuid(),
       name: z.string(),
       iataCode: z.string(),
-      icaoCode: z.string().nullable(),
       logoUrl: z.string().nullable(),
       isDeleted: z.boolean(),
       createdAt: z.date(),

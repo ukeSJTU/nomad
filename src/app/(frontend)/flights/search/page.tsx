@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { z } from "zod";
 
 import { recordSearchHistory } from "@/lib/actions/flight-search-history";
 import {
@@ -11,6 +12,16 @@ import {
 import { getAllCities } from "@/lib/queries/cities";
 
 import { FlightSearchPageClient } from "./page.client";
+
+/**
+ * Zod schema for validating seat class from URL params
+ */
+const seatClassSchema = z.enum(["any", "economy", "business", "first"]);
+
+/**
+ * Zod schema for validating uppercase seat class type
+ */
+const upperSeatClassSchema = z.enum(["ECONOMY", "BUSINESS", "FIRST"]);
 
 interface FlightSearchParams {
   tripType?: string;
@@ -32,12 +43,17 @@ export default async function FlightSearchPage({
     redirect("/flights");
   }
 
+  // Validate and parse seat class from URL params
+  const parsedSeatClass = seatClassSchema.safeParse(params.class || "any");
+  const seatClass = parsedSeatClass.success ? parsedSeatClass.data : "any";
+
   // Handle cabin class type
   // If class is "any", pass undefined to backend to get all seat classes
-  const classType =
-    params.class === "any" || !params.class
-      ? undefined
-      : (params.class.toUpperCase() as "ECONOMY" | "BUSINESS" | "FIRST");
+  let classType: "ECONOMY" | "BUSINESS" | "FIRST" | undefined;
+  if (seatClass !== "any") {
+    const upperClass = upperSeatClassSchema.safeParse(seatClass.toUpperCase());
+    classType = upperClass.success ? upperClass.data : undefined;
+  }
 
   let flights: FlightSearchResult[] | RoundTripFlightSearchResult | undefined;
 
@@ -57,7 +73,7 @@ export default async function FlightSearchPage({
         arrivalCityIata: params.to,
         departureDate: params.departDate,
         tripType: "one-way",
-        seatClass: params.class || "any",
+        seatClass, // Already validated above
         lowestPrice:
           Array.isArray(flights) && flights.length > 0
             ? Math.min(
@@ -90,7 +106,7 @@ export default async function FlightSearchPage({
         departureDate: params.departDate,
         returnDate: params.returnDate,
         tripType: "round-trip",
-        seatClass: params.class || "any",
+        seatClass, // Already validated above
         lowestPrice:
           flights && "outbound" in flights
             ? Math.min(
@@ -120,7 +136,11 @@ export default async function FlightSearchPage({
         arrivalCityIata: params.to,
         departureDate: params.departDate,
         tripType: "one-way",
-        seatClass: params.class || "any",
+        seatClass: (params.class || "any") as
+          | "any"
+          | "economy"
+          | "business"
+          | "first",
         lowestPrice:
           Array.isArray(flights) && flights.length > 0
             ? Math.min(

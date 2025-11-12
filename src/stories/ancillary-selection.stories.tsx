@@ -73,6 +73,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     selectedServices: [],
+    onToggleService: () => {},
     title: "选择增值服务",
   },
 };
@@ -82,6 +83,10 @@ export const Default: Story = {
  * Try selecting different services within the same category to see the single-selection behavior
  */
 export const Interactive: Story = {
+  args: {
+    selectedServices: [],
+    onToggleService: (code: string) => console.log("Toggled:", code),
+  },
   render: args => {
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
     const handleToggleService = createToggleHandler(setSelectedServices);
@@ -122,6 +127,10 @@ export const Interactive: Story = {
  * Note: Only one service can be selected per category
  */
 export const WithPreselectedServices: Story = {
+  args: {
+    selectedServices: [],
+    onToggleService: () => {},
+  },
   render: args => {
     const [selectedServices, setSelectedServices] = useState<string[]>([
       "INSURANCE_BASIC",
@@ -152,6 +161,10 @@ export const WithPreselectedServices: Story = {
  * With all premium services selected
  */
 export const AllPremiumSelected: Story = {
+  args: {
+    selectedServices: [],
+    onToggleService: () => {},
+  },
   render: args => {
     const [selectedServices, setSelectedServices] = useState<string[]>([
       "INSURANCE_PREMIUM",
@@ -174,6 +187,10 @@ export const AllPremiumSelected: Story = {
  * With custom title
  */
 export const CustomTitle: Story = {
+  args: {
+    selectedServices: [],
+    onToggleService: () => {},
+  },
   render: args => {
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
     const handleToggleService = createToggleHandler(setSelectedServices);
@@ -193,6 +210,10 @@ export const CustomTitle: Story = {
  * With custom className for styling
  */
 export const WithCustomStyling: Story = {
+  args: {
+    selectedServices: [],
+    onToggleService: () => {},
+  },
   render: args => {
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
     const handleToggleService = createToggleHandler(setSelectedServices);
