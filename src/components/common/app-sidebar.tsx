@@ -21,7 +21,7 @@ import {
   Train,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import * as React from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -206,32 +206,44 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
   const hasSubItems = item.items && item.items.length > 0;
 
   // Helper function to check if a URL matches the current location
-  const isUrlActive = (url: string) => {
-    // Don't match "#" URLs
-    if (url === "#") return false;
+  const isUrlActive = useCallback(
+    (url: string) => {
+      // Don't match "#" URLs
+      if (url === "#") return false;
 
-    try {
-      const urlObj = new URL(url, window.location.origin);
-      const urlPath = urlObj.pathname;
-      const urlParams = urlObj.searchParams;
+      try {
+        const urlObj = new URL(url, window.location.origin);
+        const urlPath = urlObj.pathname;
+        const urlParams = urlObj.searchParams;
 
-      // Check if pathname matches
-      if (pathname !== urlPath) return false;
+        // Check if pathname matches
+        if (pathname !== urlPath) return false;
 
-      // If URL has no query params, just check pathname
-      if (urlParams.toString() === "") return true;
+        // If URL has no query params, just check pathname
+        if (urlParams.toString() === "") return true;
 
-      // Check if all URL params match current search params
-      for (const [key, value] of urlParams.entries()) {
-        if (searchParams.get(key) !== value) return false;
+        // Handle default tab for flights page
+        if (
+          urlPath === "/flights" &&
+          urlParams.get("tab") === "domestic" &&
+          !searchParams.has("tab")
+        ) {
+          return true;
+        }
+
+        // Check if all URL params match current search params
+        for (const [key, value] of urlParams.entries()) {
+          if (searchParams.get(key) !== value) return false;
+        }
+
+        return true;
+      } catch {
+        // If URL parsing fails, fall back to simple pathname comparison
+        return pathname === url;
       }
-
-      return true;
-    } catch {
-      // If URL parsing fails, fall back to simple pathname comparison
-      return pathname === url;
-    }
-  };
+    },
+    [pathname, searchParams]
+  );
 
   // Check if current item or any of its sub-items is active
   const isMainActive = isUrlActive(item.url);
@@ -278,11 +290,11 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
       <div className="space-y-0">
         <SidebarMenuItem>{menuButton}</SidebarMenuItem>
         <div className="ml-2 space-y-0">
-          {item.items?.map((subItem, index) => {
+          {item.items?.map(subItem => {
             const isSubActive = isUrlActive(subItem.url);
             return (
               <Button
-                key={index}
+                key={subItem.title}
                 variant="ghost"
                 onClick={() => handleClick(subItem.url, subItem.title)}
                 className={cn(
@@ -313,9 +325,9 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
           sideOffset={8}
         >
           <div className="space-y-1">
-            {item.items?.map((subItem, index) => (
+            {item.items?.map(subItem => (
               <button
-                key={index}
+                key={subItem.title}
                 onClick={() => handleClick(subItem.url, subItem.title)}
                 className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
               >
@@ -354,8 +366,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.travel.map((item, index) => (
-                <SidebarMenuItemWithHover key={index} item={item} />
+              {data.travel.map(item => (
+                <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -367,8 +379,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.business.map((item, index) => (
-                <SidebarMenuItemWithHover key={index} item={item} />
+              {data.business.map(item => (
+                <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -380,8 +392,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.finance.map((item, index) => (
-                <SidebarMenuItemWithHover key={index} item={item} />
+              {data.finance.map(item => (
+                <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -393,8 +405,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.extras.map((item, index) => (
-                <SidebarMenuItemWithHover key={index} item={item} />
+              {data.extras.map(item => (
+                <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
