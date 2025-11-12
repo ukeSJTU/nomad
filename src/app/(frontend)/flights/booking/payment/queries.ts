@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+import { z } from "zod";
 
 import { db } from "@/lib/db";
 import { user } from "@/lib/schema";
@@ -8,6 +9,12 @@ import { airports } from "@/lib/schema/airports";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { flights } from "@/lib/schema/flights";
 import { orderPassengers, orders } from "@/lib/schema/orders";
+
+/**
+ * Zod schema for validating ancillaryDetails from database
+ * ancillaryDetails should be an array of service codes or null
+ */
+const ancillaryDetailsSchema = z.array(z.string()).nullable();
 
 /**
  * Order with full details for payment page
@@ -240,6 +247,20 @@ export async function getOrderForPayment(
     }
   }
 
+  // Safely parse ancillaryDetails using Zod
+  const parsedAncillaryDetails = ancillaryDetailsSchema.safeParse(
+    orderData.order.ancillaryDetails
+  );
+
+  // If parsing fails, log the error and use null as fallback
+  if (!parsedAncillaryDetails.success) {
+    console.error(
+      "Failed to parse ancillaryDetails for order:",
+      orderId,
+      parsedAncillaryDetails.error
+    );
+  }
+
   return {
     id: orderData.order.id,
     orderNumber: orderData.order.orderNumber,
@@ -255,7 +276,9 @@ export async function getOrderForPayment(
     baseAmount: orderData.order.baseAmount,
     ancillaryAmount: orderData.order.ancillaryAmount,
     totalAmount: orderData.order.totalAmount,
-    ancillaryDetails: orderData.order.ancillaryDetails as string[] | null,
+    ancillaryDetails: parsedAncillaryDetails.success
+      ? parsedAncillaryDetails.data
+      : null,
     deletedAt: orderData.order.deletedAt,
     createdAt: orderData.order.createdAt,
     updatedAt: orderData.order.updatedAt,
