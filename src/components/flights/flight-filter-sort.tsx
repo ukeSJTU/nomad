@@ -43,16 +43,19 @@ export interface FlightFilters {
 interface FlightFilterSortProps {
   flights: FlightSearchResult[];
   onFilteredFlightsChange: (flights: FlightSearchResult[]) => void;
+  /** Initial seat classes to filter by (for linking with search form) */
+  initialSeatClasses?: SeatClassType[];
 }
 
 export function FlightFilterSort({
   flights,
   onFilteredFlightsChange,
+  initialSeatClasses = [],
 }: FlightFilterSortProps) {
   const [sortOption, setSortOption] = useState<SortOption>("price-asc");
   const [filters, setFilters] = useState<FlightFilters>({
     airlines: [],
-    seatClasses: [],
+    seatClasses: initialSeatClasses,
     departureTimeRanges: [],
     arrivalTimeRanges: [],
   });
