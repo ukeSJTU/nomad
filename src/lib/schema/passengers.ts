@@ -14,7 +14,6 @@ import {
   check,
   date,
   index,
-  pgEnum,
   pgTable,
   text,
   timestamp,
@@ -23,16 +22,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { user } from "../../../auth-schema";
-
-// Gender enum type
-export const genderEnum = pgEnum("gender", ["male", "female", "other"]);
-
-// Document type enum
-export const documentTypeEnum = pgEnum("document_type", [
-  "passport",
-  "id_card",
-  "other",
-]);
+import { documentTypeEnum, genderEnum } from "./enums";
 
 // All other fields are optional
 export const passengers = pgTable(
