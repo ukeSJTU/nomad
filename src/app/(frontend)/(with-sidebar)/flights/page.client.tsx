@@ -1,9 +1,8 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-import { UnderConstruction } from "@/components/common";
 import {
   SearchForm,
   type SearchFormData,
@@ -11,7 +10,6 @@ import {
 import { FlightSearchHistoryCard } from "@/components/flights/search-history";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CityData } from "@/lib/queries/cities";
 import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
 
@@ -25,9 +23,6 @@ export function FlightsPageClient({
   searchHistory,
 }: FlightsPageClientProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const tabParam = searchParams.get("tab");
-  const currentTab = tabParam || "domestic";
 
   const handleSearch = (data: SearchFormData) => {
     // Build search parameters
@@ -51,80 +46,13 @@ export function FlightsPageClient({
     router.push(`/flights/search?${params.toString()}`);
   };
 
-  const handleTabChange = (value: string) => {
-    // Update URL with new tab parameter
-    const params = new URLSearchParams(searchParams.toString());
-    if (value === "domestic") {
-      params.delete("tab");
-    } else {
-      params.set("tab", value);
-    }
-    const newUrl = params.toString()
-      ? `/flights?${params.toString()}`
-      : "/flights";
-    router.push(newUrl);
-  };
-
   return (
-    <div className="container mx-auto px-4 py-8 max-w-8xl">
-      {/* Search Form Card */}
-
-      <Tabs value={currentTab} onValueChange={handleTabChange}>
-        <TabsList className="w-full h-12 grid grid-cols-6">
-          <TabsTrigger value="domestic">国内、国际/中国港澳台</TabsTrigger>
-          <TabsTrigger value="special">特价机票</TabsTrigger>
-          <TabsTrigger value="status">航班动态</TabsTrigger>
-          <TabsTrigger value="seat">在线选座</TabsTrigger>
-          <TabsTrigger value="refund">退票改签</TabsTrigger>
-          <TabsTrigger value="more">更多服务</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="domestic">
-          <SearchForm
-            showSearchButton
-            onSearch={handleSearch}
-            cities={cities}
-          />
-        </TabsContent>
-
-        <TabsContent value="special">
-          <UnderConstruction
-            title="未实现"
-            description="特价机票功能不在项目实现范围内"
-          />
-        </TabsContent>
-
-        <TabsContent value="status">
-          <UnderConstruction
-            title="未实现"
-            description="航班动态功能不在项目实现范围内"
-          />
-        </TabsContent>
-
-        <TabsContent value="seat">
-          <UnderConstruction
-            title="未实现"
-            description="在线选座功能不在项目实现范围内"
-          />
-        </TabsContent>
-
-        <TabsContent value="refund">
-          <UnderConstruction
-            title="未实现"
-            description="退票改签功能不在项目实现范围内"
-          />
-        </TabsContent>
-
-        <TabsContent value="more">
-          <UnderConstruction
-            title="未实现"
-            description="更多服务功能不在项目实现范围内"
-          />
-        </TabsContent>
-      </Tabs>
+    <>
+      {/* Search Form */}
+      <SearchForm showSearchButton onSearch={handleSearch} cities={cities} />
 
       {/* Search History Section */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mt-8">
         <div className="flex items-center gap-4">
           <Label>你搜索过的机票</Label>
           <Button
@@ -159,6 +87,6 @@ export function FlightsPageClient({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
