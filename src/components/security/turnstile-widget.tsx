@@ -20,10 +20,29 @@ export function TurnstileWidget({
   const siteKey =
     process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || TESTING_SITE_KEY;
 
+  useEffect(() => {
+    console.log("TurnstileWidget: Using site key:", siteKey);
+  }, [siteKey]);
+
   // Force re-render when theme changes so Turnstile picks up the new theme.
   useEffect(() => {
     setRenderKey(prev => prev + 1);
   }, [resolvedTheme]);
+
+  const handleSuccess = (token: string) => {
+    console.log("TurnstileWidget: Token received, length:", token.length);
+    onSuccess(token);
+  };
+
+  const handleError = () => {
+    console.error("TurnstileWidget: Error occurred");
+    onError?.();
+  };
+
+  const handleExpire = () => {
+    console.warn("TurnstileWidget: Token expired");
+    onExpire?.();
+  };
 
   return (
     <div className={className}>
@@ -33,9 +52,9 @@ export function TurnstileWidget({
         options={{
           theme: resolvedTheme === "dark" ? "dark" : "light",
         }}
-        onSuccess={onSuccess}
-        onError={onError}
-        onExpire={onExpire}
+        onSuccess={handleSuccess}
+        onError={handleError}
+        onExpire={handleExpire}
       />
     </div>
   );

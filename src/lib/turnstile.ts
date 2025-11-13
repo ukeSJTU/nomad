@@ -56,12 +56,18 @@ export async function verifyTurnstileToken(
   }
 
   if (!token) {
+    logger.warn("Turnstile token is missing or null");
     return {
       success: false,
       error: "请完成人机验证",
       errorCodes: ["missing-input-response"],
     };
   }
+
+  logger.info(
+    { tokenLength: token.length, secretLength: secret.length },
+    "Verifying Turnstile token with Cloudflare"
+  );
 
   try {
     const body = new URLSearchParams({
@@ -72,6 +78,11 @@ export async function verifyTurnstileToken(
     if (remoteIp) {
       body.append("remoteip", remoteIp);
     }
+
+    logger.debug(
+      { bodyParams: body.toString() },
+      "Sending request to Cloudflare"
+    );
 
     const response = await fetch(TURNSTILE_VERIFY_URL, {
       method: "POST",
@@ -87,6 +98,15 @@ export async function verifyTurnstileToken(
       hostname?: string;
       "error-codes"?: string[];
     };
+
+    logger.info(
+      {
+        success: data.success,
+        errorCodes: data["error-codes"],
+        hostname: data.hostname,
+      },
+      "Received response from Cloudflare"
+    );
 
     if (!data.success) {
       const errorCodes = data["error-codes"] ?? [];

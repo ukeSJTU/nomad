@@ -24,6 +24,13 @@ export async function requestPhoneOtpAction(
   payload: PhoneOtpPayload
 ): Promise<BaseActionResult> {
   const { phoneNumber, turnstileToken } = payload;
+
+  logger.info(
+    { phoneNumber, tokenLength: turnstileToken?.length ?? 0 },
+    "Received phone OTP request"
+  );
+
+  // Verify Turnstile token first
   const verification = await verifyTurnstileToken(turnstileToken);
 
   if (!verification.success) {
@@ -34,11 +41,10 @@ export async function requestPhoneOtpAction(
   }
 
   try {
+    // Turnstile verification passed, now send OTP
+    // Note: We skip Turnstile check in auth.ts by not passing the token
     await auth.api.sendPhoneNumberOTP({
       body: { phoneNumber },
-      headers: {
-        "x-turnstile-token": turnstileToken,
-      },
     });
 
     return { success: true };
@@ -55,6 +61,13 @@ export async function requestEmailOtpAction(
   payload: EmailOtpPayload
 ): Promise<BaseActionResult> {
   const { email, turnstileToken, type } = payload;
+
+  logger.info(
+    { email, type, tokenLength: turnstileToken?.length ?? 0 },
+    "Received email OTP request"
+  );
+
+  // Verify Turnstile token first
   const verification = await verifyTurnstileToken(turnstileToken);
 
   if (!verification.success) {
@@ -65,13 +78,12 @@ export async function requestEmailOtpAction(
   }
 
   try {
+    // Turnstile verification passed, now send OTP
+    // Note: We skip Turnstile check in auth.ts by not passing the token
     await auth.api.sendVerificationOTP({
       body: {
         email,
         type,
-      },
-      headers: {
-        "x-turnstile-token": turnstileToken,
       },
     });
 

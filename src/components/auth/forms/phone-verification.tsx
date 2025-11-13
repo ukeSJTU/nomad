@@ -62,6 +62,8 @@ export default function PhoneVerificationForm({
   };
 
   const handleSendOtp = () => {
+    console.log("handleSendOtp called, turnstileToken:", turnstileToken);
+
     if (!turnstileToken) {
       setTurnstileError("请完成人机验证再发送验证码");
       return;
@@ -70,6 +72,10 @@ export default function PhoneVerificationForm({
     setTurnstileError(null);
 
     if (onSendOtp) {
+      console.log(
+        "Calling onSendOtp with token length:",
+        turnstileToken.length
+      );
       onSendOtp(turnstileToken);
     }
   };

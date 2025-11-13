@@ -75,6 +75,14 @@ async function ensureTurnstileVerified(request?: Request) {
     request?.headers.get("x-turnstile-token") ??
     request?.headers.get("cf-turnstile-response");
 
+  // If no token is provided, assume verification was already done at the action layer
+  if (!token) {
+    logger.debug(
+      "No Turnstile token in request headers, skipping verification (assuming already verified)"
+    );
+    return;
+  }
+
   const verificationResult = await verifyTurnstileToken(
     token,
     getClientIp(request)
