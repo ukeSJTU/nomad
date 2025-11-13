@@ -1,72 +1,79 @@
 "use server";
 
-import { and, eq, inArray } from "drizzle-orm";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { passengers } from "@/lib/schema/passengers";
-import type { Passenger } from "@/types/api/passengers";
+import {
+  batchDeletePassengers,
+  createPassenger,
+  deletePassenger,
+  getPassenger,
+  type PassengerInput,
+  updatePassenger,
+} from "@/lib/services";
+import { getAuthenticatedUserId } from "@/lib/utils/auth-helpers";
+
+/**
+ * Server Actions for Passenger Management (Thin Controller Layer)
+ *
+ * These actions serve as thin controllers that:
+ * 1. Handle authentication (Next.js specific)
+ * 2. Call service layer for business logic
+ * 3. Handle framework-specific operations (redirect, revalidatePath)
+ * 4. Format responses
+ *
+ * All business logic is in the service layer (src/lib/services/passengers.ts)
+ * which can be tested independently without mocking Next.js runtime.
+ */
 
 /**
  * Server action to create a new passenger
+ *
+ * This is a thin controller that:
+ * 1. Verifies authentication
+ * 2. Converts form data to service input format
+ * 3. Calls service layer
+ * 4. Returns formatted response
+ *
+ * @param formData - Form data from passenger creation form
+ * @returns Result object with success status and passenger data or error
  */
 export async function createPassengerAction(formData: unknown) {
   try {
-    // Check authentication
-    const headersList = await headers();
-    const session = await auth.api.getSession({
-      headers: headersList,
-    });
-
-    if (!session?.user?.id) {
+    // 1. Verify authentication
+    const authResult = await getAuthenticatedUserId();
+    if (!authResult.success || !authResult.userId) {
       return {
         success: false,
-        error: "Authentication required. Please log in first.",
+        error: authResult.error,
       };
     }
 
-    // Convert form data to database format
+    // 2. Convert form data to service input format
     const data = formData as any;
-    const passengerData: any = {
-      userId: session.user.id,
+    const passengerInput: PassengerInput = {
       name: data.name,
-      nationality: data.nationality || null,
-      gender: data.gender || null,
-      dateOfBirth: data.dateOfBirth
-        ? new Date(data.dateOfBirth).toISOString().split("T")[0]
-        : null,
-      placeOfBirth: data.placeOfBirth || null,
-      phone: data.phone || null,
+      nationality: data.nationality,
+      gender: data.gender,
+      dateOfBirth: data.dateOfBirth,
+      placeOfBirth: data.placeOfBirth,
+      phone: data.phone,
       fax:
         data.faxAreaCode && data.faxPhone
           ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`
-          : null,
-      email: data.email || null,
+          : undefined,
+      email: data.email,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      isDeleted: false,
+      documentExpiryDate: data.documentExpiryDate,
     };
 
-    if (data.documentExpiryDate) {
-      passengerData.documentExpiryDate = new Date(data.documentExpiryDate)
-        .toISOString()
-        .split("T")[0];
-    }
+    // 3. Call service layer
+    const result = await createPassenger(authResult.userId, passengerInput);
 
-    // Insert into database
-    const [newPassenger] = await db
-      .insert(passengers)
-      .values(passengerData)
-      .returning();
-
-    return {
-      success: true,
-      data: newPassenger,
-    };
+    // 4. Return result
+    return result;
   } catch (error) {
-    console.error("Failed to create passenger:", error);
+    console.error("Create passenger action error:", error);
     return {
       success: false,
       error:
@@ -77,78 +84,54 @@ export async function createPassengerAction(formData: unknown) {
 
 /**
  * Server action to update an existing passenger
+ *
+ * This is a thin controller that:
+ * 1. Verifies authentication
+ * 2. Converts form data to service input format
+ * 3. Calls service layer
+ * 4. Returns formatted response
+ *
+ * @param id - The passenger ID to update
+ * @param formData - Form data from passenger update form
+ * @returns Result object with success status and updated passenger data or error
  */
 export async function updatePassengerAction(id: string, formData: unknown) {
   try {
-    // Check authentication
-    const headersList = await headers();
-    const session = await auth.api.getSession({
-      headers: headersList,
-    });
-
-    if (!session?.user?.id) {
+    // 1. Verify authentication
+    const authResult = await getAuthenticatedUserId();
+    if (!authResult.success || !authResult.userId) {
       return {
         success: false,
-        error: "Authentication required. Please log in first.",
+        error: authResult.error,
       };
     }
 
-    // Check if passenger exists and belongs to user
-    const [existingPassenger] = await db
-      .select()
-      .from(passengers)
-      .where(
-        and(
-          eq(passengers.id, id),
-          eq(passengers.userId, session.user.id),
-          eq(passengers.isDeleted, false)
-        )
-      );
-
-    if (!existingPassenger) {
-      return {
-        success: false,
-        error: "Passenger not found",
-      };
-    }
-
-    // Convert form data to database format
+    // 2. Convert form data to service input format
     const data = formData as any;
-    const updateData: Record<string, unknown> = {
+    const passengerInput: Partial<PassengerInput> = {
       name: data.name,
-      nationality: data.nationality || null,
-      gender: data.gender || null,
-      dateOfBirth: data.dateOfBirth
-        ? new Date(data.dateOfBirth).toISOString().split("T")[0]
-        : null,
-      placeOfBirth: data.placeOfBirth || null,
-      phone: data.phone || null,
+      nationality: data.nationality,
+      gender: data.gender,
+      dateOfBirth: data.dateOfBirth,
+      placeOfBirth: data.placeOfBirth,
+      phone: data.phone,
       fax:
         data.faxAreaCode && data.faxPhone
           ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`
-          : null,
-      email: data.email || null,
+          : undefined,
+      email: data.email,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      documentExpiryDate: data.documentExpiryDate
-        ? new Date(data.documentExpiryDate).toISOString().split("T")[0]
-        : null,
-      updatedAt: new Date(),
+      documentExpiryDate: data.documentExpiryDate,
     };
 
-    // Update in database
-    const [updatedPassenger] = await db
-      .update(passengers)
-      .set(updateData)
-      .where(eq(passengers.id, id))
-      .returning();
+    // 3. Call service layer
+    const result = await updatePassenger(authResult.userId, id, passengerInput);
 
-    return {
-      success: true,
-      data: updatedPassenger,
-    };
+    // 4. Return result
+    return result;
   } catch (error) {
-    console.error("Failed to update passenger:", error);
+    console.error("Update passenger action error:", error);
     return {
       success: false,
       error:
@@ -159,95 +142,67 @@ export async function updatePassengerAction(id: string, formData: unknown) {
 
 /**
  * Server action to get a passenger by ID
+ *
+ * This is a thin controller that:
+ * 1. Verifies authentication (redirects if not authenticated)
+ * 2. Calls service layer
+ * 3. Returns passenger data or null
+ *
+ * @param id - The passenger ID to retrieve
+ * @returns Passenger data or null if not found
  */
 export async function getPassengerAction(id: string) {
   try {
-    // Check authentication
-    const headersList = await headers();
-    const session = await auth.api.getSession({
-      headers: headersList,
-    });
-
-    if (!session?.user?.id) {
+    // 1. Verify authentication (redirect if not authenticated)
+    const authResult = await getAuthenticatedUserId();
+    if (!authResult.success || !authResult.userId) {
       redirect("/auth/sign-in");
     }
 
-    // Get passenger
-    const [passenger] = await db
-      .select()
-      .from(passengers)
-      .where(
-        and(
-          eq(passengers.id, id),
-          eq(passengers.userId, session.user.id),
-          eq(passengers.isDeleted, false)
-        )
-      );
+    // 2. Call service layer
+    const result = await getPassenger(authResult.userId, id);
 
-    if (!passenger) {
+    // 3. Return passenger data or null
+    if (!result.success || !result.data) {
       return null;
     }
 
-    return {
-      ...passenger,
-      createdAt: passenger.createdAt?.toISOString() ?? new Date().toISOString(),
-      updatedAt: passenger.updatedAt?.toISOString() ?? new Date().toISOString(),
-    } as Passenger;
+    return result.data;
   } catch (error) {
-    console.error("Failed to get passenger:", error);
+    console.error("Get passenger action error:", error);
     return null;
   }
 }
 
 /**
  * Server action to delete a passenger (soft delete)
+ *
+ * This is a thin controller that:
+ * 1. Verifies authentication
+ * 2. Calls service layer
+ * 3. Returns formatted response
+ *
+ * @param id - The passenger ID to delete
+ * @returns Result object with success status and message or error
  */
 export async function deletePassengerAction(id: string) {
   try {
-    // Check authentication
-    const headersList = await headers();
-    const session = await auth.api.getSession({
-      headers: headersList,
-    });
-
-    if (!session?.user?.id) {
+    // 1. Verify authentication
+    const authResult = await getAuthenticatedUserId();
+    if (!authResult.success || !authResult.userId) {
       return {
         success: false,
-        error: "Authentication required. Please log in first.",
+        error: authResult.error,
       };
     }
 
-    // Check if passenger exists and belongs to user
-    const [existingPassenger] = await db
-      .select()
-      .from(passengers)
-      .where(
-        and(
-          eq(passengers.id, id),
-          eq(passengers.userId, session.user.id),
-          eq(passengers.isDeleted, false)
-        )
-      );
+    // 2. Call service layer
+    const result = await deletePassenger(authResult.userId, id);
 
-    if (!existingPassenger) {
-      return {
-        success: false,
-        error: "Passenger not found",
-      };
-    }
-
-    // Soft delete
-    await db
-      .update(passengers)
-      .set({ isDeleted: true, updatedAt: new Date() })
-      .where(eq(passengers.id, id));
-
-    return {
-      success: true,
-      message: "Passenger deleted successfully",
-    };
+    // 3. Return result
+    return result;
   } catch (error) {
-    console.error("Failed to delete passenger:", error);
+    console.error("Delete passenger action error:", error);
     return {
       success: false,
       error:
@@ -258,40 +213,33 @@ export async function deletePassengerAction(id: string) {
 
 /**
  * Server action to batch delete passengers (soft delete)
+ *
+ * This is a thin controller that:
+ * 1. Verifies authentication
+ * 2. Calls service layer
+ * 3. Returns formatted response
+ *
+ * @param ids - Array of passenger IDs to delete
+ * @returns Result object with success status and message or error
  */
 export async function batchDeletePassengersAction(ids: string[]) {
   try {
-    // Check authentication
-    const headersList = await headers();
-    const session = await auth.api.getSession({
-      headers: headersList,
-    });
-
-    if (!session?.user?.id) {
+    // 1. Verify authentication
+    const authResult = await getAuthenticatedUserId();
+    if (!authResult.success || !authResult.userId) {
       return {
         success: false,
-        error: "Authentication required. Please log in first.",
+        error: authResult.error,
       };
     }
 
-    // Soft delete passengers (only those belonging to the user)
-    await db
-      .update(passengers)
-      .set({ isDeleted: true, updatedAt: new Date() })
-      .where(
-        and(
-          inArray(passengers.id, ids),
-          eq(passengers.userId, session.user.id),
-          eq(passengers.isDeleted, false)
-        )
-      );
+    // 2. Call service layer
+    const result = await batchDeletePassengers(authResult.userId, ids);
 
-    return {
-      success: true,
-      message: `Successfully deleted ${ids.length} passenger(s)`,
-    };
+    // 3. Return result
+    return result;
   } catch (error) {
-    console.error("Failed to batch delete passengers:", error);
+    console.error("Batch delete passengers action error:", error);
     return {
       success: false,
       error:
