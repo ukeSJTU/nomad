@@ -287,22 +287,29 @@ describe("PasswordSetupForm", () => {
 
     const passwordInput = screen.getByPlaceholderText("请输入密码");
 
-    // Weak password
-    await user.type(passwordInput, "Pass1");
+    // All the following test password are obtained from https://zxcvbn-ts.github.io/zxcvbn/guide/comparison/
+    // Weak password: zxcvbn reports a score of 0 and we map it to weak
+    await user.type(passwordInput, "1q2w3e4r5t");
     await waitFor(() => {
       expect(screen.getByText("弱")).toBeInTheDocument();
     });
 
-    // Medium password
+    // Weak password: zxcvbn reports a score of 1 and we map it to weak
+    await user.type(passwordInput, "1Q2w3e4r5t");
+    await waitFor(() => {
+      expect(screen.getByText("弱")).toBeInTheDocument();
+    });
+
+    // Medium password: zxcvbn reports a score of 2 and we map it to medium
     await user.clear(passwordInput);
-    await user.type(passwordInput, "Password1");
+    await user.type(passwordInput, "Tiger@0177");
     await waitFor(() => {
       expect(screen.getByText("中")).toBeInTheDocument();
     });
 
-    // Strong password
+    // Strong password: zxcvbn reports a score of 3 and we map it to strong
     await user.clear(passwordInput);
-    await user.type(passwordInput, "Password123!@#");
+    await user.type(passwordInput, "zxcftzuio!@#");
     await waitFor(() => {
       expect(screen.getByText("强")).toBeInTheDocument();
     });
