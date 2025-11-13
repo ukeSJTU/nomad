@@ -15,14 +15,12 @@ type Passenger = InferInsertModel<typeof passengers>;
  * Usage:
  * - passengerFactory.build() - Create a passenger object (not inserted to DB)
  * - passengerFactory.build({ userId: 'user-1' }) - Associate with a specific user
- * - passengerFactory.build({ chineseName: '张三' }) - Override specific fields
+ * - passengerFactory.build({ name: '张三' }) - Override specific fields
  */
 export const passengerFactory = Factory.define<Passenger>(({ sequence }) => ({
   id: randomUUID(), // Generate valid UUID
   userId: `user-1`, // Default user, should be overridden in tests
-  chineseName: null,
-  englishFirstName: `First${sequence}`,
-  englishLastName: `Last${sequence}`,
+  name: `Passenger ${sequence}`,
   nationality: "US",
   gender: "male",
   dateOfBirth: "1990-01-01",
@@ -49,9 +47,7 @@ export const deletedPassengerFactory = passengerFactory.params({
  * Factory for creating Chinese passengers
  */
 export const chinesePassengerFactory = passengerFactory.params({
-  chineseName: "张三",
-  englishFirstName: null,
-  englishLastName: null,
+  name: "张三",
   nationality: "CN",
   placeOfBirth: "Beijing",
   documentType: "id_card",
@@ -61,7 +57,7 @@ export const chinesePassengerFactory = passengerFactory.params({
  * Factory for creating foreign passengers
  */
 export const foreignPassengerFactory = passengerFactory.params({
-  chineseName: null,
+  name: "John Doe",
   nationality: "US",
   placeOfBirth: "New York",
   documentType: "passport",

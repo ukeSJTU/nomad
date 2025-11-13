@@ -28,17 +28,15 @@ describe("getPassengers Integration Test", () => {
 
     const passenger1 = passengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "John",
-      englishLastName: "Doe",
+      name: "John Doe",
     });
     const passenger2 = passengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "Jane",
-      englishLastName: "Smith",
+      name: "Jane Smith",
     });
     const passenger3 = chinesePassengerFactory.build({
       userId: testUser.id,
-      chineseName: "张三",
+      name: "张三",
     });
 
     await db.insert(passengers).values([passenger1, passenger2, passenger3]);
@@ -50,14 +48,12 @@ describe("getPassengers Integration Test", () => {
     expect(result).toHaveLength(3);
 
     // Find passengers by their unique attributes
-    const johnPassenger = result.find(p => p.englishFirstName === "John");
-    const janePassenger = result.find(p => p.englishFirstName === "Jane");
-    const chinesePassenger = result.find(p => p.chineseName === "张三");
+    const johnPassenger = result.find(p => p.name === "John Doe");
+    const janePassenger = result.find(p => p.name === "Jane Smith");
+    const chinesePassenger = result.find(p => p.name === "张三");
 
     expect(johnPassenger).toBeDefined();
-    expect(johnPassenger?.englishLastName).toBe("Doe");
     expect(janePassenger).toBeDefined();
-    expect(janePassenger?.englishLastName).toBe("Smith");
     expect(chinesePassenger).toBeDefined();
   });
 
@@ -87,11 +83,11 @@ describe("getPassengers Integration Test", () => {
 
     const user1Passenger = passengerFactory.build({
       userId: user1.id,
-      englishFirstName: "User1Passenger",
+      name: "User1Passenger",
     });
     const user2Passenger = passengerFactory.build({
       userId: user2.id,
-      englishFirstName: "User2Passenger",
+      name: "User2Passenger",
     });
 
     await db.insert(passengers).values([user1Passenger, user2Passenger]);
@@ -101,7 +97,7 @@ describe("getPassengers Integration Test", () => {
 
     // Assert: Should only return user1's passenger
     expect(result).toHaveLength(1);
-    expect(result[0].englishFirstName).toBe("User1Passenger");
+    expect(result[0].name).toBe("User1Passenger");
   });
 
   it("should not return deleted passengers", async () => {
@@ -114,12 +110,12 @@ describe("getPassengers Integration Test", () => {
 
     const activePassenger = passengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "ActivePassenger",
+      name: "ActivePassenger",
       isDeleted: false,
     });
     const deletedPassenger = deletedPassengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "DeletedPassenger",
+      name: "DeletedPassenger",
       isDeleted: true,
     });
 
@@ -130,10 +126,8 @@ describe("getPassengers Integration Test", () => {
 
     // Assert: Should only return active passengers, not deleted ones
     expect(result).toHaveLength(1);
-    expect(result[0].englishFirstName).toBe("ActivePassenger");
-    expect(result.some(p => p.englishFirstName === "DeletedPassenger")).toBe(
-      false
-    );
+    expect(result[0].name).toBe("ActivePassenger");
+    expect(result.some(p => p.name === "DeletedPassenger")).toBe(false);
   });
 
   it("should correctly map database fields to API format", async () => {
@@ -146,9 +140,7 @@ describe("getPassengers Integration Test", () => {
 
     const fullPassenger = passengerFactory.build({
       userId: testUser.id,
-      chineseName: "李四",
-      englishFirstName: "John",
-      englishLastName: "Smith",
+      name: "李四",
       nationality: "CN",
       gender: "male",
       dateOfBirth: "1990-05-15",
@@ -170,9 +162,7 @@ describe("getPassengers Integration Test", () => {
     expect(result).toHaveLength(1);
     const passenger = result[0];
     expect(passenger.id).toBeDefined(); // UUID is generated
-    expect(passenger.chineseName).toBe("李四");
-    expect(passenger.englishFirstName).toBe("John");
-    expect(passenger.englishLastName).toBe("Smith");
+    expect(passenger.name).toBe("李四");
     expect(passenger.nationality).toBe("CN");
     expect(passenger.gender).toBe("male");
     expect(passenger.dateOfBirth).toBe("1990-05-15");

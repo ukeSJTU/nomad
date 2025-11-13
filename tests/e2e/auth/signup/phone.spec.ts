@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { clearAllCookies } from "../../../helpers/auth-helpers";
+
 /**
  * Helper function to mock better-auth API endpoints for testing
  * This allows tests to bypass actual OTP sending and verification
@@ -33,6 +35,11 @@ async function mockBetterAuthApis(page: Page) {
  * - Password setup
  */
 test.describe("Phone Sign-Up Flow", () => {
+  test.beforeEach(async ({ page }) => {
+    // Clear all cookies to ensure tests start in unauthenticated state
+    await clearAllCookies(page);
+  });
+
   /**
    * Test suite for user agreement modal functionality
    * The modal should be displayed on page load and handle user interactions correctly

@@ -15,9 +15,7 @@ describe("Helper Functions", () => {
   describe("isFormEmpty", () => {
     it("should return true for completely empty form", () => {
       const emptyForm: PassengerFormData = {
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
+        name: "",
         documentType: "id_card",
         documentNumber: "",
         phone: "",
@@ -25,35 +23,9 @@ describe("Helper Functions", () => {
       expect(isFormEmpty(emptyForm)).toBe(true);
     });
 
-    it("should return false if chineseName is filled", () => {
+    it("should return false if name is filled", () => {
       const form: PassengerFormData = {
-        chineseName: "张三",
-        englishFirstName: "",
-        englishLastName: "",
-        documentType: "id_card",
-        documentNumber: "",
-        phone: "",
-      };
-      expect(isFormEmpty(form)).toBe(false);
-    });
-
-    it("should return false if englishFirstName is filled", () => {
-      const form: PassengerFormData = {
-        chineseName: "",
-        englishFirstName: "John",
-        englishLastName: "",
-        documentType: "id_card",
-        documentNumber: "",
-        phone: "",
-      };
-      expect(isFormEmpty(form)).toBe(false);
-    });
-
-    it("should return false if englishLastName is filled", () => {
-      const form: PassengerFormData = {
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "Doe",
+        name: "张三",
         documentType: "id_card",
         documentNumber: "",
         phone: "",
@@ -63,9 +35,7 @@ describe("Helper Functions", () => {
 
     it("should return false if documentNumber is filled", () => {
       const form: PassengerFormData = {
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
+        name: "",
         documentType: "id_card",
         documentNumber: "123456789",
         phone: "",
@@ -75,9 +45,7 @@ describe("Helper Functions", () => {
 
     it("should return false if phone is filled", () => {
       const form: PassengerFormData = {
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
+        name: "",
         documentType: "id_card",
         documentNumber: "",
         phone: "13800138000",
@@ -87,9 +55,7 @@ describe("Helper Functions", () => {
 
     it("should return true even if documentType is changed (select field)", () => {
       const form: PassengerFormData = {
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
+        name: "",
         documentType: "passport",
         documentNumber: "",
         phone: "",
@@ -102,9 +68,6 @@ describe("Helper Functions", () => {
     const mockSavedPassenger: SavedPassenger = {
       id: "passenger-1",
       name: "张三",
-      chineseName: "张三",
-      englishFirstName: "San",
-      englishLastName: "Zhang",
       documentType: "id_card",
       documentNumber: "123456789012345678",
       phone: "13800138000",
@@ -113,9 +76,7 @@ describe("Helper Functions", () => {
     it("should convert saved passenger to form data without link", () => {
       const result = savedPassengerToFormData(mockSavedPassenger);
       expect(result).toEqual({
-        chineseName: "张三",
-        englishFirstName: "San",
-        englishLastName: "Zhang",
+        name: "张三",
         documentType: "id_card",
         documentNumber: "123456789012345678",
         phone: "13800138000",
@@ -129,9 +90,7 @@ describe("Helper Functions", () => {
         "passenger-1"
       );
       expect(result).toEqual({
-        chineseName: "张三",
-        englishFirstName: "San",
-        englishLastName: "Zhang",
+        name: "张三",
         documentType: "id_card",
         documentNumber: "123456789012345678",
         phone: "13800138000",
@@ -143,18 +102,13 @@ describe("Helper Functions", () => {
       const passengerWithNulls: SavedPassenger = {
         id: "passenger-2",
         name: "John Doe",
-        chineseName: null,
-        englishFirstName: "John",
-        englishLastName: "Doe",
         documentType: "passport",
         documentNumber: "A12345678",
         phone: null,
       };
       const result = savedPassengerToFormData(passengerWithNulls);
       expect(result).toEqual({
-        chineseName: "",
-        englishFirstName: "John",
-        englishLastName: "Doe",
+        name: "John Doe",
         documentType: "passport",
         documentNumber: "A12345678",
         phone: "",
@@ -167,9 +121,7 @@ describe("Helper Functions", () => {
     it("should return false for single empty form", () => {
       const passengers: PassengerFormData[] = [
         {
-          chineseName: "",
-          englishFirstName: "",
-          englishLastName: "",
+          name: "",
           documentType: "id_card",
           documentNumber: "",
           phone: "",
@@ -181,9 +133,7 @@ describe("Helper Functions", () => {
     it("should return true for single filled form", () => {
       const passengers: PassengerFormData[] = [
         {
-          chineseName: "张三",
-          englishFirstName: "",
-          englishLastName: "",
+          name: "张三",
           documentType: "id_card",
           documentNumber: "",
           phone: "",
@@ -195,17 +145,13 @@ describe("Helper Functions", () => {
     it("should return true for multiple forms regardless of content", () => {
       const passengers: PassengerFormData[] = [
         {
-          chineseName: "",
-          englishFirstName: "",
-          englishLastName: "",
+          name: "",
           documentType: "id_card",
           documentNumber: "",
           phone: "",
         },
         {
-          chineseName: "张三",
-          englishFirstName: "",
-          englishLastName: "",
+          name: "张三",
           documentType: "id_card",
           documentNumber: "",
           phone: "",
@@ -221,9 +167,6 @@ describe("usePassengerForms Hook", () => {
     {
       id: "passenger-1",
       name: "张三",
-      chineseName: "张三",
-      englishFirstName: "San",
-      englishLastName: "Zhang",
       documentType: "id_card",
       documentNumber: "123456789012345678",
       phone: "13800138000",
@@ -231,9 +174,6 @@ describe("usePassengerForms Hook", () => {
     {
       id: "passenger-2",
       name: "李四",
-      chineseName: "李四",
-      englishFirstName: "Si",
-      englishLastName: "Li",
       documentType: "passport",
       documentNumber: "A12345678",
       phone: "13900139000",
@@ -271,11 +211,11 @@ describe("usePassengerForms Hook", () => {
       );
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "张三");
+        result.current.handlePassengerChange(0, "name", "张三");
         result.current.handleAddPassenger();
       });
 
-      expect(result.current.passengers[0].chineseName).toBe("张三");
+      expect(result.current.passengers[0].name).toBe("张三");
       expect(isFormEmpty(result.current.passengers[1])).toBe(true);
     });
   });
@@ -287,7 +227,7 @@ describe("usePassengerForms Hook", () => {
       );
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "张三");
+        result.current.handlePassengerChange(0, "name", "张三");
         result.current.handleRemovePassenger(0);
       });
 
@@ -302,13 +242,13 @@ describe("usePassengerForms Hook", () => {
 
       act(() => {
         result.current.handleAddPassenger();
-        result.current.handlePassengerChange(0, "chineseName", "张三");
-        result.current.handlePassengerChange(1, "chineseName", "李四");
+        result.current.handlePassengerChange(0, "name", "张三");
+        result.current.handlePassengerChange(1, "name", "李四");
         result.current.handleRemovePassenger(0);
       });
 
       expect(result.current.passengers).toHaveLength(1);
-      expect(result.current.passengers[0].chineseName).toBe("李四");
+      expect(result.current.passengers[0].name).toBe("李四");
     });
 
     it("should correctly renumber forms after deletion", () => {
@@ -319,15 +259,15 @@ describe("usePassengerForms Hook", () => {
       act(() => {
         result.current.handleAddPassenger();
         result.current.handleAddPassenger();
-        result.current.handlePassengerChange(0, "chineseName", "张三");
-        result.current.handlePassengerChange(1, "chineseName", "李四");
-        result.current.handlePassengerChange(2, "chineseName", "王五");
+        result.current.handlePassengerChange(0, "name", "张三");
+        result.current.handlePassengerChange(1, "name", "李四");
+        result.current.handlePassengerChange(2, "name", "王五");
         result.current.handleRemovePassenger(1);
       });
 
       expect(result.current.passengers).toHaveLength(2);
-      expect(result.current.passengers[0].chineseName).toBe("张三");
-      expect(result.current.passengers[1].chineseName).toBe("王五");
+      expect(result.current.passengers[0].name).toBe("张三");
+      expect(result.current.passengers[1].name).toBe("王五");
     });
 
     it("should unlink saved passenger when removing linked form", () => {
@@ -357,10 +297,10 @@ describe("usePassengerForms Hook", () => {
       );
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "张三");
+        result.current.handlePassengerChange(0, "name", "张三");
       });
 
-      expect(result.current.passengers[0].chineseName).toBe("张三");
+      expect(result.current.passengers[0].name).toBe("张三");
     });
 
     it("should unlink saved passenger when editing linked form", () => {
@@ -378,14 +318,14 @@ describe("usePassengerForms Hook", () => {
       );
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "修改后的名字");
+        result.current.handlePassengerChange(0, "name", "修改后的名字");
       });
 
       expect(result.current.selectedPassengerIds).not.toContain("passenger-1");
       expect(
         result.current.passengers[0].linkedSavedPassengerId
       ).toBeUndefined();
-      expect(result.current.passengers[0].chineseName).toBe("修改后的名字");
+      expect(result.current.passengers[0].name).toBe("修改后的名字");
     });
 
     it("should not affect other forms", () => {
@@ -395,16 +335,16 @@ describe("usePassengerForms Hook", () => {
 
       act(() => {
         result.current.handleAddPassenger();
-        result.current.handlePassengerChange(0, "chineseName", "张三");
-        result.current.handlePassengerChange(1, "chineseName", "李四");
+        result.current.handlePassengerChange(0, "name", "张三");
+        result.current.handlePassengerChange(1, "name", "李四");
       });
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "修改后");
+        result.current.handlePassengerChange(0, "name", "修改后");
       });
 
-      expect(result.current.passengers[0].chineseName).toBe("修改后");
-      expect(result.current.passengers[1].chineseName).toBe("李四");
+      expect(result.current.passengers[0].name).toBe("修改后");
+      expect(result.current.passengers[1].name).toBe("李四");
     });
   });
 
@@ -418,7 +358,7 @@ describe("usePassengerForms Hook", () => {
         result.current.handleSelectSavedPassenger("passenger-1");
       });
 
-      expect(result.current.passengers[0].chineseName).toBe("张三");
+      expect(result.current.passengers[0].name).toBe("张三");
       expect(result.current.passengers[0].linkedSavedPassengerId).toBe(
         "passenger-1"
       );
@@ -431,12 +371,12 @@ describe("usePassengerForms Hook", () => {
       );
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "手动填写");
+        result.current.handlePassengerChange(0, "name", "手动填写");
         result.current.handleSelectSavedPassenger("passenger-1");
       });
 
       expect(result.current.passengers).toHaveLength(2);
-      expect(result.current.passengers[1].chineseName).toBe("张三");
+      expect(result.current.passengers[1].name).toBe("张三");
       expect(result.current.passengers[1].linkedSavedPassengerId).toBe(
         "passenger-1"
       );
@@ -472,7 +412,7 @@ describe("usePassengerForms Hook", () => {
         result.current.handleSelectSavedPassenger("passenger-1");
       });
 
-      expect(result.current.passengers[0].chineseName).toBe("张三");
+      expect(result.current.passengers[0].name).toBe("张三");
 
       act(() => {
         result.current.handleSelectSavedPassenger("passenger-1");
@@ -493,8 +433,8 @@ describe("usePassengerForms Hook", () => {
       });
 
       expect(result.current.passengers).toHaveLength(2);
-      expect(result.current.passengers[0].chineseName).toBe("张三");
-      expect(result.current.passengers[1].chineseName).toBe("李四");
+      expect(result.current.passengers[0].name).toBe("张三");
+      expect(result.current.passengers[1].name).toBe("李四");
       expect(result.current.selectedPassengerIds).toEqual([
         "passenger-1",
         "passenger-2",
@@ -519,7 +459,7 @@ describe("usePassengerForms Hook", () => {
 
       // Edit the form (unlinks it)
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "修改后");
+        result.current.handlePassengerChange(0, "name", "修改后");
       });
 
       expect(
@@ -533,8 +473,8 @@ describe("usePassengerForms Hook", () => {
 
       // Should create a new form with A's data
       expect(result.current.passengers).toHaveLength(2);
-      expect(result.current.passengers[0].chineseName).toBe("修改后");
-      expect(result.current.passengers[1].chineseName).toBe("张三");
+      expect(result.current.passengers[0].name).toBe("修改后");
+      expect(result.current.passengers[1].name).toBe("张三");
       expect(result.current.passengers[1].linkedSavedPassengerId).toBe(
         "passenger-1"
       );
@@ -557,7 +497,7 @@ describe("usePassengerForms Hook", () => {
       });
 
       expect(result.current.passengers).toHaveLength(1);
-      expect(result.current.passengers[0].chineseName).toBe("李四");
+      expect(result.current.passengers[0].name).toBe("李四");
       expect(result.current.selectedPassengerIds).toEqual(["passenger-2"]);
     });
 
@@ -567,16 +507,16 @@ describe("usePassengerForms Hook", () => {
       );
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "手动填写");
+        result.current.handlePassengerChange(0, "name", "手动填写");
         result.current.handleSelectSavedPassenger("passenger-1");
       });
 
       expect(result.current.passengers).toHaveLength(2);
-      expect(result.current.passengers[0].chineseName).toBe("手动填写");
+      expect(result.current.passengers[0].name).toBe("手动填写");
       expect(
         result.current.passengers[0].linkedSavedPassengerId
       ).toBeUndefined();
-      expect(result.current.passengers[1].chineseName).toBe("张三");
+      expect(result.current.passengers[1].name).toBe("张三");
       expect(result.current.passengers[1].linkedSavedPassengerId).toBe(
         "passenger-1"
       );
@@ -588,11 +528,11 @@ describe("usePassengerForms Hook", () => {
       );
 
       act(() => {
-        result.current.handlePassengerChange(0, "chineseName", "Form 1");
+        result.current.handlePassengerChange(0, "name", "Form 1");
         result.current.handleAddPassenger();
-        result.current.handlePassengerChange(1, "chineseName", "Form 2");
+        result.current.handlePassengerChange(1, "name", "Form 2");
         result.current.handleAddPassenger();
-        result.current.handlePassengerChange(2, "chineseName", "Form 3");
+        result.current.handlePassengerChange(2, "name", "Form 3");
       });
 
       act(() => {
@@ -600,8 +540,8 @@ describe("usePassengerForms Hook", () => {
       });
 
       expect(result.current.passengers).toHaveLength(2);
-      expect(result.current.passengers[0].chineseName).toBe("Form 1");
-      expect(result.current.passengers[1].chineseName).toBe("Form 3");
+      expect(result.current.passengers[0].name).toBe("Form 1");
+      expect(result.current.passengers[1].name).toBe("Form 3");
     });
 
     it("Corner Case 5: Select passenger, add form, deselect passenger", () => {

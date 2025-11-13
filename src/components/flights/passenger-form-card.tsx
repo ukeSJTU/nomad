@@ -2,7 +2,7 @@
 
 import { Plus, X } from "lucide-react";
 
-import type { SavedPassenger } from "@/app/(frontend)/(without-sidebar)/booking/passengers/queries";
+import type { SavedPassenger } from "@/app/(frontend)/(without-sidebar)/flights/booking/passengers/queries";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,9 +18,7 @@ import {
 import { shouldShowDeleteButton } from "@/hooks/use-passenger-forms";
 
 export interface PassengerFormData {
-  chineseName: string;
-  englishFirstName: string;
-  englishLastName: string;
+  name: string;
   documentType: string;
   documentNumber: string;
   phone: string;
@@ -97,10 +95,7 @@ function PassengerInfoForm({
   onRemove,
   showRemove,
 }: PassengerInfoFormProps) {
-  // Compute display name: use Chinese name if present, otherwise English name
-  const displayName = data.chineseName
-    ? data.chineseName
-    : [data.englishFirstName, data.englishLastName].filter(Boolean).join(" ");
+  const displayName = data.name;
 
   return (
     <div className="relative bg-white border border-gray-200 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -139,46 +134,18 @@ function PassengerInfoForm({
             )}
           </div>
 
-          {/* Chinese Name */}
+          {/* Passenger Name */}
           <div>
-            <Label htmlFor={`chinese-name-${passengerNumber}`}>
-              中文姓名（选填）
+            <Label htmlFor={`name-${passengerNumber}`}>
+              姓名 <span className="text-red-500">*</span>
             </Label>
             <Input
-              id={`chinese-name-${passengerNumber}`}
-              value={data.chineseName}
-              onChange={e => onChange("chineseName", e.target.value)}
-              placeholder="请输入中文姓名"
+              id={`name-${passengerNumber}`}
+              value={data.name}
+              onChange={e => onChange("name", e.target.value)}
+              placeholder="请输入姓名"
               className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
             />
-          </div>
-
-          {/* English Name */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor={`english-first-name-${passengerNumber}`}>
-                英文名 *
-              </Label>
-              <Input
-                id={`english-first-name-${passengerNumber}`}
-                value={data.englishFirstName}
-                onChange={e => onChange("englishFirstName", e.target.value)}
-                placeholder="First Name"
-                className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
-              />
-            </div>
-            <div>
-              <Label htmlFor={`english-last-name-${passengerNumber}`}>
-                英文姓 *
-              </Label>
-              <Input
-                id={`english-last-name-${passengerNumber}`}
-                value={data.englishLastName}
-                onChange={e => onChange("englishLastName", e.target.value)}
-                placeholder="Last Name"
-                className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
-              />
-            </div>
           </div>
 
           {/* Document Type and Number */}

@@ -26,9 +26,7 @@ import type {
  * Validation schema for passenger data
  */
 const passengerSchema = z.object({
-  chineseName: z.string().optional(),
-  englishFirstName: z.string().min(1, "First name is required"),
-  englishLastName: z.string().min(1, "Last name is required"),
+  name: z.string().min(1, "Name is required"),
   documentType: z.enum(["id_card", "passport", "other"]),
   documentNumber: z.string().min(1, "Document number is required"),
   phone: z.string().optional(),
@@ -219,9 +217,7 @@ export async function createOrderAction(
       // Create order passengers
       const passengerData = validatedData.passengers.map(passenger => ({
         orderId: order.id,
-        name: passenger.chineseName
-          ? `${passenger.englishLastName} ${passenger.englishFirstName} (${passenger.chineseName})`
-          : `${passenger.englishLastName} ${passenger.englishFirstName}`,
+        name: passenger.name,
         identityType: passenger.documentType as
           | "id_card"
           | "passport"

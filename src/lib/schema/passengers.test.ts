@@ -15,6 +15,7 @@ describe("Passengers Schema", () => {
     // Required fields
     expect(columns).toContain("id");
     expect(columns).toContain("userId");
+    expect(columns).toContain("name");
     expect(columns).toContain("documentType");
     expect(columns).toContain("documentNumber");
     expect(columns).toContain("documentExpiryDate");
@@ -23,9 +24,6 @@ describe("Passengers Schema", () => {
     expect(columns).toContain("updatedAt");
 
     // Optional fields
-    expect(columns).toContain("chineseName");
-    expect(columns).toContain("englishFirstName");
-    expect(columns).toContain("englishLastName");
     expect(columns).toContain("nationality");
     expect(columns).toContain("gender");
     expect(columns).toContain("dateOfBirth");

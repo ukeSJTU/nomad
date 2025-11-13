@@ -38,9 +38,7 @@ export default async function PassengerDetailPage({
 
   // Prepare passenger data with server-side masking
   const maskedPassenger: PassengerDetailData = {
-    chineseName: passenger.chineseName ?? undefined,
-    englishLastName: passenger.englishLastName ?? undefined,
-    englishFirstName: passenger.englishFirstName ?? undefined,
+    name: passenger.name,
     nationality: passenger.nationality ?? "未设置",
     gender: passenger.gender ?? "other",
     dateOfBirth: passenger.dateOfBirth ?? new Date(),

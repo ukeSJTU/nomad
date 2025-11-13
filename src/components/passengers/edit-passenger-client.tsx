@@ -52,9 +52,7 @@ export function EditPassengerClient({ passenger }: EditPassengerClientProps) {
     }
 
     return {
-      chineseName: passenger.chineseName || undefined,
-      englishFirstName: passenger.englishFirstName || undefined,
-      englishLastName: passenger.englishLastName || undefined,
+      name: passenger.name,
       nationality: passenger.nationality || undefined,
       gender: passenger.gender || undefined,
       dateOfBirth: passenger.dateOfBirth

@@ -1,4 +1,4 @@
-// At least one of Chinese name or English name is required
+// Passenger name (required)
 // Nationality
 // Gender: male/female/unknown
 // Date of birth
@@ -8,10 +8,8 @@
 // Email
 // Document type, document number, expiry date are required
 
-import { sql } from "drizzle-orm";
 import {
   boolean,
-  check,
   date,
   index,
   pgTable,
@@ -33,10 +31,8 @@ export const passengers = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    // At least one of Chinese name or English name is required
-    chineseName: varchar("chinese_name", { length: 100 }),
-    englishFirstName: varchar("english_first_name", { length: 100 }),
-    englishLastName: varchar("english_last_name", { length: 100 }),
+    // Passenger name (required)
+    name: varchar({ length: 100 }).notNull(),
     // Nationality
     nationality: varchar({ length: 100 }),
     // Gender: male/female/other
@@ -72,11 +68,6 @@ export const passengers = pgTable(
     index("idx_passengers_document").on(
       table.documentType,
       table.documentNumber
-    ),
-    // Constraint: at least one of Chinese name or English name is required
-    check(
-      "passengers_name_required",
-      sql`${table.chineseName} IS NOT NULL OR (${table.englishFirstName} IS NOT NULL AND ${table.englishLastName} IS NOT NULL)`
     ),
   ]
 );

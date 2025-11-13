@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,51 +31,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 // Passenger form schema
-const passengerFormSchema = z
-  .object({
-    chineseName: z.string().optional(),
-    englishLastName: z.string().optional(),
-    englishFirstName: z.string().optional(),
-    setAsMyself: z.boolean(),
-    nationality: z.string().min(1, "请选择国籍"),
-    gender: z.enum(["male", "female", "other"], {
-      message: "请选择性别",
-    }),
-    dateOfBirth: z.date({ message: "请选择出生日期" }),
-    placeOfBirth: z.string().optional(),
-    phoneCountryCode: z.string(),
-    phone: z.string().optional(),
-    faxAreaCode: z.string().optional(),
-    faxPhone: z.string().optional(),
-    faxExtension: z.string().optional(),
-    email: z
-      .union([
-        z.string().email({ message: "请输入有效的邮箱地址" }),
-        z.literal(""),
-      ])
-      .optional(),
-    documentType: z.enum(["id_card", "passport", "other"], {
-      message: "请选择证件类型",
-    }),
-    documentNumber: z.string().min(1, "请输入证件号码"),
-    documentExpiryDate: z.date({ message: "请选择证件有效期" }).optional(),
-  })
-  .refine(
-    data => data.chineseName || (data.englishFirstName && data.englishLastName),
-    {
-      message: "中文名与英文名两者必填一项",
-      path: ["chineseName"],
-    }
-  );
+const passengerFormSchema = z.object({
+  name: z.string().min(1, "请输入姓名").max(100, "姓名不能超过100个字符"),
+  setAsMyself: z.boolean(),
+  nationality: z.string().min(1, "请选择国籍"),
+  gender: z.enum(["male", "female", "other"], {
+    message: "请选择性别",
+  }),
+  dateOfBirth: z.date({ message: "请选择出生日期" }),
+  placeOfBirth: z.string().optional(),
+  phoneCountryCode: z.string(),
+  phone: z.string().optional(),
+  faxAreaCode: z.string().optional(),
+  faxPhone: z.string().optional(),
+  faxExtension: z.string().optional(),
+  email: z
+    .union([
+      z.string().email({ message: "请输入有效的邮箱地址" }),
+      z.literal(""),
+    ])
+    .optional(),
+  documentType: z.enum(["id_card", "passport", "other"], {
+    message: "请选择证件类型",
+  }),
+  documentNumber: z.string().min(1, "请输入证件号码"),
+  documentExpiryDate: z.date({ message: "请选择证件有效期" }).optional(),
+});
 
 type PassengerFormData = z.infer<typeof passengerFormSchema>;
 
@@ -103,9 +86,7 @@ export default function PassengerForm({
   const form = useForm<PassengerFormData>({
     resolver: zodResolver(passengerFormSchema),
     defaultValues: {
-      chineseName: initialData?.chineseName || "",
-      englishLastName: initialData?.englishLastName || "",
-      englishFirstName: initialData?.englishFirstName || "",
+      name: initialData?.name || "",
       setAsMyself: initialData?.setAsMyself ?? false,
       nationality: initialData?.nationality || "中国大陆",
       gender: initialData?.gender || "other",
@@ -138,67 +119,25 @@ export default function PassengerForm({
 
           <Separator />
 
-          {/* Chinese Name / English Name */}
-          <div className="space-y-2">
-            <FormLabel className="text-sm font-medium">
-              <span className="text-red-500">*</span> 中文名与英文名必填一项
-            </FormLabel>
-            <div className="grid grid-cols-1 gap-4">
-              <FormField
-                control={form.control}
-                name="chineseName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>中文名</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="请输入中文名" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="grid grid-cols-2 gap-2">
-                <FormField
-                  control={form.control}
-                  name="englishLastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>英文名</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="LastName(姓)" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="englishFirstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="invisible">First</FormLabel>
-                      <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Input {...field} placeholder="FirstName(名)" />
-                        </FormControl>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-4 w-4 text-blue-500 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>请按照护照或证件上的拼写填写</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-          </div>
+          {/* Passenger Name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <span className="text-red-500">*</span> 姓名
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="请输入姓名（中文或英文）" />
+                </FormControl>
+                <p className="text-sm text-muted-foreground">
+                  可输入中文姓名或英文姓名
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           {/* Set as Myself Checkbox */}
           <FormField
