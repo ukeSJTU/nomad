@@ -68,3 +68,11 @@ graph TD
 - **数据库托管 - Neon DB:** 作为一个 Serverless PostgreSQL 平台，Neon 与 Vercel 的部署模型天生一对。其“数据库分支 (Branching)”功能允许我们为每个Git分支创建独立的数据库实例，极大地简化了开发和测试流程，避免了团队成员之间的数据干扰。
 
 - **UI策略 - Shadcn/UI:** 我们选择 Shadcn/UI 是因为它并非一个传统的组件“库”，而是一系列我们可以直接复制代码到项目中的组件“配方”。这给予了我们对组件样式和行为的100%控制权，避免了样式覆盖的麻烦，并确保最终打包体积最小化。
+
+## 安全与防刷
+
+- **Cloudflare Turnstile**：Better Auth 通过官方 `captcha` 插件拦截 `/sign-in/*`、`/phone-number/*`、`/email-otp/*` 等入口的请求，只要缺少或验证失败的人机验证令牌就会直接返回 4xx。  
+- **环境变量**：
+  - `NEXT_PUBLIC_TURNSTILE_SITE_KEY` 用于前端组件渲染 Turnstile。
+  - `TURNSTILE_SECRET_KEY` 用于服务端向 Cloudflare 校验令牌。
+  - 本地/测试环境可继续使用 Cloudflare 提供的 “Always Pass” 测试 Key（已写入 `.env.example`），生产环境必须替换为真实凭证，否则启动会直接抛错。

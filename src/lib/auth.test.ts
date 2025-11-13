@@ -32,6 +32,7 @@ vi.mock("better-auth/adapters/drizzle", () => ({
 vi.mock("better-auth/plugins", () => ({
   phoneNumber: vi.fn(),
   emailOTP: vi.fn(),
+  captcha: vi.fn(),
 }));
 
 vi.mock("@faker-js/faker", () => ({

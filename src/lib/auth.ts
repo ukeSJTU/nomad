@@ -1,11 +1,15 @@
 import { faker } from "@faker-js/faker";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { emailOTP, phoneNumber } from "better-auth/plugins";
+import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@/lib/db";
 import { sendEmailOtp } from "@/lib/email";
 import { sendSmsOtp } from "@/lib/sms";
+import {
+  getTurnstileSecretKey,
+  TURNSTILE_PROTECTED_ENDPOINTS,
+} from "@/lib/turnstile";
 import logger from "@/utils/logger";
 
 /**
@@ -52,6 +56,8 @@ export function shouldEnableResend(): boolean {
   return isProduction;
 }
 
+const turnstileSecretKey = getTurnstileSecretKey();
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -60,6 +66,11 @@ export const auth = betterAuth({
     enabled: true,
   },
   plugins: [
+    captcha({
+      provider: "cloudflare-turnstile",
+      secretKey: turnstileSecretKey,
+      endpoints: Array.from(TURNSTILE_PROTECTED_ENDPOINTS),
+    }),
     phoneNumber({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       sendOTP: async ({ phoneNumber, code }, request) => {

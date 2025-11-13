@@ -4,10 +4,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import TurnstileWidget from "@/components/auth/turnstile-widget";
 import UpdatePhoneForm from "@/components/security/update-phone-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { updatePhoneNumberAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
+import { getTurnstileSiteKey } from "@/lib/turnstile";
+
+const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 
 /**
  * Props for the PhonePageClient component
@@ -34,11 +39,29 @@ export default function PhonePageClient({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const {
+    captchaError,
+    setCaptchaError,
+    resetSignal,
+    handleSolved,
+    handleWidgetError,
+    handleWidgetExpire,
+    prepareCaptchaRequest,
+  } = useTurnstileCaptcha();
+  const isCaptchaValidationError = (error?: { message?: string }) =>
+    typeof error?.message === "string" &&
+    error.message.toLowerCase().includes("captcha");
 
   /**
    * Handle sending OTP to the new phone number
    */
   const handleSendOtp = async (phoneNumber: string) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
 
     // Add +86 prefix for China mainland phone numbers
@@ -47,9 +70,15 @@ export default function PhonePageClient({
     try {
       const { error } = await authClient.phoneNumber.sendOtp({
         phoneNumber: fullPhoneNumber,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (error) {
+        if (isCaptchaValidationError(error)) {
+          setCaptchaError("人机验证失败，请重新完成人机验证");
+          toast.error("人机验证失败，请重试");
+          return;
+        }
         console.error("发送验证码失败:", error);
         toast.error("发送验证码失败，请重试");
       } else {
@@ -60,6 +89,7 @@ export default function PhonePageClient({
       console.error("发送验证码异常:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -69,6 +99,12 @@ export default function PhonePageClient({
    * Verify OTP and update phone number
    */
   const handleSubmit = async (data: { phoneNumber: string; otp: string }) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
 
     // Add +86 prefix for China mainland phone numbers
@@ -79,9 +115,15 @@ export default function PhonePageClient({
       const { error: verifyError } = await authClient.phoneNumber.verify({
         phoneNumber: fullPhoneNumber,
         code: data.otp,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (verifyError) {
+        if (isCaptchaValidationError(verifyError)) {
+          setCaptchaError("人机验证失败，请重新完成人机验证");
+          toast.error("人机验证失败，请重试");
+          return;
+        }
         console.error("验证码验证失败:", verifyError);
         toast.error("验证码错误，请重试");
         return;
@@ -104,6 +146,7 @@ export default function PhonePageClient({
       console.error("Update phone number error:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -133,6 +176,21 @@ export default function PhonePageClient({
           isLoading={isLoading}
           countdown={countdown}
         />
+        <div className="mt-6 space-y-3">
+          <p className="text-sm text-gray-600 text-center">
+            绑定或修改手机号前，请先完成人机验证，每次发送或验证短信验证码都需要新的令牌。
+          </p>
+          <TurnstileWidget
+            siteKey={TURNSTILE_SITE_KEY}
+            resetSignal={resetSignal}
+            onSuccess={handleSolved}
+            onExpire={handleWidgetExpire}
+            onError={handleWidgetError}
+          />
+          {captchaError && (
+            <p className="text-sm text-red-600 text-center">{captchaError}</p>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
