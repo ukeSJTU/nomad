@@ -35,8 +35,10 @@ export function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
 
   // 3. Protect routes that require authentication
-  const isProtectedRoute = PROTECTED_ROUTES.some(route =>
-    pathname.startsWith(route)
+  // Use exact match or sub-path match to avoid false positives
+  // e.g., /home or /home/settings matches, but /hometown does not
+  const isProtectedRoute = PROTECTED_ROUTES.some(
+    route => pathname === route || pathname.startsWith(`${route}/`)
   );
 
   if (isProtectedRoute && !sessionCookie) {
@@ -52,7 +54,11 @@ export function middleware(request: NextRequest) {
   }
 
   // 4. Redirect authenticated users away from auth pages
-  const isAuthRoute = AUTH_ROUTES.some(route => pathname.startsWith(route));
+  // Use exact match or sub-path match to avoid false positives
+  // e.g., /auth/sign-in or /auth/sign-in/callback matches, but /auth/sign-in-help does not
+  const isAuthRoute = AUTH_ROUTES.some(
+    route => pathname === route || pathname.startsWith(`${route}/`)
+  );
 
   if (isAuthRoute && sessionCookie) {
     logger.info(
