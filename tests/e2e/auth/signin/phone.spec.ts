@@ -1,9 +1,8 @@
 import { expect, type Page, test } from "@playwright/test";
-
 import {
   clearAllCookies,
   mockTurnstileCaptcha,
-} from "../../../helpers/auth-helpers";
+} from "@tests/helpers/auth-helpers";
 
 /**
  * Helper function to mock better-auth API endpoints for testing
