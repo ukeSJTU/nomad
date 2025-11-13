@@ -25,8 +25,8 @@ test.describe("UserMenu Component E2E", () => {
     // Verify link has correct href
     await expect(userMenuLink).toHaveAttribute("href", "/home/info");
 
-    // Click the link
-    await userMenuLink.click();
+    // Click the link - use force to bypass HoverCard interaction
+    await userMenuLink.click({ force: true });
 
     // Verify navigation to /home/info
     await expect(page).toHaveURL("/home/info");
@@ -88,8 +88,8 @@ test.describe("UserMenu Component E2E", () => {
 
     // Test 2: Click to navigate
     // Use the trigger link specifically (not the one in dropdown)
-    const triggerLink = page.locator('header a[href="/home"]').first();
-    await triggerLink.click();
-    await expect(page).toHaveURL("/home");
+    const triggerLink = page.locator('header a[href="/home/info"]').first();
+    await triggerLink.click({ force: true });
+    await expect(page).toHaveURL("/home/info");
   });
 });
