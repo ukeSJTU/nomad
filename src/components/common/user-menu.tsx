@@ -80,7 +80,10 @@ export default function UserMenu() {
   return (
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
-        <Link href="/home" className="flex items-center gap-2 cursor-pointer">
+        <Link
+          href="/home/info"
+          className="flex items-center gap-2 cursor-pointer"
+        >
           <Avatar className="size-8">
             <AvatarImage
               src={session.user?.image || undefined}
@@ -110,7 +113,7 @@ export default function UserMenu() {
             </Avatar>
             <div className="flex flex-col gap-1">
               <Link
-                href="/home"
+                href="/home/info"
                 className="text-sm font-medium hover:underline cursor-pointer"
               >
                 尊敬的用户
