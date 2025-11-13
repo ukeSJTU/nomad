@@ -67,7 +67,7 @@ describe("UserMenu Component", () => {
       expect(chevronIcon).toHaveClass("text-muted-foreground");
     });
 
-    it("should wrap trigger area in Link component pointing to /home", () => {
+    it("should wrap trigger area in Link component pointing to /home/info", () => {
       mockUseSession.mockReturnValue({
         data: mockSession,
         isPending: false,
@@ -76,7 +76,7 @@ describe("UserMenu Component", () => {
       const { container } = render(<UserMenu />);
 
       // Find Link element
-      const linkElement = container.querySelector('a[href="/home"]');
+      const linkElement = container.querySelector('a[href="/home/info"]');
       expect(linkElement).toBeInTheDocument();
 
       // Link should contain the trigger content

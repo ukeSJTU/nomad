@@ -13,7 +13,7 @@ test.describe("UserMenu Component E2E", () => {
     await page.goto("/");
   });
 
-  test("should navigate to /home when clicking UserMenu trigger area", async ({
+  test("should navigate to /home/info when clicking UserMenu trigger area", async ({
     page,
   }) => {
     // Find the UserMenu link by text "尊敬的用户"
@@ -23,13 +23,13 @@ test.describe("UserMenu Component E2E", () => {
     await expect(userMenuLink).toBeVisible();
 
     // Verify link has correct href
-    await expect(userMenuLink).toHaveAttribute("href", "/home");
+    await expect(userMenuLink).toHaveAttribute("href", "/home/info");
 
     // Click the link
     await userMenuLink.click();
 
-    // Verify navigation to /home
-    await expect(page).toHaveURL("/home");
+    // Verify navigation to /home/info
+    await expect(page).toHaveURL("/home/info");
   });
 
   test("should display dropdown menu on hover", async ({ page }) => {
