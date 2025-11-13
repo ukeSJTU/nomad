@@ -2,7 +2,7 @@
 
 import { Plus, X } from "lucide-react";
 
-import type { SavedPassenger } from "@/app/(frontend)/(without-sidebar)/booking/passengers/queries";
+import type { SavedPassenger } from "@/app/(frontend)/(without-sidebar)/flights/booking/passengers/queries";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
