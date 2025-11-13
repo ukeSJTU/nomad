@@ -26,9 +26,7 @@ import type {
  * Validation schema for passenger data
  */
 const passengerSchema = z.object({
-  chineseName: z.string().optional(),
-  englishFirstName: z.string().min(1, "First name is required"),
-  englishLastName: z.string().min(1, "Last name is required"),
+  name: z.string().min(1, "Name is required"),
   documentType: z.enum(["id_card", "passport", "other"]),
   documentNumber: z.string().min(1, "Document number is required"),
   phone: z.string().optional(),
