@@ -1,0 +1,123 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Nomad Logo Nomad" [ref=e5]:
+          - /url: /
+          - img "Nomad Logo" [ref=e6]
+          - generic [ref=e7]: Nomad
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e10]
+            - searchbox "搜索任何旅游相关" [ref=e13]
+          - button "Search" [ref=e14]:
+            - img
+            - generic [ref=e15]: Search
+        - generic [ref=e16]:
+          - link "测 尊敬的用户" [ref=e17] [cursor=pointer]:
+            - /url: /home/info
+            - generic [ref=e19]: 测
+            - generic [ref=e20]: 尊敬的用户
+            - img [ref=e21]
+          - button "我的订单" [ref=e23] [cursor=pointer]
+          - button "联系客服" [ref=e24]
+          - button "Toggle theme" [ref=e25]:
+            - img
+            - generic [ref=e26]: Toggle theme
+    - region "Notifications alt+T"
+    - main [ref=e27]:
+      - generic [ref=e30]:
+        - heading "探索世界，从这里开始" [level=1] [ref=e31]
+        - paragraph [ref=e32]: Nomad - 您的智能旅行助手，为年轻旅行者提供最优惠的机票、酒店和火车票预订服务
+        - generic [ref=e33]:
+          - link "立即预订机票" [ref=e34]:
+            - /url: /flights
+            - text: 立即预订机票
+            - img
+          - link "免费注册" [ref=e35]:
+            - /url: /auth/sign-up
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - heading "我们提供的服务" [level=2] [ref=e39]
+          - paragraph [ref=e40]: 一站式旅行预订平台，满足您的所有出行需求
+        - generic [ref=e41]:
+          - link "机票预订 国内、国际及港澳台航线，实时比价，特价机票天天有 立即预订" [ref=e42]:
+            - /url: /flights
+            - generic [ref=e43]:
+              - img [ref=e45]
+              - heading "机票预订" [level=3] [ref=e47]
+              - paragraph [ref=e48]: 国内、国际及港澳台航线，实时比价，特价机票天天有
+              - generic [ref=e49]:
+                - text: 立即预订
+                - img [ref=e50]
+          - generic [ref=e53]:
+            - img [ref=e55]
+            - heading "酒店预订" [level=3] [ref=e58]
+            - paragraph [ref=e59]: 全球酒店资源，从经济型到豪华酒店，总有适合您的选择
+            - generic [ref=e60]: 即将推出
+          - generic [ref=e62]:
+            - img [ref=e64]
+            - heading "火车票预订" [level=3] [ref=e68]
+            - paragraph [ref=e69]: 高铁、动车、普快，全国铁路线路覆盖，出行更便捷
+            - generic [ref=e70]: 即将推出
+      - generic [ref=e72]:
+        - heading "准备好开始您的旅程了吗？" [level=2] [ref=e73]
+        - paragraph [ref=e74]: 立即注册，享受更多专属优惠和个性化服务
+        - link "免费注册" [ref=e75]:
+          - /url: /auth/sign-up
+    - contentinfo [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - generic [ref=e81]: "N"
+              - generic [ref=e82]: Nomad
+            - paragraph [ref=e83]: 您的在线旅行服务平台
+          - generic [ref=e84]:
+            - heading "快速链接" [level=3] [ref=e85]
+            - list [ref=e86]:
+              - listitem [ref=e87]:
+                - link "首页" [ref=e88]:
+                  - /url: /
+              - listitem [ref=e89]:
+                - link "常旅客管理" [ref=e90]:
+                  - /url: /home/passengers
+          - generic [ref=e91]:
+            - heading "法律信息" [level=3] [ref=e92]
+            - list [ref=e93]:
+              - listitem [ref=e94]:
+                - link "服务协议" [ref=e95]:
+                  - /url: /terms
+              - listitem [ref=e96]:
+                - link "个人信息保护政策" [ref=e97]:
+                  - /url: /privacy
+              - listitem [ref=e98]:
+                - link "免责声明" [ref=e99]:
+                  - /url: /disclaimer
+        - paragraph [ref=e101]: © 2025 Nomad. 保留所有权利。
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e107] [cursor=pointer]:
+    - img [ref=e108]
+  - alert [ref=e113]
+  - generic [ref=e116]:
+    - generic [ref=e117]:
+      - generic [ref=e119]: 测
+      - generic [ref=e120]:
+        - link "尊敬的用户" [ref=e121] [cursor=pointer]:
+          - /url: /home/info
+        - generic [ref=e122]: 贵宾
+    - link "我的钱包" [ref=e123]:
+      - /url: /wallet
+      - img
+      - text: 我的钱包
+    - link "常用信息" [ref=e124]:
+      - /url: /home/passengers
+      - img
+      - text: 常用信息
+    - button "退出登录" [ref=e125]:
+      - img
+      - text: 退出登录
+```
