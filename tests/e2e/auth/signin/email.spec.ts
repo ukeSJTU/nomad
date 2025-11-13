@@ -107,11 +107,11 @@ test.describe("Email Sign-In Flow", () => {
     // Switch to email login method
     await page.getByRole("tab", { name: "邮箱登录" }).click();
 
-    // Switch to OTP login tab
-    await page.getByRole("tab", { name: "验证码登录" }).click();
+    // Switch to OTP login tab (use testid to avoid ambiguity with phone OTP tab)
+    await page.getByTestId("email-otp-tab").click();
 
     // Verify we're on the OTP tab
-    await expect(page.getByRole("tab", { name: "验证码登录" })).toHaveAttribute(
+    await expect(page.getByTestId("email-otp-tab")).toHaveAttribute(
       "data-state",
       "active"
     );
@@ -241,8 +241,8 @@ test.describe("Email Sign-In Flow", () => {
     // Switch to email login method
     await page.getByRole("tab", { name: "邮箱登录" }).click();
 
-    // Switch to OTP login tab
-    await page.getByRole("tab", { name: "验证码登录" }).click();
+    // Switch to OTP login tab (use testid to avoid ambiguity with phone OTP tab)
+    await page.getByTestId("email-otp-tab").click();
 
     // Fill in email
     await page.getByPlaceholder("请输入邮箱地址").fill("test@example.com");

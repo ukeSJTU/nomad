@@ -69,9 +69,9 @@ test.describe("Phone Sign-In Flow", () => {
     test("should display both login tabs", async ({ page }) => {
       await page.goto("/auth/sign-in");
 
-      // Should show both tab options
-      await expect(page.getByRole("tab", { name: "密码登录" })).toBeVisible();
-      await expect(page.getByRole("tab", { name: "验证码登录" })).toBeVisible();
+      // Should show both tab options (use testid to avoid ambiguity)
+      await expect(page.getByTestId("phone-password-tab")).toBeVisible();
+      await expect(page.getByTestId("phone-otp-tab")).toBeVisible();
     });
 
     test("should change title when switching tabs", async ({ page }) => {
@@ -82,8 +82,8 @@ test.describe("Phone Sign-In Flow", () => {
         page.getByRole("heading", { name: "账号密码登录" })
       ).toBeVisible();
 
-      // Click OTP tab
-      await page.getByRole("tab", { name: "验证码登录" }).click();
+      // Click OTP tab (use testid to avoid ambiguity)
+      await page.getByTestId("phone-otp-tab").click();
 
       // Title should change to OTP login
       await expect(
@@ -179,8 +179,8 @@ test.describe("Phone Sign-In Flow", () => {
   test.describe("OTP Login", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/auth/sign-in");
-      // Wait for the tab to be visible and then switch to OTP tab
-      const otpTab = page.getByRole("tab", { name: "验证码登录" });
+      // Wait for the tab to be visible and then switch to OTP tab (use testid to avoid ambiguity)
+      const otpTab = page.getByTestId("phone-otp-tab");
       await otpTab.waitFor({ state: "visible" });
       await otpTab.click();
       // Wait for the tab content to be visible
