@@ -31,6 +31,27 @@ async function mockBetterAuthApis(page: Page) {
 }
 
 /**
+ * Helper function to mock Turnstile CAPTCHA for testing
+ * Simulates successful CAPTCHA completion
+ */
+async function mockTurnstileCaptcha(page: Page) {
+  await page.addInitScript(() => {
+    window.turnstile = {
+      render: (container: HTMLElement, options: any) => {
+        const widgetId = "mock-widget-id";
+        // Immediately call the callback with a mock token
+        setTimeout(() => {
+          options.callback?.("mock-captcha-token");
+        }, 100);
+        return widgetId;
+      },
+      reset: () => {},
+      remove: () => {},
+    };
+  });
+}
+
+/**
  * Test suite for email-based sign-up flow
  * Tests the complete registration process including:
  * - User agreement modal
@@ -41,6 +62,8 @@ test.describe("Email Sign-Up Flow", () => {
   test.beforeEach(async ({ page }) => {
     // Clear all cookies to ensure tests start in unauthenticated state
     await clearAllCookies(page);
+    // Mock Turnstile CAPTCHA
+    await mockTurnstileCaptcha(page);
   });
 
   /**

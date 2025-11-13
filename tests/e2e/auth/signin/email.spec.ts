@@ -45,6 +45,27 @@ async function mockBetterAuthApis(page: Page) {
 }
 
 /**
+ * Helper function to mock Turnstile CAPTCHA for testing
+ * Simulates successful CAPTCHA completion
+ */
+async function mockTurnstileCaptcha(page: Page) {
+  await page.addInitScript(() => {
+    window.turnstile = {
+      render: (container: HTMLElement, options: any) => {
+        const widgetId = "mock-widget-id";
+        // Immediately call the callback with a mock token
+        setTimeout(() => {
+          options.callback?.("mock-captcha-token");
+        }, 100);
+        return widgetId;
+      },
+      reset: () => {},
+      remove: () => {},
+    };
+  });
+}
+
+/**
  * Test suite for email-based sign-in flow
  * Tests both password and OTP login methods
  */
@@ -54,6 +75,8 @@ test.describe("Email Sign-In Flow", () => {
     await clearAllCookies(page);
     // Set up API mocks before each test
     await mockBetterAuthApis(page);
+    // Mock Turnstile CAPTCHA
+    await mockTurnstileCaptcha(page);
   });
 
   /**

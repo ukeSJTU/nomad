@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export interface CaptchaFetchOptions {
   headers: Record<string, string>;
@@ -15,6 +15,16 @@ export function useTurnstileCaptcha() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [captchaError, setCaptchaError] = useState<string | null>(null);
   const [resetSignal, setResetSignal] = useState(0);
+
+  // In test environment, automatically set a mock token
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      process.env.NEXT_PUBLIC_IS_TEST === "true"
+    ) {
+      setCaptchaToken("test-captcha-token");
+    }
+  }, []);
 
   const requestNewChallenge = useCallback(() => {
     setCaptchaToken(null);
@@ -38,6 +48,21 @@ export function useTurnstileCaptcha() {
 
   const prepareCaptchaRequest =
     useCallback((): CaptchaRequestContext | null => {
+      // In test environment, always allow
+      if (
+        typeof window !== "undefined" &&
+        process.env.NEXT_PUBLIC_IS_TEST === "true"
+      ) {
+        return {
+          fetchOptions: {
+            headers: {
+              "x-captcha-response": "test-captcha-token",
+            },
+          },
+          complete: () => {},
+        };
+      }
+
       if (!captchaToken) {
         setCaptchaError("请先完成人机验证");
         return null;

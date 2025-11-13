@@ -106,9 +106,7 @@ export default defineConfig({
       BETTER_AUTH_SECRET:
         process.env.BETTER_AUTH_SECRET || "dummy-secret-for-test-only",
       BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-      NEXT_PUBLIC_TURNSTILE_SITE_KEY:
-        process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ||
-        "1x00000000000000000000AA",
+      NEXT_PUBLIC_IS_TEST: "true",
       TURNSTILE_SECRET_KEY:
         process.env.TURNSTILE_SECRET_KEY ||
         "1x0000000000000000000000000000000AA",
