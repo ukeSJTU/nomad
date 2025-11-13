@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/187</span>
+                <span class='fraction'>0/179</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/187</span>
+                <span class='fraction'>0/179</span>
             </div>
         
             
@@ -292,17 +292,7 @@
 <a name='L227'></a><a href='#L227'>227</a>
 <a name='L228'></a><a href='#L228'>228</a>
 <a name='L229'></a><a href='#L229'>229</a>
-<a name='L230'></a><a href='#L230'>230</a>
-<a name='L231'></a><a href='#L231'>231</a>
-<a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a>
-<a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a>
-<a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L230'></a><a href='#L230'>230</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -337,14 +327,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -402,8 +384,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -578,14 +558,6 @@ interface PassengersDataTableProps {
   );
 <span class="cstat-no" title="statement not covered" >};</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >const getDisplayName = (passenger: Passenger) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  if (passenger.chineseName) return passenger.chineseName;</span>
-<span class="cstat-no" title="statement not covered" >  if (passenger.englishFirstName &amp;&amp; passenger.englishLastName) {</span>
-<span class="cstat-no" title="statement not covered" >    return `${passenger.englishLastName} ${passenger.englishFirstName}`;</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  return "未命名";</span>
-<span class="cstat-no" title="statement not covered" >};</span>
-&nbsp;
 <span class="cstat-no" title="statement not covered" >const getDocumentTypeDisplay = (type: string) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  const typeMap: Record&lt;string, string&gt; = {</span>
 <span class="cstat-no" title="statement not covered" >    id_card: "身份证",</span>
@@ -627,7 +599,7 @@ interface PassengersDataTableProps {
 <span class="cstat-no" title="statement not covered" >  const filteredData = data.filter(passenger =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!searchQuery) return true;</span>
 <span class="cstat-no" title="statement not covered" >    const query = searchQuery.toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >    const name = getDisplayName(passenger).toLowerCase();</span>
+<span class="cstat-no" title="statement not covered" >    const name = passenger.name.toLowerCase();</span>
 <span class="cstat-no" title="statement not covered" >    const phone = passenger.phone?.toLowerCase() || "";</span>
 <span class="cstat-no" title="statement not covered" >    const docNumber = passenger.documentNumber.toLowerCase();</span>
 <span class="cstat-no" title="statement not covered" >    return (</span>
@@ -638,11 +610,9 @@ interface PassengersDataTableProps {
   // Column definitions
 <span class="cstat-no" title="statement not covered" >  const columns: ColumnDefinition&lt;Passenger&gt;[] = [</span>
 <span class="cstat-no" title="statement not covered" >    {</span>
-<span class="cstat-no" title="statement not covered" >      key: "chineseName",</span>
+<span class="cstat-no" title="statement not covered" >      key: "name",</span>
 <span class="cstat-no" title="statement not covered" >      header: "姓名",</span>
-<span class="cstat-no" title="statement not covered" >      cell: ({ row }) =&gt; (</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="text-center"&gt;{getDisplayName(row)}&lt;/div&gt;</span>
-      ),
+<span class="cstat-no" title="statement not covered" >      cell: ({ row }) =&gt; &lt;div className="text-center"&gt;{row.name}&lt;/div&gt;,</span>
 <span class="cstat-no" title="statement not covered" >      width: "150px",</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >    {</span>
@@ -787,7 +757,7 @@ interface PassengersDataTableProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-13T03:32:11.158Z
+                at 2025-11-13T04:49:54.810Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

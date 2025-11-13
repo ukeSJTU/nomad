@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/93</span>
+                <span class='fraction'>0/68</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/93</span>
+                <span class='fraction'>0/68</span>
             </div>
         
             
@@ -179,32 +179,7 @@
 <a name='L114'></a><a href='#L114'>114</a>
 <a name='L115'></a><a href='#L115'>115</a>
 <a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a>
-<a name='L118'></a><a href='#L118'>118</a>
-<a name='L119'></a><a href='#L119'>119</a>
-<a name='L120'></a><a href='#L120'>120</a>
-<a name='L121'></a><a href='#L121'>121</a>
-<a name='L122'></a><a href='#L122'>122</a>
-<a name='L123'></a><a href='#L123'>123</a>
-<a name='L124'></a><a href='#L124'>124</a>
-<a name='L125'></a><a href='#L125'>125</a>
-<a name='L126'></a><a href='#L126'>126</a>
-<a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a>
-<a name='L130'></a><a href='#L130'>130</a>
-<a name='L131'></a><a href='#L131'>131</a>
-<a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a>
-<a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a>
-<a name='L138'></a><a href='#L138'>138</a>
-<a name='L139'></a><a href='#L139'>139</a>
-<a name='L140'></a><a href='#L140'>140</a>
-<a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L117'></a><a href='#L117'>117</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,8 +194,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -253,31 +226,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -362,9 +312,7 @@
 // Base passenger schema matching the database schema
 <span class="cstat-no" title="statement not covered" >export const passengerSchema = z.object({</span>
 <span class="cstat-no" title="statement not covered" >  id: z.string().uuid(),</span>
-<span class="cstat-no" title="statement not covered" >  chineseName: z.string().nullable(),</span>
-<span class="cstat-no" title="statement not covered" >  englishFirstName: z.string().nullable(),</span>
-<span class="cstat-no" title="statement not covered" >  englishLastName: z.string().nullable(),</span>
+<span class="cstat-no" title="statement not covered" >  name: z.string(),</span>
 <span class="cstat-no" title="statement not covered" >  nationality: z.string().nullable(),</span>
 <span class="cstat-no" title="statement not covered" >  gender: z.enum(["male", "female", "other"]).nullable(),</span>
 <span class="cstat-no" title="statement not covered" >  dateOfBirth: z.string().nullable(), // ISO date string</span>
@@ -381,58 +329,35 @@
 <span class="cstat-no" title="statement not covered" >});</span>
 &nbsp;
 // Create passenger request schema
-<span class="cstat-no" title="statement not covered" >export const createPassengerRequestSchema = z</span>
-<span class="cstat-no" title="statement not covered" >  .object({</span>
-<span class="cstat-no" title="statement not covered" >    chineseName: z.string().min(1).max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    englishFirstName: z.string().min(1).max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    englishLastName: z.string().min(1).max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    nationality: z.string().max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    gender: z.enum(["male", "female", "other"]).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    dateOfBirth: z.string().date().optional(), // YYYY-MM-DD format</span>
-<span class="cstat-no" title="statement not covered" >    placeOfBirth: z.string().max(255).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    phone: z.string().max(20).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    fax: z.string().max(20).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    email: z.string().email().max(255).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    documentType: z.enum(["passport", "id_card", "other"]),</span>
-<span class="cstat-no" title="statement not covered" >    documentNumber: z.string().min(1).max(50),</span>
-<span class="cstat-no" title="statement not covered" >    documentExpiryDate: z.string().date(), // YYYY-MM-DD format</span>
-<span class="cstat-no" title="statement not covered" >  })</span>
-<span class="cstat-no" title="statement not covered" >  .refine(</span>
-<span class="cstat-no" title="statement not covered" >    data =&gt; data.chineseName || (data.englishFirstName &amp;&amp; data.englishLastName),</span>
-<span class="cstat-no" title="statement not covered" >    {</span>
-<span class="cstat-no" title="statement not covered" >      message:</span>
-<span class="cstat-no" title="statement not covered" >        "Either Chinese name or both English first and last names are required",</span>
-<span class="cstat-no" title="statement not covered" >      path: ["chineseName"],</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" >export const createPassengerRequestSchema = z.object({</span>
+<span class="cstat-no" title="statement not covered" >  name: z.string().min(1, "请输入姓名").max(100, "姓名不能超过100个字符"),</span>
+<span class="cstat-no" title="statement not covered" >  nationality: z.string().max(100).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  gender: z.enum(["male", "female", "other"]).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  dateOfBirth: z.string().date().optional(), // YYYY-MM-DD format</span>
+<span class="cstat-no" title="statement not covered" >  placeOfBirth: z.string().max(255).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  phone: z.string().max(20).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  fax: z.string().max(20).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  email: z.string().email().max(255).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  documentType: z.enum(["passport", "id_card", "other"]),</span>
+<span class="cstat-no" title="statement not covered" >  documentNumber: z.string().min(1).max(50),</span>
+<span class="cstat-no" title="statement not covered" >  documentExpiryDate: z.string().date(), // YYYY-MM-DD format</span>
+<span class="cstat-no" title="statement not covered" >});</span>
 &nbsp;
 // Update passenger request schema (all fields optional except id)
-<span class="cstat-no" title="statement not covered" >export const updatePassengerRequestSchema = z</span>
-<span class="cstat-no" title="statement not covered" >  .object({</span>
-<span class="cstat-no" title="statement not covered" >    id: z.string().uuid(),</span>
-<span class="cstat-no" title="statement not covered" >    chineseName: z.string().min(1).max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    englishFirstName: z.string().min(1).max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    englishLastName: z.string().min(1).max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    nationality: z.string().max(100).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    gender: z.enum(["male", "female", "other"]).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    dateOfBirth: z.string().date().optional(),</span>
-<span class="cstat-no" title="statement not covered" >    placeOfBirth: z.string().max(255).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    phone: z.string().max(20).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    fax: z.string().max(20).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    email: z.string().email().max(255).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    documentType: z.enum(["passport", "id_card", "other"]).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    documentNumber: z.string().min(1).max(50).optional(),</span>
-<span class="cstat-no" title="statement not covered" >    documentExpiryDate: z.string().date().optional(),</span>
-<span class="cstat-no" title="statement not covered" >  })</span>
-<span class="cstat-no" title="statement not covered" >  .refine(</span>
-<span class="cstat-no" title="statement not covered" >    data =&gt;</span>
-<span class="cstat-no" title="statement not covered" >      !!data.chineseName || (!!data.englishFirstName &amp;&amp; !!data.englishLastName),</span>
-<span class="cstat-no" title="statement not covered" >    {</span>
-<span class="cstat-no" title="statement not covered" >      message:</span>
-<span class="cstat-no" title="statement not covered" >        "Either Chinese name or both English first and last names are required",</span>
-<span class="cstat-no" title="statement not covered" >      path: ["chineseName"],</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" >export const updatePassengerRequestSchema = z.object({</span>
+<span class="cstat-no" title="statement not covered" >  id: z.string().uuid(),</span>
+<span class="cstat-no" title="statement not covered" >  name: z.string().min(1).max(100).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  nationality: z.string().max(100).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  gender: z.enum(["male", "female", "other"]).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  dateOfBirth: z.string().date().optional(),</span>
+<span class="cstat-no" title="statement not covered" >  placeOfBirth: z.string().max(255).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  phone: z.string().max(20).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  fax: z.string().max(20).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  email: z.string().email().max(255).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  documentType: z.enum(["passport", "id_card", "other"]).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  documentNumber: z.string().min(1).max(50).optional(),</span>
+<span class="cstat-no" title="statement not covered" >  documentExpiryDate: z.string().date().optional(),</span>
+<span class="cstat-no" title="statement not covered" >});</span>
 &nbsp;
 // Delete passenger request schema
 <span class="cstat-no" title="statement not covered" >export const deletePassengerRequestSchema = z.object({</span>
@@ -493,7 +418,7 @@ export type DeletePassengerResponse = z.infer&lt;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-13T03:32:11.158Z
+                at 2025-11-13T04:49:54.810Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

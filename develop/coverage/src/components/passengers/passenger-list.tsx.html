@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/222</span>
+                <span class='fraction'>0/215</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/222</span>
+                <span class='fraction'>0/215</span>
             </div>
         
             
@@ -337,16 +337,7 @@
 <a name='L272'></a><a href='#L272'>272</a>
 <a name='L273'></a><a href='#L273'>273</a>
 <a name='L274'></a><a href='#L274'>274</a>
-<a name='L275'></a><a href='#L275'>275</a>
-<a name='L276'></a><a href='#L276'>276</a>
-<a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a>
-<a name='L279'></a><a href='#L279'>279</a>
-<a name='L280'></a><a href='#L280'>280</a>
-<a name='L281'></a><a href='#L281'>281</a>
-<a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a>
-<a name='L284'></a><a href='#L284'>284</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L275'></a><a href='#L275'>275</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -424,15 +415,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -709,15 +691,6 @@ interface PassengerListProps {
     );
 <span class="cstat-no" title="statement not covered" >  };</span>
 &nbsp;
-  // Get display name
-<span class="cstat-no" title="statement not covered" >  const getDisplayName = (passenger: Passenger) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (passenger.chineseName) return passenger.chineseName;</span>
-<span class="cstat-no" title="statement not covered" >    if (passenger.englishFirstName &amp;&amp; passenger.englishLastName) {</span>
-<span class="cstat-no" title="statement not covered" >      return `${passenger.englishLastName} ${passenger.englishFirstName}`;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    return "未命名";</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-&nbsp;
   // Get document type display
 <span class="cstat-no" title="statement not covered" >  const getDocumentTypeDisplay = (type: string) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    const typeMap: Record&lt;string, string&gt; = {</span>
@@ -826,7 +799,7 @@ interface PassengerListProps {
 <span class="cstat-no" title="statement not covered" >                      onCheckedChange={checked =&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        handleSelectOne(passenger.id, checked as boolean)</span>
                       }
-<span class="cstat-no" title="statement not covered" >                      aria-label={`选择 ${getDisplayName(passenger)}`}</span>
+<span class="cstat-no" title="statement not covered" >                      aria-label={`选择 ${passenger.name}`}</span>
 <span class="cstat-no" title="statement not covered" >                    /&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;/TableCell&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;TableCell&gt;</span>
@@ -835,11 +808,11 @@ interface PassengerListProps {
 <span class="cstat-no" title="statement not covered" >                      onCheckedChange={checked =&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        handleSelectOne(passenger.id, checked as boolean)</span>
                       }
-<span class="cstat-no" title="statement not covered" >                      aria-label={`选择 ${getDisplayName(passenger)}`}</span>
+<span class="cstat-no" title="statement not covered" >                      aria-label={`选择 ${passenger.name}`}</span>
 <span class="cstat-no" title="statement not covered" >                    /&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;/TableCell&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;TableCell className="font-medium"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    {getDisplayName(passenger)}</span>
+<span class="cstat-no" title="statement not covered" >                    {passenger.name}</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;/TableCell&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;TableCell&gt;{maskPhone(passenger.phone)}&lt;/TableCell&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;TableCell&gt;</span>
@@ -919,7 +892,7 @@ interface PassengerListProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-13T03:32:11.158Z
+                at 2025-11-13T04:49:54.810Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
