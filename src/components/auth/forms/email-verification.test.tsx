@@ -4,6 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 
 import EmailVerificationForm from "./email-verification";
 
+vi.mock("@/components/security/turnstile-widget", () => ({
+  TurnstileWidget: ({ onSuccess }: { onSuccess: (token: string) => void }) => (
+    <button onClick={() => onSuccess("mock-token")}>Mock Turnstile</button>
+  ),
+}));
+
 describe("EmailVerificationForm", () => {
   it("should show validation error for empty email", async () => {
     const user = userEvent.setup();
@@ -71,10 +77,11 @@ describe("EmailVerificationForm", () => {
       screen.getByPlaceholderText("请输入邮箱地址"),
       "test@example.com"
     );
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "发送验证码" }));
 
     await waitFor(() => {
-      expect(onSendOtp).toHaveBeenCalledTimes(1);
+      expect(onSendOtp).toHaveBeenCalledWith("mock-token");
     });
   });
 });

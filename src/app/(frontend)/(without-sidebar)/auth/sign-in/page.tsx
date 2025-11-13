@@ -11,6 +11,10 @@ import PhoneLoginForm from "@/components/auth/forms/phone-login";
 import PhoneOtpLoginForm from "@/components/auth/forms/phone-otp-login";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  requestEmailOtpAction,
+  requestPhoneOtpAction,
+} from "@/lib/actions/otp";
 import { authClient } from "@/lib/auth/client";
 import type {
   EmailLoginData,
@@ -163,7 +167,7 @@ export default function SignInPage() {
    * Handles OTP sending functionality for phone
    * Sends verification code to the user's phone number
    */
-  const handleSendPhoneOtp = async () => {
+  const handleSendPhoneOtp = async (turnstileToken: string) => {
     // Validate that phone number is entered
     if (!currentPhoneNumber) {
       // Validation is now handled in the form component
@@ -176,16 +180,15 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      // Send OTP using better-auth
-      const { error: sendError } = await authClient.phoneNumber.sendOtp({
+      const result = await requestPhoneOtpAction({
         phoneNumber: fullPhoneNumber,
+        turnstileToken,
       });
 
-      if (sendError) {
-        console.error("发送验证码失败:", sendError);
-        // Error will be shown in form field
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
       } else {
-        setCountdown(60); // Start 60-second countdown for resend
+        setCountdown(60);
       }
     } catch (error) {
       console.error("发送验证码异常:", error);
@@ -199,7 +202,7 @@ export default function SignInPage() {
    * Handles OTP sending functionality for email
    * Sends verification code to the user's email
    */
-  const handleSendEmailOtp = async () => {
+  const handleSendEmailOtp = async (turnstileToken: string) => {
     // Validate that email is entered
     if (!currentEmail) {
       // Validation is now handled in the form component
@@ -211,17 +214,16 @@ export default function SignInPage() {
     try {
       // Send OTP using better-auth
       // Use "sign-in" type to allow user login with OTP
-      const { error: sendError } =
-        await authClient.emailOtp.sendVerificationOtp({
-          email: currentEmail,
-          type: "sign-in",
-        });
+      const result = await requestEmailOtpAction({
+        email: currentEmail,
+        type: "sign-in",
+        turnstileToken,
+      });
 
-      if (sendError) {
-        console.error("发送验证码失败:", sendError);
-        // Error will be shown in form field
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
       } else {
-        setCountdown(60); // Start 60-second countdown for resend
+        setCountdown(60);
       }
     } catch (error) {
       console.error("发送验证码异常:", error);

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import UpdateEmailForm from "@/components/security/update-email-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { updateEmailAction } from "@/lib/actions/auth";
+import { requestEmailOtpAction } from "@/lib/actions/otp";
 import { authClient } from "@/lib/auth/client";
 
 /**
@@ -38,21 +39,22 @@ export default function EmailPageClient({
   /**
    * Handle sending OTP to the new email address
    */
-  const handleSendOtp = async (email: string) => {
+  const handleSendOtp = async (email: string, turnstileToken: string) => {
     setIsLoading(true);
 
     try {
-      const { error } = await authClient.emailOtp.sendVerificationOtp({
+      const result = await requestEmailOtpAction({
         email,
         type: "email-verification",
+        turnstileToken,
       });
 
-      if (error) {
-        console.error("发送验证码失败:", error);
-        toast.error("发送验证码失败，请重试");
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
+        toast.error(result.error || "发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送到新邮箱");
-        setCountdown(60); // Start 60-second countdown
+        setCountdown(60);
       }
     } catch (error) {
       console.error("发送验证码异常:", error);

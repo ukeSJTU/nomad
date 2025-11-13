@@ -14,6 +14,7 @@ import {
   updateEmail,
   updatePhoneNumber,
 } from "@/lib/services/auth";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 /**
  * Server action to unlink a social account
@@ -68,11 +69,26 @@ export async function unlinkAccountAction(providerId: string) {
  * This action is called after successful phone/email verification to complete the registration process.
  * It checks if the user already has a password set and prevents duplicate password setup.
  *
- * @param password - The password to set for the user
+ * @param input.password - The password to set for the user
+ * @param input.turnstileToken - Cloudflare Turnstile token for human verification
  * @returns Object with success status and optional error message
  */
-export async function setInitialPasswordAction(password: string) {
+export async function setInitialPasswordAction(input: {
+  password: string;
+  turnstileToken: string;
+}) {
+  const { password, turnstileToken } = input;
+
   try {
+    // Verify Turnstile token before continuing
+    const verificationResult = await verifyTurnstileToken(turnstileToken);
+    if (!verificationResult.success) {
+      return {
+        success: false,
+        error: verificationResult.error ?? "人机验证失败，请刷新页面重试",
+      };
+    }
+
     // Get current user session (should exist after phone/email verification)
     const headersList = await headers();
     const session = await auth.api.getSession({

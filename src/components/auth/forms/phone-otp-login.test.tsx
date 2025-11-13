@@ -4,6 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 
 import PhoneOtpLoginForm from "./phone-otp-login";
 
+vi.mock("@/components/security/turnstile-widget", () => ({
+  TurnstileWidget: ({ onSuccess }: { onSuccess: (token: string) => void }) => (
+    <button onClick={() => onSuccess("mock-token")}>Mock Turnstile</button>
+  ),
+}));
+
 describe("PhoneOtpLoginForm", () => {
   it("should render all form fields correctly", () => {
     const onSubmit = vi.fn();
@@ -107,10 +113,11 @@ describe("PhoneOtpLoginForm", () => {
     render(<PhoneOtpLoginForm onSubmit={onSubmit} onSendOtp={onSendOtp} />);
 
     await user.type(screen.getByPlaceholderText("请输入手机号"), "13800138000");
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "发送验证码" }));
 
     await waitFor(() => {
-      expect(onSendOtp).toHaveBeenCalledTimes(1);
+      expect(onSendOtp).toHaveBeenCalledWith("mock-token");
     });
   });
 
@@ -121,6 +128,7 @@ describe("PhoneOtpLoginForm", () => {
     render(<PhoneOtpLoginForm onSubmit={onSubmit} onSendOtp={onSendOtp} />);
 
     await user.type(screen.getByPlaceholderText("请输入手机号"), "123");
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "发送验证码" }));
 
     await waitFor(() => {

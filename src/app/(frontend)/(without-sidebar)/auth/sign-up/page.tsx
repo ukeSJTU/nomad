@@ -11,6 +11,10 @@ import SignUpModal, {
 import { Stepper, type StepperStep } from "@/components/common";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { setInitialPasswordAction } from "@/lib/actions";
+import {
+  requestEmailOtpAction,
+  requestPhoneOtpAction,
+} from "@/lib/actions/otp";
 import { authClient } from "@/lib/auth/client";
 import type {
   EmailVerificationData,
@@ -148,7 +152,10 @@ export default function SignUpPage() {
 
     try {
       // Call Server Action to set the initial password
-      const result = await setInitialPasswordAction(data.password);
+      const result = await setInitialPasswordAction({
+        password: data.password,
+        turnstileToken: data.turnstileToken,
+      });
 
       if (!result.success) {
         setError(result.error || "Failed to set password");
@@ -204,7 +211,7 @@ export default function SignUpPage() {
    * Handles OTP sending functionality for phone
    * Sends verification code to the user's phone number using better-auth
    */
-  const handleSendPhoneOtp = async () => {
+  const handleSendPhoneOtp = async (turnstileToken: string) => {
     // Validate that phone number is entered
     if (!currentPhoneNumber) {
       setError("请先输入手机号"); // Please enter phone number first
@@ -219,16 +226,16 @@ export default function SignUpPage() {
 
     try {
       // Call better-auth client instance to send OTP
-      const { error: sendError } = await authClient.phoneNumber.sendOtp({
+      const result = await requestPhoneOtpAction({
         phoneNumber: fullPhoneNumber,
+        turnstileToken,
       });
 
-      if (sendError) {
-        console.error("发送验证码失败:", sendError);
-        setError("发送验证码失败，请重试"); // Failed to send OTP, please try again
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
+        setError(result.error || "发送验证码失败，请重试");
       } else {
-        console.log("验证码发送成功");
-        setCountdown(60); // Start 60-second countdown for resend
+        setCountdown(60);
       }
     } catch (error) {
       console.error("发送验证码异常:", error);
@@ -243,7 +250,7 @@ export default function SignUpPage() {
    * Sends verification code to the user's email using better-auth
    * Uses "sign-in" type which allows user creation on verification
    */
-  const handleSendEmailOtp = async () => {
+  const handleSendEmailOtp = async (turnstileToken: string) => {
     // Validate that email is entered
     if (!currentEmail) {
       setError("请先输入邮箱地址"); // Please enter email first
@@ -256,18 +263,17 @@ export default function SignUpPage() {
     try {
       // Call better-auth client instance to send OTP
       // Use "sign-in" type to allow user creation on verification (similar to phone)
-      const { error: sendError } =
-        await authClient.emailOtp.sendVerificationOtp({
-          email: currentEmail,
-          type: "sign-in",
-        });
+      const result = await requestEmailOtpAction({
+        email: currentEmail,
+        type: "sign-in",
+        turnstileToken,
+      });
 
-      if (sendError) {
-        console.error("发送验证码失败:", sendError);
-        setError("发送验证码失败，请重试"); // Failed to send OTP, please try again
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
+        setError(result.error || "发送验证码失败，请重试");
       } else {
-        console.log("验证码发送成功");
-        setCountdown(60); // Start 60-second countdown for resend
+        setCountdown(60);
       }
     } catch (error) {
       console.error("发送验证码异常:", error);

@@ -73,6 +73,19 @@ cp .env.example .env
 # 最重要的是: DATABASE_URL
 ```
 
+### Cloudflare Turnstile 配置
+
+敏感操作（发送验证码、注册）现在由 Cloudflare Turnstile 保护。请在 `.env` 中设置以下变量：
+
+```bash
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+```
+
+- 本地开发：可以使用上述 testing key，它会始终通过验证
+- 生产环境：前往 [Cloudflare Turnstile 控制台](https://dash.cloudflare.com/) 创建站点并使用真实的 site key / secret key
+- 如果未在生产环境配置 `TURNSTILE_SECRET_KEY`，验证码相关功能将被阻止
+
 ### 创建数据库
 
 如果使用 PostgreSQL（推荐）：

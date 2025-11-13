@@ -1,9 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { TurnstileWidget } from "@/components/security/turnstile-widget";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -33,7 +35,7 @@ type UpdateEmailData = z.infer<typeof updateEmailSchema>;
 interface UpdateEmailFormProps {
   currentEmail: string;
   onSubmit: (data: UpdateEmailData) => void;
-  onSendOtp: (email: string) => void;
+  onSendOtp: (email: string, turnstileToken: string) => void;
   isLoading?: boolean;
   countdown?: number;
 }
@@ -53,6 +55,9 @@ export default function UpdateEmailForm({
     },
   });
 
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileError, setTurnstileError] = useState<string | null>(null);
+
   // Watch for changes in email
   const email = form.watch("email");
 
@@ -64,7 +69,13 @@ export default function UpdateEmailForm({
     // Validate email before sending OTP
     const isValid = await form.trigger("email");
     if (isValid) {
-      onSendOtp(form.getValues("email"));
+      if (!turnstileToken) {
+        setTurnstileError("请完成人机验证再发送验证码");
+        return;
+      }
+
+      setTurnstileError(null);
+      onSendOtp(form.getValues("email"), turnstileToken);
     }
   };
 
@@ -133,10 +144,31 @@ export default function UpdateEmailForm({
                 variant="outline"
                 className="h-12 px-4 text-blue-600 border-blue-600 hover:bg-blue-50"
                 onClick={handleSendOtp}
-                disabled={countdown > 0 || isLoading || !email}
+                disabled={
+                  countdown > 0 || isLoading || !email || !turnstileToken
+                }
               >
                 {countdown > 0 ? `${countdown}s` : "发送验证码"}
               </Button>
+            </div>
+            <div className="mt-4 space-y-2">
+              <TurnstileWidget
+                onSuccess={token => {
+                  setTurnstileToken(token);
+                  setTurnstileError(null);
+                }}
+                onError={() => {
+                  setTurnstileToken(null);
+                  setTurnstileError("验证组件加载失败，请刷新页面或检查网络");
+                }}
+                onExpire={() => {
+                  setTurnstileToken(null);
+                  setTurnstileError("验证已过期，请重新验证");
+                }}
+              />
+              {turnstileError && (
+                <p className="text-sm text-red-500">{turnstileError}</p>
+              )}
             </div>
           </div>
         </div>

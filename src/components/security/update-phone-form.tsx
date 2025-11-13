@@ -1,9 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { TurnstileWidget } from "@/components/security/turnstile-widget";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -38,7 +40,7 @@ type UpdatePhoneData = z.infer<typeof updatePhoneSchema>;
 interface UpdatePhoneFormProps {
   currentPhoneNumber: string | null;
   onSubmit: (data: UpdatePhoneData) => void;
-  onSendOtp: (phoneNumber: string) => void;
+  onSendOtp: (phoneNumber: string, turnstileToken: string) => void;
   isLoading?: boolean;
   countdown?: number;
 }
@@ -58,6 +60,9 @@ export default function UpdatePhoneForm({
     },
   });
 
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileError, setTurnstileError] = useState<string | null>(null);
+
   // Watch for changes in phoneNumber
   const phoneNumber = form.watch("phoneNumber");
 
@@ -69,7 +74,13 @@ export default function UpdatePhoneForm({
     // Validate phone number before sending OTP
     const isValid = await form.trigger("phoneNumber");
     if (isValid) {
-      onSendOtp(form.getValues("phoneNumber"));
+      if (!turnstileToken) {
+        setTurnstileError("请完成人机验证再发送验证码");
+        return;
+      }
+
+      setTurnstileError(null);
+      onSendOtp(form.getValues("phoneNumber"), turnstileToken);
     }
   };
 
@@ -142,10 +153,31 @@ export default function UpdatePhoneForm({
                 variant="outline"
                 className="h-12 px-4 text-blue-600 border-blue-600 hover:bg-blue-50"
                 onClick={handleSendOtp}
-                disabled={countdown > 0 || isLoading || !phoneNumber}
+                disabled={
+                  countdown > 0 || isLoading || !phoneNumber || !turnstileToken
+                }
               >
                 {countdown > 0 ? `${countdown}s` : "发送验证码"}
               </Button>
+            </div>
+            <div className="mt-4 space-y-2">
+              <TurnstileWidget
+                onSuccess={token => {
+                  setTurnstileToken(token);
+                  setTurnstileError(null);
+                }}
+                onError={() => {
+                  setTurnstileToken(null);
+                  setTurnstileError("验证组件加载失败，请刷新页面或检查网络");
+                }}
+                onExpire={() => {
+                  setTurnstileToken(null);
+                  setTurnstileError("验证已过期，请重新验证");
+                }}
+              />
+              {turnstileError && (
+                <p className="text-sm text-red-500">{turnstileError}</p>
+              )}
             </div>
           </div>
         </div>

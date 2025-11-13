@@ -6,6 +6,7 @@ import { emailOTP, phoneNumber } from "better-auth/plugins";
 import { db } from "@/lib/db";
 import { sendEmailOtp } from "@/lib/email";
 import { sendSmsOtp } from "@/lib/sms";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 import logger from "@/utils/logger";
 
 /**
@@ -52,6 +53,46 @@ export function shouldEnableResend(): boolean {
   return isProduction;
 }
 
+function getClientIp(request?: Request): string | undefined {
+  if (!request) {
+    return undefined;
+  }
+
+  const forwarded =
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-real-ip") ??
+    request.headers.get("x-forwarded-for");
+
+  if (!forwarded) {
+    return undefined;
+  }
+
+  return forwarded.split(",")[0]?.trim();
+}
+
+async function ensureTurnstileVerified(request?: Request) {
+  const token =
+    request?.headers.get("x-turnstile-token") ??
+    request?.headers.get("cf-turnstile-response");
+
+  const verificationResult = await verifyTurnstileToken(
+    token,
+    getClientIp(request)
+  );
+
+  if (!verificationResult.success) {
+    logger.warn(
+      {
+        errorCodes: verificationResult.errorCodes,
+      },
+      "Turnstile verification failed for OTP request"
+    );
+    throw new Error(
+      verificationResult.error ?? "人机验证失败，请刷新页面后重试"
+    );
+  }
+}
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -61,9 +102,10 @@ export const auth = betterAuth({
   },
   plugins: [
     phoneNumber({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       sendOTP: async ({ phoneNumber, code }, request) => {
         const useAliyunSms = shouldEnableAliyunSms();
+
+        await ensureTurnstileVerified(request);
 
         if (useAliyunSms) {
           try {
@@ -109,8 +151,10 @@ export const auth = betterAuth({
       },
     }),
     emailOTP({
-      async sendVerificationOTP({ email, otp, type }) {
+      async sendVerificationOTP({ email, otp, type }, request) {
         const useResend = shouldEnableResend();
+
+        await ensureTurnstileVerified(request);
 
         if (useResend) {
           try {

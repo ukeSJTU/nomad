@@ -4,11 +4,19 @@ import { describe, expect, it, vi } from "vitest";
 
 import PasswordSetupForm from "./password-setup";
 
+vi.mock("@/components/security/turnstile-widget", () => ({
+  TurnstileWidget: ({ onSuccess }: { onSuccess: (token: string) => void }) => (
+    <button onClick={() => onSuccess("mock-token")}>Mock Turnstile</button>
+  ),
+}));
+
 describe("PasswordSetupForm", () => {
   it("should render all form fields correctly", () => {
     const onSubmit = vi.fn();
     render(<PasswordSetupForm onSubmit={onSubmit} />);
-
+    expect(
+      screen.getByRole("button", { name: "Mock Turnstile" })
+    ).toBeInTheDocument();
     expect(screen.getByLabelText("设置密码")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("请输入密码")).toBeInTheDocument();
     expect(screen.getByLabelText("确认密码")).toBeInTheDocument();
@@ -47,6 +55,7 @@ describe("PasswordSetupForm", () => {
       screen.getByPlaceholderText("请再次输入密码"),
       "Password123"
     );
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
@@ -62,6 +71,7 @@ describe("PasswordSetupForm", () => {
 
     await user.type(screen.getByPlaceholderText("请输入密码"), "Pass1");
     await user.type(screen.getByPlaceholderText("请再次输入密码"), "Pass1");
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
@@ -80,6 +90,7 @@ describe("PasswordSetupForm", () => {
       screen.getByPlaceholderText("请再次输入密码"),
       "Password456"
     );
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
@@ -98,6 +109,7 @@ describe("PasswordSetupForm", () => {
       screen.getByPlaceholderText("请再次输入密码"),
       "password123"
     );
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
@@ -118,6 +130,7 @@ describe("PasswordSetupForm", () => {
       screen.getByPlaceholderText("请再次输入密码"),
       "PASSWORD123"
     );
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
@@ -138,14 +151,34 @@ describe("PasswordSetupForm", () => {
       screen.getByPlaceholderText("请再次输入密码"),
       "Password123"
     );
+    await user.click(screen.getByRole("button", { name: "Mock Turnstile" }));
     await user.click(screen.getByRole("button", { name: "完成注册" }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
         password: "Password123",
         confirmPassword: "Password123",
+        turnstileToken: "mock-token",
       });
     });
+  });
+
+  it("should require Turnstile verification before submit", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<PasswordSetupForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByPlaceholderText("请输入密码"), "Password123");
+    await user.type(
+      screen.getByPlaceholderText("请再次输入密码"),
+      "Password123"
+    );
+    await user.click(screen.getByRole("button", { name: "完成注册" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("请完成人机验证")).toBeInTheDocument();
+    });
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 
   it("should toggle password visibility when eye icon is clicked", async () => {

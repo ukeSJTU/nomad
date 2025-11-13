@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import zxcvbn from "zxcvbn";
 
+import { TurnstileWidget } from "@/components/security/turnstile-widget";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -46,10 +47,9 @@ export default function PasswordSetupForm({
     defaultValues: {
       password: "",
       confirmPassword: "",
+      turnstileToken: "",
     },
   });
-
-  console.log("PasswordSetupForm - maskedIdentifier:", maskedIdentifier);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -184,6 +184,45 @@ export default function PasswordSetupForm({
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="turnstileToken"
+            render={({ field }) => <input type="hidden" {...field} />}
+          />
+
+          <div className="space-y-2">
+            <FormLabel className="text-sm font-medium text-gray-700">
+              人机验证
+            </FormLabel>
+            <TurnstileWidget
+              onSuccess={token => {
+                form.setValue("turnstileToken", token, {
+                  shouldValidate: true,
+                });
+                form.clearErrors("turnstileToken");
+              }}
+              onError={() => {
+                form.setValue("turnstileToken", "");
+                form.setError("turnstileToken", {
+                  type: "manual",
+                  message: "验证组件加载失败，请刷新页面或检查网络",
+                });
+              }}
+              onExpire={() => {
+                form.setValue("turnstileToken", "");
+                form.setError("turnstileToken", {
+                  type: "manual",
+                  message: "验证已过期，请重新验证",
+                });
+              }}
+            />
+            {form.formState.errors.turnstileToken && (
+              <p className="text-sm text-red-500">
+                {form.formState.errors.turnstileToken.message}
+              </p>
+            )}
+          </div>
 
           {/* Password Requirements with Real-time Validation */}
           <div className="text-sm space-y-2">

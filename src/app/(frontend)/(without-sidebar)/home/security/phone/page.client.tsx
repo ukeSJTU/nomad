@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import UpdatePhoneForm from "@/components/security/update-phone-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { updatePhoneNumberAction } from "@/lib/actions/auth";
+import { requestPhoneOtpAction } from "@/lib/actions/otp";
 import { authClient } from "@/lib/auth/client";
 
 /**
@@ -38,20 +39,21 @@ export default function PhonePageClient({
   /**
    * Handle sending OTP to the new phone number
    */
-  const handleSendOtp = async (phoneNumber: string) => {
+  const handleSendOtp = async (phoneNumber: string, turnstileToken: string) => {
     setIsLoading(true);
 
     // Add +86 prefix for China mainland phone numbers
     const fullPhoneNumber = `+86${phoneNumber}`;
 
     try {
-      const { error } = await authClient.phoneNumber.sendOtp({
+      const result = await requestPhoneOtpAction({
         phoneNumber: fullPhoneNumber,
+        turnstileToken,
       });
 
-      if (error) {
-        console.error("发送验证码失败:", error);
-        toast.error("发送验证码失败，请重试");
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
+        toast.error(result.error || "发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送");
         setCountdown(60); // Start 60-second countdown

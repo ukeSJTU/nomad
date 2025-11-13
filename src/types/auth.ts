@@ -30,6 +30,7 @@ export const passwordSetupSchema = z
       .regex(/[a-z]/, "密码必须包含至少一个小写字母")
       .regex(/[0-9]/, "密码必须包含至少一个数字"),
     confirmPassword: z.string(),
+    turnstileToken: z.string().min(1, "请完成人机验证"),
   })
   .refine(data => data.password === data.confirmPassword, {
     message: "两次输入的密码不一致",
