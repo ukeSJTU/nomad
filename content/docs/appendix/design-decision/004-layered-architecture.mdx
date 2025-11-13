@@ -1,0 +1,235 @@
+---
+title: 薄控制器 + 厚服务的分层架构
+---
+
+## 决策 004：薄控制器 + 厚服务的分层架构
+
+### 核心思想
+
+**一句话总结**：Server Actions 只负责认证和调用服务，所有业务逻辑都放在独立的 Service 层，这样可以方便测试、复用代码、降低耦合。
+
+---
+
+### 1. 为什么这么设计？
+
+#### 问题：直接在 Server Actions 中写业务逻辑有什么问题？
+
+**最初的代码**（所有逻辑都在 Action 中）：
+
+```typescript
+// src/lib/actions/passengers.ts
+export async function createPassengerAction(formData: unknown) {
+  // 1. 获取 session（依赖 Next.js 运行时）
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user?.id) {
+    return { success: false, error: "未登录" };
+  }
+
+  // 2. 验证数据
+  const data = formData as CreatePassengerRequest;
+  if (!data.name || !data.documentNumber) {
+    return { success: false, error: "缺少必填字段" };
+  }
+
+  // 3. 业务逻辑：创建旅客
+  const [passenger] = await db.insert(passengers).values({
+    userId: session.user.id,
+    name: data.name,
+    documentType: data.documentType,
+    documentNumber: data.documentNumber,
+    // ...
+  }).returning();
+
+  return { success: true, data: passenger };
+}
+```
+
+**存在的问题**：
+
+1. **难以测试**：必须 mock Next.js 的 `headers()` 和 `auth.api.getSession()`，非常不稳定
+2. **代码重复**：每个 Action 都要写一遍认证检查的代码
+3. **无法复用**：如果管理员要帮用户创建旅客，或者定时任务要批量创建，无法复用这段逻辑
+4. **职责混乱**：框架代码（session）和业务逻辑（创建旅客）混在一起
+
+---
+
+### 2. 我们的解决方案：三层架构
+
+```
+┌─────────────────────────────────────────┐
+│  Actions (薄控制器)                      │
+│  - 获取 session                         │
+│  - 验证认证状态                          │
+│  - 调用 Service                         │
+│  - 处理框架特定操作 (revalidatePath)      │
+└─────────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────────┐
+│  Services (厚服务)                       │
+│  - 业务逻辑                              │
+│  - 数据验证                              │
+│  - 数据库操作                            │
+│  - 纯函数, 无框架依赖                     │
+└─────────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────────┐
+│  Database (Drizzle ORM)                 │
+└─────────────────────────────────────────┘
+```
+
+#### 重构后的代码
+
+**Service 层**（纯业务逻辑）：
+
+```typescript
+// src/lib/services/passengers.ts
+export async function createPassenger(
+  userId: string,
+  data: PassengerInput
+): Promise<ServiceResult<Passenger>> {
+  // 只关注业务逻辑，不依赖 Next.js
+  if (!data.name || !data.documentNumber) {
+    return { success: false, error: "缺少必填字段" };
+  }
+
+  const [passenger] = await db.insert(passengers).values({
+    userId,
+    name: data.name,
+    documentType: data.documentType,
+    documentNumber: data.documentNumber,
+    // ...
+  }).returning();
+
+  return { success: true, data: passenger };
+}
+```
+
+**Action 层**（薄控制器）：
+
+```typescript
+// src/lib/actions/passengers.ts
+export async function createPassengerAction(formData: unknown) {
+  // 1. 认证检查（使用辅助函数，消除重复代码）
+  const authResult = await getAuthenticatedUserId();
+  if (!authResult.success) {
+    return { success: false, error: authResult.error };
+  }
+
+  // 2. 调用服务层
+  const result = await createPassenger(authResult.userId, formData);
+
+  // 3. 框架特定操作
+  if (result.success) {
+    revalidatePath("/passengers");
+  }
+
+  return result;
+}
+```
+
+---
+
+### 3. 这样设计的好处
+
+#### Pros 1：方便集成测试
+
+**Service 层测试**（无需 mock）：
+
+```typescript
+// tests/integration/services/passengers.integration.test.ts
+test("创建旅客成功", async () => {
+  // 直接调用服务函数，传入 userId
+  const result = await createPassenger(testUser.id, {
+    name: "张三",
+    documentType: "passport",
+    documentNumber: "E12345678",
+    documentExpiryDate: "2030-12-31",
+  });
+
+  expect(result.success).toBe(true);
+  expect(result.data?.name).toBe("张三");
+});
+```
+
+**对比：Action 层测试**（需要 mock，不稳定）：
+
+```typescript
+// ❌ 不推荐：测试 Action 需要 mock Next.js 运行时
+test("创建旅客成功", async () => {
+  // 需要 mock headers()
+  vi.mock("next/headers", () => ({
+    headers: vi.fn(() => new Headers()),
+  }));
+
+  // 需要 mock auth.api.getSession()
+  vi.mock("@/lib/auth", () => ({
+    auth: {
+      api: {
+        getSession: vi.fn(() => ({ user: { id: "test-user" } })),
+      },
+    },
+  }));
+
+  // 测试代码...
+});
+```
+
+#### Pros 2：代码复用
+
+Service 层可以在多种场景下复用：
+
+```typescript
+// 场景 1：用户自己创建旅客
+export async function createPassengerAction(formData: unknown) {
+  const { userId } = await getAuthenticatedUserId();
+  return await createPassenger(userId, formData);
+}
+
+// 场景 2：管理员帮用户创建旅客
+export async function adminCreatePassengerAction(targetUserId: string, formData: unknown) {
+  await requireAdminRole();
+  return await createPassenger(targetUserId, formData);
+}
+
+// 场景 3：定时任务批量导入旅客
+export async function importPassengersFromCSV(csvData: string) {
+  for (const row of parseCSV(csvData)) {
+    await createPassenger(row.userId, row.passengerData);
+  }
+}
+```
+
+#### Pros 3：消除代码重复
+
+**认证辅助函数**：
+
+```typescript
+// src/lib/utils/auth-helpers.ts
+export async function getAuthenticatedUserId(): Promise<AuthResult> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user?.id) {
+    return { success: false, error: "请先登录" };
+  }
+  return { success: true, userId: session.user.id };
+}
+```
+
+所有 Actions 都使用这个辅助函数，避免重复写认证代码。
+
+#### Pros 4：职责清晰
+
+| 层级 | 职责 | 依赖 |
+|------|------|------|
+| **Actions** | 认证、调用服务、框架操作 | Next.js、Better Auth |
+| **Services** | 业务逻辑、数据验证、数据库操作 | 仅依赖 Drizzle ORM |
+| **Database** | 数据持久化 | PostgreSQL |
+
+---
+
+### 4. 总结
+
+**设计原则**：
+1. **薄控制器**：Actions 只处理框架相关操作（认证、路由、缓存）
+2. **厚服务**：Services 包含所有业务逻辑，纯函数设计
+3. **依赖注入**：Services 接收 `userId` 作为参数，不直接访问 session
+4. **测试优先**：Service 层易于测试，无需 mock Next.js 运行时
