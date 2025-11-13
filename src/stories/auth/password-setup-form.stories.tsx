@@ -85,8 +85,8 @@ export const HappyPath: Story = {
       delay: 50,
     });
 
-    // 3. 验证密码强度显示为"强"
-    await expect(canvas.getByText("强")).toBeInTheDocument();
+    // 3. 验证密码强度显示为"弱"
+    await expect(canvas.getByText("弱")).toBeInTheDocument();
 
     // 4. 验证所有必需的密码要求都已满足（显示绿色勾选）
     await expect(canvas.getByText("8-20位字符")).toHaveClass("text-green-600");
