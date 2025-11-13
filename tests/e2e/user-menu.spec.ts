@@ -25,8 +25,8 @@ test.describe("UserMenu Component E2E", () => {
     // Verify link has correct href
     await expect(userMenuLink).toHaveAttribute("href", "/home/info");
 
-    // Click the link - use force to bypass HoverCard interaction
-    await userMenuLink.click({ force: true });
+    // Click the link
+    await userMenuLink.click();
 
     // Verify navigation to /home/info
     await expect(page).toHaveURL("/home/info");
