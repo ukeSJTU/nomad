@@ -95,7 +95,7 @@ Nomad is a modern Online Travel Agency (OTA) platform designed to provide a **cl
 
 **Path Aliases:**
 
-- Use `@/` for all internal imports (maps to `./src/*`)
+- Use `@/` for all internal imports (maps to `./src/*`) and `@tests/` maps to `./tests/*`
 - Avoid relative imports like `../../../components`
 
 **TypeScript Rules:**
@@ -178,7 +178,6 @@ src/
 3. Server validates with Zod → Better Auth processes → Alibaba SMS sends code
 4. Better Auth + Drizzle Adapter stores user in Neon DB
 5. Server returns result → Client updates UI
-
 
 ### Testing Strategy
 
