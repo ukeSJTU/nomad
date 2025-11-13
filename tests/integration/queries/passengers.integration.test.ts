@@ -97,7 +97,7 @@ describe("getPassengers Integration Test", () => {
 
     // Assert: Should only return user1's passenger
     expect(result).toHaveLength(1);
-    expect(result[0].englishFirstName).toBe("User1Passenger");
+    expect(result[0].name).toBe("User1Passenger");
   });
 
   it("should not return deleted passengers", async () => {
@@ -126,10 +126,8 @@ describe("getPassengers Integration Test", () => {
 
     // Assert: Should only return active passengers, not deleted ones
     expect(result).toHaveLength(1);
-    expect(result[0].englishFirstName).toBe("ActivePassenger");
-    expect(result.some(p => p.englishFirstName === "DeletedPassenger")).toBe(
-      false
-    );
+    expect(result[0].name).toBe("ActivePassenger");
+    expect(result.some(p => p.name === "DeletedPassenger")).toBe(false);
   });
 
   it("should correctly map database fields to API format", async () => {
