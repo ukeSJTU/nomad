@@ -2,9 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatDateString } from "@/utils/date";
 
 export interface PassengerDetailData {
-  chineseName?: string;
-  englishLastName?: string;
-  englishFirstName?: string;
+  name: string;
   nationality: string;
   gender: "male" | "female" | "other";
   dateOfBirth: Date | string;
@@ -50,22 +48,10 @@ export default function PassengerDetailView({
         <Separator />
 
         <div className="space-y-3">
-          {/* Chinese Name */}
+          {/* Name */}
           <div className="grid grid-cols-[120px_1fr] items-start gap-4">
-            <label className="pt-1 text-sm text-gray-600">中文名</label>
-            <div className="text-sm text-gray-900">
-              {passenger.chineseName || "未设置"}
-            </div>
-          </div>
-
-          {/* English Name */}
-          <div className="grid grid-cols-[120px_1fr] items-start gap-4">
-            <label className="pt-1 text-sm text-gray-600">英文名</label>
-            <div className="text-sm text-gray-900">
-              {passenger.englishLastName && passenger.englishFirstName
-                ? `${passenger.englishLastName} / ${passenger.englishFirstName}`
-                : passenger.englishLastName || "未设置 /"}
-            </div>
+            <label className="pt-1 text-sm text-gray-600">姓名</label>
+            <div className="text-sm text-gray-900">{passenger.name}</div>
           </div>
 
           {/* Nationality */}

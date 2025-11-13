@@ -78,15 +78,6 @@ export default function PassengerList({
     );
   };
 
-  // Get display name
-  const getDisplayName = (passenger: Passenger) => {
-    if (passenger.chineseName) return passenger.chineseName;
-    if (passenger.englishFirstName && passenger.englishLastName) {
-      return `${passenger.englishLastName} ${passenger.englishFirstName}`;
-    }
-    return "未命名";
-  };
-
   // Get document type display
   const getDocumentTypeDisplay = (type: string) => {
     const typeMap: Record<string, string> = {
@@ -195,7 +186,7 @@ export default function PassengerList({
                       onCheckedChange={checked =>
                         handleSelectOne(passenger.id, checked as boolean)
                       }
-                      aria-label={`选择 ${getDisplayName(passenger)}`}
+                      aria-label={`选择 ${passenger.name}`}
                     />
                   </TableCell>
                   <TableCell>
@@ -204,11 +195,11 @@ export default function PassengerList({
                       onCheckedChange={checked =>
                         handleSelectOne(passenger.id, checked as boolean)
                       }
-                      aria-label={`选择 ${getDisplayName(passenger)}`}
+                      aria-label={`选择 ${passenger.name}`}
                     />
                   </TableCell>
                   <TableCell className="font-medium">
-                    {getDisplayName(passenger)}
+                    {passenger.name}
                   </TableCell>
                   <TableCell>{maskPhone(passenger.phone)}</TableCell>
                   <TableCell>
