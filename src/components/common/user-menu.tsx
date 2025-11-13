@@ -83,10 +83,12 @@ export default function UserMenu() {
         <Link href="/home" className="flex items-center gap-2 cursor-pointer">
           <Avatar className="size-8">
             <AvatarImage
-              src={session.user.image || undefined}
-              alt={session.user.name || "User"}
+              src={session.user?.image || undefined}
+              alt={session.user?.name || "User"}
             />
-            <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
+            <AvatarFallback>
+              {getInitials(session.user?.name || undefined)}
+            </AvatarFallback>
           </Avatar>
           <span className="hidden text-sm font-medium md:inline-block">
             尊敬的用户
@@ -99,10 +101,12 @@ export default function UserMenu() {
           <div className="flex items-center gap-3 px-2 py-1.5">
             <Avatar className="size-10">
               <AvatarImage
-                src={session.user.image || undefined}
-                alt={session.user.name || "User"}
+                src={session.user?.image || undefined}
+                alt={session.user?.name || "User"}
               />
-              <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
+              <AvatarFallback>
+                {getInitials(session.user?.name || undefined)}
+              </AvatarFallback>
             </Avatar>
             <div className="flex flex-col gap-1">
               <Link
