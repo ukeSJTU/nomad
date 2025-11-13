@@ -14,8 +14,6 @@ const dbLogger = new EnhancedQueryLogger({
   },
 });
 
-const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1"]);
-
 /**
  * Determine whether to use SSL for database connections
  * Priority:
@@ -42,26 +40,8 @@ function shouldUseSSL(): boolean {
     return false;
   }
 
-  // Avoid SSL when connecting to a local database instance
-  if (isLocalDatabase(databaseUrl)) {
-    return false;
-  }
-
   // Default: use SSL in production, disable in development/test
   return process.env.NODE_ENV === "production";
-}
-
-function isLocalDatabase(databaseUrl?: string): boolean {
-  if (!databaseUrl) {
-    return false;
-  }
-
-  try {
-    const parsed = new URL(databaseUrl);
-    return LOCAL_HOSTNAMES.has(parsed.hostname);
-  } catch {
-    return false;
-  }
 }
 
 export const db = drizzle({

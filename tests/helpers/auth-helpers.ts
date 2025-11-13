@@ -119,3 +119,26 @@ export async function mockUnauthenticatedUser(page: Page): Promise<void> {
     });
   });
 }
+
+/**
+ * Mock Turnstile CAPTCHA for testing
+ * Simulates successful CAPTCHA completion
+ *
+ * @param page - Playwright page object
+ */
+export async function mockTurnstileCaptcha(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    window.turnstile = {
+      render: (container: HTMLElement, options: any) => {
+        const widgetId = "mock-widget-id";
+        // Immediately call the callback with a mock token
+        setTimeout(() => {
+          options.callback?.("mock-captcha-token");
+        }, 100);
+        return widgetId;
+      },
+      reset: () => {},
+      remove: () => {},
+    };
+  });
+}

@@ -1,6 +1,9 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { clearAllCookies } from "../../../helpers/auth-helpers";
+import {
+  clearAllCookies,
+  mockTurnstileCaptcha,
+} from "../../../helpers/auth-helpers";
 
 /**
  * Helper function to mock better-auth API endpoints for testing
@@ -38,27 +41,6 @@ async function mockBetterAuthApis(page: Page) {
         user: { id: "test-user-id", phoneNumber: "+8613800138000" },
       }),
     });
-  });
-}
-
-/**
- * Helper function to mock Turnstile CAPTCHA for testing
- * Simulates successful CAPTCHA completion
- */
-async function mockTurnstileCaptcha(page: Page) {
-  await page.addInitScript(() => {
-    window.turnstile = {
-      render: (container: HTMLElement, options: any) => {
-        const widgetId = "mock-widget-id";
-        // Immediately call the callback with a mock token
-        setTimeout(() => {
-          options.callback?.("mock-captcha-token");
-        }, 100);
-        return widgetId;
-      },
-      reset: () => {},
-      remove: () => {},
-    };
   });
 }
 
