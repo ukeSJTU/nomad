@@ -15,9 +15,7 @@ import {
 // Base passenger schema matching the database schema
 export const passengerSchema = z.object({
   id: z.string().uuid(),
-  chineseName: z.string().nullable(),
-  englishFirstName: z.string().nullable(),
-  englishLastName: z.string().nullable(),
+  name: z.string(),
   nationality: z.string().nullable(),
   gender: z.enum(["male", "female", "other"]).nullable(),
   dateOfBirth: z.string().nullable(), // ISO date string
@@ -34,58 +32,35 @@ export const passengerSchema = z.object({
 });
 
 // Create passenger request schema
-export const createPassengerRequestSchema = z
-  .object({
-    chineseName: z.string().min(1).max(100).optional(),
-    englishFirstName: z.string().min(1).max(100).optional(),
-    englishLastName: z.string().min(1).max(100).optional(),
-    nationality: z.string().max(100).optional(),
-    gender: z.enum(["male", "female", "other"]).optional(),
-    dateOfBirth: z.string().date().optional(), // YYYY-MM-DD format
-    placeOfBirth: z.string().max(255).optional(),
-    phone: z.string().max(20).optional(),
-    fax: z.string().max(20).optional(),
-    email: z.string().email().max(255).optional(),
-    documentType: z.enum(["passport", "id_card", "other"]),
-    documentNumber: z.string().min(1).max(50),
-    documentExpiryDate: z.string().date(), // YYYY-MM-DD format
-  })
-  .refine(
-    data => data.chineseName || (data.englishFirstName && data.englishLastName),
-    {
-      message:
-        "Either Chinese name or both English first and last names are required",
-      path: ["chineseName"],
-    }
-  );
+export const createPassengerRequestSchema = z.object({
+  name: z.string().min(1, "请输入姓名").max(100, "姓名不能超过100个字符"),
+  nationality: z.string().max(100).optional(),
+  gender: z.enum(["male", "female", "other"]).optional(),
+  dateOfBirth: z.string().date().optional(), // YYYY-MM-DD format
+  placeOfBirth: z.string().max(255).optional(),
+  phone: z.string().max(20).optional(),
+  fax: z.string().max(20).optional(),
+  email: z.string().email().max(255).optional(),
+  documentType: z.enum(["passport", "id_card", "other"]),
+  documentNumber: z.string().min(1).max(50),
+  documentExpiryDate: z.string().date(), // YYYY-MM-DD format
+});
 
 // Update passenger request schema (all fields optional except id)
-export const updatePassengerRequestSchema = z
-  .object({
-    id: z.string().uuid(),
-    chineseName: z.string().min(1).max(100).optional(),
-    englishFirstName: z.string().min(1).max(100).optional(),
-    englishLastName: z.string().min(1).max(100).optional(),
-    nationality: z.string().max(100).optional(),
-    gender: z.enum(["male", "female", "other"]).optional(),
-    dateOfBirth: z.string().date().optional(),
-    placeOfBirth: z.string().max(255).optional(),
-    phone: z.string().max(20).optional(),
-    fax: z.string().max(20).optional(),
-    email: z.string().email().max(255).optional(),
-    documentType: z.enum(["passport", "id_card", "other"]).optional(),
-    documentNumber: z.string().min(1).max(50).optional(),
-    documentExpiryDate: z.string().date().optional(),
-  })
-  .refine(
-    data =>
-      !!data.chineseName || (!!data.englishFirstName && !!data.englishLastName),
-    {
-      message:
-        "Either Chinese name or both English first and last names are required",
-      path: ["chineseName"],
-    }
-  );
+export const updatePassengerRequestSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1).max(100).optional(),
+  nationality: z.string().max(100).optional(),
+  gender: z.enum(["male", "female", "other"]).optional(),
+  dateOfBirth: z.string().date().optional(),
+  placeOfBirth: z.string().max(255).optional(),
+  phone: z.string().max(20).optional(),
+  fax: z.string().max(20).optional(),
+  email: z.string().email().max(255).optional(),
+  documentType: z.enum(["passport", "id_card", "other"]).optional(),
+  documentNumber: z.string().min(1).max(50).optional(),
+  documentExpiryDate: z.string().date().optional(),
+});
 
 // Delete passenger request schema
 export const deletePassengerRequestSchema = z.object({
