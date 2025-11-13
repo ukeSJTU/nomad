@@ -292,9 +292,19 @@ export default function SignInPage() {
                   setActiveTab(value as "password" | "otp")
                 }
               >
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="password">密码登录</TabsTrigger>
-                  <TabsTrigger value="otp">验证码登录</TabsTrigger>
+                <TabsList
+                  className="grid w-full grid-cols-2 mb-6"
+                  data-testid="phone-login-method-tabs"
+                >
+                  <TabsTrigger
+                    value="password"
+                    data-testid="phone-password-tab"
+                  >
+                    密码登录
+                  </TabsTrigger>
+                  <TabsTrigger value="otp" data-testid="phone-otp-tab">
+                    验证码登录
+                  </TabsTrigger>
                 </TabsList>
 
                 {/* Phone Password Login Tab */}
@@ -330,9 +340,19 @@ export default function SignInPage() {
                   setActiveTab(value as "password" | "otp")
                 }
               >
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="password">密码登录</TabsTrigger>
-                  <TabsTrigger value="otp">验证码登录</TabsTrigger>
+                <TabsList
+                  className="grid w-full grid-cols-2 mb-6"
+                  data-testid="email-login-method-tabs"
+                >
+                  <TabsTrigger
+                    value="password"
+                    data-testid="email-password-tab"
+                  >
+                    密码登录
+                  </TabsTrigger>
+                  <TabsTrigger value="otp" data-testid="email-otp-tab">
+                    验证码登录
+                  </TabsTrigger>
                 </TabsList>
 
                 {/* Email Password Login Tab */}

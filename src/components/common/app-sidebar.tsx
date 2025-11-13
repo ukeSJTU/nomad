@@ -83,12 +83,12 @@ export const data: SidebarData = {
       url: "/flights",
       icon: Plane,
       items: [
-        { title: "国内/国际/中国港澳台", url: "/flights?tab=domestic" },
-        { title: "特价机票", url: "/flights?tab=special" },
-        { title: "航班动态", url: "/flights?tab=status" },
-        { title: "在线选座", url: "/flights?tab=seat" },
-        { title: "退票改签", url: "/flights?tab=refund" },
-        { title: "更多服务", url: "/flights?tab=more" },
+        { title: "国内/国际/中国港澳台", url: "/flights" },
+        { title: "特价机票", url: "/flights/special" },
+        { title: "航班动态", url: "/flights/status" },
+        { title: "在线选座", url: "/flights/seat" },
+        { title: "退票改签", url: "/flights/refund" },
+        { title: "更多服务", url: "/flights/more" },
       ],
     },
     {
@@ -221,15 +221,6 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
 
         // If URL has no query params, just check pathname
         if (urlParams.toString() === "") return true;
-
-        // Handle default tab for flights page
-        if (
-          urlPath === "/flights" &&
-          urlParams.get("tab") === "domestic" &&
-          !searchParams.has("tab")
-        ) {
-          return true;
-        }
 
         // Check if all URL params match current search params
         for (const [key, value] of urlParams.entries()) {

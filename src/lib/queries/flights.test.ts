@@ -222,7 +222,13 @@ describe("Flight Search Queries", () => {
       });
 
       it("should accept today's date", async () => {
-        const today = new Date().toISOString().split("T")[0];
+        // Use a date that's definitely today in the departure city's timezone
+        // We'll use a date string that represents today in Asia/Shanghai timezone
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const today = `${year}-${month}-${day}`;
 
         const mockCityQuery = {
           from: vi.fn().mockReturnThis(),
@@ -347,6 +353,7 @@ describe("Flight Search Queries", () => {
         };
 
         // Mock all 4 queries: departure city, departure airports, arrival city, arrival airports
+        // Date validation happens AFTER all these queries, so we need to mock all of them
         vi.mocked(db.select)
           .mockReturnValueOnce(mockDepartureCityQuery as any)
           .mockReturnValueOnce(mockDepartureAirportsQuery as any)
@@ -363,15 +370,14 @@ describe("Flight Search Queries", () => {
       });
 
       it("should throw error when departure city not found", async () => {
-        const mockSelect = vi.fn().mockReturnValue({
-          from: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              limit: vi.fn().mockResolvedValue([]), // Empty result
-            }),
-          }),
-        });
+        // Mock departure city query to return empty result
+        const mockCityQuery = {
+          from: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          limit: vi.fn().mockResolvedValue([]), // Empty result - city not found
+        };
 
-        vi.mocked(db.select).mockImplementation(mockSelect);
+        vi.mocked(db.select).mockReturnValueOnce(mockCityQuery as any);
 
         await expect(
           searchFlights({

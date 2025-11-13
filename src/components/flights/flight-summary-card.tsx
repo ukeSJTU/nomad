@@ -1,6 +1,6 @@
 import { Clock, Plane } from "lucide-react";
 
-import type { FlightSeatClassDetails } from "@/app/(frontend)/flights/booking/passengers/queries";
+import type { FlightSeatClassDetails } from "@/app/(frontend)/(without-sidebar)/booking/passengers/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
