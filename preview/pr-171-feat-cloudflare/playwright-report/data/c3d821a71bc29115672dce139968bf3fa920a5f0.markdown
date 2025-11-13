@@ -1,0 +1,116 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Nomad Logo Nomad" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Nomad Logo" [ref=e6]
+          - generic [ref=e7]: Nomad
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e10]
+            - searchbox "搜索任何旅游相关" [ref=e13]
+          - button "Search" [ref=e14]:
+            - img
+            - generic [ref=e15]: Search
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - link "Sign In" [ref=e18] [cursor=pointer]:
+              - /url: /auth/sign-in
+            - link "Sign Up" [ref=e19] [cursor=pointer]:
+              - /url: /auth/sign-up
+          - button "我的订单" [ref=e20] [cursor=pointer]
+          - button "联系客服" [ref=e21]
+          - button "Toggle theme" [ref=e22]:
+            - img
+            - generic [ref=e23]: Toggle theme
+    - region "Notifications alt+T"
+    - main [ref=e24]:
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - heading "注册账户" [level=1] [ref=e28]
+          - paragraph [ref=e29]: 请按照以下步骤完成注册
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e34]: "1"
+            - generic [ref=e36]: 验证邮箱
+          - generic [ref=e39]:
+            - generic [ref=e41]: "2"
+            - generic [ref=e43]: 设置密码
+          - generic [ref=e46]:
+            - generic [ref=e48]: "3"
+            - generic [ref=e50]: 注册成功
+        - paragraph [ref=e52]: 发送验证码失败，请稍后重试
+        - generic [ref=e53]:
+          - tablist [ref=e54]:
+            - tab "手机注册" [ref=e55]
+            - tab "邮箱注册" [selected] [ref=e56]
+          - tabpanel "邮箱注册" [ref=e57]:
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - generic [ref=e60]:
+                  - generic [ref=e61]: 邮箱地址
+                  - textbox "请输入邮箱地址" [ref=e63]: test@example.com
+                - generic [ref=e64]:
+                  - generic [ref=e65]: 邮箱验证码
+                  - generic [ref=e66]:
+                    - textbox "6位数字" [ref=e68]
+                    - button "发送验证码" [ref=e69]
+                - generic [ref=e74]:
+                  - checkbox "同意《 服务协议 》和《 隐私政策 》" [ref=e75]
+                  - checkbox
+                  - generic [ref=e77]:
+                    - text: 同意《
+                    - button "服务协议" [ref=e78]
+                    - text: 》和《
+                    - button "隐私政策" [ref=e79]
+                    - text: 》
+              - button "下一步，设置密码" [ref=e80]
+              - button "企业客户注册" [ref=e82]
+    - contentinfo [ref=e83]:
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - generic [ref=e88]: "N"
+              - generic [ref=e89]: Nomad
+            - paragraph [ref=e90]: 您的在线旅行服务平台
+          - generic [ref=e91]:
+            - heading "快速链接" [level=3] [ref=e92]
+            - list [ref=e93]:
+              - listitem [ref=e94]:
+                - link "首页" [ref=e95] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e96]:
+                - link "常旅客管理" [ref=e97] [cursor=pointer]:
+                  - /url: /home/passengers
+          - generic [ref=e98]:
+            - heading "法律信息" [level=3] [ref=e99]
+            - list [ref=e100]:
+              - listitem [ref=e101]:
+                - link "服务协议" [ref=e102] [cursor=pointer]:
+                  - /url: /terms
+              - listitem [ref=e103]:
+                - link "个人信息保护政策" [ref=e104] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e105]:
+                - link "免责声明" [ref=e106] [cursor=pointer]:
+                  - /url: /disclaimer
+        - paragraph [ref=e108]: © 2025 Nomad. 保留所有权利。
+  - region "Notifications alt+T"
+  - generic [ref=e113] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e114]:
+      - img [ref=e115]
+    - generic [ref=e118]:
+      - button "Open issues overlay" [ref=e119]:
+        - generic [ref=e120]:
+          - generic [ref=e121]: "0"
+          - generic [ref=e122]: "1"
+        - generic [ref=e123]: Issue
+      - button "Collapse issues badge" [ref=e124]:
+        - img [ref=e125]
+  - alert [ref=e127]
+```
