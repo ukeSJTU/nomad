@@ -84,6 +84,7 @@ jobs:
           DATABASE_SSL: "false"
           BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
           BETTER_AUTH_URL: "http://localhost:3000"
+          TURNSTILE_SECRET_KEY: "dummy-turnstile-secret-for-build-only"
 
       - name: Build status
         if: success()
