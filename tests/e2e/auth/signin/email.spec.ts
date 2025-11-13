@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { clearAllCookies } from "../../../helpers/auth-helpers";
+
 /**
  * Helper function to mock better-auth API endpoints for email sign-in testing
  * This allows tests to bypass actual authentication and OTP sending
@@ -48,6 +50,8 @@ async function mockBetterAuthApis(page: Page) {
  */
 test.describe("Email Sign-In Flow", () => {
   test.beforeEach(async ({ page }) => {
+    // Clear all cookies to ensure tests start in unauthenticated state
+    await clearAllCookies(page);
     // Set up API mocks before each test
     await mockBetterAuthApis(page);
   });
