@@ -14,6 +14,19 @@ const dbLogger = new EnhancedQueryLogger({
   },
 });
 
+function isLocalDatabase(databaseUrl?: string) {
+  if (!databaseUrl) {
+    return false;
+  }
+
+  try {
+    const { hostname } = new URL(databaseUrl);
+    return ["localhost", "127.0.0.1", "::1"].includes(hostname);
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Determine whether to use SSL for database connections
  * Priority:
@@ -37,6 +50,10 @@ function shouldUseSSL(): boolean {
     return true;
   }
   if (databaseUrl?.includes("sslmode=disable")) {
+    return false;
+  }
+
+  if (isLocalDatabase(databaseUrl)) {
     return false;
   }
 
