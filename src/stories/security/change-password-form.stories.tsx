@@ -78,17 +78,18 @@ export const HappyPath: Story = {
     const canvas = within(canvasElement);
 
     // 1. Enter current password
-    const currentPasswordInput = canvas.getByLabelText("当前密码");
+    const currentPasswordInput = canvas.getByPlaceholderText("请输入当前密码");
     await userEvent.type(currentPasswordInput, "OldPassword123", {
       delay: 50,
     });
 
     // 2. Enter new password that meets requirements
-    const newPasswordInput = canvas.getByLabelText("新密码");
+    const newPasswordInput = canvas.getByPlaceholderText("请输入新密码");
     await userEvent.type(newPasswordInput, "NewPassword456", { delay: 50 });
 
     // 3. Confirm new password
-    const confirmPasswordInput = canvas.getByLabelText("确认新密码");
+    const confirmPasswordInput =
+      canvas.getByPlaceholderText("请再次输入新密码");
     await userEvent.type(confirmPasswordInput, "NewPassword456", {
       delay: 50,
     });
@@ -105,7 +106,7 @@ export const HappyPath: Story = {
     );
 
     // 5. Verify form is ready to submit
-    const submitButton = canvas.getByRole("button", { name: /修改密码/i });
+    const submitButton = canvas.getByRole("button", { name: /确认修改/i });
     await expect(submitButton).toBeEnabled();
 
     // 6. Submit form
