@@ -23,9 +23,6 @@ const mockSavedPassengers = [
   {
     id: "1",
     name: "张三",
-    chineseName: "张三",
-    englishFirstName: "San",
-    englishLastName: "Zhang",
     documentType: "id_card" as const,
     documentNumber: "110101199001011234",
     phone: "13800138000",
@@ -33,9 +30,6 @@ const mockSavedPassengers = [
   {
     id: "2",
     name: "李四",
-    chineseName: "李四",
-    englishFirstName: "Si",
-    englishLastName: "Li",
     documentType: "passport" as const,
     documentNumber: "E12345678",
     phone: "13900139000",
@@ -43,9 +37,6 @@ const mockSavedPassengers = [
   {
     id: "3",
     name: "王五",
-    chineseName: "王五",
-    englishFirstName: "Wu",
-    englishLastName: "Wang",
     documentType: "id_card" as const,
     documentNumber: "110101199101011234",
     phone: null,
@@ -88,14 +79,12 @@ function PassengerFormCardWrapper({
       const savedPassenger = savedPassengers.find(p => p.id === passengerId);
       if (savedPassenger) {
         const emptyIndex = passengers.findIndex(
-          p => !p.chineseName && !p.documentNumber
+          p => !p.name && !p.documentNumber
         );
         if (emptyIndex !== -1) {
           const updated = [...passengers];
           updated[emptyIndex] = {
-            chineseName: savedPassenger.chineseName || "",
-            englishFirstName: savedPassenger.englishFirstName || "",
-            englishLastName: savedPassenger.englishLastName || "",
+            name: savedPassenger.name,
             documentType: savedPassenger.documentType,
             documentNumber: savedPassenger.documentNumber,
             phone: savedPassenger.phone || "",
@@ -110,9 +99,7 @@ function PassengerFormCardWrapper({
     setPassengers([
       ...passengers,
       {
-        chineseName: "",
-        englishFirstName: "",
-        englishLastName: "",
+        name: "",
         documentType: "id_card",
         documentNumber: "",
         phone: "",
@@ -147,9 +134,7 @@ export const Default: Story = {
     <PassengerFormCardWrapper
       initialPassengers={[
         {
-          chineseName: "",
-          englishFirstName: "",
-          englishLastName: "",
+          name: "",
           documentType: "id_card",
           documentNumber: "",
           phone: "",
@@ -168,9 +153,7 @@ export const NoSavedPassengers: Story = {
     <PassengerFormCardWrapper
       initialPassengers={[
         {
-          chineseName: "",
-          englishFirstName: "",
-          englishLastName: "",
+          name: "",
           documentType: "id_card",
           documentNumber: "",
           phone: "",
@@ -189,9 +172,7 @@ export const PreFilled: Story = {
     <PassengerFormCardWrapper
       initialPassengers={[
         {
-          chineseName: "张三",
-          englishFirstName: "San",
-          englishLastName: "Zhang",
+          name: "张三",
           documentType: "id_card",
           documentNumber: "110101199001011234",
           phone: "13800138000",
@@ -210,17 +191,13 @@ export const MultiplePassengers: Story = {
     <PassengerFormCardWrapper
       initialPassengers={[
         {
-          chineseName: "张三",
-          englishFirstName: "San",
-          englishLastName: "Zhang",
+          name: "张三",
           documentType: "id_card",
           documentNumber: "110101199001011234",
           phone: "13800138000",
         },
         {
-          chineseName: "李四",
-          englishFirstName: "Si",
-          englishLastName: "Li",
+          name: "李四",
           documentType: "passport",
           documentNumber: "E12345678",
           phone: "13900139000",
