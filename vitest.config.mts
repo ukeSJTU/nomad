@@ -107,7 +107,7 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: "integration",
+          name: { label: "integration", color: "cyan" },
           include: ["tests/integration/**/*.integration.test.ts"],
           environment: "node", // Integration tests use real database, no jsdom needed
           globals: true,
