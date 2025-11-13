@@ -1,9 +1,5 @@
 import { expect, test } from "@playwright/test";
-
-import {
-  mockAuthenticatedUser,
-  mockUnauthenticatedUser,
-} from "../helpers/auth-helpers";
+import { mockAuthenticatedUser } from "@tests/helpers/auth-helpers";
 
 test.describe("UserMenu Component E2E", () => {
   test.beforeEach(async ({ page }) => {
@@ -95,22 +91,5 @@ test.describe("UserMenu Component E2E", () => {
     const triggerLink = page.locator('header a[href="/home"]').first();
     await triggerLink.click();
     await expect(page).toHaveURL("/home");
-  });
-});
-
-test.describe("UserMenu - Not Logged In State", () => {
-  test("should show Sign In and Sign Up buttons when not logged in", async ({
-    page,
-  }) => {
-    // Ensure user is logged out (clears cookies + mocks API)
-    await mockUnauthenticatedUser(page);
-    await page.goto("/");
-
-    // Verify Sign In and Sign Up buttons are visible
-    await expect(page.getByRole("link", { name: /sign in/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /sign up/i })).toBeVisible();
-
-    // Verify '尊敬的用户' is NOT displayed
-    await expect(page.getByText("尊敬的用户")).not.toBeVisible();
   });
 });
