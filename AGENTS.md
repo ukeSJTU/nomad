@@ -16,3 +16,13 @@ Use `@/openspec/AGENTS.md` to learn:
 Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
+
+Follow the following rules restrictly:
+
+**What you should do when you are applying something or implement an approved OpenSpec change**
+- Follow the workflow listed in `openspec/apply_workflow.md`!
+- If you have any questions about the workflow or the changes you're making, ask them before proceeding.
+
+**What you should do when you are making a proposal or scaffold a new OpenSpec change**
+- Follow the workflow listed in `openspec/proposal_workflow.md`!
+- If you have any questions about the workflow or the changes you're making, ask them before proceeding.

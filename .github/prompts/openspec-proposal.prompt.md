@@ -26,6 +26,3 @@ $ARGUMENTS
 - Explore the codebase with `rg <keyword>`, `ls`, or direct file reads so proposals align with current implementation realities.
 <!-- OPENSPEC:END -->
 
-**What you should do**
-- Follow the workflow listed in `openspec/proposal_workflow.md`!
-- If you have any questions about the workflow or the changes you're making, ask them before proceeding.
