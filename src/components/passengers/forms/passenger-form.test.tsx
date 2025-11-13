@@ -14,10 +14,8 @@ describe("PassengerForm Component", () => {
     // Check for section heading
     expect(screen.getByText("旅客信息")).toBeInTheDocument();
 
-    // Check for name fields
-    expect(screen.getByLabelText("中文名")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("LastName(姓)")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("FirstName(名)")).toBeInTheDocument();
+    // Check for name field
+    expect(screen.getByLabelText(/姓名/)).toBeInTheDocument();
 
     // Check for "Set as Myself" checkbox
     expect(screen.getByLabelText("设置为本人")).toBeInTheDocument();
@@ -49,30 +47,15 @@ describe("PassengerForm Component", () => {
     expect(mockOnCancel).toHaveBeenCalledTimes(1);
   });
 
-  it("fills in Chinese name correctly", async () => {
+  it("fills in name correctly", async () => {
     const user = userEvent.setup();
 
     render(<PassengerForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
-    const chineseNameInput = screen.getByLabelText("中文名");
-    await user.type(chineseNameInput, "张三");
+    const nameInput = screen.getByLabelText(/姓名/);
+    await user.type(nameInput, "张三");
 
-    expect(chineseNameInput).toHaveValue("张三");
-  });
-
-  it("fills in English name correctly", async () => {
-    const user = userEvent.setup();
-
-    render(<PassengerForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
-
-    const lastNameInput = screen.getByPlaceholderText("LastName(姓)");
-    const firstNameInput = screen.getByPlaceholderText("FirstName(名)");
-
-    await user.type(lastNameInput, "Zhang");
-    await user.type(firstNameInput, "San");
-
-    expect(lastNameInput).toHaveValue("Zhang");
-    expect(firstNameInput).toHaveValue("San");
+    expect(nameInput).toHaveValue("张三");
   });
 
   it("toggles 'Set as Myself' checkbox", async () => {
@@ -92,9 +75,7 @@ describe("PassengerForm Component", () => {
 
   it("loads initial data when provided", () => {
     const initialData = {
-      chineseName: "李四",
-      englishLastName: "Li",
-      englishFirstName: "Si",
+      name: "李四",
       setAsMyself: true,
       nationality: "中国大陆",
       gender: "male" as const,
@@ -110,14 +91,8 @@ describe("PassengerForm Component", () => {
       />
     );
 
-    const chineseNameInput = screen.getByLabelText("中文名");
-    expect(chineseNameInput).toHaveValue("李四");
-
-    const lastNameInput = screen.getByPlaceholderText("LastName(姓)");
-    expect(lastNameInput).toHaveValue("Li");
-
-    const firstNameInput = screen.getByPlaceholderText("FirstName(名)");
-    expect(firstNameInput).toHaveValue("Si");
+    const nameInput = screen.getByLabelText(/姓名/);
+    expect(nameInput).toHaveValue("李四");
 
     const checkbox = screen.getByRole("checkbox", { name: /设置为本人/i });
     expect(checkbox).toBeChecked();

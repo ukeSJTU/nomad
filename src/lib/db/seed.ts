@@ -373,7 +373,6 @@ async function seed() {
       });
 
       for (let i = 0; i < numberOfPassengers; i++) {
-        const hasChineseName = faker.datatype.boolean();
         const gender = faker.helpers.arrayElement([
           "male",
           "female",
@@ -400,23 +399,9 @@ async function seed() {
 
         const passenger = {
           userId: currentUser.id,
-          chineseName: hasChineseName
-            ? faker.person.fullName({
-                sex: gender === "male" ? "male" : "female",
-              })
-            : null,
-          englishFirstName: !hasChineseName
-            ? faker.person.firstName(gender === "male" ? "male" : "female")
-            : faker.helpers.maybe(
-                () =>
-                  faker.person.firstName(gender === "male" ? "male" : "female"),
-                { probability: 0.5 }
-              ),
-          englishLastName: !hasChineseName
-            ? faker.person.lastName()
-            : faker.helpers.maybe(() => faker.person.lastName(), {
-                probability: 0.5,
-              }),
+          name: faker.person.fullName({
+            sex: gender === "male" ? "male" : "female",
+          }),
           nationality: faker.helpers.arrayElement([
             "中国大陆",
             "United States",
