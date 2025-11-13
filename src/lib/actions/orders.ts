@@ -219,9 +219,7 @@ export async function createOrderAction(
       // Create order passengers
       const passengerData = validatedData.passengers.map(passenger => ({
         orderId: order.id,
-        name: passenger.chineseName
-          ? `${passenger.englishLastName} ${passenger.englishFirstName} (${passenger.chineseName})`
-          : `${passenger.englishLastName} ${passenger.englishFirstName}`,
+        name: passenger.name,
         identityType: passenger.documentType as
           | "id_card"
           | "passport"
