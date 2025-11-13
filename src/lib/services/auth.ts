@@ -3,22 +3,14 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { account, user } from "@/lib/schema";
 
+import type { ServiceResult } from "./types";
+
 /**
  * Service layer for authentication-related business logic
  *
  * This layer contains pure business logic without framework dependencies,
  * making it easy to test and reuse in different contexts.
  */
-
-/**
- * Result type for service operations
- */
-export interface ServiceResult<T = void> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
 
 /**
  * Unlink a social account from a user
