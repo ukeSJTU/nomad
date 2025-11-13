@@ -20,7 +20,8 @@ export function useTurnstileCaptcha() {
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      process.env.NEXT_PUBLIC_IS_TEST === "true"
+      process.env.NODE_ENV === "test"
+      // process.env.NEXT_PUBLIC_IS_TEST === "true"
     ) {
       setCaptchaToken("test-captcha-token");
     }
@@ -49,10 +50,7 @@ export function useTurnstileCaptcha() {
   const prepareCaptchaRequest =
     useCallback((): CaptchaRequestContext | null => {
       // In test environment, always allow
-      if (
-        typeof window !== "undefined" &&
-        process.env.NEXT_PUBLIC_IS_TEST === "true"
-      ) {
+      if (typeof window !== "undefined" && process.env.NODE_ENV === "test") {
         return {
           fetchOptions: {
             headers: {
