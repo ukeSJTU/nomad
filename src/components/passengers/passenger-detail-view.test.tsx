@@ -6,9 +6,7 @@ import PassengerDetailView, {
 } from "./passenger-detail-view";
 
 const mockPassenger: PassengerDetailData = {
-  chineseName: "测试用户",
-  englishLastName: "Test",
-  englishFirstName: "User",
+  name: "测试用户",
   nationality: "中国大陆",
   gender: "male",
   dateOfBirth: "2004-09-12",
@@ -50,8 +48,7 @@ describe("PassengerDetailView Component", () => {
     render(<PassengerDetailView passenger={mockPassenger} />);
 
     // Check for field labels
-    expect(screen.getByText("中文名")).toBeInTheDocument();
-    expect(screen.getByText("英文名")).toBeInTheDocument();
+    expect(screen.getByText("姓名")).toBeInTheDocument();
     expect(screen.getByText("性别")).toBeInTheDocument();
     expect(screen.getByText("生日")).toBeInTheDocument();
     expect(screen.getByText("出生地")).toBeInTheDocument();

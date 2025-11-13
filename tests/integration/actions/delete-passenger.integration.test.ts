@@ -37,8 +37,7 @@ describe("Delete Passenger Integration Test", () => {
 
     const passenger = passengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "John",
-      englishLastName: "Doe",
+      name: "John Doe",
       email: "delete-passenger1@test.com",
       isDeleted: false,
     });
@@ -61,8 +60,7 @@ describe("Delete Passenger Integration Test", () => {
 
     expect(deletedPassenger).toBeDefined();
     expect(deletedPassenger.isDeleted).toBe(true);
-    expect(deletedPassenger.englishFirstName).toBe("John");
-    expect(deletedPassenger.englishLastName).toBe("Doe");
+    expect(deletedPassenger.name).toBe("John Doe");
   });
 
   it("should verify deleted passenger is not returned in active queries", async () => {
@@ -75,15 +73,13 @@ describe("Delete Passenger Integration Test", () => {
 
     const activePassenger = passengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "Active",
-      englishLastName: "Passenger",
+      name: "Active Passenger",
       email: "delete-passenger2-active@test.com",
       isDeleted: false,
     });
     const toDeletePassenger = passengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "ToDelete",
-      englishLastName: "Passenger",
+      name: "ToDelete Passenger",
       email: "delete-passenger2-todelete@test.com",
       isDeleted: false,
     });
@@ -109,7 +105,7 @@ describe("Delete Passenger Integration Test", () => {
 
     expect(activePassengers).toHaveLength(1);
     expect(activePassengers[0].id).toBe(insertedActive.id);
-    expect(activePassengers[0].englishFirstName).toBe("Active");
+    expect(activePassengers[0].name).toBe("Active Passenger");
   });
 
   it("should not find non-existent passenger for deletion", async () => {
@@ -152,15 +148,13 @@ describe("Delete Passenger Integration Test", () => {
 
     const user1Passenger = passengerFactory.build({
       userId: user1.id,
-      englishFirstName: "User1",
-      englishLastName: "Passenger",
+      name: "User1 Passenger",
       email: "delete-passenger4-user1@test.com",
       isDeleted: false,
     });
     const user2Passenger = passengerFactory.build({
       userId: user2.id,
-      englishFirstName: "User2",
-      englishLastName: "Passenger",
+      name: "User2 Passenger",
       email: "delete-passenger4-user2@test.com",
       isDeleted: false,
     });
@@ -198,7 +192,7 @@ describe("Delete Passenger Integration Test", () => {
       );
 
     expect(user2PassengerCheck).toBeDefined();
-    expect(user2PassengerCheck.englishFirstName).toBe("User2");
+    expect(user2PassengerCheck.name).toBe("User2 Passenger");
   });
 
   it("should not find already deleted passenger for deletion", async () => {
@@ -211,8 +205,7 @@ describe("Delete Passenger Integration Test", () => {
 
     const deletedPassenger = passengerFactory.build({
       userId: testUser.id,
-      englishFirstName: "Deleted",
-      englishLastName: "Passenger",
+      name: "Deleted Passenger",
       email: "delete-passenger5@test.com",
       isDeleted: true, // Already deleted
     });

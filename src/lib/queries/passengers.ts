@@ -13,9 +13,7 @@ export async function getPassengers(userId: string): Promise<Passenger[]> {
   // Convert database result to API format
   return result.map(p => ({
     id: p.id,
-    chineseName: p.chineseName,
-    englishFirstName: p.englishFirstName,
-    englishLastName: p.englishLastName,
+    name: p.name,
     nationality: p.nationality,
     gender: p.gender,
     dateOfBirth: p.dateOfBirth,

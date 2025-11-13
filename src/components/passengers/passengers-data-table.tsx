@@ -35,14 +35,6 @@ const maskDocumentNumber = (docNumber: string) => {
   );
 };
 
-const getDisplayName = (passenger: Passenger) => {
-  if (passenger.chineseName) return passenger.chineseName;
-  if (passenger.englishFirstName && passenger.englishLastName) {
-    return `${passenger.englishLastName} ${passenger.englishFirstName}`;
-  }
-  return "未命名";
-};
-
 const getDocumentTypeDisplay = (type: string) => {
   const typeMap: Record<string, string> = {
     id_card: "身份证",
@@ -84,7 +76,7 @@ export function PassengersDataTable({
   const filteredData = data.filter(passenger => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
-    const name = getDisplayName(passenger).toLowerCase();
+    const name = passenger.name.toLowerCase();
     const phone = passenger.phone?.toLowerCase() || "";
     const docNumber = passenger.documentNumber.toLowerCase();
     return (
@@ -95,11 +87,9 @@ export function PassengersDataTable({
   // Column definitions
   const columns: ColumnDefinition<Passenger>[] = [
     {
-      key: "chineseName",
+      key: "name",
       header: "姓名",
-      cell: ({ row }) => (
-        <div className="text-center">{getDisplayName(row)}</div>
-      ),
+      cell: ({ row }) => <div className="text-center">{row.name}</div>,
       width: "150px",
     },
     {

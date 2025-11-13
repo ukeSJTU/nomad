@@ -76,11 +76,7 @@ export function BookingPassengersPageClient({
 
       // Validate passenger data
       const hasEmptyFields = passengers.some(
-        p =>
-          !p.englishFirstName ||
-          !p.englishLastName ||
-          !p.documentType ||
-          !p.documentNumber
+        p => !p.name || !p.documentType || !p.documentNumber
       );
 
       if (hasEmptyFields) {

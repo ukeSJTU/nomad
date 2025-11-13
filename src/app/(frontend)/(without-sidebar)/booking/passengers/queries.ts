@@ -189,10 +189,7 @@ export async function getFlightSeatClassesByIds(
  */
 export type SavedPassenger = {
   id: string;
-  name: string; // Display name (for UI)
-  chineseName: string | null;
-  englishFirstName: string | null;
-  englishLastName: string | null;
+  name: string; // Direct from DB
   documentType: "passport" | "id_card" | "other";
   documentNumber: string;
   phone: string | null;
@@ -208,9 +205,7 @@ export async function getSavedPassengers(
   const result = await db
     .select({
       id: passengers.id,
-      chineseName: passengers.chineseName,
-      englishFirstName: passengers.englishFirstName,
-      englishLastName: passengers.englishLastName,
+      name: passengers.name,
       documentType: passengers.documentType,
       documentNumber: passengers.documentNumber,
       phone: passengers.phone,
@@ -220,15 +215,7 @@ export async function getSavedPassengers(
 
   return result.map(p => ({
     id: p.id,
-    // Prefer Chinese name, fallback to English name
-    name:
-      p.chineseName ||
-      (p.englishFirstName && p.englishLastName
-        ? `${p.englishLastName} ${p.englishFirstName}`
-        : ""),
-    chineseName: p.chineseName,
-    englishFirstName: p.englishFirstName,
-    englishLastName: p.englishLastName,
+    name: p.name,
     documentType: p.documentType,
     documentNumber: p.documentNumber,
     phone: p.phone,

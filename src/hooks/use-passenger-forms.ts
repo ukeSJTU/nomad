@@ -5,18 +5,13 @@ import type { PassengerFormData } from "@/components/flights/passenger-form-card
 export interface SavedPassenger {
   id: string;
   name: string;
-  chineseName: string | null;
-  englishFirstName: string | null;
-  englishLastName: string | null;
   documentType: "passport" | "id_card" | "other";
   documentNumber: string;
   phone: string | null;
 }
 
 const EMPTY_PASSENGER_FORM: PassengerFormData = {
-  chineseName: "",
-  englishFirstName: "",
-  englishLastName: "",
+  name: "",
   documentType: "id_card",
   documentNumber: "",
   phone: "",
@@ -28,13 +23,7 @@ const EMPTY_PASSENGER_FORM: PassengerFormData = {
  * Note: Select fields (documentType) are not checked as they have default values
  */
 export function isFormEmpty(form: PassengerFormData): boolean {
-  return (
-    !form.chineseName &&
-    !form.englishFirstName &&
-    !form.englishLastName &&
-    !form.documentNumber &&
-    !form.phone
-  );
+  return !form.name && !form.documentNumber && !form.phone;
 }
 
 /**
@@ -45,9 +34,7 @@ export function savedPassengerToFormData(
   linkId?: string
 ): PassengerFormData {
   return {
-    chineseName: savedPassenger.chineseName || "",
-    englishFirstName: savedPassenger.englishFirstName || "",
-    englishLastName: savedPassenger.englishLastName || "",
+    name: savedPassenger.name,
     documentType: savedPassenger.documentType,
     documentNumber: savedPassenger.documentNumber,
     phone: savedPassenger.phone || "",
@@ -135,9 +122,7 @@ export function usePassengerForms(savedPassengers: SavedPassenger[]) {
 
       // Only unlink if a text input field is changed (not documentType)
       const textInputFields: (keyof PassengerFormData)[] = [
-        "chineseName",
-        "englishFirstName",
-        "englishLastName",
+        "name",
         "documentNumber",
         "phone",
       ];

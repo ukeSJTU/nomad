@@ -31,9 +31,7 @@ export async function createPassengerAction(formData: unknown) {
     const data = formData as any;
     const passengerData: any = {
       userId: session.user.id,
-      chineseName: data.chineseName || null,
-      englishFirstName: data.englishFirstName || null,
-      englishLastName: data.englishLastName || null,
+      name: data.name,
       nationality: data.nationality || null,
       gender: data.gender || null,
       dateOfBirth: data.dateOfBirth
@@ -117,9 +115,7 @@ export async function updatePassengerAction(id: string, formData: unknown) {
     // Convert form data to database format
     const data = formData as any;
     const updateData: Record<string, unknown> = {
-      chineseName: data.chineseName || null,
-      englishFirstName: data.englishFirstName || null,
-      englishLastName: data.englishLastName || null,
+      name: data.name,
       nationality: data.nationality || null,
       gender: data.gender || null,
       dateOfBirth: data.dateOfBirth
