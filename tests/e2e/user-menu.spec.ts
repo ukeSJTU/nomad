@@ -1,42 +1,18 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-/**
- * Helper function to mock user session for testing
- * This simulates a logged-in user by mocking the session API endpoint
- */
-async function mockUserSession(page: Page) {
-  // Mock the session endpoint to return a logged-in user
-  await page.route("**/api/auth/get-session", async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        user: {
-          id: "test-user-id",
-          name: "测试用户",
-          email: "test@example.com",
-          emailVerified: false,
-          image: null,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        session: {
-          id: "test-session-id",
-          userId: "test-user-id",
-          expiresAt: new Date(Date.now() + 86400000).toISOString(), // 24 hours from now
-          token: "test-token",
-          ipAddress: "127.0.0.1",
-          userAgent: "test-agent",
-        },
-      }),
-    });
-  });
-}
+import {
+  mockAuthenticatedUser,
+  mockUnauthenticatedUser,
+} from "../helpers/auth-helpers";
 
 test.describe("UserMenu Component E2E", () => {
   test.beforeEach(async ({ page }) => {
-    // Set up mock session before navigating
-    await mockUserSession(page);
+    // Set up authenticated user (sets cookie + mocks API)
+    await mockAuthenticatedUser(page, {
+      id: "test-user-id",
+      name: "测试用户",
+      email: "test@example.com",
+    });
     // Navigate to home page where Header with UserMenu is displayed
     await page.goto("/");
   });
@@ -126,7 +102,8 @@ test.describe("UserMenu - Not Logged In State", () => {
   test("should show Sign In and Sign Up buttons when not logged in", async ({
     page,
   }) => {
-    // Don't mock session for this test - user should be logged out
+    // Ensure user is logged out (clears cookies + mocks API)
+    await mockUnauthenticatedUser(page);
     await page.goto("/");
 
     // Verify Sign In and Sign Up buttons are visible
