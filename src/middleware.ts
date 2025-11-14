@@ -13,6 +13,7 @@ const PROTECTED_ROUTES = [
   "/booking/payment", // Payment page
   "/booking/confirmation", // Order confirmation
   "/booking/ancillary", // Ancillary services
+  "/orders", // Order details page
 ];
 
 // Routes that authenticated users should not access
