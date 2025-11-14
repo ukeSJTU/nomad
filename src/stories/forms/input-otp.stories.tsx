@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useState } from "react";
 
 import {
@@ -128,9 +128,7 @@ export const WithError: Story = {
 
 // Digits only pattern
 export const DigitsOnly: Story = {
-  render: () => (
-    <OTPExample maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS} />
-  ),
+  render: () => <OTPExample maxLength={6} pattern={REGEXP_ONLY_DIGITS} />,
 };
 
 // Custom pattern example (alphanumeric)
