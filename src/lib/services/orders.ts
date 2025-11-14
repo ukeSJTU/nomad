@@ -7,6 +7,7 @@
  *
  * Key Functions:
  * - cancelExpiredOrders: Cancel orders that have exceeded their payment deadline
+ * - cancelOrder: Cancel a specific order (user-initiated)
  */
 
 import { and, eq, lt, sql } from "drizzle-orm";
@@ -14,6 +15,121 @@ import { and, eq, lt, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orders } from "@/lib/schema/orders";
+
+/**
+ * Cancel a specific order (user-initiated)
+ *
+ * This function:
+ * 1. Validates the order exists and belongs to the user
+ * 2. Validates the order status is PENDING_PAYMENT
+ * 3. Updates the order status to CANCELLED
+ * 4. Releases locked seats back to available inventory
+ *
+ * Business Rules:
+ * - Only orders with status PENDING_PAYMENT can be cancelled
+ * - Releases seats for both outbound and inbound flights (if applicable)
+ * - Uses database transaction to ensure atomicity
+ *
+ * @param orderId - Order UUID
+ * @param userId - User UUID (for ownership validation)
+ * @returns Result object with success/error
+ */
+export async function cancelOrder(
+  orderId: string,
+  userId: string
+): Promise<CancelOrderResult> {
+  try {
+    // 1. Validate order exists and belongs to user
+    const [order] = await db
+      .select({
+        id: orders.id,
+        userId: orders.userId,
+        status: orders.status,
+        outboundFlightSeatClassId: orders.outboundFlightSeatClassId,
+        inboundFlightSeatClassId: orders.inboundFlightSeatClassId,
+        passengerCount: orders.passengerCount,
+      })
+      .from(orders)
+      .where(and(eq(orders.id, orderId), eq(orders.userId, userId)));
+
+    if (!order) {
+      return {
+        success: false,
+        error: "Order not found or you don't have permission to cancel it.",
+      };
+    }
+
+    // 2. Validate order status - only PENDING_PAYMENT orders can be cancelled
+    if (order.status !== "PENDING_PAYMENT") {
+      return {
+        success: false,
+        error: `Cannot cancel order with status: ${order.status}. Only pending payment orders can be cancelled.`,
+      };
+    }
+
+    // 3. Cancel order and release seats in a transaction
+    await db.transaction(async tx => {
+      const now = new Date();
+
+      // Update order status to CANCELLED
+      await tx
+        .update(orders)
+        .set({
+          status: "CANCELLED",
+          updatedAt: now,
+        })
+        .where(eq(orders.id, orderId));
+
+      // Release outbound flight seats
+      await tx
+        .update(flightSeatClasses)
+        .set({
+          availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+          updatedAt: now,
+        })
+        .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
+
+      // Release inbound flight seats (if round-trip)
+      if (order.inboundFlightSeatClassId) {
+        await tx
+          .update(flightSeatClasses)
+          .set({
+            availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+            updatedAt: now,
+          })
+          .where(eq(flightSeatClasses.id, order.inboundFlightSeatClassId));
+      }
+    });
+
+    return {
+      success: true,
+      message: "Order cancelled successfully",
+    };
+  } catch (error) {
+    console.error("Error cancelling order:", error);
+
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unknown error occurred while cancelling order",
+    };
+  }
+}
+
+/**
+ * Result type for cancelOrder function
+ */
+export type CancelOrderResult =
+  | {
+      success: true;
+      message: string;
+    }
+  | {
+      success: false;
+      error: string;
+    };
 
 /**
  * Result type for cancelExpiredOrders function
