@@ -68,13 +68,13 @@ pnpm run db:seed:orders your-email@example.com
 **为第一个用户生成订单**：
 
 ```bash
-npx tsx scripts/seed-test-orders.ts
+npx tsx -r dotenv/config scripts/seed-test-orders.ts
 ```
 
 **为指定用户生成订单**：
 
 ```bash
-npx tsx scripts/seed-test-orders.ts your-email@example.com
+npx tsx -r dotenv/config scripts/seed-test-orders.ts your-email@example.com
 ```
 
 ## ⚠️ 前置条件

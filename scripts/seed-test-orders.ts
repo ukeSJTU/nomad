@@ -13,12 +13,7 @@
  * - 生成不同出发时间的订单（已出行、未出行）
  */
 
-import { loadEnvConfig } from "@next/env";
 import { and, desc, eq, gte, lt } from "drizzle-orm";
-
-// Load environment variables
-const projectDir = process.cwd();
-loadEnvConfig(projectDir);
 
 import { user } from "../auth-schema";
 import { db } from "../src/lib/db";
