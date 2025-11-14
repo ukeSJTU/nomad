@@ -95,11 +95,25 @@ export default defineConfig({
         test: {
           name: "unit",
           environment: "jsdom",
-          include: ["src/**/*.{test,spec}.{ts,tsx}"],
+          include: ["src/**/*.{test,spec}.{ts}"],
           exclude: [
             "**/node_modules/**",
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from unit tests
+          ],
+          setupFiles: ["./src/tests/setup/global.ts"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: { label: "components", color: "white" },
+          environment: "jsdom",
+          include: ["src/**/*.test.tsx"],
+          exclude: [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/*.stories.tsx", // Exclude Storybook files from component tests
           ],
           setupFiles: ["./src/tests/setup/global.ts"],
         },

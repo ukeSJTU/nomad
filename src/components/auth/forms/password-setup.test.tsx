@@ -169,4 +169,160 @@ describe("PasswordSetupForm", () => {
 
     expect(screen.getByRole("button", { name: "创建中..." })).toBeDisabled();
   });
+
+  it("should show validation error for password longer than 20 characters", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<PasswordSetupForm onSubmit={onSubmit} />);
+
+    const longPassword = "Password123456789012345"; // 25 characters
+    await user.type(screen.getByPlaceholderText("请输入密码"), longPassword);
+    await user.type(
+      screen.getByPlaceholderText("请再次输入密码"),
+      longPassword
+    );
+    await user.click(screen.getByRole("button", { name: "完成注册" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("密码最多20位")).toBeInTheDocument();
+    });
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("should show validation error for password without number", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<PasswordSetupForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByPlaceholderText("请输入密码"), "PasswordABC");
+    await user.type(
+      screen.getByPlaceholderText("请再次输入密码"),
+      "PasswordABC"
+    );
+    await user.click(screen.getByRole("button", { name: "完成注册" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("密码必须包含至少一个数字")).toBeInTheDocument();
+    });
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("should toggle confirm password visibility when eye icon is clicked", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<PasswordSetupForm onSubmit={onSubmit} />);
+
+    const confirmPasswordInput = screen.getByPlaceholderText("请再次输入密码");
+    expect(confirmPasswordInput).toHaveAttribute("type", "password");
+
+    // Click the eye icon to show confirm password
+    const toggleButtons = screen.getAllByRole("button", { name: "显示密码" });
+    await user.click(toggleButtons[1]); // Second toggle button is for confirm password
+
+    expect(confirmPasswordInput).toHaveAttribute("type", "text");
+
+    // Click again to hide
+    const hideButtons = screen.getAllByRole("button", { name: "隐藏密码" });
+    await user.click(hideButtons[1]);
+
+    expect(confirmPasswordInput).toHaveAttribute("type", "password");
+  });
+
+  it("should update password requirements in real-time as user types", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<PasswordSetupForm onSubmit={onSubmit} />);
+
+    const passwordInput = screen.getByPlaceholderText("请输入密码");
+
+    // Initially, all required requirements should show X icon (gray)
+    expect(screen.getByText("8-20位字符")).toHaveClass("text-gray-600");
+    expect(screen.getByText("包含至少一个大写字母")).toHaveClass(
+      "text-gray-600"
+    );
+    expect(screen.getByText("包含至少一个小写字母")).toHaveClass(
+      "text-gray-600"
+    );
+
+    // Type a password that meets length requirement
+    await user.type(passwordInput, "password");
+    await waitFor(() => {
+      expect(screen.getByText("8-20位字符")).toHaveClass("text-green-600");
+    });
+
+    // Add uppercase letter
+    await user.clear(passwordInput);
+    await user.type(passwordInput, "Password");
+    await waitFor(() => {
+      expect(screen.getByText("包含至少一个大写字母")).toHaveClass(
+        "text-green-600"
+      );
+      expect(screen.getByText("包含至少一个小写字母")).toHaveClass(
+        "text-green-600"
+      );
+    });
+
+    // Add number to meet all required requirements
+    await user.clear(passwordInput);
+    await user.type(passwordInput, "Password123");
+    await waitFor(() => {
+      expect(screen.getByText("8-20位字符")).toHaveClass("text-green-600");
+      expect(screen.getByText("包含至少一个大写字母")).toHaveClass(
+        "text-green-600"
+      );
+      expect(screen.getByText("包含至少一个小写字母")).toHaveClass(
+        "text-green-600"
+      );
+      // Number requirement is optional, so it should show green when met
+      expect(screen.getByText(/包含至少一个数字/)).toHaveClass(
+        "text-green-600"
+      );
+    });
+  });
+
+  it("should display password strength indicator", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<PasswordSetupForm onSubmit={onSubmit} />);
+
+    const passwordInput = screen.getByPlaceholderText("请输入密码");
+
+    // All the following test password are obtained from https://zxcvbn-ts.github.io/zxcvbn/guide/comparison/
+    // Weak password: zxcvbn reports a score of 0 and we map it to weak
+    await user.type(passwordInput, "1q2w3e4r5t");
+    await waitFor(() => {
+      expect(screen.getByText("弱")).toBeInTheDocument();
+    });
+
+    // Weak password: zxcvbn reports a score of 1 and we map it to weak
+    await user.type(passwordInput, "1Q2w3e4r5t");
+    await waitFor(() => {
+      expect(screen.getByText("弱")).toBeInTheDocument();
+    });
+
+    // Medium password: zxcvbn reports a score of 2 and we map it to medium
+    await user.clear(passwordInput);
+    await user.type(passwordInput, "Tiger@0177");
+    await waitFor(() => {
+      expect(screen.getByText("中")).toBeInTheDocument();
+    });
+
+    // Strong password: zxcvbn reports a score of 3 and we map it to strong
+    await user.clear(passwordInput);
+    await user.type(passwordInput, "zxcftzuio!@#");
+    await waitFor(() => {
+      expect(screen.getByText("强")).toBeInTheDocument();
+    });
+  });
+
+  it("should show optional requirements with different styling", () => {
+    const onSubmit = vi.fn();
+    render(<PasswordSetupForm onSubmit={onSubmit} />);
+
+    // Optional requirements should have gray text when not met
+    expect(screen.getByText(/包含至少一个数字/)).toHaveClass("text-gray-500");
+    expect(screen.getByText(/包含至少一个特殊符号/)).toHaveClass(
+      "text-gray-500"
+    );
+  });
 });
