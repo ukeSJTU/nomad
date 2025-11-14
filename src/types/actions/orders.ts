@@ -119,3 +119,55 @@ export const orderDetailsSchema = z.object({
 });
 
 export type OrderDetails = z.infer<typeof orderDetailsSchema>;
+
+/**
+ * Delete Order Action Result
+ */
+export type DeleteOrderResult = ActionResult<void>;
+
+/**
+ * Order List Item (simplified for order list page)
+ */
+export const orderListItemSchema = z.object({
+  id: z.string().uuid(),
+  orderNumber: z.string(),
+  status: z.enum(["PENDING_PAYMENT", "CONFIRMED", "CANCELLED", "REFUNDED"]),
+  createdAt: z.string().datetime(),
+  totalAmount: z.string(),
+  passengerCount: z.number().int().positive(),
+  outboundFlight: z.object({
+    flightNumber: z.string(),
+    airlineName: z.string(),
+    airlineIataCode: z.string(),
+    airlineLogoUrl: z.string().nullable(),
+    departureAirportName: z.string(),
+    departureAirportIataCode: z.string(),
+    departureCityName: z.string(),
+    arrivalAirportName: z.string(),
+    arrivalAirportIataCode: z.string(),
+    arrivalCityName: z.string(),
+    departureDatetime: z.string().datetime(),
+    arrivalDatetime: z.string().datetime(),
+    seatClassType: z.string(),
+  }),
+  inboundFlight: z
+    .object({
+      flightNumber: z.string(),
+      airlineName: z.string(),
+      airlineIataCode: z.string(),
+      airlineLogoUrl: z.string().nullable(),
+      departureAirportName: z.string(),
+      departureAirportIataCode: z.string(),
+      departureCityName: z.string(),
+      arrivalAirportName: z.string(),
+      arrivalAirportIataCode: z.string(),
+      arrivalCityName: z.string(),
+      departureDatetime: z.string().datetime(),
+      arrivalDatetime: z.string().datetime(),
+      seatClassType: z.string(),
+    })
+    .nullable(),
+  passengerNames: z.array(z.string()),
+});
+
+export type OrderListItem = z.infer<typeof orderListItemSchema>;
