@@ -14,10 +14,30 @@ export const brandColors = [
 ];
 
 /**
+ * Data source type for seeding
+ * - fixture-faker: Use real fixture data for cities/airports/airlines, generate flights with Faker
+ * - scenario: Use complete predefined scenario data (for exam, etc.)
+ */
+export type DataSource = "fixture-faker" | "scenario";
+
+/**
  * Seed configuration schema
  * Defines the structure and validation rules for database seeding
  */
 export const seedConfigSchema = z.object({
+  /**
+   * Data source type
+   * @default "fixture-faker"
+   */
+  dataSource: z.enum(["fixture-faker", "scenario"]).default("fixture-faker"),
+
+  /**
+   * Scenario file name (only used when dataSource is "scenario")
+   * Points to a file in fixtures/scenarios/ directory
+   * @example "exam-2025"
+   */
+  scenarioFile: z.string().optional(),
+
   /**
    * Faker seed for reproducible random data generation
    * Same seed value will always generate the same data
@@ -51,6 +71,8 @@ export const seedConfigSchema = z.object({
 
   /**
    * Number of records to generate for each table
+   * Only used when dataSource is "fixture-faker"
+   * Optional when dataSource is "scenario"
    */
   counts: z
     .object({
@@ -66,6 +88,7 @@ export const seedConfigSchema = z.object({
         })
         .default({ min: 1, max: 5 }),
     })
+    .optional()
     .default({
       cities: 30,
       airports: 70,
@@ -82,23 +105,11 @@ export type SeedConfig = z.infer<typeof seedConfigSchema>;
  * Predefined scenarios for different use cases
  */
 export const scenarios = {
-  minimal: {
-    name: "Minimal",
-    description: "Minimal data for quick testing (fastest)",
-    seed: 42,
-    mode: "full" as const,
-    counts: {
-      cities: 3,
-      airports: 5,
-      airlines: 5,
-      flights: 10,
-      users: 2,
-      passengersPerUser: { min: 1, max: 2 },
-    },
-  },
   development: {
     name: "Development",
-    description: "Moderate data for daily development",
+    description:
+      "Moderate data for daily development (real cities + generated flights)",
+    dataSource: "fixture-faker" as const,
     seed: 42,
     mode: "full" as const,
     counts: {
@@ -112,31 +123,28 @@ export const scenarios = {
   },
   demo: {
     name: "Demo",
-    description: "Rich data for demonstrations",
+    description:
+      "Rich data for demonstrations (all real cities + many flights)",
+    dataSource: "fixture-faker" as const,
     seed: 99999,
     mode: "full" as const,
     counts: {
-      cities: 50,
-      airports: 100,
-      airlines: 50,
-      flights: 200,
+      cities: 65, // All cities from REAL_CITIES
+      airports: 110, // All airports from REAL_AIRPORTS
+      airlines: 43, // All airlines from REAL_AIRLINES
+      flights: 500,
       users: 20,
       passengersPerUser: { min: 1, max: 5 },
     },
   },
-  performance: {
-    name: "Performance",
-    description: "Large dataset for performance testing",
-    seed: 88888,
+  exam: {
+    name: "Exam 2025",
+    description: "Exact data for course exam (predefined scenario)",
+    dataSource: "scenario" as const,
+    scenarioFile: "exam-2025",
+    seed: 42, // Not used in scenario mode, but required by schema
     mode: "full" as const,
-    counts: {
-      cities: 200,
-      airports: 500,
-      airlines: 100,
-      flights: 2000,
-      users: 100,
-      passengersPerUser: { min: 1, max: 5 },
-    },
+    // counts is not needed for scenario mode
   },
 } as const;
 
@@ -146,6 +154,7 @@ export type ScenarioName = keyof typeof scenarios;
  * Default seed configuration
  */
 export const defaultSeedConfig: SeedConfig = {
+  dataSource: "fixture-faker",
   seed: 42, // Fixed seed for reproducible data
   mode: "full",
   counts: {
@@ -164,7 +173,7 @@ export const defaultSeedConfig: SeedConfig = {
 /**
  * Parse CLI arguments and merge with default config
  * Supports the following CLI arguments:
- * - --scenario=<name>: Use a predefined scenario (minimal, development, demo, performance)
+ * - --scenario=<name>: Use a predefined scenario (development, demo, exam)
  * - --seed=<number>: Set the Faker seed for reproducible data
  * - --mode=<mode>: Seeding mode (full or incremental)
  * - --incremental: Shorthand for --mode=incremental
@@ -178,6 +187,9 @@ export const defaultSeedConfig: SeedConfig = {
  * ```bash
  * # Use a predefined scenario
  * pnpm db:seed --scenario=demo
+ *
+ * # Use exam scenario (exact data)
+ * pnpm db:seed --scenario=exam
  *
  * # Generate with specific seed for reproducibility
  * pnpm db:seed --seed=12345
@@ -220,13 +232,17 @@ export function parseSeedConfig(): SeedConfig {
   }
 
   const config: {
+    dataSource?: DataSource;
+    scenarioFile?: string;
     seed?: number;
     mode?: "full" | "incremental";
-    counts: Partial<SeedConfig["counts"]>;
+    counts?: Partial<SeedConfig["counts"]>;
   } = {
+    dataSource: baseConfig.dataSource,
+    scenarioFile: baseConfig.scenarioFile,
     seed: baseConfig.seed,
     mode: baseConfig.mode,
-    counts: { ...baseConfig.counts },
+    counts: baseConfig.counts ? { ...baseConfig.counts } : undefined,
   };
 
   for (const arg of args) {
@@ -245,39 +261,48 @@ export function parseSeedConfig(): SeedConfig {
     } else if (arg.startsWith("--cities=")) {
       const value = parseInt(arg.split("=")[1], 10);
       if (!isNaN(value)) {
-        config.counts!.cities = value;
+        if (!config.counts) config.counts = {};
+        config.counts.cities = value;
       }
     } else if (arg.startsWith("--airports=")) {
       const value = parseInt(arg.split("=")[1], 10);
       if (!isNaN(value)) {
-        config.counts!.airports = value;
+        if (!config.counts) config.counts = {};
+        config.counts.airports = value;
       }
     } else if (arg.startsWith("--airlines=")) {
       const value = parseInt(arg.split("=")[1], 10);
       if (!isNaN(value)) {
-        config.counts!.airlines = value;
+        if (!config.counts) config.counts = {};
+        config.counts.airlines = value;
       }
     } else if (arg.startsWith("--flights=")) {
       const value = parseInt(arg.split("=")[1], 10);
       if (!isNaN(value)) {
-        config.counts!.flights = value;
+        if (!config.counts) config.counts = {};
+        config.counts.flights = value;
       }
     } else if (arg.startsWith("--users=")) {
       const value = parseInt(arg.split("=")[1], 10);
       if (!isNaN(value)) {
-        config.counts!.users = value;
+        if (!config.counts) config.counts = {};
+        config.counts.users = value;
       }
     }
   }
 
   // Merge with defaults
   const mergedConfig = {
+    dataSource: config.dataSource ?? defaultSeedConfig.dataSource,
+    scenarioFile: config.scenarioFile,
     seed: config.seed ?? defaultSeedConfig.seed,
     mode: config.mode ?? defaultSeedConfig.mode,
-    counts: {
-      ...defaultSeedConfig.counts,
-      ...config.counts,
-    },
+    counts: config.counts
+      ? {
+          ...defaultSeedConfig.counts,
+          ...config.counts,
+        }
+      : undefined,
   };
 
   // Validate the merged configuration
@@ -303,7 +328,10 @@ export async function promptForScenario(): Promise<SeedConfig> {
   const scenarioChoices = Object.entries(scenarios).map(([key, scenario]) => ({
     name: `${scenario.name} - ${scenario.description}`,
     value: key,
-    description: `Cities: ${scenario.counts.cities}, Airports: ${scenario.counts.airports}, Flights: ${scenario.counts.flights}, Users: ${scenario.counts.users}`,
+    description:
+      "counts" in scenario && scenario.counts
+        ? `Cities: ${scenario.counts.cities}, Airports: ${scenario.counts.airports}, Flights: ${scenario.counts.flights}, Users: ${scenario.counts.users}`
+        : "Predefined scenario data",
   }));
 
   scenarioChoices.push({
@@ -342,10 +370,13 @@ export async function promptForScenario(): Promise<SeedConfig> {
   }
 
   return {
+    dataSource: scenario.dataSource,
+    scenarioFile:
+      "scenarioFile" in scenario ? scenario.scenarioFile : undefined,
     seed: scenario.seed,
     mode: scenario.mode,
-    counts: scenario.counts,
-  };
+    counts: "counts" in scenario ? scenario.counts : undefined,
+  } as SeedConfig;
 }
 
 /**
@@ -353,15 +384,21 @@ export async function promptForScenario(): Promise<SeedConfig> {
  */
 export function displaySeedConfig(config: SeedConfig): void {
   console.log("\n[SEED CONFIG] Configuration:");
+  console.log(`   - Data Source: ${config.dataSource}`);
+  if (config.dataSource === "scenario") {
+    console.log(`   - Scenario File: ${config.scenarioFile}`);
+  }
   console.log(`   - Mode: ${config.mode}`);
   console.log(`   - Seed: ${config.seed}`);
-  console.log(`   - Cities: ${config.counts.cities}`);
-  console.log(`   - Airports: ${config.counts.airports}`);
-  console.log(`   - Airlines: ${config.counts.airlines}`);
-  console.log(`   - Flights: ${config.counts.flights}`);
-  console.log(`   - Users: ${config.counts.users}`);
-  console.log(
-    `   - Passengers per user: ${config.counts.passengersPerUser.min}-${config.counts.passengersPerUser.max}`
-  );
+  if (config.dataSource === "fixture-faker" && config.counts) {
+    console.log(`   - Cities: ${config.counts.cities}`);
+    console.log(`   - Airports: ${config.counts.airports}`);
+    console.log(`   - Airlines: ${config.counts.airlines}`);
+    console.log(`   - Flights: ${config.counts.flights}`);
+    console.log(`   - Users: ${config.counts.users}`);
+    console.log(
+      `   - Passengers per user: ${config.counts.passengersPerUser.min}-${config.counts.passengersPerUser.max}`
+    );
+  }
   console.log("");
 }
