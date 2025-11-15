@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, emailOTP, phoneNumber } from "better-auth/plugins";
+import { emailOTP, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@/lib/db";
 import { sendEmailOtp } from "@/lib/email";
@@ -60,8 +60,6 @@ export const auth = betterAuth({
     enabled: true,
   },
   plugins: [
-    // Admin plugin for development user switching
-    admin(),
     phoneNumber({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       sendOTP: async ({ phoneNumber, code }, request) => {
