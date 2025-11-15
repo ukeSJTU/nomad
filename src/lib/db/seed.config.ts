@@ -74,6 +74,14 @@ export const seedConfigSchema = z.object({
           max: z.number().int().positive().default(5),
         })
         .default({ min: 1, max: 5 }),
+      orders: z.number().int().positive().optional(), // Optional: defaults to 1.5x users in seed.ts
+      searchesPerUser: z
+        .object({
+          min: z.number().int().positive().default(2),
+          max: z.number().int().positive().default(8),
+        })
+        .optional()
+        .default({ min: 2, max: 8 }),
     })
     .optional()
     .default({
@@ -83,6 +91,7 @@ export const seedConfigSchema = z.object({
       flights: 50,
       users: 10,
       passengersPerUser: { min: 1, max: 5 },
+      searchesPerUser: { min: 2, max: 8 },
     }),
 });
 
@@ -106,6 +115,7 @@ export const scenarios = {
       flights: 50,
       users: 5,
       passengersPerUser: { min: 1, max: 3 },
+      searchesPerUser: { min: 2, max: 5 },
     },
   },
   demo: {
@@ -122,6 +132,7 @@ export const scenarios = {
       flights: 500,
       users: 20,
       passengersPerUser: { min: 1, max: 5 },
+      searchesPerUser: { min: 3, max: 10 },
     },
   },
   exam: {
@@ -153,6 +164,10 @@ export const defaultSeedConfig: SeedConfig = {
     passengersPerUser: {
       min: 1,
       max: 5,
+    },
+    searchesPerUser: {
+      min: 2,
+      max: 8,
     },
   },
 };
@@ -385,6 +400,12 @@ export function displaySeedConfig(config: SeedConfig): void {
     console.log(`   - Users: ${config.counts.users}`);
     console.log(
       `   - Passengers per user: ${config.counts.passengersPerUser.min}-${config.counts.passengersPerUser.max}`
+    );
+    console.log(
+      `   - Orders: ${config.counts.orders || `~${Math.floor(config.counts.users * 1.5)}`} (auto)`
+    );
+    console.log(
+      `   - Searches per user: ${config.counts.searchesPerUser?.min || 2}-${config.counts.searchesPerUser?.max || 8}`
     );
   }
   console.log("");
