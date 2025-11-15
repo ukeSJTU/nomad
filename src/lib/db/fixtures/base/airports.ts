@@ -5,11 +5,20 @@
  * Airports are linked to cities via cityIataCode (will be resolved to cityId during seeding).
  */
 
-export interface AirportFixture {
-  iataCode: string;
-  name: string;
-  cityIataCode: string; // Reference to city IATA code
-}
+import type { InferInsertModel } from "drizzle-orm";
+
+import { airports } from "@/lib/schema/airports";
+
+/**
+ * Airport fixture type - derived from schema, excluding auto-generated fields
+ * Uses cityIataCode instead of cityId for easier fixture definition
+ */
+export type AirportFixture = Omit<
+  InferInsertModel<typeof airports>,
+  "id" | "cityId" | "createdAt" | "updatedAt"
+> & {
+  cityIataCode: string; // Reference to city IATA code (will be resolved to UUID)
+};
 
 /**
  * Real airports data (100+ airports)
