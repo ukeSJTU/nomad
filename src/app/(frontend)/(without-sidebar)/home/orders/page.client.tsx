@@ -79,7 +79,7 @@ export default function OrdersPageClient({
 
   // Navigate to order details
   const handleViewDetails = (orderId: string) => {
-    router.push(`/home/orders/${orderId}`);
+    router.push(`/orders/${orderId}`);
   };
 
   // Navigate to payment page
