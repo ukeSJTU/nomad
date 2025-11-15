@@ -62,17 +62,17 @@ export async function switchUserAction(
 
   try {
     // Step 1: Query the database to get the email of given userId
-    const targetUser = await db
+    const [targetUser] = await db
       .select({ email: user.email })
       .from(user)
       .where(eq(user.id, userId))
       .limit(1);
 
-    if (!targetUser || targetUser.length === 0) {
+    if (!targetUser) {
       return { success: false, error: "User not found" };
     }
 
-    const email = targetUser[0].email;
+    const email = targetUser.email;
 
     // Step 2: Send email OTP using Better Auth's API
     await auth.api.sendVerificationOTP({
