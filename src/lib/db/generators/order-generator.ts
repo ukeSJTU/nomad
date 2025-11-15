@@ -25,6 +25,8 @@ type PaymentInsert = InferInsertModel<typeof payments>;
 export interface OrderGeneratorInput {
   userIds: string[]; // Available user IDs
   flightSeatClassIds: string[]; // Available flight seat class IDs
+  futureFlightSeatClassIds: string[]; // Future flight seat class IDs (for future orders)
+  pastFlightSeatClassIds: string[]; // Past flight seat class IDs (for traveled orders)
   passengersByUser: Map<
     string,
     Array<{
@@ -47,11 +49,21 @@ export interface OrderGeneratorOutput {
 
 /**
  * Generate realistic orders with passengers and payments
+ * Covers all order states: PENDING_PAYMENT, CONFIRMED, CANCELLED, REFUNDED
+ * Includes both future flights (not traveled) and past flights (traveled)
  */
 export function generateOrders(
   input: OrderGeneratorInput
 ): OrderGeneratorOutput {
-  const { userIds, flightSeatClassIds, passengersByUser, count, seed } = input;
+  const {
+    userIds,
+    flightSeatClassIds,
+    futureFlightSeatClassIds,
+    pastFlightSeatClassIds,
+    passengersByUser,
+    count,
+    seed,
+  } = input;
 
   if (seed !== undefined) {
     faker.seed(seed);
@@ -83,15 +95,29 @@ export function generateOrders(
       passengerCount
     );
 
+    // Determine if this should be a "traveled" order (past flight)
+    // 20% of CONFIRMED orders should be for past flights (already traveled)
+    const isTraveled =
+      faker.datatype.boolean({ probability: 0.2 }) &&
+      pastFlightSeatClassIds.length > 0;
+
+    // Select appropriate flight seat class pool based on whether order is traveled
+    const availableSeatClassIds = isTraveled
+      ? pastFlightSeatClassIds
+      : futureFlightSeatClassIds.length > 0
+        ? futureFlightSeatClassIds
+        : flightSeatClassIds;
+
     // Select flight seat class (outbound)
-    const outboundFlightSeatClassId =
-      faker.helpers.arrayElement(flightSeatClassIds);
+    const outboundFlightSeatClassId = faker.helpers.arrayElement(
+      availableSeatClassIds
+    );
 
     // 30% chance of round-trip
     const isRoundTrip = faker.datatype.boolean({ probability: 0.3 });
     const inboundFlightSeatClassId = isRoundTrip
       ? faker.helpers.arrayElement(
-          flightSeatClassIds.filter(id => id !== outboundFlightSeatClassId)
+          availableSeatClassIds.filter(id => id !== outboundFlightSeatClassId)
         )
       : null;
 
@@ -126,14 +152,17 @@ export function generateOrders(
     // Generate temp order ID for reference
     const tempOrderId = faker.string.uuid();
 
-    // Order status distribution: 60% CONFIRMED, 30% PENDING_PAYMENT, 10% CANCELLED
+    // Order status distribution: 50% CONFIRMED, 25% PENDING_PAYMENT, 15% CANCELLED, 10% REFUNDED
+    // This ensures all order states are represented in the seeded data
     const statusRoll = faker.number.float({ min: 0, max: 1 });
     const status =
-      statusRoll < 0.6
+      statusRoll < 0.5
         ? "CONFIRMED"
-        : statusRoll < 0.9
+        : statusRoll < 0.75
           ? "PENDING_PAYMENT"
-          : "CANCELLED";
+          : statusRoll < 0.9
+            ? "CANCELLED"
+            : "REFUNDED";
 
     // Payment deadline: 30 minutes from order creation for pending orders
     const paymentDeadline = new Date(orderDate.getTime() + 30 * 60 * 1000);
@@ -186,9 +215,15 @@ export function generateOrders(
       });
     }
 
-    // Create payment (only for CONFIRMED and PENDING_PAYMENT orders)
-    if (status === "CONFIRMED" || status === "PENDING_PAYMENT") {
-      const paymentStatus = status === "CONFIRMED" ? "SUCCESS" : "FAILED";
+    // Create payment (for CONFIRMED, PENDING_PAYMENT, and REFUNDED orders)
+    // REFUNDED orders also have payment records (they were paid before being refunded)
+    if (
+      status === "CONFIRMED" ||
+      status === "PENDING_PAYMENT" ||
+      status === "REFUNDED"
+    ) {
+      const paymentStatus =
+        status === "CONFIRMED" || status === "REFUNDED" ? "SUCCESS" : "FAILED";
       const paymentMethod = faker.helpers.arrayElement([
         "BALANCE",
         "ALIPAY",

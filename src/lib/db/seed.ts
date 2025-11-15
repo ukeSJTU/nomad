@@ -414,11 +414,31 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
     `Generated ${insertedPassengers.length} passengers`
   );
 
-  // 8. Generate Orders (with order passengers and payments)
+  // 8. Separate future and past flight seat classes for order generation
+  const now = new Date();
+  const futureFlightSeatClassIds: string[] = [];
+  const pastFlightSeatClassIds: string[] = [];
+
+  for (const seatClass of insertedSeatClasses) {
+    const flight = insertedFlights.find(f => f.id === seatClass.flightId);
+    if (flight) {
+      if (flight.departureDatetime > now) {
+        futureFlightSeatClassIds.push(seatClass.id);
+      } else {
+        pastFlightSeatClassIds.push(seatClass.id);
+      }
+    }
+  }
+
+  // 9. Generate Orders (with order passengers and payments)
+  // Orders will cover all states: PENDING_PAYMENT, CONFIRMED, CANCELLED, REFUNDED
+  // Some CONFIRMED orders will be for past flights (already traveled)
   const ordersSpinner = ora("Generating orders...").start();
   const orderGeneratorOutput = generateOrders({
     userIds: insertedUsers.map(u => u.id),
     flightSeatClassIds: insertedSeatClasses.map(sc => sc.id),
+    futureFlightSeatClassIds,
+    pastFlightSeatClassIds,
     passengersByUser,
     count: config.counts.orders || Math.floor(insertedUsers.length * 1.5), // Default: 1.5 orders per user
     seed: config.seed,
@@ -438,7 +458,7 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
     orderIdMapping.set(tempId, insertedOrders[i].id);
   }
 
-  // 9. Insert Order Passengers
+  // 10. Insert Order Passengers
   const orderPassengersSpinner = ora("Generating order passengers...").start();
   const orderPassengerDataWithIds = orderGeneratorOutput.orderPassengers.map(
     op => ({
@@ -454,7 +474,7 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
     `Generated ${insertedOrderPassengers.length} order passengers`
   );
 
-  // 10. Insert Payments
+  // 11. Insert Payments
   const paymentsSpinner = ora("Generating payments...").start();
   const paymentDataWithIds = orderGeneratorOutput.payments.map(p => ({
     ...p,
@@ -466,7 +486,7 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
     .returning();
   paymentsSpinner.succeed(`Generated ${insertedPayments.length} payments`);
 
-  // 11. Generate Flight Search History
+  // 12. Generate Flight Search History
   const searchHistorySpinner = ora("Generating search history...").start();
   const searchHistoryData = generateSearchHistory({
     userIds: insertedUsers.map(u => u.id),

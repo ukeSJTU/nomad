@@ -60,8 +60,13 @@ export function generateFlights(
     } while (usedFlightNumbers.has(flightNumber));
     usedFlightNumbers.add(flightNumber);
 
-    // Generate departure time (within next 6 months)
-    const departureDate = faker.date.future({ years: 0.5 });
+    // Generate departure time
+    // 80% future flights (within next 6 months), 20% past flights (within last 30 days)
+    // This allows testing of "traveled" orders (past flights that have already departed)
+    const isPastFlight = faker.datatype.boolean({ probability: 0.2 });
+    const departureDate = isPastFlight
+      ? faker.date.recent({ days: 30 })
+      : faker.date.future({ years: 0.5 });
 
     // Generate flight duration (1-12 hours based on typical flight times)
     const flightDurationHours = faker.number.int({ min: 1, max: 12 });
