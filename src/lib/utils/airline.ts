@@ -26,7 +26,7 @@ export function getAirlineLogoUrl(
   airline: {
     iataCode: string;
     name: string;
-    logoUrl: string | null;
+    logoUrl?: string | null;
   },
   size: number = 128
 ): string {
@@ -53,7 +53,7 @@ export function getAirlineLogoUrl(
  * Generate airline logo URL for seeding
  *
  * This function is specifically for use during database seeding.
- * It generates a UI Avatars URL if logoUrl is null.
+ * It generates a UI Avatars URL if logoUrl is null or undefined.
  *
  * @param airline - Airline fixture data
  * @returns Airline data with logoUrl populated
@@ -61,7 +61,7 @@ export function getAirlineLogoUrl(
 export function generateAirlineLogoForSeed(airline: {
   iataCode: string;
   name: string;
-  logoUrl: string | null;
+  logoUrl?: string | null;
 }): {
   iataCode: string;
   name: string;
