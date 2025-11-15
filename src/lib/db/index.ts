@@ -1,7 +1,14 @@
+import { loadEnvConfig } from "@next/env";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { EnhancedQueryLogger } from "drizzle-query-logger";
 
 import * as schema from "@/lib/schema";
+
+// Load environment variables based on NODE_ENV
+// - NODE_ENV=test → loads .env.test
+// - NODE_ENV=development → loads .env.local or .env.development
+// - NODE_ENV=production → loads .env.production
+loadEnvConfig(process.cwd());
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is not set.");
