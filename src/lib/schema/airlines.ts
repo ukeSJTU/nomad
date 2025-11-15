@@ -52,6 +52,9 @@ export const airlines = pgTable(
     index("idx_airlines_is_deleted").on(table.isDeleted), // Soft delete filter optimization
 
     // Constraints
-    check("airlines_iata_code_format", sql`${table.iataCode} ~ '^[A-Z]{2}$'`), // IATA code must be 2 uppercase letters
+    check(
+      "airlines_iata_code_format",
+      sql`${table.iataCode} ~ '^[A-Z0-9]{2}$'`
+    ), // IATA code must be 2 uppercase letters or digits (e.g., "CA", "9C")
   ]
 );

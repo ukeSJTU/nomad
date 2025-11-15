@@ -237,21 +237,28 @@ async function seedFromScenario(config: SeedConfig) {
     `Seeded ${insertedSeatClasses.length} seat classes`
   );
 
-  // Seed users
+  // Seed users (skip if empty)
   const usersSpinner = ora("Seeding users...").start();
-  const insertedUsers = await db
-    .insert(user)
-    .values(scenario.users)
-    .returning();
-  usersSpinner.succeed(`Seeded ${insertedUsers.length} users`);
+  let insertedUsers: typeof scenario.users = [];
+  if (scenario.users.length > 0) {
+    insertedUsers = await db.insert(user).values(scenario.users).returning();
+    usersSpinner.succeed(`Seeded ${insertedUsers.length} users`);
+  } else {
+    usersSpinner.info("No users to seed (empty array)");
+  }
 
-  // Seed passengers
+  // Seed passengers (skip if empty)
   const passengersSpinner = ora("Seeding passengers...").start();
-  const insertedPassengers = await db
-    .insert(passengers)
-    .values(scenario.passengers)
-    .returning();
-  passengersSpinner.succeed(`Seeded ${insertedPassengers.length} passengers`);
+  let insertedPassengers: typeof scenario.passengers = [];
+  if (scenario.passengers.length > 0) {
+    insertedPassengers = await db
+      .insert(passengers)
+      .values(scenario.passengers)
+      .returning();
+    passengersSpinner.succeed(`Seeded ${insertedPassengers.length} passengers`);
+  } else {
+    passengersSpinner.info("No passengers to seed (empty array)");
+  }
 
   // Summary
   console.log("\nSummary:");
