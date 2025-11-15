@@ -5,16 +5,17 @@
  * Used as the foundation for fixture-based seeding to ensure realistic demo data.
  */
 
-export interface CityFixture {
-  iataCode: string;
-  name: string;
-  timezone: string;
-  isDomestic: boolean;
-  pinyinFirstLetter: string | null;
-  continent: string | null;
-  isPopular: boolean;
-  displayOrder: number;
-}
+import type { InferInsertModel } from "drizzle-orm";
+
+import { cities } from "@/lib/schema/cities";
+
+/**
+ * City fixture type - derived from schema, excluding auto-generated fields
+ */
+export type CityFixture = Omit<
+  InferInsertModel<typeof cities>,
+  "id" | "createdAt" | "updatedAt"
+>;
 
 /**
  * Real cities data (50+ cities covering domestic and international)
