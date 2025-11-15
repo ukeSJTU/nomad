@@ -34,6 +34,7 @@ import {
 import {
   type DevUserListResult,
   getAllUsersForDevAction,
+  switchUserAction,
 } from "@/lib/actions/dev-tools";
 import { authClient } from "@/lib/auth/client";
 
@@ -67,10 +68,14 @@ export default function DevUserSwitcher() {
     setIsSwitching(true);
 
     try {
-      // Use Better Auth's impersonateUser API
-      await authClient.admin.impersonateUser({
-        userId,
-      });
+      // Use Server Action to switch user
+      const result = await switchUserAction(userId);
+
+      if (!result.success) {
+        console.error("Failed to switch user:", result.error);
+        setIsSwitching(false);
+        return;
+      }
 
       // Refresh the page to update session
       router.refresh();
