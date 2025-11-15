@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   check,
@@ -64,3 +64,13 @@ export const airports = pgTable(
     check("airports_iata_code_format", sql`${table.iataCode} ~ '^[A-Z]{3}$'`), // IATA code must be 3 uppercase letters
   ]
 );
+
+/**
+ * Airports Relations
+ */
+export const airportsRelations = relations(airports, ({ one }) => ({
+  city: one(cities, {
+    fields: [airports.cityId],
+    references: [cities.id],
+  }),
+}));

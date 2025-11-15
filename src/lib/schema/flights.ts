@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   check,
@@ -104,3 +104,23 @@ export const flights = pgTable(
     ), // Arrival must be after departure
   ]
 );
+
+/**
+ * Flights Relations
+ */
+export const flightsRelations = relations(flights, ({ one }) => ({
+  airline: one(airlines, {
+    fields: [flights.airlineId],
+    references: [airlines.id],
+  }),
+  departureAirport: one(airports, {
+    fields: [flights.departureAirportId],
+    references: [airports.id],
+    relationName: "departureAirport",
+  }),
+  arrivalAirport: one(airports, {
+    fields: [flights.arrivalAirportId],
+    references: [airports.id],
+    relationName: "arrivalAirport",
+  }),
+}));
