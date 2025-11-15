@@ -5,6 +5,8 @@
  * 1. Fixture-Faker Mode: Uses real fixture data for cities/airports/airlines, generates flights with Faker
  * 2. Scenario Mode: Uses complete predefined scenario data (for exam, etc.)
  *
+ * Environment variables are loaded via tsx -r dotenv/config in package.json
+ *
  * @example
  * ```bash
  * # Development scenario (real cities + generated flights)
@@ -33,9 +35,13 @@ import {
   flights,
   flightSearchHistory,
   flightSeatClasses,
+  orderPassengers,
+  orders,
   passengers,
+  payments,
   user,
 } from "@/lib/schema";
+import { generateAirlineLogoForSeed } from "@/lib/utils/airline";
 
 import { REAL_AIRLINES } from "./fixtures/base/airlines";
 import { REAL_AIRPORTS } from "./fixtures/base/airports";
@@ -44,6 +50,8 @@ import {
   generateFlights,
   generateSeatClasses,
 } from "./generators/flight-generator";
+import { generateOrders } from "./generators/order-generator";
+import { generateSearchHistory } from "./generators/search-history-generator";
 import { generatePassengers, generateUsers } from "./generators/user-generator";
 import { db } from "./index";
 import {
@@ -99,19 +107,25 @@ async function seed() {
 }
 
 /**
- * Clear all data from database
+ * Clear all data from database (in reverse order of dependencies)
  */
 async function clearDatabase() {
   const spinner = ora("Clearing existing data...").start();
-  await db.delete(flightSeatClasses);
-  await db.delete(flights);
+
+  // Clear in reverse order of dependencies
+  await db.delete(payments); // Depends on orders
+  await db.delete(orderPassengers); // Depends on orders
+  await db.delete(orders); // Depends on users, flightSeatClasses
+  await db.delete(flightSeatClasses); // Depends on flights
+  await db.delete(flights); // Depends on airlines, airports
   await db.delete(airlines);
-  await db.delete(airports);
-  await db.delete(flightSearchHistory); // Clear search history before cities
+  await db.delete(airports); // Depends on cities
+  await db.delete(flightSearchHistory); // Depends on users, cities
   await db.delete(cities);
-  await db.delete(passengers);
-  await db.delete(account);
+  await db.delete(passengers); // Depends on users
+  await db.delete(account); // Depends on users
   await db.delete(user);
+
   spinner.succeed("Cleared existing data");
 }
 
@@ -299,14 +313,17 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
     `Seeded ${insertedAirports.length} airports from fixtures`
   );
 
-  // 3. Seed Airlines from fixtures
+  // 3. Seed Airlines from fixtures (with logo fallback)
   const airlinesSpinner = ora("Seeding airlines from fixtures...").start();
   const airlineData = REAL_AIRLINES.slice(0, config.counts.airlines).map(
-    airline => ({
-      iataCode: airline.iataCode,
-      name: airline.name,
-      logoUrl: airline.logoUrl,
-    })
+    airline => {
+      const withLogo = generateAirlineLogoForSeed(airline);
+      return {
+        iataCode: withLogo.iataCode,
+        name: withLogo.name,
+        logoUrl: withLogo.logoUrl ?? null,
+      };
+    }
   );
   const insertedAirlines = await db
     .insert(airlines)
@@ -353,6 +370,16 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
   // 7. Generate Passengers for each user
   const passengersSpinner = ora("Generating passengers...").start();
   const passengerData = [];
+  const passengersByUser = new Map<
+    string,
+    Array<{
+      name: string;
+      identityType: "passport" | "id_card" | "other";
+      identityNumber: string;
+      phone: string | null;
+    }>
+  >();
+
   for (const u of insertedUsers) {
     const count = faker.number.int({
       min: config.counts.passengersPerUser.min,
@@ -360,6 +387,17 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
     });
     const userPassengers = generatePassengers(u.id, count);
     passengerData.push(...userPassengers);
+
+    // Store passenger data for order generation
+    passengersByUser.set(
+      u.id,
+      userPassengers.map(p => ({
+        name: p.name,
+        identityType: p.documentType, // Map documentType to identityType
+        identityNumber: p.documentNumber, // Map documentNumber to identityNumber
+        phone: p.phone ?? null, // Ensure phone is string | null, not undefined
+      }))
+    );
   }
   const insertedPassengers = await db
     .insert(passengers)
@@ -367,6 +405,78 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
     .returning();
   passengersSpinner.succeed(
     `Generated ${insertedPassengers.length} passengers`
+  );
+
+  // 8. Generate Orders (with order passengers and payments)
+  const ordersSpinner = ora("Generating orders...").start();
+  const orderGeneratorOutput = generateOrders({
+    userIds: insertedUsers.map(u => u.id),
+    flightSeatClassIds: insertedSeatClasses.map(sc => sc.id),
+    passengersByUser,
+    count: config.counts.orders || Math.floor(insertedUsers.length * 1.5), // Default: 1.5 orders per user
+    seed: config.seed,
+  });
+
+  // Insert orders
+  const insertedOrders = await db
+    .insert(orders)
+    .values(orderGeneratorOutput.orders)
+    .returning();
+  ordersSpinner.succeed(`Generated ${insertedOrders.length} orders`);
+
+  // Create order ID mapping (temp ID -> actual ID)
+  const orderIdMapping = new Map<string, string>();
+  for (let i = 0; i < insertedOrders.length; i++) {
+    const tempId = Array.from(orderGeneratorOutput.orderIdMap.keys())[i];
+    orderIdMapping.set(tempId, insertedOrders[i].id);
+  }
+
+  // 9. Insert Order Passengers
+  const orderPassengersSpinner = ora("Generating order passengers...").start();
+  const orderPassengerDataWithIds = orderGeneratorOutput.orderPassengers.map(
+    op => ({
+      ...op,
+      orderId: orderIdMapping.get(op.orderId)!,
+    })
+  );
+  const insertedOrderPassengers = await db
+    .insert(orderPassengers)
+    .values(orderPassengerDataWithIds)
+    .returning();
+  orderPassengersSpinner.succeed(
+    `Generated ${insertedOrderPassengers.length} order passengers`
+  );
+
+  // 10. Insert Payments
+  const paymentsSpinner = ora("Generating payments...").start();
+  const paymentDataWithIds = orderGeneratorOutput.payments.map(p => ({
+    ...p,
+    orderId: orderIdMapping.get(p.orderId)!,
+  }));
+  const insertedPayments = await db
+    .insert(payments)
+    .values(paymentDataWithIds)
+    .returning();
+  paymentsSpinner.succeed(`Generated ${insertedPayments.length} payments`);
+
+  // 11. Generate Flight Search History
+  const searchHistorySpinner = ora("Generating search history...").start();
+  const searchHistoryData = generateSearchHistory({
+    userIds: insertedUsers.map(u => u.id),
+    cities: insertedCities.map(c => ({
+      id: c.id,
+      iataCode: c.iataCode,
+      name: c.name,
+    })),
+    searchesPerUser: config.counts.searchesPerUser || { min: 2, max: 8 }, // Default: 2-8 searches per user
+    seed: config.seed,
+  });
+  const insertedSearchHistory = await db
+    .insert(flightSearchHistory)
+    .values(searchHistoryData)
+    .returning();
+  searchHistorySpinner.succeed(
+    `Generated ${insertedSearchHistory.length} search history entries`
   );
 
   // Summary
@@ -378,6 +488,10 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
   console.log(`   - Airlines: ${insertedAirlines.length}`);
   console.log(`   - Flights: ${insertedFlights.length}`);
   console.log(`   - Seat Classes: ${insertedSeatClasses.length}`);
+  console.log(`   - Orders: ${insertedOrders.length}`);
+  console.log(`   - Order Passengers: ${insertedOrderPassengers.length}`);
+  console.log(`   - Payments: ${insertedPayments.length}`);
+  console.log(`   - Search History: ${insertedSearchHistory.length}`);
 }
 
 // Run the seed function
