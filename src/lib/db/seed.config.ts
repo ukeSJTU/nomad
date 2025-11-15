@@ -1,18 +1,5 @@
 import { z } from "zod";
 
-export const brandColors = [
-  "0D8ABC", // Blue
-  "00D084", // Green
-  "FF6B6B", // Red
-  "FFA500", // Orange
-  "9B59B6", // Purple
-  "4ECDC4", // Cyan
-  "FF6B9D", // Pink
-  "95E1D3", // Mint Green
-  "F7DC6F", // Yellow
-  "EC7063", // Coral
-];
-
 /**
  * Data source type for seeding
  * - fixture-faker: Use real fixture data for cities/airports/airlines, generate flights with Faker
