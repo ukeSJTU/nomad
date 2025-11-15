@@ -1,7 +1,7 @@
 /**
- * Exam 2024 Scenario
+ * Exam 2025 Scenario
  *
- * This file contains the exact data required for the 2024 course exam.
+ * This file contains the exact data required for the 2025 course exam.
  * All data is predefined and will be inserted exactly as specified.
  *
  * Note: This is a minimal template with 1-2 sample entries.
@@ -71,7 +71,7 @@ export interface PassengerFixture {
  *
  * TODO: Update this with the complete exam requirements from your instructor
  */
-export const EXAM_2024_SCENARIO = {
+export const EXAM_2025_SCENARIO = {
   /**
    * Cities for exam
    * Example: Shanghai, Beijing, Nanjing as specified by instructor
