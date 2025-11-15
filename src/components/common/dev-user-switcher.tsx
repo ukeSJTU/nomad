@@ -16,7 +16,6 @@
 "use client";
 
 import { Loader2, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -43,7 +42,6 @@ type User = Extract<DevUserListResult, { success: true }>["users"][number];
 
 export default function DevUserSwitcher() {
   // Call all hooks unconditionally first (React Hooks Rules)
-  const router = useRouter();
   const { data: session } = authClient.useSession();
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
@@ -79,7 +77,8 @@ export default function DevUserSwitcher() {
       }
 
       // Refresh the page to update session
-      router.refresh();
+      // Using window.location.reload() is sufficient for dev tools
+      // as it ensures complete session state update
       window.location.reload();
     } catch (error) {
       console.error("Failed to switch user:", error);
