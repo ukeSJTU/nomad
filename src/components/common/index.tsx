@@ -11,6 +11,7 @@ export {
   type PaginationConfig,
   type RowAction,
 } from "./data-table-with-actions";
+export { default as DevUserSwitcher } from "./dev-user-switcher";
 export { default as Footer } from "./footer";
 export { default as Header } from "./header";
 export { getInitials, default as UserMenu } from "./user-menu";
