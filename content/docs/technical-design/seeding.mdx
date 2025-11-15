@@ -8,307 +8,879 @@ icon: Sprout
 
 ## 概述
 
-数据库种子数据系统用于生成测试和开发环境所需的模拟数据。系统基于 Faker.js 实现,支持可重现的数据生成、多种预设场景和灵活的配置选项。
+数据库种子数据系统用于为不同场景生成测试和开发环境所需的数据。系统采用 **Fixture-first** 架构，结合真实基础数据和智能生成器，确保数据的真实性和可维护性。
+
+### 为什么需要种子数据系统？
+
+- **开发环境**：快速初始化本地数据库，无需手动创建测试数据
+- **演示环境**：为 Vercel 部署提供丰富的演示数据
+- **课程考试**：为课程评估提供精确可控的数据集
 
 ### 核心特性
 
-- **可重现性**: 通过固定种子值生成一致的数据
-- **场景预设**: 提供 4 种预定义场景满足不同需求
-- **灵活配置**: 支持命令行参数和交互式配置
-- **增量模式**: 支持在现有数据基础上追加新数据
-- **真实数据**: 使用 Faker.js Airline 模块生成符合行业标准的航空数据
+- **真实数据**：61个真实城市、72个真实机场、39个真实航空公司
+- **类型安全**：所有数据类型从数据库 Schema 自动推导，Schema 变更自动同步
+- **场景驱动**：三种预设场景满足不同需求（开发、演示、考试）
+- **灵活配置**：支持完全重置或增量添加数据
+- **数据完整性**：自动处理外键关系和数据依赖
+
+## 快速开始
+
+### 基本使用
+
+```bash
+# 开发环境 - 适中数据量，快速启动
+pnpm db:seed --scenario=development
+
+# 演示环境 - 丰富数据，完整功能展示
+pnpm db:seed --scenario=demo
+
+# 考试环境 - 精确数据，用于课程评估
+pnpm db:seed --scenario=exam
+```
+
+### 场景选择指南
+
+| 我想... | 使用场景 | 命令 |
+|---------|----------|------|
+| 本地开发调试功能 | Development | `pnpm db:seed --scenario=development` |
+| 准备 Vercel 演示 | Demo | `pnpm db:seed --scenario=demo` |
+| 准备课程考试数据 | Exam | `pnpm db:seed --scenario=exam` |
+| 重置所有数据 | 任意场景 + full 模式 | `pnpm db:seed --scenario=development` (默认) |
+| 添加更多数据 | 任意场景 + incremental 模式 | `pnpm db:seed --scenario=development --mode=incremental` |
+
+### 常见使用场景
+
+```bash
+# 场景1: 首次初始化数据库
+pnpm db:push              # 先推送 schema
+pnpm db:seed --scenario=development  # 再填充数据
+
+# 场景2: 重置开发环境数据
+pnpm db:seed --scenario=development  # 清空并重新生成
+
+# 场景3: 准备演示环境
+pnpm db:seed --scenario=demo  # 生成丰富的演示数据
+
+# 场景4: 在现有数据基础上添加更多航班
+pnpm db:seed --scenario=development --mode=incremental
+```
+
+## 三种场景说明
+
+### Development - 日常开发
+
+**用途**：本地开发环境，数据量适中，启动快速
+
+**数据规模**：
+- 10 个城市，13 个机场，15 个航空公司
+- 50 个航班，105 个座位舱位
+- 5 个用户，10 个乘客
+- 7 个订单，13 个订单乘客，6 笔支付
+- 18 条搜索历史
+
+**特点**：
+- 使用真实的城市、机场、航空公司数据
+- 数据量适中，数据库操作快速
+- 覆盖主要功能测试场景
+
+### Demo - 演示展示
+
+**用途**：Vercel 部署演示，展示完整功能
+
+**数据规模**：
+- 61 个城市（全部真实城市），72 个机场，39 个航空公司
+- 500 个航班，1000+ 个座位舱位
+- 20 个用户，60 个乘客
+- 30 个订单，48 个订单乘客，27 笔支付
+- 117 条搜索历史
+
+**特点**：
+- 完整的真实数据集（所有可用城市、机场、航空公司）
+- 丰富的航班选择，覆盖多种路线
+- 真实的用户行为数据（搜索、订单、支付）
+
+### Exam - 课程考试
+
+**用途**：课程评估，精确可控的数据集
+
+**数据规模**：
+- 由 `src/lib/db/fixtures/scenarios/exam-2025.ts` 文件定义
+- 默认：2 个城市，2 个机场，2 个航空公司，1 个航班
+- 可由助教/老师手动编辑以满足考试要求
+
+**特点**：
+- 数据完全可控，精确定义每一条记录
+- 便于设计特定的考试场景
+- 支持手动编辑，无需修改代码
+
+### 场景对比表
+
+| 特性 | Development | Demo | Exam |
+|------|-------------|------|------|
+| **数据源** | Fixtures + Faker | Fixtures + Faker | Scenario File |
+| **城市数量** | 10 | 61 (全部) | 可定义 |
+| **航班数量** | 50 | 500 | 可定义 |
+| **用户数量** | 5 | 20 | 可定义 |
+| **数据特点** | 真实 + 随机 | 真实 + 丰富 | 完全可控 |
+| **启动速度** | 快 | 中等 | 极快 |
+| **适用场景** | 日常开发 | 功能演示 | 课程考试 |
+| **可编辑性** | 配置文件 | 配置文件 | TypeScript 文件 |
+
 
 ## 系统架构
 
-### 文件结构
+### 设计理念
+
+系统采用 **Fixture-first + Generator** 混合架构：
+
+1. **Fixture-first**：基础数据（城市、机场、航空公司）使用真实数据
+   - 数据质量高，符合真实业务场景
+   - 便于调试和问题定位
+   - 支持手动维护和更新
+
+2. **Generator-based**：复杂数据（航班、订单）使用智能生成器
+   - 自动生成大量测试数据
+   - 保证数据关系正确性
+   - 支持随机性和可重现性（通过 seed）
+
+3. **Type-safe**：所有数据类型从 Schema 自动推导
+   - Schema 变更自动反映到 Fixture 类型
+   - 编译时类型检查，减少运行时错误
+   - IDE 自动补全和类型提示
+
+### 文件组织结构
 
 ```
 src/lib/db/
-├── seed.ts           # 主种子脚本
-└── seed.config.ts    # 配置管理模块
+├── seed.ts                          # 主种子脚本 - 执行入口
+├── seed.config.ts                   # 配置管理 - 场景定义和参数解析
+├── fixtures/
+│   ├── types.ts                     # 类型工具 - FixtureData<T> 等
+│   ├── base/                        # 真实基础数据
+│   │   ├── cities.ts               # 61个真实城市（上海、北京、纽约...）
+│   │   ├── airports.ts             # 72个真实机场（浦东、首都、成田...）
+│   │   └── airlines.ts             # 39个真实航空公司（国航、东航、美联航...）
+│   └── scenarios/                   # 场景数据
+│       └── exam-2025.ts            # 考试场景 - 可手动编辑
+└── generators/                      # 数据生成器
+    ├── flight-generator.ts         # 航班生成器 - 基于真实机场和航空公司
+    ├── user-generator.ts           # 用户生成器 - 随机用户和乘客
+    ├── order-generator.ts          # 订单生成器 - 订单、乘客、支付
+    └── search-history-generator.ts # 搜索历史生成器 - 用户搜索记录
 ```
 
-### 数据依赖关系
+### 数据依赖关系图
 
+<Mermaid 
+chart="
+graph TD
+    A[Cities 城市] --> B[Airports 机场]
+    C[Airlines 航空公司] --> D[Flights 航班]
+    B --> D
+    D --> E[FlightSeatClasses 座位舱位]
+
+    F[Users 用户] --> G[Passengers 乘客]
+    F --> H[FlightSearchHistory 搜索历史]
+    A --> H
+
+    E --> I[Orders 订单]
+    F --> I
+    I --> J[OrderPassengers 订单乘客]
+    I --> K[Payments 支付]
+
+    style A fill:#e1f5ff
+    style C fill:#e1f5ff
+    style F fill:#fff4e1
+    style D fill:#f0f0f0
+    style E fill:#f0f0f0
+    style I fill:#ffe1e1
+    "
+/>
+
+**说明**：
+- 🔵 蓝色：真实基础数据（Fixtures）
+- 🟡 黄色：用户相关数据（Generator）
+- ⚪ 灰色：航班相关数据（Generator）
+- 🔴 红色：订单相关数据（Generator）
+
+### 数据流转过程
+
+<Mermaid 
+chart="
+flowchart LR
+    A[选择场景] --> B{场景类型}
+    B -->|Development/Demo| C[加载 Fixtures]
+    B -->|Exam| D[加载 Scenario File]
+
+    C --> E[插入城市/机场/航空公司]
+    D --> E
+
+    E --> F[生成航班]
+    F --> G[生成座位舱位]
+
+    G --> H[生成用户]
+    H --> I[生成乘客]
+
+    I --> J[生成订单]
+    J --> K[生成订单乘客]
+    J --> L[生成支付]
+
+    I --> M[生成搜索历史]
+
+    K --> N[完成]
+    L --> N
+    M --> N
+
+    style A fill:#4CAF50,color:#fff
+    style N fill:#4CAF50,color:#fff
+    style B fill:#2196F3,color:#fff
+    "
+/>
+
+## 数据说明
+
+### 真实基础数据（Fixtures）
+
+系统内置了真实的航空业数据，确保测试环境接近生产环境：
+
+#### 城市数据（61个）
+
+包含国内外主要城市，每个城市包含：
+- **IATA 代码**：3位标准代码（如 SHA、BJS、NYC）
+- **城市名称**：中文或英文名称
+- **时区**：标准时区（如 Asia/Shanghai）
+- **国内/国际**：标记是否为国内城市
+- **热门标记**：是否为热门旅游城市
+
+**示例城市**：上海、北京、广州、深圳、成都、纽约、东京、伦敦、巴黎、悉尼...
+
+#### 机场数据（72个）
+
+真实的国际机场数据：
+- **IATA 代码**：3位机场代码（如 PVG、PEK、NRT）
+- **机场名称**：完整机场名称（如 浦东国际机场）
+- **所属城市**：关联到城市数据
+
+**示例机场**：浦东国际机场、首都国际机场、成田国际机场、希思罗机场...
+
+#### 航空公司数据（39个）
+
+主要航空公司数据：
+- **IATA 代码**：2位航司代码（如 CA、MU、UA）
+- **公司名称**：航空公司名称（如 中国国际航空）
+- **Logo URL**：航司 Logo（如无则使用 UI Avatars 生成）
+
+**示例航司**：中国国际航空、中国东方航空、美国联合航空、日本航空...
+
+### 生成数据（Generators）
+
+#### 航班数据（Flight Generator）
+
+基于真实机场和航空公司生成航班：
+
+**生成规则**：
+- **航班号**：航司代码 + 4位数字（如 CA1234）
+- **出发/到达机场**：从真实机场中随机选择（确保不同）
+- **出发时间**：未来 7-90 天内随机时间
+- **飞行时长**：根据距离估算（2-15小时）
+- **机型**：使用 Faker 生成真实机型（如 Boeing 737-800）
+- **航站楼**：随机生成（T1、T2、T3 等）
+
+**座位舱位生成**：
+每个航班生成 2-3 个舱位：
+
+| 舱位 | 基础价格 | 座位数 | 可用座位 |
+|------|----------|--------|----------|
+| 经济舱 (ECONOMY) | ¥500-2000 | 150-200 | 总数的 60%-100% |
+| 商务舱 (BUSINESS) | ¥2000-8000 | 20-40 | 总数的 50%-100% |
+| 头等舱 (FIRST) | ¥8000-20000 | 8-16 | 总数的 40%-100% |
+
+#### 用户和乘客数据（User Generator）
+
+**用户生成**：
+- **姓名**：使用 Faker 生成随机姓名
+- **邮箱**：基于姓名生成（如 john.doe@example.com）
+- **手机号**：70% 概率生成中国手机号
+- **邮箱验证**：80% 概率已验证
+- **头像**：50% 概率包含头像 URL
+
+**乘客生成**：
+每个用户生成 1-5 个乘客信息：
+- **姓名**：中文或英文姓名
+- **国籍**：支持 CN、US、JP、UK 等
+- **性别**：male、female、other
+- **出生日期**：1-80 岁随机年龄
+- **证件类型**：
+  - 身份证：18位数字
+  - 护照：E + 8位数字
+  - 其他：10位字母数字组合
+- **证件有效期**：未来 1-10 年
+
+#### 订单数据（Order Generator）
+
+生成完整的订单流程数据：
+
+**订单生成**：
+- **订单号**：ORD + 时间戳 + 随机数
+- **用户**：从已生成用户中随机选择
+- **航班座位**：从可用座位中随机选择
+- **乘客数量**：1-3 人
+- **订单状态**：
+  - PENDING_PAYMENT (20%)
+  - CONFIRMED (60%)
+  - CANCELLED (10%)
+  - COMPLETED (10%)
+- **附加服务**：随机选择餐食、保险、接送机等
+
+**订单乘客**：
+- 从用户的乘客列表中选择
+- 快照乘客信息（姓名、证件等）
+
+**支付记录**：
+- **支付方式**：余额、支付宝、微信
+- **支付状态**：SUCCESS、FAILED、PENDING
+- **交易号**：TXN + 时间戳 + 随机数
+
+#### 搜索历史数据（Search History Generator）
+
+生成用户搜索行为数据：
+
+**生成规则**：
+- **用户**：每个用户 3-10 条搜索记录
+- **出发/到达城市**：从真实城市中随机选择
+- **出发日期**：未来 1-90 天
+- **返程日期**：单程 (70%) 或往返 (30%)
+- **乘客数量**：1-4 人
+- **舱位偏好**：
+  - 不限 (70%)
+  - 经济舱 (20%)
+  - 商务舱 (8%)
+  - 头等舱 (2%)
+- **搜索时间**：过去 30 天内随机时间
+
+
+## 如何添加/修改数据
+
+### 修改 Exam 场景数据（助教常用）
+
+Exam 场景的数据完全由 `src/lib/db/fixtures/scenarios/exam-2025.ts` 文件定义，可以直接编辑：
+
+#### 步骤 1：打开场景文件
+
+```bash
+# 使用编辑器打开
+code src/lib/db/fixtures/scenarios/exam-2025.ts
 ```
-Cities (城市)
-  └── Airports (机场)
-        └── Flights (航班)
-              └── Flight Seat Classes (座位舱位)
 
-Airlines (航空公司)
-  └── Flights (航班)
+#### 步骤 2：编辑数据
 
-Users (用户)
-  └── Passengers (乘客信息)
-```
-
-## 配置系统
-
-### 配置模式
-
-系统支持两种运行模式:
-
-#### 1. 完全模式 (Full Mode)
-
-- 清除所有现有数据
-- 重新生成全部数据
-- 适用于初始化和重置环境
-
-#### 2. 增量模式 (Incremental Mode)
-
-- 保留现有数据
-- 仅添加新记录
-- 适用于扩充测试数据
-
-### 预设场景
-
-| 场景 | 说明 | 种子值 | 城市 | 机场 | 航空公司 | 航班 | 用户 |
-|------|------|--------|------|------|----------|------|------|
-| **minimal** | 最小数据集,快速测试 | 42 | 3 | 5 | 5 | 10 | 2 |
-| **development** | 日常开发使用 | 42 | 10 | 20 | 15 | 50 | 5 |
-| **demo** | 演示展示 | 99999 | 50 | 100 | 50 | 200 | 20 |
-| **performance** | 性能测试 | 88888 | 200 | 500 | 100 | 2000 | 100 |
-
-### 配置参数
+文件导出一个 `EXAM_2025_SCENARIO` 对象，包含以下部分：
 
 ```typescript
-{
-  seed: number;              // Faker 种子值,默认 42
-  mode: "full" | "incremental";  // 运行模式
-  counts: {
-    cities: number;          // 城市数量
-    airports: number;        // 机场数量
-    airlines: number;        // 航空公司数量
-    flights: number;         // 航班数量
-    users: number;           // 用户数量
-    passengersPerUser: {     // 每个用户的乘客数量范围
-      min: number;
-      max: number;
-    }
-  }
-}
+export const EXAM_2025_SCENARIO = {
+  cities: [
+    // 添加城市
+    {
+      iataCode: "SHA",
+      name: "上海",
+      timezone: "Asia/Shanghai",
+      isDomestic: true,
+      pinyinFirstLetter: "S",
+      continent: null,
+      isPopular: true,
+      displayOrder: 1,
+    },
+    // ... 添加更多城市
+  ],
+
+  airports: [
+    // 添加机场
+    {
+      iataCode: "PVG",
+      name: "浦东国际机场",
+      cityIataCode: "SHA", // 关联到城市的 IATA 代码
+    },
+    // ... 添加更多机场
+  ],
+
+  airlines: [
+    // 添加航空公司
+    {
+      iataCode: "CA",
+      name: "中国国际航空",
+      logoUrl: null, // null 会自动生成默认 Logo
+    },
+    // ... 添加更多航空公司
+  ],
+
+  flights: [
+    // 添加航班
+    {
+      flightNumber: "CA1234",
+      airlineIataCode: "CA", // 关联到航空公司
+      departureAirportIataCode: "PVG", // 关联到出发机场
+      arrivalAirportIataCode: "PEK", // 关联到到达机场
+      departureDatetime: "2024-12-16T08:00:00+08:00", // ISO 8601 格式
+      arrivalDatetime: "2024-12-16T10:30:00+08:00",
+      departureTerminal: "T2",
+      arrivalTerminal: "T3",
+      aircraftType: "Boeing 737-800",
+      seatClasses: [
+        {
+          classType: "ECONOMY",
+          price: 800,
+          availableSeats: 150,
+          totalSeats: 180,
+        },
+        // ... 添加更多舱位
+      ],
+    },
+    // ... 添加更多航班
+  ],
+
+  users: [
+    // 添加测试用户
+    {
+      id: "exam-user-1", // 自定义用户 ID
+      name: "Test User",
+      email: "test@exam.com",
+      emailVerified: true,
+    },
+    // ... 添加更多用户
+  ],
+
+  passengers: [
+    // 添加测试乘客
+    {
+      userId: "exam-user-1", // 关联到用户 ID
+      name: "张三",
+      nationality: "CN",
+      gender: "male",
+      dateOfBirth: "1990-01-01",
+      placeOfBirth: "上海",
+      phone: "13800138000",
+      email: "zhangsan@exam.com",
+      documentType: "id_card",
+      documentNumber: "310101199001011234",
+      documentExpiryDate: "2030-12-31",
+    },
+    // ... 添加更多乘客
+  ],
+};
 ```
 
-## 使用方法
-
-### 交互式模式
-
-直接运行命令,通过交互式界面选择场景:
+#### 步骤 3：运行种子脚本
 
 ```bash
-pnpm db:seed
+pnpm db:seed --scenario=exam
 ```
 
-### 命令行模式
+**注意事项**：
+- 所有 IATA 代码必须唯一
+- 外键关联必须正确（如 `cityIataCode` 必须存在于 `cities` 中）
+- 日期时间使用 ISO 8601 格式
+- TypeScript 会提供类型检查和自动补全
 
-#### 使用预设场景
+### 添加新的真实城市/机场/航空公司
 
-```bash
-# 使用演示场景
-pnpm db:seed --scenario=demo
+如果需要为 Development 和 Demo 场景添加更多真实数据：
 
-# 使用性能测试场景
-pnpm db:seed --scenario=performance
-```
+#### 添加城市
 
-#### 自定义配置
-
-```bash
-# 指定种子值(可重现数据)
-pnpm db:seed --seed=12345
-
-# 增量模式添加数据
-pnpm db:seed --incremental --flights=10
-
-# 自定义各表数量
-pnpm db:seed --cities=50 --airports=100 --flights=200
-
-# 组合多个参数
-pnpm db:seed --seed=12345 --users=20 --flights=100
-```
-
-### 可用参数
-
-| 参数 | 说明 | 示例 |
-|------|------|------|
-| `--scenario=<name>` | 使用预设场景 | `--scenario=demo` |
-| `--seed=<number>` | 设置 Faker 种子值 | `--seed=12345` |
-| `--mode=<mode>` | 设置运行模式 | `--mode=incremental` |
-| `--incremental` | 增量模式快捷方式 | `--incremental` |
-| `--cities=<number>` | 城市数量 | `--cities=50` |
-| `--airports=<number>` | 机场数量 | `--airports=100` |
-| `--airlines=<number>` | 航空公司数量 | `--airlines=30` |
-| `--flights=<number>` | 航班数量 | `--flights=200` |
-| `--users=<number>` | 用户数量 | `--users=20` |
-
-## 数据生成详解
-
-### 城市 (Cities)
-
-- **IATA 代码**: 3 位大写字母,保证唯一性
-- **国内/国际**: 随机分配,国内城市包含拼音首字母,国际城市包含大洲信息
-- **热门标记**: 20% 概率标记为热门城市
-- **时区**: 使用真实时区数据
-
-### 机场 (Airports)
-
-- **数据源**: `faker.airline.airport()` 生成真实机场名称和 IATA 代码
-- **关联**: 随机关联到已生成的城市
-- **唯一性**: IATA 代码去重处理
-
-### 航空公司 (Airlines)
-
-- **数据源**: `faker.airline.airline()` 生成真实航空公司名称
-- **IATA 代码**: 严格验证为 2 位大写字母 (A-Z)
-- **Logo**: 使用 UI Avatars API 生成品牌色 Logo
-- **品牌色**: 从预定义的 10 种颜色中随机选择
-
-### 航班 (Flights)
-
-- **航班号**: 航空公司 IATA 代码 + 4 位数字 (如 CA1234)
-- **机型**: `faker.airline.airplane()` 生成真实机型 (如 Boeing 737)
-- **时间**: 未来 90 天内随机出发时间
-- **航程**: 2-15 小时随机飞行时长
-- **路线**: 确保出发和到达机场不同
-
-### 座位舱位 (Flight Seat Classes)
-
-每个航班随机生成 2-3 个舱位:
-
-| 舱位 | 基础价格 | 基础座位数 | 价格浮动 |
-|------|----------|------------|----------|
-| 经济舱 (ECONOMY) | ¥200 | 150 | ±30% |
-| 商务舱 (BUSINESS) | ¥1500 | 30 | ±30% |
-| 头等舱 (FIRST) | ¥5000 | 12 | ±30% |
-
-- **可用座位**: 总座位数的 30%-100%
-- **座位数浮动**: 基础值 ±10
-
-### 用户 (Users)
-
-- **姓名**: 随机生成的英文姓名
-- **邮箱**: 基于姓名生成的邮箱地址
-- **验证状态**: 随机邮箱和手机验证状态
-- **手机号**: 70% 概率包含手机号
-- **头像**: 50% 概率包含头像 URL
-
-### 乘客信息 (Passengers)
-
-每个用户生成 1-5 个乘客信息:
-
-- **姓名**: 支持中文姓名或英文姓名
-- **证件类型**: 身份证、护照或其他
-  - 身份证: 18 位数字
-  - 护照: E + 8 位数字
-  - 其他: 10 位字母数字组合
-- **国籍**: 支持多个国家/地区
-- **性别**: 男性、女性或其他
-- **出生日期**: 1-80 岁随机年龄
-- **联系方式**: 可选的电话、传真、邮箱
-
-## 技术实现
-
-### 唯一性保证
-
-使用 Set 数据结构确保 IATA 代码唯一:
+编辑 `src/lib/db/fixtures/base/cities.ts`：
 
 ```typescript
-const usedIataCodes = new Set<string>();
-do {
-  code = generateCode();
-} while (usedIataCodes.has(code));
-usedIataCodes.add(code);
+export const REAL_CITIES: readonly CityFixture[] = [
+  // ... 现有城市
+  {
+    iataCode: "HGH", // 杭州的 IATA 代码
+    name: "杭州",
+    timezone: "Asia/Shanghai",
+    isDomestic: true,
+    pinyinFirstLetter: "H",
+    continent: null,
+    isPopular: true,
+    displayOrder: 100,
+  },
+];
 ```
 
-### 数据验证
+#### 添加机场
 
-使用 Zod 进行配置验证:
+编辑 `src/lib/db/fixtures/base/airports.ts`：
 
 ```typescript
-const seedConfigSchema = z.object({
-  seed: z.number().int().positive().optional().default(42),
-  mode: z.enum(["full", "incremental"]).default("full"),
-  counts: z.object({...})
-});
+export const REAL_AIRPORTS: readonly AirportFixture[] = [
+  // ... 现有机场
+  {
+    iataCode: "HGH",
+    name: "杭州萧山国际机场",
+    cityIataCode: "HGH", // 关联到城市
+  },
+];
 ```
 
-### 进度显示
+#### 添加航空公司
 
-使用 ora 库提供友好的进度提示:
+编辑 `src/lib/db/fixtures/base/airlines.ts`：
 
 ```typescript
-const spinner = ora("Seeding cities...").start();
-// ... 执行操作
-spinner.succeed(`Seeded ${count} cities`);
+export const REAL_AIRLINES: readonly AirlineFixture[] = [
+  // ... 现有航空公司
+  {
+    iataCode: "HO",
+    name: "吉祥航空",
+    logoUrl: null, // 或提供真实 Logo URL
+  },
+];
 ```
 
-## 最佳实践
+### 调整生成数据的数量和规则
 
-### 开发环境
+如果需要调整 Development 或 Demo 场景的数据量：
 
-使用 development 场景,数据量适中,启动快速:
+#### 修改场景配置
 
-```bash
-pnpm db:seed --scenario=development
-```
-
-### 性能测试
-
-使用 performance 场景生成大量数据:
-
-```bash
-pnpm db:seed --scenario=performance
-```
-
-### 增量添加数据
-
-在现有数据基础上添加更多航班:
-
-```bash
-pnpm db:seed --incremental --flights=50
-```
-
-## 注意事项
-
-1. **数据清除**: 完全模式会清除所有现有数据,请谨慎使用
-2. **种子值**: 相同的种子值会生成完全相同的数据,便于调试和测试
-3. **依赖关系**: 数据生成严格遵循外键依赖关系
-4. **IATA 代码**: 航空公司 IATA 代码必须是 2 位大写字母,系统会自动过滤不符合的代码
-5. **性能**: 大数据量场景 (如 performance) 可能需要较长时间完成
-
-## 扩展开发
-
-### 添加新场景
-
-在 `seed.config.ts` 中添加新场景:
+编辑 `src/lib/db/seed.config.ts`：
 
 ```typescript
 export const scenarios = {
-  // ... 现有场景
-  myScenario: {
-    name: "My Scenario",
-    description: "Custom scenario description",
-    seed: 54321,
+  development: {
+    name: "Development",
+    description: "Moderate data for daily development",
+    seed: 42,
     mode: "full" as const,
     counts: {
-      cities: 20,
-      airports: 40,
+      cities: 10,        // 修改城市数量
+      airports: 20,      // 修改机场数量
+      airlines: 15,      // 修改航空公司数量
+      flights: 50,       // 修改航班数量
+      users: 5,          // 修改用户数量
+      passengersPerUser: {
+        min: 1,
+        max: 3,          // 修改每个用户的乘客数量
+      },
+      orders: 10,        // 修改订单数量（可选，默认为用户数 * 1.5）
+      searchesPerUser: {
+        min: 3,
+        max: 10,         // 修改每个用户的搜索历史数量
+      },
+    },
+  },
+  // ... 其他场景
+};
+```
+
+#### 修改生成器规则
+
+如果需要修改数据生成的具体逻辑，编辑对应的生成器文件：
+
+- **航班生成规则**：`src/lib/db/generators/flight-generator.ts`
+- **用户生成规则**：`src/lib/db/generators/user-generator.ts`
+- **订单生成规则**：`src/lib/db/generators/order-generator.ts`
+- **搜索历史规则**：`src/lib/db/generators/search-history-generator.ts`
+
+### 添加新的数据表支持
+
+如果数据库 Schema 新增了表，需要添加种子数据支持：
+
+#### 步骤 1：创建 Generator（如果需要）
+
+在 `src/lib/db/generators/` 目录下创建新的生成器文件：
+
+```typescript
+// src/lib/db/generators/new-table-generator.ts
+import { faker } from "@faker-js/faker";
+import type { InferInsertModel } from "drizzle-orm";
+import { newTable } from "@/lib/schema/new-table";
+
+type NewTableInsert = Omit<
+  InferInsertModel<typeof newTable>,
+  "id" | "createdAt" | "updatedAt"
+>;
+
+export interface NewTableGeneratorInput {
+  // 定义输入参数
+  count: number;
+  seed?: number;
+}
+
+export function generateNewTableData(
+  input: NewTableGeneratorInput
+): NewTableInsert[] {
+  if (input.seed) {
+    faker.seed(input.seed);
+  }
+
+  const data: NewTableInsert[] = [];
+
+  for (let i = 0; i < input.count; i++) {
+    data.push({
+      // 使用 Faker 生成数据
+      field1: faker.lorem.word(),
+      field2: faker.number.int({ min: 1, max: 100 }),
       // ...
+    });
+  }
+
+  return data;
+}
+```
+
+#### 步骤 2：更新 seed.ts
+
+在 `src/lib/db/seed.ts` 中添加新表的种子逻辑：
+
+```typescript
+// 导入生成器
+import { generateNewTableData } from "./generators/new-table-generator";
+
+// 在 seedFromConfig 函数中添加
+async function seedFromConfig(config: SeedConfig) {
+  // ... 现有代码
+
+  // 添加新表的种子逻辑
+  const newTableSpinner = ora("Generating new table data...").start();
+  const newTableData = generateNewTableData({
+    count: config.counts.newTableCount, // 从配置中读取
+    seed: config.seed,
+  });
+  const insertedNewTable = await db
+    .insert(newTable)
+    .values(newTableData)
+    .returning();
+  newTableSpinner.succeed(`Generated ${insertedNewTable.length} new table records`);
+}
+```
+
+#### 步骤 3：更新配置
+
+在 `src/lib/db/seed.config.ts` 中添加配置参数：
+
+```typescript
+export interface SeedCounts {
+  // ... 现有字段
+  newTableCount?: number; // 添加新字段
+}
+
+export const scenarios = {
+  development: {
+    // ...
+    counts: {
+      // ...
+      newTableCount: 10, // 添加默认值
     },
   },
 };
 ```
 
-### 添加新表
+#### 步骤 4：更新清除逻辑
 
-1. 在 `seed.ts` 中添加种子逻辑
-2. 在 `seed.config.ts` 中添加配置参数
-3. 更新 CLI 参数解析
-4. 遵循依赖关系顺序
+在 `seed.ts` 的 `clearDatabase` 函数中添加清除逻辑：
 
-## 相关资源
+```typescript
+async function clearDatabase() {
+  // 注意：按照依赖关系的逆序删除
+  await db.delete(newTable); // 添加新表的删除
+  // ... 其他表
+}
+```
 
-- [Faker.js 文档](https://fakerjs.dev/)
-- [Drizzle ORM 文档](https://orm.drizzle.team/)
-- [数据库架构设计](/docs/technical-design/architecture)
+
+## 技术实现细节
+
+### 类型安全系统
+
+系统使用 Drizzle ORM 的类型推导功能，确保 Fixture 数据类型与数据库 Schema 保持同步：
+
+```typescript
+// src/lib/db/fixtures/types.ts
+import type { InferInsertModel, Table } from "drizzle-orm";
+
+export type FixtureData<T extends Table> = Omit<
+  InferInsertModel<T>,
+  "id" | "createdAt" | "updatedAt"
+>;
+```
+
+**优势**：
+- Schema 变更自动反映到 Fixture 类型
+- 编译时类型检查，减少运行时错误
+- IDE 自动补全和类型提示
+- 重构安全，字段重命名自动更新
+
+**使用示例**：
+
+```typescript
+// src/lib/db/fixtures/base/cities.ts
+import type { InferInsertModel } from "drizzle-orm";
+import { cities } from "@/lib/schema/cities";
+
+export type CityFixture = Omit<
+  InferInsertModel<typeof cities>,
+  "id" | "createdAt" | "updatedAt"
+>;
+
+export const REAL_CITIES: readonly CityFixture[] = [
+  {
+    iataCode: "SHA",
+    name: "上海",
+    // TypeScript 会检查所有必填字段
+    // IDE 会提供自动补全
+  },
+];
+```
+
+### Airline Logo 回退机制
+
+系统为没有 Logo 的航空公司提供自动生成的默认 Logo：
+
+#### Seed 时生成（Development/Demo）
+
+在数据库种子时直接生成 Logo URL：
+
+```typescript
+// src/lib/utils/airline.ts
+export function generateAirlineLogoForSeed(airline: {
+  iataCode: string;
+  name: string;
+  logoUrl?: string | null;
+}): {
+  iataCode: string;
+  name: string;
+  logoUrl: string;
+} {
+  return {
+    ...airline,
+    logoUrl: airline.logoUrl || getAirlineLogoUrl(airline),
+  };
+}
+```
+
+**使用 UI Avatars API**：
+```
+https://ui-avatars.com/api/?name=CA&background=random&color=fff&size=128&bold=true&format=svg
+```
+
+#### API 层处理（Production）
+
+在应用层动态生成 Logo URL：
+
+```typescript
+// 在组件或 API 中使用
+import { getAirlineLogoUrl } from "@/lib/utils/airline";
+
+const logoUrl = getAirlineLogoUrl(airline);
+```
+
+**优势**：
+- 数据库保持干净（Development/Demo 除外）
+- 易于修改默认头像服务
+- 可以根据不同场景返回不同尺寸
+
+### 数据关系处理
+
+系统严格按照依赖关系顺序插入数据：
+
+#### 插入顺序
+
+```typescript
+// 1. 基础数据（无依赖）
+await db.insert(cities).values(cityData);
+await db.insert(airlines).values(airlineData);
+
+// 2. 依赖基础数据
+await db.insert(airports).values(airportData); // 依赖 cities
+
+// 3. 依赖多个表
+await db.insert(flights).values(flightData); // 依赖 airports, airlines
+
+// 4. 依赖航班
+await db.insert(flightSeatClasses).values(seatClassData); // 依赖 flights
+
+// 5. 用户相关
+await db.insert(users).values(userData);
+await db.insert(passengers).values(passengerData); // 依赖 users
+
+// 6. 订单相关（依赖最多）
+await db.insert(orders).values(orderData); // 依赖 users, flightSeatClasses
+await db.insert(orderPassengers).values(orderPassengerData); // 依赖 orders
+await db.insert(payments).values(paymentData); // 依赖 orders
+
+// 7. 搜索历史
+await db.insert(flightSearchHistory).values(searchData); // 依赖 users, cities
+```
+
+#### 外键映射
+
+使用 Map 数据结构维护 ID 映射关系：
+
+```typescript
+// 城市 IATA 代码 -> 数据库 ID
+const cityMap = new Map<string, string>();
+for (const city of insertedCities) {
+  cityMap.set(city.iataCode, city.id);
+}
+
+// 使用映射创建机场数据
+const airportData = REAL_AIRPORTS.map(airport => ({
+  iataCode: airport.iataCode,
+  name: airport.name,
+  cityId: cityMap.get(airport.cityIataCode)!, // 通过 IATA 代码获取 ID
+}));
+```
+
+### 错误处理和验证
+
+#### 数据库约束验证
+
+系统会自动处理数据库约束错误：
+
+```typescript
+try {
+  await db.insert(flights).values(flightData);
+} catch (error) {
+  if (error.code === "23505") { // Unique violation
+    console.error("Duplicate IATA code detected");
+  }
+  throw error;
+}
+```
+
+#### TypeScript 类型验证
+
+所有数据在插入前都经过 TypeScript 类型检查：
+
+```typescript
+// 编译时错误：缺少必填字段
+const invalidCity: CityFixture = {
+  iataCode: "SHA",
+  // 错误：缺少 name, timezone 等必填字段
+};
+
+// 编译时错误：字段类型不匹配
+const invalidAirline: AirlineFixture = {
+  iataCode: "CA",
+  name: "中国国际航空",
+  logoUrl: 123, // 错误：应该是 string | null
+};
+```
+
+#### 运行时数据验证
+
+使用 Zod 进行配置参数验证：
+
+```typescript
+import { z } from "zod";
+
+const seedConfigSchema = z.object({
+  seed: z.number().int().positive().optional().default(42),
+  mode: z.enum(["full", "incremental"]).default("full"),
+  counts: z.object({
+    cities: z.number().int().positive(),
+    airports: z.number().int().positive(),
+    // ...
+  }),
+});
+```
