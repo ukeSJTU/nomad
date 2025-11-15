@@ -4,11 +4,17 @@
  * This file contains real airlines with accurate IATA codes and names.
  */
 
-export interface AirlineFixture {
-  iataCode: string;
-  name: string;
-  logoUrl: string | null;
-}
+import type { InferInsertModel } from "drizzle-orm";
+
+import { airlines } from "@/lib/schema/airlines";
+
+/**
+ * Airline fixture type - derived from schema, excluding auto-generated fields
+ */
+export type AirlineFixture = Omit<
+  InferInsertModel<typeof airlines>,
+  "id" | "createdAt" | "updatedAt"
+>;
 
 /**
  * Real airlines data (30+ airlines)
