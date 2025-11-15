@@ -13,16 +13,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/client";
-
-export const getInitials = (name?: string) => {
-  if (!name) return "A"; // Anonymous
-  return name
-    .split(" ")
-    .map(n => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-};
+import { getInitials } from "@/lib/utils/string";
 
 /**
  * UserMenu component displays user authentication status and navigation options.
