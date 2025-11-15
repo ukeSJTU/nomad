@@ -37,6 +37,7 @@ import {
   switchUserAction,
 } from "@/lib/actions/dev-tools";
 import { authClient } from "@/lib/auth/client";
+import { getInitials } from "@/lib/utils/string";
 
 type User = Extract<DevUserListResult, { success: true }>["users"][number];
 
@@ -84,15 +85,6 @@ export default function DevUserSwitcher() {
       console.error("Failed to switch user:", error);
       setIsSwitching(false);
     }
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map(n => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   // Environment check after all hooks
