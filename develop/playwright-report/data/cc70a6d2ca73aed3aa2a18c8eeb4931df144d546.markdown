@@ -1,0 +1,107 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Nomad Logo Nomad" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Nomad Logo" [ref=e6]
+          - generic [ref=e7]: Nomad
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e10]
+            - searchbox "搜索任何旅游相关" [ref=e13]
+          - button "Search" [ref=e14]:
+            - img
+            - generic [ref=e15]: Search
+        - generic [ref=e16]:
+          - button "我的订单" [ref=e19] [cursor=pointer]
+          - button "联系客服" [ref=e20]
+          - button "Toggle theme" [ref=e21]:
+            - img
+            - generic [ref=e22]: Toggle theme
+    - region "Notifications alt+T"
+    - main [ref=e23]:
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - heading "账号密码登录" [level=1] [ref=e28]
+          - paragraph [ref=e29]:
+            - text: 还没有账户？
+            - link "立即注册" [ref=e30] [cursor=pointer]:
+              - /url: /auth/sign-up
+        - generic [ref=e31]:
+          - tablist [ref=e32]:
+            - tab "手机号登录" [selected] [ref=e33]
+            - tab "邮箱登录" [ref=e34]
+          - tabpanel "手机号登录" [ref=e35]:
+            - generic [ref=e36]:
+              - tablist [ref=e37]:
+                - tab "密码登录" [selected] [ref=e38]
+                - tab "验证码登录" [ref=e39]
+              - tabpanel "密码登录" [ref=e40]:
+                - generic [ref=e41]:
+                  - generic [ref=e42]:
+                    - generic [ref=e43]:
+                      - generic [ref=e44]: 手机号
+                      - textbox "手机号" [ref=e45]:
+                        - /placeholder: 请输入手机号
+                    - generic [ref=e46]:
+                      - generic [ref=e47]: 密码
+                      - textbox "密码" [ref=e48]:
+                        - /placeholder: 请输入密码
+                    - generic [ref=e49]:
+                      - checkbox "同意《 服务协议 》和《 隐私政策 》" [active] [ref=e50]
+                      - checkbox
+                      - generic [ref=e52]:
+                        - text: 同意《
+                        - link "服务协议" [ref=e53] [cursor=pointer]:
+                          - /url: /terms
+                        - text: 》和《
+                        - link "隐私政策" [ref=e54] [cursor=pointer]:
+                          - /url: /privacy
+                        - text: 》
+                  - button "登录" [ref=e55]
+        - generic [ref=e56]:
+          - generic [ref=e61]: 或
+          - button "Login With GitHub" [ref=e63]:
+            - img
+            - text: Login With GitHub
+    - contentinfo [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - generic [ref=e68]:
+              - generic [ref=e69]: "N"
+              - generic [ref=e70]: Nomad
+            - paragraph [ref=e71]: 您的在线旅行服务平台
+          - generic [ref=e72]:
+            - heading "快速链接" [level=3] [ref=e73]
+            - list [ref=e74]:
+              - listitem [ref=e75]:
+                - link "首页" [ref=e76] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e77]:
+                - link "常旅客管理" [ref=e78] [cursor=pointer]:
+                  - /url: /home/passengers
+          - generic [ref=e79]:
+            - heading "法律信息" [level=3] [ref=e80]
+            - list [ref=e81]:
+              - listitem [ref=e82]:
+                - link "服务协议" [ref=e83] [cursor=pointer]:
+                  - /url: /terms
+              - listitem [ref=e84]:
+                - link "个人信息保护政策" [ref=e85] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e86]:
+                - link "免责声明" [ref=e87] [cursor=pointer]:
+                  - /url: /disclaimer
+        - paragraph [ref=e89]: © 2025 Nomad. 保留所有权利。
+  - 'button "Dev: Switch User" [ref=e90]':
+    - img
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e96] [cursor=pointer]:
+    - img [ref=e97]
+  - alert [ref=e100]
+```
