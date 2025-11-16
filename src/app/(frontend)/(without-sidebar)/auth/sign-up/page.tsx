@@ -364,13 +364,8 @@ export default function SignUpPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Page Header */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">
-            注册账户 {/* Register Account */}
-          </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            请按照以下步骤完成注册{" "}
-            {/* Please follow these steps to complete registration */}
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">注册账户</h1>
+          <p className="mt-2 text-sm text-gray-600">请按照以下步骤完成注册 </p>
         </div>
 
         {/* Progress Stepper - Updates based on sign-up method */}
