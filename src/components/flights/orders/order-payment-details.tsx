@@ -17,7 +17,7 @@ export function OrderPaymentDetails({ order }: OrderPaymentDetailsProps) {
   // Get ancillary services details
   const ancillaryServices = (order.ancillaryDetails || [])
     .map(code => getAncillaryServiceByCode(code))
-    .filter(Boolean);
+    .filter((service): service is NonNullable<typeof service> => !!service);
 
   return (
     <Card className="sticky top-4">
@@ -48,13 +48,13 @@ export function OrderPaymentDetails({ order }: OrderPaymentDetailsProps) {
               {/* Ancillary Services Details */}
               {ancillaryServices.length > 0 && (
                 <div className="pl-4 space-y-1">
-                  {ancillaryServices.map((service, idx) => (
+                  {ancillaryServices.map(service => (
                     <div
-                      key={idx}
+                      key={service.code}
                       className="flex justify-between text-xs text-gray-500"
                     >
-                      <span>• {service!.name}</span>
-                      <span>¥{service!.price}</span>
+                      <span>• {service.name}</span>
+                      <span>¥{service.price}</span>
                     </div>
                   ))}
                 </div>
