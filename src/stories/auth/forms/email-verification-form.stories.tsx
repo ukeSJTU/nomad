@@ -5,7 +5,7 @@ import { expect, userEvent, within } from "storybook/test";
 import EmailVerificationForm from "@/components/auth/forms/email-verification";
 
 const meta = {
-  title: "Auth/EmailVerificationForm",
+  title: "Auth/Forms/EmailVerificationForm",
   component: EmailVerificationForm,
   parameters: {
     layout: "centered",

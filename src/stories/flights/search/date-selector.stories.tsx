@@ -5,7 +5,7 @@ import { useState } from "react";
 import { DateSelector } from "@/components/flights/search/date-selector";
 
 const meta: Meta<typeof DateSelector> = {
-  title: "Flights/DateSelector",
+  title: "Flights/Search/DateSelector",
   component: DateSelector,
   parameters: {
     layout: "centered",

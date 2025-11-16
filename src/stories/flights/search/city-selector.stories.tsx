@@ -184,7 +184,7 @@ const mockCities: CityData[] = [
 ];
 
 const meta = {
-  title: "Flights/CityInput",
+  title: "Flights/Search/CityInput",
   component: CityInput,
   parameters: {
     layout: "centered",

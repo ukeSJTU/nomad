@@ -5,7 +5,7 @@ import { expect, userEvent, within } from "storybook/test";
 import EmailOtpLoginForm from "@/components/auth/forms/email-otp-login";
 
 const meta = {
-  title: "Auth/EmailOtpLoginForm",
+  title: "Auth/Forms/EmailOtpLoginForm",
   component: EmailOtpLoginForm,
   parameters: {
     layout: "centered",

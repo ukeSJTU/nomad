@@ -7,7 +7,7 @@ import {
 } from "@/components/flights/booking/passenger-form-card";
 
 const meta: Meta<typeof PassengerFormCard> = {
-  title: "Flights/PassengerFormCard",
+  title: "Flights/Booking/PassengerFormCard",
   component: PassengerFormCard,
   parameters: {
     layout: "padded",

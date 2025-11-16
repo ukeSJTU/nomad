@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { FlightSummaryCard } from "@/components/flights/booking/flight-summary-card";
 
 const meta: Meta<typeof FlightSummaryCard> = {
-  title: "Flights/FlightSummaryCard",
+  title: "Flights/Booking/FlightSummaryCard",
   component: FlightSummaryCard,
   parameters: {
     layout: "padded",

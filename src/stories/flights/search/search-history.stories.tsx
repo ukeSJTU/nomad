@@ -4,7 +4,7 @@ import { FlightSearchHistoryCard } from "@/components/flights/search/search-hist
 import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
 
 const meta = {
-  title: "Flights/FlightSearchHistoryCard",
+  title: "Flights/Search/FlightSearchHistoryCard",
   component: FlightSearchHistoryCard,
   parameters: {
     layout: "centered",
