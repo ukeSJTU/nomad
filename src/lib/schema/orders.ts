@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   check,
   index,
@@ -257,3 +257,51 @@ export const payments = pgTable(
     check("payments_amount_positive", sql`${table.amount} > 0`),
   ]
 );
+
+/**
+ * Orders Relations
+ */
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  user: one(user, {
+    fields: [orders.userId],
+    references: [user.id],
+  }),
+  outboundFlightSeatClass: one(flightSeatClasses, {
+    fields: [orders.outboundFlightSeatClassId],
+    references: [flightSeatClasses.id],
+    relationName: "outboundFlightSeatClass",
+  }),
+  inboundFlightSeatClass: one(flightSeatClasses, {
+    fields: [orders.inboundFlightSeatClassId],
+    references: [flightSeatClasses.id],
+    relationName: "inboundFlightSeatClass",
+  }),
+  orderPassengers: many(orderPassengers),
+  payment: one(payments, {
+    fields: [orders.id],
+    references: [payments.orderId],
+  }),
+}));
+
+/**
+ * Order Passengers Relations
+ */
+export const orderPassengersRelations = relations(
+  orderPassengers,
+  ({ one }) => ({
+    order: one(orders, {
+      fields: [orderPassengers.orderId],
+      references: [orders.id],
+    }),
+  })
+);
+
+/**
+ * Payments Relations
+ */
+export const paymentsRelations = relations(payments, ({ one }) => ({
+  order: one(orders, {
+    fields: [payments.orderId],
+    references: [orders.id],
+  }),
+}));

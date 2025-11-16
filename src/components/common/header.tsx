@@ -58,7 +58,7 @@ export default function Header() {
                   asChild
                   className="justify-start"
                 >
-                  <Link href="#">机票订单</Link>
+                  <Link href="/home/orders">机票订单</Link>
                 </Button>
                 <Button
                   variant="ghost"
@@ -74,7 +74,7 @@ export default function Header() {
                   asChild
                   className="justify-start"
                 >
-                  <Link href="#">全部订单</Link>
+                  <Link href="/home/orders">全部订单</Link>
                 </Button>
                 <Separator className="my-1" />
                 <Button

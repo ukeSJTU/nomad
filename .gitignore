@@ -54,6 +54,9 @@ node_modules/
 !.specs/templates/
 !.specs/templates/**
 
+# Claude Code settings
+.claude/
+
 # Test Reports and Generated Files
 /reports/
 /public/index.html

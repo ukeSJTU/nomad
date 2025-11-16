@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   check,
@@ -92,4 +92,17 @@ export const flightSeatClasses = pgTable(
     check("seat_classes_total_seats_positive", sql`${table.totalSeats} > 0`), // Total seats must be positive
     check("seat_classes_price_positive", sql`${table.price} > 0`), // Price must be positive
   ]
+);
+
+/**
+ * Flight Seat Classes Relations
+ */
+export const flightSeatClassesRelations = relations(
+  flightSeatClasses,
+  ({ one }) => ({
+    flight: one(flights, {
+      fields: [flightSeatClasses.flightId],
+      references: [flights.id],
+    }),
+  })
 );

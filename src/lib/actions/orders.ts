@@ -10,6 +10,7 @@ import { db } from "@/lib/db";
 import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/lib/schema/orders";
+import { cancelOrder } from "@/lib/services/orders";
 import {
   addCurrency,
   getCurrencyValue,
@@ -18,7 +19,9 @@ import {
   toDatabaseValue,
 } from "@/lib/utils/currency";
 import type {
+  ActionResult,
   CreateOrderResult,
+  DeleteOrderResult,
   UpdateOrderAncillaryResult,
 } from "@/types/actions/orders";
 
@@ -353,6 +356,162 @@ export async function updateOrderAncillaryAction(
     return {
       success: false as const,
       error: "Failed to update order. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server action to cancel an order (user-initiated)
+ *
+ * This action:
+ * 1. Validates user authentication
+ * 2. Delegates to the service layer for business logic
+ *
+ * @param orderId - Order UUID
+ * @returns ActionResult with success/error
+ */
+export async function cancelOrderAction(
+  orderId: string
+): Promise<ActionResult<void>> {
+  try {
+    // 1. Check authentication
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false as const,
+        error: "Authentication required. Please log in first.",
+      };
+    }
+
+    // 2. Delegate to service layer
+    const result = await cancelOrder(orderId, session.user.id);
+
+    if (!result.success) {
+      return {
+        success: false as const,
+        error: result.error,
+      };
+    }
+
+    return {
+      success: true as const,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error("Error in cancelOrderAction:", error);
+    return {
+      success: false as const,
+      error: "Failed to cancel order. Please try again.",
+    };
+  }
+}
+
+/**
+ * Validation schema for delete order request
+ */
+const deleteOrderSchema = z.object({
+  orderId: z.string().uuid("Invalid order ID"),
+});
+
+/**
+ * Delete Order Action (Soft Delete)
+ *
+ * Business Rules:
+ * - Only orders with status CONFIRMED, CANCELLED, or REFUNDED can be deleted
+ * - PENDING_PAYMENT orders cannot be deleted (user should wait for timeout or complete payment)
+ * - Soft delete by setting deletedAt timestamp
+ * - Order must belong to the authenticated user
+ *
+ * @param formData - Object containing orderId
+ * @returns DeleteOrderResult indicating success or failure
+ */
+export async function deleteOrderAction(
+  formData: unknown
+): Promise<DeleteOrderResult> {
+  try {
+    // Step 1: Validate input
+    const result = deleteOrderSchema.safeParse(formData);
+
+    if (!result.success) {
+      return {
+        success: false as const,
+        error: "Invalid order ID",
+        fieldErrors: result.error.flatten().fieldErrors,
+      };
+    }
+
+    const { orderId } = result.data;
+
+    // Step 2: Check authentication
+    const headersList = await headers();
+    const session = await auth.api.getSession({ headers: headersList });
+
+    if (!session?.user?.id) {
+      return {
+        success: false as const,
+        error: "Authentication required. Please log in first.",
+      };
+    }
+
+    // Step 3: Query order and verify ownership
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(and(eq(orders.id, orderId), eq(orders.userId, session.user.id)));
+
+    if (!order) {
+      return {
+        success: false as const,
+        error: "Order not found or you do not have permission to delete it.",
+      };
+    }
+
+    // Step 4: Check if order is already deleted
+    if (order.deletedAt) {
+      return {
+        success: false as const,
+        error: "Order has already been deleted.",
+      };
+    }
+
+    // Step 5: Verify order status - only allow deletion for completed/cancelled orders
+    if (order.status === "PENDING_PAYMENT") {
+      return {
+        success: false as const,
+        error:
+          "Cannot delete pending payment orders. Please wait for payment timeout or complete the payment.",
+      };
+    }
+
+    if (!["CONFIRMED", "CANCELLED", "REFUNDED"].includes(order.status)) {
+      return {
+        success: false as const,
+        error: `Cannot delete order with status: ${order.status}`,
+      };
+    }
+
+    // Step 6: Perform soft delete
+    await db
+      .update(orders)
+      .set({
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(orders.id, orderId));
+
+    return {
+      success: true as const,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    return {
+      success: false as const,
+      error: "Failed to delete order. Please try again.",
     };
   }
 }
