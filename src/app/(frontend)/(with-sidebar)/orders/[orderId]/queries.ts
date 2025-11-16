@@ -141,6 +141,8 @@ export async function getOrderDetails(
     "outbound_departure_airport"
   );
   const outboundArrivalAirport = alias(airports, "outbound_arrival_airport");
+  const inboundDepartureAirport = alias(airports, "inbound_departure_airport");
+  const inboundArrivalAirport = alias(airports, "inbound_arrival_airport");
 
   // Get order with outbound flight details
   const [orderData] = await db
@@ -187,35 +189,25 @@ export async function getOrderDetails(
         seatClass: flightSeatClasses,
         flight: flights,
         airline: airlines,
+        departureAirport: inboundDepartureAirport,
+        arrivalAirport: inboundArrivalAirport,
       })
       .from(flightSeatClasses)
       .innerJoin(flights, eq(flightSeatClasses.flightId, flights.id))
       .innerJoin(airlines, eq(flights.airlineId, airlines.id))
+      .innerJoin(
+        inboundDepartureAirport,
+        eq(flights.departureAirportId, inboundDepartureAirport.id)
+      )
+      .innerJoin(
+        inboundArrivalAirport,
+        eq(flights.arrivalAirportId, inboundArrivalAirport.id)
+      )
       .where(
         eq(flightSeatClasses.id, orderData.order.inboundFlightSeatClassId)
       );
 
     if (inbound) {
-      const [inboundDepartureAirport] = await db
-        .select({
-          id: airports.id,
-          name: airports.name,
-          iataCode: airports.iataCode,
-          cityId: airports.cityId,
-        })
-        .from(airports)
-        .where(eq(airports.id, inbound.flight.departureAirportId));
-
-      const [inboundArrivalAirport] = await db
-        .select({
-          id: airports.id,
-          name: airports.name,
-          iataCode: airports.iataCode,
-          cityId: airports.cityId,
-        })
-        .from(airports)
-        .where(eq(airports.id, inbound.flight.arrivalAirportId));
-
       inboundFlightData = {
         id: inbound.flight.id,
         flightNumber: inbound.flight.flightNumber,
@@ -233,8 +225,18 @@ export async function getOrderDetails(
           iataCode: inbound.airline.iataCode,
           logoUrl: inbound.airline.logoUrl,
         },
-        departureAirport: inboundDepartureAirport,
-        arrivalAirport: inboundArrivalAirport,
+        departureAirport: {
+          id: inbound.departureAirport.id,
+          name: inbound.departureAirport.name,
+          iataCode: inbound.departureAirport.iataCode,
+          cityId: inbound.departureAirport.cityId,
+        },
+        arrivalAirport: {
+          id: inbound.arrivalAirport.id,
+          name: inbound.arrivalAirport.name,
+          iataCode: inbound.arrivalAirport.iataCode,
+          cityId: inbound.arrivalAirport.cityId,
+        },
         seatClass: {
           id: inbound.seatClass.id,
           flightId: inbound.seatClass.flightId,
