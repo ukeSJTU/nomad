@@ -177,5 +177,8 @@
     {
       "text": "Generate commit messages in English only"
     }
-  ]
+  ],
+  "slidev.include": ["content/slides/midterm-2.md"],
+  "prettier.configPath": "./.prettierrc.json",
+  "prettier.ignorePath": ".prettierignore"
 }
