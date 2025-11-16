@@ -1,0 +1,116 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Nomad Logo Nomad" [ref=e5]:
+          - /url: /
+          - img "Nomad Logo" [ref=e6]
+          - generic [ref=e7]: Nomad
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e10]
+            - searchbox "搜索任何旅游相关" [ref=e13]
+          - button "Search" [ref=e14]:
+            - img
+            - generic [ref=e15]: Search
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - link "Sign In" [ref=e18]:
+              - /url: /auth/sign-in
+            - link "Sign Up" [ref=e19]:
+              - /url: /auth/sign-up
+          - button "我的订单" [ref=e20] [cursor=pointer]
+          - button "联系客服" [ref=e21]
+          - button "Toggle theme" [ref=e22]:
+            - img
+            - generic [ref=e23]: Toggle theme
+    - region "Notifications alt+T"
+    - main [ref=e24]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - heading "验证码登录" [level=1] [ref=e29]
+          - paragraph [ref=e30]:
+            - text: 还没有账户？
+            - link "立即注册" [ref=e31]:
+              - /url: /auth/sign-up
+        - generic [ref=e32]:
+          - tablist [ref=e33]:
+            - tab "手机号登录" [ref=e34]
+            - tab "邮箱登录" [selected] [ref=e35]
+          - tabpanel "邮箱登录" [ref=e36]:
+            - generic [ref=e37]:
+              - tablist [ref=e38]:
+                - tab "密码登录" [ref=e39]
+                - tab "验证码登录" [selected] [ref=e40]
+              - tabpanel "验证码登录" [ref=e41]:
+                - generic [ref=e42]:
+                  - generic [ref=e43]:
+                    - generic [ref=e44]:
+                      - generic [ref=e45]: 邮箱地址
+                      - textbox "请输入邮箱地址" [ref=e47]: test@example.com
+                    - generic [ref=e48]:
+                      - generic [ref=e49]: 邮箱验证码
+                      - generic [ref=e50]:
+                        - textbox "6位数字" [ref=e52]: "123456"
+                        - button "3s" [disabled]
+                  - generic [ref=e53]:
+                    - checkbox "我已阅读并同意 服务协议 和 隐私政策" [checked] [ref=e54]:
+                      - generic:
+                        - img
+                    - checkbox [checked]
+                    - generic [ref=e56]:
+                      - text: 我已阅读并同意
+                      - link "服务协议" [ref=e57]:
+                        - /url: /terms
+                      - text: 和
+                      - link "隐私政策" [ref=e58]:
+                        - /url: /privacy
+                  - button "登录" [active] [ref=e59]
+        - generic [ref=e60]:
+          - paragraph [ref=e61]: 为了保护账户安全，请先完成人机验证，再尝试登录或发送验证码。
+          - paragraph [ref=e62]: 请先完成人机验证
+        - generic [ref=e63]:
+          - generic [ref=e68]: 或
+          - button "Login With GitHub" [ref=e70]:
+            - img
+            - text: Login With GitHub
+    - contentinfo [ref=e71]:
+      - generic [ref=e72]:
+        - generic [ref=e73]:
+          - generic [ref=e74]:
+            - generic [ref=e75]:
+              - generic [ref=e76]: "N"
+              - generic [ref=e77]: Nomad
+            - paragraph [ref=e78]: 您的在线旅行服务平台
+          - generic [ref=e79]:
+            - heading "快速链接" [level=3] [ref=e80]
+            - list [ref=e81]:
+              - listitem [ref=e82]:
+                - link "首页" [ref=e83]:
+                  - /url: /
+              - listitem [ref=e84]:
+                - link "常旅客管理" [ref=e85]:
+                  - /url: /home/passengers
+          - generic [ref=e86]:
+            - heading "法律信息" [level=3] [ref=e87]
+            - list [ref=e88]:
+              - listitem [ref=e89]:
+                - link "服务协议" [ref=e90]:
+                  - /url: /terms
+              - listitem [ref=e91]:
+                - link "个人信息保护政策" [ref=e92]:
+                  - /url: /privacy
+              - listitem [ref=e93]:
+                - link "免责声明" [ref=e94]:
+                  - /url: /disclaimer
+        - paragraph [ref=e96]: © 2025 Nomad. 保留所有权利。
+  - 'button "Dev: Switch User" [ref=e97]':
+    - img
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e103] [cursor=pointer]:
+    - img [ref=e104]
+  - alert [ref=e109]
+```
