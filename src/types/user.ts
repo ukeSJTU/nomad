@@ -5,6 +5,10 @@ import { z } from "zod";
  *
  * This file contains Zod validation schemas for user profile management.
  *
+ * Naming conventions:
+ * - Schemas: camelCase ending with "Schema" (e.g., userInfoUpdateSchema)
+ * - Types: PascalCase ending with "Data" (e.g., UserInfoUpdateData)
+ *
  * Note: These schemas align with the user table in auth-schema.ts
  */
 
