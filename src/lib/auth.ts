@@ -13,13 +13,14 @@ import {
 } from "@/lib/turnstile";
 import logger from "@/utils/logger";
 
+import { isProduction } from "./utils";
+
 /**
  * Determine whether Aliyun SMS service should be enabled
  * @returns boolean
  */
 export function shouldEnableAliyunSms(): boolean {
   const enableSms = process.env.ENABLE_ALIYUN_SMS?.toLowerCase();
-  const isProduction = process.env.NODE_ENV === "production";
 
   // If explicitly set to enable
   if (enableSms === "enabled" || enableSms === "true") {
@@ -32,7 +33,7 @@ export function shouldEnableAliyunSms(): boolean {
   }
 
   // Default logic: enable in production, disable in development
-  return isProduction;
+  return isProduction();
 }
 
 /**
@@ -41,7 +42,6 @@ export function shouldEnableAliyunSms(): boolean {
  */
 export function shouldEnableResend(): boolean {
   const enableEmail = process.env.ENABLE_RESEND?.toLowerCase();
-  const isProduction = process.env.NODE_ENV === "production";
 
   // If explicitly set to enable
   if (enableEmail === "enabled" || enableEmail === "true") {
@@ -54,7 +54,7 @@ export function shouldEnableResend(): boolean {
   }
 
   // Default logic: enable in production, disable in development
-  return isProduction;
+  return isProduction();
 }
 
 const turnstileSecretKey = getTurnstileSecretKey();
