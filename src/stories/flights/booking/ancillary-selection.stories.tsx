@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
-import { AncillarySelection } from "@/components/flights/ancillary-selection";
+import { AncillarySelection } from "@/components/flights/booking/ancillary-selection";
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,

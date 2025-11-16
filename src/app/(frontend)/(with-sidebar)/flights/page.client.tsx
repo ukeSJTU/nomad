@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import {
   SearchForm,
   type SearchFormData,
-} from "@/components/flights/search-form";
-import { FlightSearchHistoryCard } from "@/components/flights/search-history";
+} from "@/components/flights/search/search-form";
+import { FlightSearchHistoryCard } from "@/components/flights/search/search-history";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import type { CityData } from "@/lib/queries/cities";

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import type { PassengerFormData } from "@/components/flights/passenger-form-card";
+import type { PassengerFormData } from "@/components/flights/booking/passenger-form-card";
 
 export interface SavedPassenger {
   id: string;

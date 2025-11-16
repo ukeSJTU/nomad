@@ -3,8 +3,6 @@
 import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { CityInput } from "@/components/flights/city-selector";
-import { DateSelector } from "@/components/flights/date-selector";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -16,6 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { CityData } from "@/lib/queries/cities";
+
+import { CityInput } from "./city-selector";
+import { DateSelector } from "./date-selector";
 
 interface SearchFormProps {
   showSearchButton?: boolean;

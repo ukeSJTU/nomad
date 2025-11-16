@@ -8,9 +8,9 @@ import {
   ContactInfoCard,
   type ContactInfoValidationErrors,
   validateContactInfo,
-} from "@/components/flights/contact-info-card";
-import { FlightSummaryCard } from "@/components/flights/flight-summary-card";
-import { PassengerFormCard } from "@/components/flights/passenger-form-card";
+} from "@/components/flights/booking/contact-info-card";
+import { FlightSummaryCard } from "@/components/flights/booking/flight-summary-card";
+import { PassengerFormCard } from "@/components/flights/booking/passenger-form-card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { usePassengerForms } from "@/hooks/use-passenger-forms";

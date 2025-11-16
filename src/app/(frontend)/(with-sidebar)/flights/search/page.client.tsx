@@ -4,14 +4,14 @@ import { Clock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { FlightCard } from "@/components/flights/flight-card";
-import { FlightCardSkeleton } from "@/components/flights/flight-card-skeleton";
-import { FlightFilterSort } from "@/components/flights/flight-filter-sort";
-import { QuickDateSelector } from "@/components/flights/quick-date-selector";
+import { FlightCard } from "@/components/flights/results/flight-card";
+import { FlightCardSkeleton } from "@/components/flights/results/flight-card-skeleton";
+import { FlightFilterSort } from "@/components/flights/results/flight-filter-sort";
+import { QuickDateSelector } from "@/components/flights/search/quick-date-selector";
 import {
   SearchForm,
   type SearchFormData,
-} from "@/components/flights/search-form";
+} from "@/components/flights/search/search-form";
 import {
   Card,
   CardDescription,
