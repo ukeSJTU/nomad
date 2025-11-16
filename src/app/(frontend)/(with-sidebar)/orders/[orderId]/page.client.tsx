@@ -11,6 +11,16 @@ import {
   OrderPaymentDetails,
   OrderStatusCard,
 } from "@/components/flights/orders";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { cancelOrderAction } from "@/lib/actions/orders";
 
 import type { OrderDetailsWithAirports } from "./queries";
@@ -36,13 +46,16 @@ export default function OrderDetailsPageClient({
 }: OrderDetailsPageClientProps) {
   const router = useRouter();
   const [isCancelling, setIsCancelling] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
 
-  // Handle cancel order
-  const handleCancelOrder = async () => {
-    if (!confirm("确定要取消此订单吗？取消后将释放座位，订单无法恢复。")) {
-      return;
-    }
+  // Handle cancel order confirmation
+  const handleCancelOrderClick = () => {
+    setShowCancelDialog(true);
+  };
 
+  // Handle actual cancel order
+  const handleConfirmCancel = async () => {
+    setShowCancelDialog(false);
     setIsCancelling(true);
 
     try {
@@ -68,39 +81,59 @@ export default function OrderDetailsPageClient({
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Side - Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Order Status Card */}
-          <OrderStatusCard
-            order={order}
-            onCancelOrder={handleCancelOrder}
-            onGoToPayment={handleGoToPayment}
-            isCancelling={isCancelling}
-          />
+    <>
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Side - Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Order Status Card */}
+            <OrderStatusCard
+              order={order}
+              onCancelOrder={handleCancelOrderClick}
+              onGoToPayment={handleGoToPayment}
+              isCancelling={isCancelling}
+            />
 
-          {/* Flight Information Card */}
-          <OrderFlightInfo
-            outboundFlight={order.outboundFlight}
-            inboundFlight={order.inboundFlight}
-          />
+            {/* Flight Information Card */}
+            <OrderFlightInfo
+              outboundFlight={order.outboundFlight}
+              inboundFlight={order.inboundFlight}
+            />
 
-          {/* Passenger Information Card */}
-          <OrderPassengerInfo passengers={order.passengers} />
+            {/* Passenger Information Card */}
+            <OrderPassengerInfo passengers={order.passengers} />
 
-          {/* Contact Information Card */}
-          <OrderContactInfo
-            contactPhone={order.contactPhone}
-            contactEmail={order.contactEmail}
-          />
-        </div>
+            {/* Contact Information Card */}
+            <OrderContactInfo
+              contactPhone={order.contactPhone}
+              contactEmail={order.contactEmail}
+            />
+          </div>
 
-        {/* Right Side - Payment Details (Sticky) */}
-        <div className="lg:col-span-1">
-          <OrderPaymentDetails order={order} />
+          {/* Right Side - Payment Details (Sticky) */}
+          <div className="lg:col-span-1">
+            <OrderPaymentDetails order={order} />
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Cancel Order Confirmation Dialog */}
+      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认取消订单</AlertDialogTitle>
+            <AlertDialogDescription>
+              确定要取消此订单吗？取消后将释放座位，订单无法恢复。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmCancel}>
+              确认取消订单
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
