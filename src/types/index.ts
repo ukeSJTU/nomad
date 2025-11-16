@@ -8,5 +8,7 @@
  * - Types: PascalCase ending with "Data" (e.g., UserInfoUpdateData)
  */
 
+// src/types/ 主要用来存放前后端契约，方便类型检查
+
 export * from "./api";
 export * from "./auth";

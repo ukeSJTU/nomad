@@ -3,11 +3,43 @@ import { z } from "zod";
 /**
  * Server Action Result Types for Orders
  *
- * These types define the return values from order-related Server Actions
+ * This file contains Zod validation schemas and TypeScript types for order-related
+ * Server Actions in Next.js. All schemas are compatible with Zod v4.
+ *
+ * Server Actions are async functions that run on the server and can be called from
+ * client or server components. These types define the standardized return values.
+ *
+ * Naming conventions:
+ * - Schemas: camelCase ending with "Schema" (e.g., createOrderDataSchema)
+ * - Types: PascalCase (e.g., CreateOrderData, CreateOrderResult)
+ * - Generic types: PascalCase (e.g., ActionResult)
+ *
+ * Note: These schemas align with the orders table and related tables in the database schema.
  */
 
+// ============================================================================
+// Base Action Result Type
+// ============================================================================
+
 /**
- * Base action result type
+ * Generic action result type for Server Actions
+ *
+ * Provides a discriminated union type for success/failure results.
+ * This pattern ensures type-safe error handling in Server Actions.
+ *
+ * @template T - Type of the data returned on success (defaults to void)
+ *
+ * Success case:
+ * - success: true
+ * - data: T (the result data)
+ * - error: undefined
+ * - fieldErrors: undefined
+ *
+ * Failure case:
+ * - success: false
+ * - error: string (general error message)
+ * - data: undefined
+ * - fieldErrors: optional field-specific validation errors
  */
 export type ActionResult<T = void> =
   | {
@@ -23,8 +55,18 @@ export type ActionResult<T = void> =
       fieldErrors?: Record<string, string[]>;
     };
 
+// ============================================================================
+// Create Order Action
+// ============================================================================
+
 /**
- * Create Order Action Result
+ * Create order action result data schema
+ *
+ * Defines the data returned when an order is successfully created.
+ *
+ * @property orderId - UUID of the newly created order
+ * @property orderNumber - Human-readable order number (e.g., "ORD-20240101-001")
+ * @property paymentDeadline - ISO datetime string for payment deadline
  */
 export const createOrderDataSchema = z.object({
   orderId: z.uuid(),
@@ -32,24 +74,82 @@ export const createOrderDataSchema = z.object({
   paymentDeadline: z.string().datetime(),
 });
 
+/**
+ * Inferred TypeScript types for create order action
+ */
 export type CreateOrderData = z.infer<typeof createOrderDataSchema>;
 export type CreateOrderResult = ActionResult<CreateOrderData>;
 
+// ============================================================================
+// Update Order Ancillary Action
+// ============================================================================
+
 /**
- * Update Order Ancillary Action Result
+ * Update order ancillary action result data schema
+ *
+ * Defines the data returned when order ancillary services are updated.
+ * Ancillary services include extras like baggage, meals, seat selection, etc.
+ *
+ * @property orderId - UUID of the updated order
+ * @property totalAmount - New total amount as a decimal string (e.g., "1234.56")
  */
 export const updateOrderAncillaryDataSchema = z.object({
   orderId: z.uuid(),
   totalAmount: z.string(),
 });
 
+/**
+ * Inferred TypeScript types for update order ancillary action
+ */
 export type UpdateOrderAncillaryData = z.infer<
   typeof updateOrderAncillaryDataSchema
 >;
 export type UpdateOrderAncillaryResult = ActionResult<UpdateOrderAncillaryData>;
 
+// ============================================================================
+// Delete Order Action
+// ============================================================================
+
 /**
- * Order with full details (from queries)
+ * Delete order action result type
+ *
+ * Used for soft-deleting an order. Returns void on success.
+ */
+export type DeleteOrderResult = ActionResult<void>;
+
+// ============================================================================
+// Order Details Schema (Query Result)
+// ============================================================================
+
+/**
+ * Order details schema with full nested data
+ *
+ * Represents a complete order with all related data including passengers,
+ * flights, airlines, and seat classes. Used for order detail pages.
+ *
+ * This schema matches the structure returned by database queries that join
+ * multiple tables (orders, passengers, flights, airlines, seat_classes).
+ *
+ * @property id - Order UUID
+ * @property orderNumber - Human-readable order number
+ * @property userId - User who created the order
+ * @property outboundFlightSeatClassId - UUID of outbound flight seat class
+ * @property inboundFlightSeatClassId - UUID of inbound flight seat class (null for one-way)
+ * @property status - Order status (PENDING_PAYMENT/CONFIRMED/CANCELLED/REFUNDED)
+ * @property paymentDeadline - Payment deadline as Date object
+ * @property passengerCount - Number of passengers
+ * @property contactPhone - Contact phone number (optional)
+ * @property contactEmail - Contact email address (optional)
+ * @property pricePerTicket - Price per ticket as decimal string
+ * @property baseAmount - Base amount as decimal string
+ * @property ancillaryAmount - Ancillary services amount as decimal string
+ * @property totalAmount - Total amount as decimal string
+ * @property ancillaryDetails - Array of ancillary service descriptions (optional)
+ * @property deletedAt - Soft delete timestamp (null if not deleted)
+ * @property createdAt - Order creation timestamp
+ * @property updatedAt - Last update timestamp
+ * @property passengers - Array of passenger objects
+ * @property outboundFlight - Outbound flight with airline and seat class details
  */
 export const orderDetailsSchema = z.object({
   id: z.uuid(),
@@ -118,15 +218,34 @@ export const orderDetailsSchema = z.object({
   }),
 });
 
+/**
+ * Inferred TypeScript type for order details
+ */
 export type OrderDetails = z.infer<typeof orderDetailsSchema>;
 
-/**
- * Delete Order Action Result
- */
-export type DeleteOrderResult = ActionResult<void>;
+// ============================================================================
+// Order List Item Schema (Query Result)
+// ============================================================================
 
 /**
- * Order List Item (simplified for order list page)
+ * Order list item schema (simplified for order list page)
+ *
+ * Represents a simplified order object for displaying in order lists.
+ * Contains denormalized flight and airline data for efficient rendering
+ * without additional queries.
+ *
+ * This schema uses ISO datetime strings instead of Date objects for easier
+ * serialization in Server Components and API responses.
+ *
+ * @property id - Order UUID as string
+ * @property orderNumber - Human-readable order number
+ * @property status - Order status (PENDING_PAYMENT/CONFIRMED/CANCELLED/REFUNDED)
+ * @property createdAt - Order creation timestamp as ISO datetime string
+ * @property totalAmount - Total amount as decimal string
+ * @property passengerCount - Number of passengers
+ * @property outboundFlight - Denormalized outbound flight data
+ * @property inboundFlight - Denormalized inbound flight data (null for one-way trips)
+ * @property passengerNames - Array of passenger names for quick display
  */
 export const orderListItemSchema = z.object({
   id: z.string().uuid(),
@@ -170,4 +289,7 @@ export const orderListItemSchema = z.object({
   passengerNames: z.array(z.string()),
 });
 
+/**
+ * Inferred TypeScript type for order list item
+ */
 export type OrderListItem = z.infer<typeof orderListItemSchema>;
