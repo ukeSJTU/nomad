@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDateWithWeekday } from "@/utils/date";
 
-import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "../../ui/button";
+import { Skeleton } from "../../ui/skeleton";
 
 interface QuickDateSelectorProps {
   from: string; // Departure city IATA code
