@@ -5,7 +5,7 @@ import { expect, userEvent, within } from "storybook/test";
 import PhoneOtpLoginForm from "@/components/auth/forms/phone-otp-login";
 
 const meta = {
-  title: "Auth/PhoneOtpLoginForm",
+  title: "Auth/Forms/PhoneOtpLoginForm",
   component: PhoneOtpLoginForm,
   parameters: {
     layout: "centered",

@@ -38,7 +38,7 @@ const createToggleHandler = (
 };
 
 const meta = {
-  title: "Flights/AncillarySelection",
+  title: "Flights/Booking/AncillarySelection",
   component: AncillarySelection,
   parameters: {
     layout: "padded",

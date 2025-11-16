@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import PasswordSetupForm from "@/components/auth/forms/password-setup";
 
 const meta = {
-  title: "Auth/PasswordSetupForm",
+  title: "Auth/Forms/PasswordSetupForm",
   component: PasswordSetupForm,
   parameters: {
     layout: "centered",

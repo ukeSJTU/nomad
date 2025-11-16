@@ -8,7 +8,7 @@ import {
 } from "@/components/flights/booking/contact-info-card";
 
 const meta: Meta<typeof ContactInfoCard> = {
-  title: "Flights/ContactInfoCard",
+  title: "Flights/Booking/ContactInfoCard",
   component: ContactInfoCard,
   parameters: {
     layout: "padded",
