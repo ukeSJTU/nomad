@@ -4,7 +4,7 @@ import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
-import { AncillarySelection } from "@/components/flights/ancillary-selection";
+import { AncillarySelection } from "@/components/flights/booking/ancillary-selection";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

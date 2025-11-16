@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
-import { CityInput } from "@/components/flights/city-selector";
+import { CityInput } from "@/components/flights/search/city-selector";
 import type { CityData } from "@/lib/queries/cities";
 
 // Mock city data for Storybook

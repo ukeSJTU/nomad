@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { FlightCard } from "@/components/flights/flight-card";
-import { FlightCardSkeleton } from "@/components/flights/flight-card-skeleton";
+import { FlightCard } from "@/components/flights/results/flight-card";
+import { FlightCardSkeleton } from "@/components/flights/results/flight-card-skeleton";
 
 const meta = {
   title: "Flights/FlightCard",

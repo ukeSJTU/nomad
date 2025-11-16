@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { addDays } from "date-fns";
 import { useState } from "react";
 
-import { DateSelector } from "@/components/flights/date-selector";
+import { DateSelector } from "@/components/flights/search/date-selector";
 
 const meta: Meta<typeof DateSelector> = {
   title: "Flights/DateSelector",
