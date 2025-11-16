@@ -93,9 +93,9 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: "unit",
+          name: { label: "unit", color: "green" },
           environment: "jsdom",
-          include: ["src/**/*.{test,spec}.{ts}"],
+          include: ["src/**/*.test.ts"],
           exclude: [
             "**/node_modules/**",
             "**/dist/**",
