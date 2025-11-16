@@ -4,6 +4,6 @@
  * Components for displaying and filtering flight search results.
  */
 
-export { default as FlightCard } from "./flight-card";
-export { default as FlightCardSkeleton } from "./flight-card-skeleton";
-export { default as FlightFilterSort } from "./flight-filter-sort";
+export { FlightCard, type SeatClassOption } from "./flight-card";
+export { FlightCardSkeleton } from "./flight-card-skeleton";
+export { FlightFilterSort } from "./flight-filter-sort";

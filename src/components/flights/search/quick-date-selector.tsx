@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   getQuickDatePrices,
   type QuickDatePrice,
@@ -11,9 +13,6 @@ import {
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDateWithWeekday } from "@/utils/date";
-
-import { Button } from "../../ui/button";
-import { Skeleton } from "../../ui/skeleton";
 
 interface QuickDateSelectorProps {
   from: string; // Departure city IATA code

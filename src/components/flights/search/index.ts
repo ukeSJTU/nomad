@@ -5,8 +5,8 @@
  * search forms, city/date selectors, and search history.
  */
 
-export { default as CitySelector } from "./city-selector";
-export { default as DateSelector } from "./date-selector";
-export { default as QuickDateSelector } from "./quick-date-selector";
-export { default as SearchForm } from "./search-form";
-export { default as SearchHistory } from "./search-history";
+export { CityInput } from "./city-selector";
+export { DateSelector } from "./date-selector";
+export { QuickDateSelector } from "./quick-date-selector";
+export { SearchForm, type SearchFormData } from "./search-form";
+export { FlightSearchHistoryCard } from "./search-history";
