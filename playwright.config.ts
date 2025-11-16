@@ -13,7 +13,12 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests/e2e",
+  /* Global setup and teardown */
+  globalSetup: require.resolve("./tests/setup/e2e.ts"),
+  globalTeardown: require.resolve("./tests/setup/e2e-teardown.ts"),
   /* Run tests in files in sequential mode to avoid flasky test run */
+  /* Note: With test ID prefix strategy , we should be able to turn on parallel execution */
+  /* For now, keeping sequential to be safe. Can enable parallel later. */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
