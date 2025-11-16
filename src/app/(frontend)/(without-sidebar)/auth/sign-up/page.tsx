@@ -8,16 +8,21 @@ import SignUpModal, {
   PasswordSetupForm,
   PhoneVerificationForm,
 } from "@/components/auth";
+import TurnstileWidget from "@/components/auth/turnstile-widget";
 import { Stepper, type StepperStep } from "@/components/common";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { setInitialPasswordAction } from "@/lib/actions";
 import { authClient } from "@/lib/auth/client";
+import { getTurnstileSiteKey } from "@/lib/turnstile";
 import type {
   EmailVerificationData,
   PasswordSetupData,
   PhoneVerificationData,
 } from "@/types/auth";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
+
+const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 
 /**
  * Get stepper steps based on sign-up method
@@ -71,6 +76,21 @@ export default function SignUpPage() {
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState(""); // Current phone number input
   const [currentEmail, setCurrentEmail] = useState(""); // Current email input
   const [error, setError] = useState<string | null>(null); // Error message display
+  const {
+    captchaError,
+    setCaptchaError,
+    resetSignal,
+    handleSolved,
+    handleWidgetError,
+    handleWidgetExpire,
+    prepareCaptchaRequest,
+  } = useTurnstileCaptcha();
+  const isCaptchaValidationError = (error?: { message?: string }) =>
+    typeof error?.message === "string" &&
+    error.message.toLowerCase().includes("captcha");
+  const notifyCaptchaFailure = () => {
+    setCaptchaError("人机验证失败，请重新完成人机验证");
+  };
 
   // Countdown timer effect for OTP resend functionality
   useEffect(() => {
@@ -108,6 +128,12 @@ export default function SignUpPage() {
    * Verifies the OTP code using better-auth and proceeds to password setup
    */
   const handlePhoneVerificationSubmit = async (data: PhoneVerificationData) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
     setError(null); // Clear previous errors
 
@@ -119,9 +145,14 @@ export default function SignUpPage() {
       const { error: verifyError } = await authClient.phoneNumber.verify({
         phoneNumber: fullPhoneNumber,
         code: data.otp,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (verifyError) {
+        if (isCaptchaValidationError(verifyError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("验证码验证失败:", verifyError);
         setError("验证码错误，请重试"); // OTP verification failed, please try again
       } else {
@@ -134,6 +165,7 @@ export default function SignUpPage() {
       console.error("验证码验证异常:", error);
       setError("网络错误，请稍后重试"); // Network error, please try again later
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -173,6 +205,12 @@ export default function SignUpPage() {
    * Uses signIn.emailOtp which will create the user if they don't exist
    */
   const handleEmailVerificationSubmit = async (data: EmailVerificationData) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setEmailData(data); // Store verified email data for later use
     setIsLoading(true);
     setError(null); // Clear previous errors
@@ -183,9 +221,14 @@ export default function SignUpPage() {
       const { error: verifyError } = await authClient.signIn.emailOtp({
         email: data.email,
         otp: data.otp,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (verifyError) {
+        if (isCaptchaValidationError(verifyError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("验证码验证失败:", verifyError);
         setError("验证码错误，请重试"); // OTP verification failed, please try again
       } else {
@@ -196,6 +239,7 @@ export default function SignUpPage() {
       console.error("验证码验证异常:", error);
       setError("网络错误，请稍后重试"); // Network error, please try again later
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -211,6 +255,12 @@ export default function SignUpPage() {
       return;
     }
 
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     // For China mainland phone numbers, add +86 prefix for better-auth
     const fullPhoneNumber = `+86${currentPhoneNumber}`;
 
@@ -221,9 +271,14 @@ export default function SignUpPage() {
       // Call better-auth client instance to send OTP
       const { error: sendError } = await authClient.phoneNumber.sendOtp({
         phoneNumber: fullPhoneNumber,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (sendError) {
+        if (isCaptchaValidationError(sendError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("发送验证码失败:", sendError);
         setError("发送验证码失败，请重试"); // Failed to send OTP, please try again
       } else {
@@ -234,6 +289,7 @@ export default function SignUpPage() {
       console.error("发送验证码异常:", error);
       setError("网络错误，请稍后重试"); // Network error, please try again later
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -250,6 +306,12 @@ export default function SignUpPage() {
       return;
     }
 
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
     setError(null); // Clear previous errors
 
@@ -260,9 +322,14 @@ export default function SignUpPage() {
         await authClient.emailOtp.sendVerificationOtp({
           email: currentEmail,
           type: "sign-in",
+          fetchOptions: captchaRequest.fetchOptions,
         });
 
       if (sendError) {
+        if (isCaptchaValidationError(sendError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("发送验证码失败:", sendError);
         setError("发送验证码失败，请重试"); // Failed to send OTP, please try again
       } else {
@@ -273,6 +340,7 @@ export default function SignUpPage() {
       console.error("发送验证码异常:", error);
       setError("网络错误，请稍后重试"); // Network error, please try again later
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -322,45 +390,67 @@ export default function SignUpPage() {
 
         {/* Dynamic Form Content Based on Current Step */}
         {currentStep === 1 ? (
-          // Step 1: Phone or Email Verification with Tabs
-          <Tabs
-            defaultValue="phone"
-            className="w-full"
-            onValueChange={value => setSignUpMethod(value as "phone" | "email")}
-          >
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="phone">手机注册</TabsTrigger>
-              <TabsTrigger value="email">邮箱注册</TabsTrigger>
-            </TabsList>
+          <>
+            {/* Step 1: Phone or Email Verification with Tabs */}
+            <Tabs
+              defaultValue="phone"
+              className="w-full"
+              onValueChange={value =>
+                setSignUpMethod(value as "phone" | "email")
+              }
+            >
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="phone">手机注册</TabsTrigger>
+                <TabsTrigger value="email">邮箱注册</TabsTrigger>
+              </TabsList>
 
-            {/* Phone Verification Tab */}
-            <TabsContent value="phone">
-              <PhoneVerificationForm
-                onSubmit={handlePhoneVerificationSubmit}
-                onSendOtp={handleSendPhoneOtp}
-                onPhoneChange={phoneNumber => {
-                  // Update parent state when phone number changes
-                  setCurrentPhoneNumber(phoneNumber);
-                }}
-                isLoading={isLoading}
-                countdown={countdown}
-              />
-            </TabsContent>
+              {/* Phone Verification Tab */}
+              <TabsContent value="phone">
+                <PhoneVerificationForm
+                  onSubmit={handlePhoneVerificationSubmit}
+                  onSendOtp={handleSendPhoneOtp}
+                  onPhoneChange={phoneNumber => {
+                    // Update parent state when phone number changes
+                    setCurrentPhoneNumber(phoneNumber);
+                  }}
+                  isLoading={isLoading}
+                  countdown={countdown}
+                />
+              </TabsContent>
 
-            {/* Email Verification Tab */}
-            <TabsContent value="email">
-              <EmailVerificationForm
-                onSubmit={handleEmailVerificationSubmit}
-                onSendOtp={handleSendEmailOtp}
-                onEmailChange={email => {
-                  // Update parent state when email changes
-                  setCurrentEmail(email);
-                }}
-                isLoading={isLoading}
-                countdown={countdown}
+              {/* Email Verification Tab */}
+              <TabsContent value="email">
+                <EmailVerificationForm
+                  onSubmit={handleEmailVerificationSubmit}
+                  onSendOtp={handleSendEmailOtp}
+                  onEmailChange={email => {
+                    // Update parent state when email changes
+                    setCurrentEmail(email);
+                  }}
+                  isLoading={isLoading}
+                  countdown={countdown}
+                />
+              </TabsContent>
+            </Tabs>
+
+            <div className="mt-6 space-y-3">
+              <p className="text-sm text-gray-600 text-center">
+                注册前请完成人机验证，发送或验证验证码的每一步都需要新的令牌。
+              </p>
+              <TurnstileWidget
+                siteKey={TURNSTILE_SITE_KEY}
+                resetSignal={resetSignal}
+                onSuccess={handleSolved}
+                onExpire={handleWidgetExpire}
+                onError={handleWidgetError}
               />
-            </TabsContent>
-          </Tabs>
+              {captchaError && (
+                <p className="text-sm text-red-600 text-center">
+                  {captchaError}
+                </p>
+              )}
+            </div>
+          </>
         ) : currentStep === 2 ? (
           // Step 2: Password Setup Form
           (() => {

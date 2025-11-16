@@ -1,6 +1,9 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { clearAllCookies } from "../../../helpers/auth-helpers";
+import {
+  clearAllCookies,
+  mockTurnstileCaptcha,
+} from "../../../helpers/auth-helpers";
 
 /**
  * Helper function to mock better-auth API endpoints for email sign-up testing
@@ -41,6 +44,8 @@ test.describe("Email Sign-Up Flow", () => {
   test.beforeEach(async ({ page }) => {
     // Clear all cookies to ensure tests start in unauthenticated state
     await clearAllCookies(page);
+    // Mock Turnstile CAPTCHA
+    await mockTurnstileCaptcha(page);
   });
 
   /**

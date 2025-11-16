@@ -9,15 +9,20 @@ import EmailLoginForm from "@/components/auth/forms/email-login";
 import EmailOtpLoginForm from "@/components/auth/forms/email-otp-login";
 import PhoneLoginForm from "@/components/auth/forms/phone-login";
 import PhoneOtpLoginForm from "@/components/auth/forms/phone-otp-login";
+import TurnstileWidget from "@/components/auth/turnstile-widget";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { authClient } from "@/lib/auth/client";
+import { getTurnstileSiteKey } from "@/lib/turnstile";
 import type {
   EmailLoginData,
   EmailOtpLoginData,
   PhoneLoginData,
   PhoneOtpLoginData,
 } from "@/types/auth";
+
+const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 
 export default function SignInPage() {
   const router = useRouter();
@@ -26,6 +31,23 @@ export default function SignInPage() {
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
   const [currentEmail, setCurrentEmail] = useState("");
   const [activeTab, setActiveTab] = useState<"password" | "otp">("password");
+  const {
+    captchaError,
+    setCaptchaError,
+    resetSignal,
+    handleSolved,
+    handleWidgetError,
+    handleWidgetExpire,
+    prepareCaptchaRequest,
+  } = useTurnstileCaptcha();
+
+  const isCaptchaValidationError = (error?: { message?: string }) =>
+    typeof error?.message === "string" &&
+    error.message.toLowerCase().includes("captcha");
+
+  const notifyCaptchaFailure = () => {
+    setCaptchaError("人机验证失败，请重新完成人机验证");
+  };
 
   // Countdown timer for OTP resend
   useEffect(() => {
@@ -40,6 +62,12 @@ export default function SignInPage() {
    * Uses phone number/password authentication
    */
   const handlePhonePasswordLogin = async (data: PhoneLoginData) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
 
     // For China mainland phone numbers, add +86 prefix for better-auth
@@ -51,9 +79,14 @@ export default function SignInPage() {
         phoneNumber: fullPhoneNumber,
         password: data.password,
         rememberMe: true,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (signInError) {
+        if (isCaptchaValidationError(signInError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("登录失败:", signInError);
         // Error will be shown in form field
       } else {
@@ -64,6 +97,7 @@ export default function SignInPage() {
       console.error("登录异常:", error);
       // Error will be shown in form field
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -73,6 +107,12 @@ export default function SignInPage() {
    * Verifies OTP code and signs in the user
    */
   const handlePhoneOtpLogin = async (data: PhoneOtpLoginData) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
 
     // For China mainland phone numbers, add +86 prefix for better-auth
@@ -83,9 +123,14 @@ export default function SignInPage() {
       const { error: verifyError } = await authClient.phoneNumber.verify({
         phoneNumber: fullPhoneNumber,
         code: data.otp,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (verifyError) {
+        if (isCaptchaValidationError(verifyError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("验证码验证失败:", verifyError);
         // Error will be shown in form field
       } else {
@@ -96,6 +141,7 @@ export default function SignInPage() {
       console.error("登录异常:", error);
       // Error will be shown in form field
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -105,6 +151,12 @@ export default function SignInPage() {
    * Uses email/password authentication
    */
   const handleEmailPasswordLogin = async (data: EmailLoginData) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -113,9 +165,14 @@ export default function SignInPage() {
         email: data.email,
         password: data.password,
         rememberMe: true,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (signInError) {
+        if (isCaptchaValidationError(signInError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("登录失败:", signInError);
         // Error will be shown in form field
       } else {
@@ -126,6 +183,7 @@ export default function SignInPage() {
       console.error("登录异常:", error);
       // Error will be shown in form field
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -135,6 +193,12 @@ export default function SignInPage() {
    * Verifies OTP code and signs in the user
    */
   const handleEmailOtpLogin = async (data: EmailOtpLoginData) => {
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -142,9 +206,14 @@ export default function SignInPage() {
       const { error: verifyError } = await authClient.signIn.emailOtp({
         email: data.email,
         otp: data.otp,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (verifyError) {
+        if (isCaptchaValidationError(verifyError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("验证码验证失败:", verifyError);
         // Error will be shown in form field
       } else {
@@ -155,6 +224,7 @@ export default function SignInPage() {
       console.error("登录异常:", error);
       // Error will be shown in form field
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -170,6 +240,12 @@ export default function SignInPage() {
       return;
     }
 
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     // For China mainland phone numbers, add +86 prefix for better-auth
     const fullPhoneNumber = `+86${currentPhoneNumber}`;
 
@@ -179,9 +255,14 @@ export default function SignInPage() {
       // Send OTP using better-auth
       const { error: sendError } = await authClient.phoneNumber.sendOtp({
         phoneNumber: fullPhoneNumber,
+        fetchOptions: captchaRequest.fetchOptions,
       });
 
       if (sendError) {
+        if (isCaptchaValidationError(sendError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("发送验证码失败:", sendError);
         // Error will be shown in form field
       } else {
@@ -191,6 +272,7 @@ export default function SignInPage() {
       console.error("发送验证码异常:", error);
       // Error will be shown in form field
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -206,6 +288,12 @@ export default function SignInPage() {
       return;
     }
 
+    const captchaRequest = prepareCaptchaRequest();
+
+    if (!captchaRequest) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -215,9 +303,14 @@ export default function SignInPage() {
         await authClient.emailOtp.sendVerificationOtp({
           email: currentEmail,
           type: "sign-in",
+          fetchOptions: captchaRequest.fetchOptions,
         });
 
       if (sendError) {
+        if (isCaptchaValidationError(sendError)) {
+          notifyCaptchaFailure();
+          return;
+        }
         console.error("发送验证码失败:", sendError);
         // Error will be shown in form field
       } else {
@@ -227,6 +320,7 @@ export default function SignInPage() {
       console.error("发送验证码异常:", error);
       // Error will be shown in form field
     } finally {
+      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -378,6 +472,22 @@ export default function SignInPage() {
               </Tabs>
             </TabsContent>
           </Tabs>
+
+          <div className="mt-6 space-y-3">
+            <p className="text-sm text-gray-600 text-center">
+              为了保护账户安全，请先完成人机验证，再尝试登录或发送验证码。
+            </p>
+            <TurnstileWidget
+              siteKey={TURNSTILE_SITE_KEY}
+              resetSignal={resetSignal}
+              onSuccess={handleSolved}
+              onExpire={handleWidgetExpire}
+              onError={handleWidgetError}
+            />
+            {captchaError && (
+              <p className="text-sm text-red-600 text-center">{captchaError}</p>
+            )}
+          </div>
 
           {/* Social Sign In Section */}
           <div className="mt-6">
