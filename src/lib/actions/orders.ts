@@ -10,6 +10,7 @@ import { db } from "@/lib/db";
 import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/lib/schema/orders";
+import { cancelOrder } from "@/lib/services/orders";
 import {
   addCurrency,
   getCurrencyValue,
@@ -18,6 +19,7 @@ import {
   toDatabaseValue,
 } from "@/lib/utils/currency";
 import type {
+  ActionResult,
   CreateOrderResult,
   DeleteOrderResult,
   UpdateOrderAncillaryResult,
@@ -354,6 +356,56 @@ export async function updateOrderAncillaryAction(
     return {
       success: false as const,
       error: "Failed to update order. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server action to cancel an order (user-initiated)
+ *
+ * This action:
+ * 1. Validates user authentication
+ * 2. Delegates to the service layer for business logic
+ *
+ * @param orderId - Order UUID
+ * @returns ActionResult with success/error
+ */
+export async function cancelOrderAction(
+  orderId: string
+): Promise<ActionResult<void>> {
+  try {
+    // 1. Check authentication
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false as const,
+        error: "Authentication required. Please log in first.",
+      };
+    }
+
+    // 2. Delegate to service layer
+    const result = await cancelOrder(orderId, session.user.id);
+
+    if (!result.success) {
+      return {
+        success: false as const,
+        error: result.error,
+      };
+    }
+
+    return {
+      success: true as const,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error("Error in cancelOrderAction:", error);
+    return {
+      success: false as const,
+      error: "Failed to cancel order. Please try again.",
     };
   }
 }
