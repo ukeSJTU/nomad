@@ -89,6 +89,14 @@ export async function cancelOrder(
         })
         .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
 
+      // Mark cancellation reason
+      await tx
+        .update(orders)
+        .set({
+          cancellationReason: "用户取消",
+        })
+        .where(eq(orders.id, orderId));
+
       // Release inbound flight seats (if round-trip)
       if (order.inboundFlightSeatClassId) {
         await tx
