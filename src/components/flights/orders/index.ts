@@ -2,6 +2,8 @@
  * Order components exports
  */
 
+export type { CancelOrderDialogProps } from "./cancel-order-dialog";
+export { CancelOrderDialog } from "./cancel-order-dialog";
 export type { OrderContactInfoProps } from "./order-contact-info";
 export { OrderContactInfo } from "./order-contact-info";
 export type { OrderFlightInfoProps } from "./order-flight-info";
