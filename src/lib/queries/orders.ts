@@ -294,8 +294,47 @@ export async function getOrderDetailById(
         : undefined,
     },
 
-    // Payment Card Data
+    // Payment Card Data with detailed breakdown
     payment: {
+      createdAt: order.createdAt.toISOString(),
+      // Outbound flight pricing
+      outboundFlight: {
+        depatureCityName:
+          order.outboundFlightSeatClass.flight.departureAirport.city.name,
+        arrivalCityName:
+          order.outboundFlightSeatClass.flight.arrivalAirport.city.name,
+        unitPrice: order.pricePerTicket.toString(),
+        passengerCount: order.passengerCount,
+      },
+
+      // Inbound flight pricing (if exists)
+      inboundFlight: order.inboundFlightSeatClass
+        ? {
+            depatureCityName:
+              order.inboundFlightSeatClass.flight.departureAirport.city.name,
+            arrivalCityName:
+              order.inboundFlightSeatClass.flight.arrivalAirport.city.name,
+            unitPrice: order.pricePerTicket.toString(),
+            passengerCount: order.passengerCount,
+          }
+        : undefined,
+
+      // Ancillary services
+      ancillaryServices: (
+        (order.ancillaryDetails as Array<{
+          code: string;
+          name: string;
+          price: string;
+          quantity: number;
+        }>) || []
+      ).map(service => ({
+        name: service.name,
+        code: service.code,
+        unitPrice: service.price,
+        quantity: service.quantity,
+      })),
+
+      // Totals
       baseAmount: order.baseAmount.toString(),
       ancillaryAmount: order.ancillaryAmount.toString(),
       totalAmount: order.totalAmount.toString(),

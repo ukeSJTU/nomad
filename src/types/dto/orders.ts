@@ -56,6 +56,29 @@ export interface OrderContactCardData {
 }
 
 export interface OrderPaymentCardData {
+  // Flight pricing
+  outboundFlight: {
+    depatureCityName: string;
+    arrivalCityName: string;
+    unitPrice: string;
+    passengerCount: number;
+  };
+  inboundFlight?: {
+    depatureCityName: string;
+    arrivalCityName: string;
+    unitPrice: string;
+    passengerCount: number;
+  };
+
+  // Ancillary services
+  ancillaryServices: Array<{
+    name: string;
+    code: string;
+    unitPrice: string;
+    quantity: number;
+  }>;
+
+  createdAt: string; // ISO string
   baseAmount: string;
   ancillaryAmount: string;
   totalAmount: string;
