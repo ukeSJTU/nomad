@@ -2,15 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 
 import {
   CancelOrderDialog,
   OrderContactInfo,
+  OrderErrorDialog,
   OrderFlightInfo,
   OrderPassengerInfo,
   OrderPaymentDetails,
   OrderStatusCard,
+  OrderSuccessDialog,
 } from "@/components/flights/orders";
 import { cancelOrderAction } from "@/lib/actions/orders";
 import { OrderDetailFull } from "@/types/dto/orders";
@@ -37,6 +38,9 @@ export default function OrderDetailsPageClient({
   const router = useRouter();
   const [isCancelling, setIsCancelling] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Handle cancel order confirmation
   const handleCancelOrderClick = () => {
@@ -51,18 +55,32 @@ export default function OrderDetailsPageClient({
       const result = await cancelOrderAction(order.status.id);
 
       if (result.success) {
-        toast.success("订单已成功取消");
         setShowCancelDialog(false);
+        setShowSuccessDialog(true);
         // Refresh the page to show updated order status
         router.refresh();
       } else {
-        toast.error(result.error);
+        setShowCancelDialog(false);
+        setErrorMessage(result.error || "取消订单失败，请重试");
+        setShowErrorDialog(true);
       }
     } catch (_error) {
-      toast.error("取消订单时发生错误，请重试");
+      setShowCancelDialog(false);
+      setErrorMessage("取消订单时发生错误，请重试");
+      setShowErrorDialog(true);
     } finally {
       setIsCancelling(false);
     }
+  };
+
+  // Handle success dialog confirm
+  const handleSuccessConfirm = () => {
+    setShowSuccessDialog(false);
+  };
+
+  // Handle error dialog confirm
+  const handleErrorConfirm = () => {
+    setShowErrorDialog(false);
   };
 
   // Handle go to payment
@@ -109,6 +127,21 @@ export default function OrderDetailsPageClient({
         onOpenChange={setShowCancelDialog}
         onConfirm={handleConfirmCancel}
         isLoading={isCancelling}
+      />
+
+      {/* Success Dialog */}
+      <OrderSuccessDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        onConfirm={handleSuccessConfirm}
+      />
+
+      {/* Error Dialog */}
+      <OrderErrorDialog
+        open={showErrorDialog}
+        onOpenChange={setShowErrorDialog}
+        onConfirm={handleErrorConfirm}
+        errorMessage={errorMessage}
       />
     </>
   );
