@@ -32,15 +32,13 @@ export function CancelOrderDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>确认取消订单</AlertDialogTitle>
-          <AlertDialogDescription>
-            确定要取消此订单吗？取消后将释放座位，订单无法恢复。
-          </AlertDialogDescription>
+          <AlertDialogTitle>取消提示</AlertDialogTitle>
+          <AlertDialogDescription>确定要取消订单吗？</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>取消</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>再想想</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isLoading}>
-            {isLoading ? "取消中..." : "确认取消订单"}
+            {isLoading ? "取消中..." : "继续取消"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -18,7 +18,7 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      expect(screen.queryByText("确认取消订单")).not.toBeInTheDocument();
+      expect(screen.queryByText("取消提示")).not.toBeInTheDocument();
     });
 
     it("should render dialog when open is true", () => {
@@ -34,7 +34,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "确认取消订单" })
+        screen.getByRole("heading", { name: "取消提示" })
       ).toBeInTheDocument();
     });
 
@@ -51,7 +51,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "确认取消订单" })
+        screen.getByRole("heading", { name: "取消提示" })
       ).toBeInTheDocument();
     });
 
@@ -67,9 +67,7 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      expect(
-        screen.getByText(/确定要取消此订单吗？取消后将释放座位，订单无法恢复。/)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/确定要取消订单吗？/)).toBeInTheDocument();
     });
 
     it("should display cancel button", () => {
@@ -84,8 +82,7 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      const buttons = screen.getAllByText("取消");
-      expect(buttons.length).toBeGreaterThan(0);
+      expect(screen.getByText("再想想")).toBeInTheDocument();
     });
 
     it("should display confirm button", () => {
@@ -101,7 +98,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "确认取消订单" })
+        screen.getByRole("button", { name: "继续取消" })
       ).toBeInTheDocument();
     });
   });
@@ -121,7 +118,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       const confirmButton = screen.getByRole("button", {
-        name: "确认取消订单",
+        name: "继续取消",
       });
       await user.click(confirmButton);
 
@@ -141,9 +138,7 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      // Get the cancel button (not the confirm button)
-      const cancelButtons = screen.getAllByText("取消");
-      const cancelButton = cancelButtons[0]; // First "取消" button
+      const cancelButton = screen.getByText("再想想");
       await user.click(cancelButton);
 
       expect(mockOnOpenChange).toHaveBeenCalled();
@@ -163,8 +158,7 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      const cancelButtons = screen.getAllByText("取消");
-      const cancelButton = cancelButtons[0];
+      const cancelButton = screen.getByText("再想想");
       await user.click(cancelButton);
 
       expect(mockOnConfirm).not.toHaveBeenCalled();
@@ -204,8 +198,7 @@ describe("CancelOrderDialog Component", () => {
       const confirmButton = screen.getByRole("button", { name: "取消中..." });
       expect(confirmButton).toBeDisabled();
 
-      const cancelButtons = screen.getAllByText("取消");
-      const cancelButton = cancelButtons[0].closest("button");
+      const cancelButton = screen.getByText("再想想").closest("button");
       expect(cancelButton).toBeDisabled();
     });
 
@@ -223,7 +216,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       const confirmButton = screen.getByRole("button", {
-        name: "确认取消订单",
+        name: "继续取消",
       });
       expect(confirmButton).not.toBeDisabled();
     });
@@ -242,7 +235,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "确认取消订单" })
+        screen.getByRole("button", { name: "继续取消" })
       ).toBeInTheDocument();
       expect(screen.queryByText("取消中...")).not.toBeInTheDocument();
     });
@@ -262,7 +255,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "确认取消订单" })
+        screen.getByRole("button", { name: "继续取消" })
       ).toBeInTheDocument();
       expect(screen.queryByText("取消中...")).not.toBeInTheDocument();
     });
@@ -282,7 +275,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.queryByRole("heading", { name: "确认取消订单" })
+        screen.queryByRole("heading", { name: "取消提示" })
       ).not.toBeInTheDocument();
 
       rerender(
@@ -294,7 +287,7 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "确认取消订单" })
+        screen.getByRole("heading", { name: "取消提示" })
       ).toBeInTheDocument();
     });
 
