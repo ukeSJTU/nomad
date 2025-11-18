@@ -251,6 +251,7 @@ export async function getOrderDetailById(
       flightSeatClass.flight.departureDatetime,
       flightSeatClass.flight.arrivalDatetime
     ),
+    aircraftType: flightSeatClass.flight.aircraftType || undefined,
     departureTerminal: flightSeatClass.flight.departureTerminal || undefined,
     arrivalTerminal: flightSeatClass.flight.arrivalTerminal || undefined,
   });
