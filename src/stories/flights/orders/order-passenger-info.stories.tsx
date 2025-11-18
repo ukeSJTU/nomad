@@ -15,7 +15,7 @@ export default meta;
 type Story = StoryObj<typeof OrderPassengerInfo>;
 
 /**
- * Single passenger with ID card (未打码)
+ * Single passenger with ID card
  */
 export const SinglePassengerIDCard: Story = {
   args: {
@@ -30,7 +30,7 @@ export const SinglePassengerIDCard: Story = {
 };
 
 /**
- * Single passenger with passport (未打码)
+ * Single passenger with passport
  */
 export const SinglePassengerPassport: Story = {
   args: {
@@ -45,7 +45,7 @@ export const SinglePassengerPassport: Story = {
 };
 
 /**
- * Multiple passengers with different identity types (未打码)
+ * Multiple passengers with different identity types
  */
 export const MultiplePassengers: Story = {
   args: {
