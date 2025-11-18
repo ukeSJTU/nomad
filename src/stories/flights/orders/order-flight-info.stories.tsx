@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { OrderFlightInfo } from "@/components/flights/orders";
+import type { OrderFlightCardData } from "@/types/dto/orders";
 
 const meta: Meta<typeof OrderFlightInfo> = {
   title: "Flights/Orders/OrderFlightInfo",
@@ -14,102 +15,65 @@ const meta: Meta<typeof OrderFlightInfo> = {
 export default meta;
 type Story = StoryObj<typeof OrderFlightInfo>;
 
-// Mock flight data
-const mockOutboundFlight = {
-  id: "flight-1",
+/**
+ * Helper function to create mock flight data
+ */
+const createMockFlight = (
+  overrides?: Partial<OrderFlightCardData>
+): OrderFlightCardData => ({
   flightNumber: "MU5186",
-  airlineId: "airline-1",
-  departureAirportId: "airport-1",
-  arrivalAirportId: "airport-2",
-  departureDatetime: new Date("2025-01-18T07:30:00Z"),
-  arrivalDatetime: new Date("2025-01-18T10:45:00Z"),
-  departureTerminal: "T1",
-  arrivalTerminal: "T2",
-  aircraftType: "330",
-  airline: {
-    id: "airline-1",
-    name: "东方航空",
-    iataCode: "MU",
-    logoUrl: null,
-  },
-  departureAirport: {
-    id: "airport-1",
-    name: "大兴国际机场",
-    iataCode: "PKX",
-    cityId: "city-1",
-  },
-  arrivalAirport: {
-    id: "airport-2",
-    name: "浦东国际机场",
-    iataCode: "PVG",
-    cityId: "city-2",
-  },
-  seatClass: {
-    id: "seat-1",
-    flightId: "flight-1",
-    classType: "ECONOMY" as const,
-    price: "1280.00",
-    availableSeats: 50,
-    totalSeats: 100,
-  },
-};
-
-const mockInboundFlight = {
-  id: "flight-2",
-  flightNumber: "MU5187",
-  airlineId: "airline-1",
-  departureAirportId: "airport-2",
-  arrivalAirportId: "airport-1",
-  departureDatetime: new Date("2025-01-25T14:30:00Z"),
-  arrivalDatetime: new Date("2025-01-25T17:45:00Z"),
-  departureTerminal: "T2",
-  arrivalTerminal: "T1",
-  aircraftType: "330",
-  airline: {
-    id: "airline-1",
-    name: "东方航空",
-    iataCode: "MU",
-    logoUrl: null,
-  },
-  departureAirport: {
-    id: "airport-2",
-    name: "浦东国际机场",
-    iataCode: "PVG",
-    cityId: "city-2",
-  },
-  arrivalAirport: {
-    id: "airport-1",
-    name: "大兴国际机场",
-    iataCode: "PKX",
-    cityId: "city-1",
-  },
-  seatClass: {
-    id: "seat-2",
-    flightId: "flight-2",
-    classType: "ECONOMY" as const,
-    price: "1380.00",
-    availableSeats: 45,
-    totalSeats: 100,
-  },
-};
+  airlineName: "东方航空",
+  airlineIataCode: "MU",
+  airlineLogoUrl: null,
+  departureAirportName: "大兴机场",
+  departureAirportIataCode: "PKX",
+  departureCityName: "北京",
+  arrivalAirportName: "浦东机场",
+  arrivalAirportIataCode: "PVG",
+  arrivalCityName: "上海",
+  departureDatetime: "2026-01-18T07:30:00Z",
+  arrivalDatetime: "2026-01-18T09:45:00Z",
+  seatClassType: "ECONOMY",
+  duration: 135, // 2h15m
+  terminal: "T1",
+  ...overrides,
+});
 
 /**
  * One-way flight (economy class)
+ * Matches the screenshot layout
  */
 export const OneWayEconomy: Story = {
   args: {
-    outboundFlight: mockOutboundFlight,
+    outboundFlight: createMockFlight(),
     inboundFlight: null,
   },
 };
 
 /**
  * Round-trip flight (economy class)
+ * Shows both outbound and inbound flights
  */
 export const RoundTripEconomy: Story = {
   args: {
-    outboundFlight: mockOutboundFlight,
-    inboundFlight: mockInboundFlight,
+    outboundFlight: createMockFlight({
+      departureDatetime: "2026-01-18T07:30:00Z",
+      arrivalDatetime: "2026-01-18T09:45:00Z",
+    }),
+    inboundFlight: createMockFlight({
+      flightNumber: "MU8230",
+      airlineName: "东方航空",
+      departureAirportName: "虹桥机场",
+      departureAirportIataCode: "SHA",
+      departureCityName: "上海",
+      arrivalAirportName: "大兴机场",
+      arrivalAirportIataCode: "PKX",
+      arrivalCityName: "北京",
+      departureDatetime: "2026-01-21T20:40:00Z",
+      arrivalDatetime: "2026-01-21T22:55:00Z",
+      terminal: "T2",
+      duration: 135,
+    }),
   },
 };
 
@@ -118,14 +82,9 @@ export const RoundTripEconomy: Story = {
  */
 export const BusinessClass: Story = {
   args: {
-    outboundFlight: {
-      ...mockOutboundFlight,
-      seatClass: {
-        ...mockOutboundFlight.seatClass,
-        classType: "BUSINESS" as const,
-        price: "3280.00",
-      },
-    },
+    outboundFlight: createMockFlight({
+      seatClassType: "BUSINESS",
+    }),
     inboundFlight: null,
   },
 };
@@ -135,14 +94,9 @@ export const BusinessClass: Story = {
  */
 export const FirstClass: Story = {
   args: {
-    outboundFlight: {
-      ...mockOutboundFlight,
-      seatClass: {
-        ...mockOutboundFlight.seatClass,
-        classType: "FIRST" as const,
-        price: "5280.00",
-      },
-    },
+    outboundFlight: createMockFlight({
+      seatClassType: "FIRST",
+    }),
     inboundFlight: null,
   },
 };
@@ -152,11 +106,9 @@ export const FirstClass: Story = {
  */
 export const NoTerminals: Story = {
   args: {
-    outboundFlight: {
-      ...mockOutboundFlight,
-      departureTerminal: null,
-      arrivalTerminal: null,
-    },
+    outboundFlight: createMockFlight({
+      terminal: undefined,
+    }),
     inboundFlight: null,
   },
 };
