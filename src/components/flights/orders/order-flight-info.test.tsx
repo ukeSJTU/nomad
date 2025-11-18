@@ -25,7 +25,9 @@ const createMockFlight = (
   arrivalDatetime: "2026-01-18T09:45:00Z",
   seatClassType: "ECONOMY",
   duration: 135,
-  terminal: "T1",
+  aircraftType: "空客330(大)",
+  departureTerminal: "T2",
+  arrivalTerminal: "T1",
   ...overrides,
 });
 
@@ -81,7 +83,7 @@ describe("OrderFlightInfo Component", () => {
     });
 
     it("should display terminal information when provided", () => {
-      const outboundFlight = createMockFlight({ terminal: "T1" });
+      const outboundFlight = createMockFlight({ departureTerminal: "T1" });
       render(
         <OrderFlightInfo outboundFlight={outboundFlight} inboundFlight={null} />
       );
@@ -90,12 +92,16 @@ describe("OrderFlightInfo Component", () => {
     });
 
     it("should not display terminal when not provided", () => {
-      const outboundFlight = createMockFlight({ terminal: undefined });
+      const outboundFlight = createMockFlight({
+        departureTerminal: undefined,
+        arrivalTerminal: undefined,
+      });
       render(
         <OrderFlightInfo outboundFlight={outboundFlight} inboundFlight={null} />
       );
 
       expect(screen.queryByText("T1")).not.toBeInTheDocument();
+      expect(screen.queryByText("T2")).not.toBeInTheDocument();
     });
 
     it("should display correct seat class name", () => {

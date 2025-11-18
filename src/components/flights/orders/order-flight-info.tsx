@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
-import { ArrowLeftRight, ArrowRight, Clock } from "lucide-react";
+import { ArrowLeftRight, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -65,68 +66,92 @@ function FlightInfo({
   );
 
   return (
-    <div>
-      {/* Label (only show for round-trip) */}
-      {showLabel && (
-        <Badge variant="secondary" className="mb-4">
-          {label}
-        </Badge>
-      )}
-
-      <div className="flex gap-6">
-        {/* Left: Date Badge */}
-        <div className="shrink-0">
-          <Badge variant="outline" className="px-3 py-1 text-sm font-normal">
-            {formatFlightDate(flight.departureDatetime)}
+    <div className="space-y-4">
+      {/* Upper Part: Label + Date */}
+      <div className="flex flex-row justify-start items-center gap-2">
+        {/* Label (only show for round-trip) */}
+        {showLabel && (
+          <Badge className="text-white bg-blue-500 font-normal px-2 py-0.5">
+            {label}
           </Badge>
-        </div>
+        )}
+        <span className="font-medium text-base">
+          {formatFlightDate(flight.departureDatetime)}
+        </span>
+      </div>
 
-        {/* Right: Flight Details */}
-        <div className="flex-1 space-y-3">
-          {/* Timeline: Departure -> Duration -> Arrival */}
-          <div className="flex items-center gap-8">
-            {/* Departure */}
-            <div className="flex-1">
-              <div className="text-2xl font-semibold">
-                {formatTime(flight.departureDatetime)}
-              </div>
-              <div className="text-sm text-gray-600 mt-1">
-                {flight.departureAirportName}
-                {flight.terminal && (
-                  <span className="ml-1">{flight.terminal}</span>
+      <div className="flex flex-row justify-between">
+        {/* Flight Timeline */}
+        <div className="flex items-start gap-3">
+          {/* Left: Time Column */}
+          <div className="flex flex-col items-end min-w-[50px] pt-1">
+            <div className="text-base font-medium mb-1">
+              {formatTime(flight.departureDatetime)}
+            </div>
+            <div className="text-xs text-gray-500 my-4">{duration}</div>
+            <div className="text-base font-medium mt-1">
+              {formatTime(flight.arrivalDatetime)}
+            </div>
+          </div>
+
+          {/* Middle: Timeline Indicator */}
+          <div className="flex flex-col items-center pt-2">
+            {/* Top Circle */}
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+
+            {/* Vertical Line */}
+            <div className="w-px h-16 bg-gray-300 my-1" />
+
+            {/* Bottom Circle */}
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+          </div>
+
+          {/* Right: Airport and Flight Info */}
+          <div className="flex-1 pt-0.5">
+            {/* Departure Info */}
+            <div className="mb-6">
+              <div className="font-medium text-base mb-1">
+                {flight.departureCityName} {flight.departureAirportName}
+                {flight.departureTerminal && (
+                  <span className="ml-0.5">{flight.departureTerminal}</span>
                 )}
               </div>
             </div>
 
-            {/* Duration */}
-            <div className="flex flex-col items-center text-gray-500">
-              <Clock className="h-4 w-4 mb-1" />
-              <div className="text-xs">{duration}</div>
-            </div>
-
-            {/* Arrival */}
-            <div className="flex-1">
-              <div className="text-2xl font-semibold">
-                {formatTime(flight.arrivalDatetime)}
-              </div>
-              <div className="text-sm text-gray-600 mt-1">
-                {flight.arrivalAirportName}
-                {flight.terminal && (
-                  <span className="ml-1">{flight.terminal}</span>
+            {/* Arrival Info */}
+            <div>
+              <div className="font-medium text-base mb-1">
+                {flight.arrivalCityName} {flight.arrivalAirportName}
+                {flight.arrivalTerminal && (
+                  <span className="ml-0.5">{flight.arrivalTerminal}</span>
                 )}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Flight Details */}
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            <span>{flight.airlineName}</span>
-            <span>{flight.flightNumber}</span>
+        {/* Airplane Info */}
+        <div className="flex flex-col items-start justify-start gap-3">
+          <div className="flex flex-row gap-2">
+            {/* Airline Logo */}
+            {flight.airlineLogoUrl && (
+              <div className="relative w-5 h-5">
+                <Image
+                  src={flight.airlineLogoUrl}
+                  alt={flight.airlineName}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            )}
             <span>
-              {getSeatClassName(
-                flight.seatClassType as "ECONOMY" | "BUSINESS" | "FIRST"
-              )}
+              {flight.airlineName} {flight.flightNumber}
             </span>
+          </div>
+          {/* Flight Details */}
+          <div className="flex flex-row gap-1">
+            <span>{getSeatClassName(flight.seatClassType)}</span>|
+            <span>{flight.aircraftType}</span>
           </div>
         </div>
       </div>
@@ -147,10 +172,10 @@ export function OrderFlightInfo({
 
   return (
     <Card>
-      <CardHeader className="bg-gray-100">
+      <CardHeader>
+        {/* Header: City Route */}
         <CardTitle>
-          {/* Header: City Route */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center">
             <h3 className="text-xl font-semibold">
               {outboundFlight.departureCityName}
             </h3>
@@ -165,7 +190,7 @@ export function OrderFlightInfo({
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent>
         {/* Outbound Flight */}
         <FlightInfo
           flight={outboundFlight}

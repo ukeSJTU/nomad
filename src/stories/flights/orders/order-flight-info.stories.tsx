@@ -24,7 +24,8 @@ const createMockFlight = (
   flightNumber: "MU5186",
   airlineName: "东方航空",
   airlineIataCode: "MU",
-  airlineLogoUrl: null,
+  airlineLogoUrl:
+    "https://ui-avatars.com/api/?name=MU&background=000&color=fff&size=128&bold=true&format=svg",
   departureAirportName: "大兴机场",
   departureAirportIataCode: "PKX",
   departureCityName: "北京",
@@ -35,6 +36,8 @@ const createMockFlight = (
   arrivalDatetime: "2026-01-18T09:45:00Z",
   seatClassType: "ECONOMY",
   duration: 135, // 2h15m
+  aircraftType: "空客330(大)",
+  departureTerminal: "T2",
   arrivalTerminal: "T1",
   ...overrides,
 });
@@ -71,7 +74,7 @@ export const RoundTripEconomy: Story = {
       arrivalCityName: "北京",
       departureDatetime: "2026-01-21T20:40:00Z",
       arrivalDatetime: "2026-01-21T22:55:00Z",
-      terminal: "T2",
+      aircraftType: "波音777(中)",
       duration: 135,
     }),
   },
@@ -107,7 +110,8 @@ export const FirstClass: Story = {
 export const NoTerminals: Story = {
   args: {
     outboundFlight: createMockFlight({
-      terminal: undefined,
+      departureTerminal: undefined,
+      arrivalTerminal: undefined,
     }),
     inboundFlight: null,
   },
