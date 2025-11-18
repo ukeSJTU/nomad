@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -12,6 +13,7 @@ export interface OrderCardProps {
   isChecked: boolean;
   onCheckChange: (checked: boolean) => void;
   onDelete: () => void;
+  onActionClick?: () => void; // For "Resend Confirmation" or "Go to Payment"
 }
 
 function getOrderStatusLabel(orderStatus: OrderListItem["status"]) {
@@ -34,9 +36,47 @@ export default function OrderCard({
   isChecked = false,
   onCheckChange,
   onDelete,
+  onActionClick,
 }: OrderCardProps) {
+  // Determine action button text based on order status
+  const getActionButton = () => {
+    if (order.status === "CONFIRMED") {
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            onActionClick?.();
+          }}
+          className="w-full text-blue-500"
+        >
+          重发确认信息
+        </Button>
+      );
+    }
+    if (order.status === "PENDING_PAYMENT") {
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            onActionClick?.();
+          }}
+          className="w-full text-blue-500"
+        >
+          去付款
+        </Button>
+      );
+    }
+    return null;
+  };
+
   return (
-    <Card className="w-full">
+    <Card className="w-full transition-all hover:border-blue-500 hover:shadow-md">
       {/* 顶部：订单号、日期、状态 */}
       <CardHeader className="bg-gray-50/50">
         <div className="flex items-center gap-2">
@@ -47,9 +87,13 @@ export default function OrderCard({
           />
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-600">订单号:</span>
-            <span className="font-medium text-blue-600">
+            <Link
+              href={`/orders/${order.id}`}
+              className="font-medium text-blue-600 hover:underline"
+              onClick={e => e.stopPropagation()}
+            >
               {order.orderNumber}
-            </span>
+            </Link>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <span>预订日期:</span>
@@ -58,80 +102,90 @@ export default function OrderCard({
           <Button
             variant="link"
             className="text-blue-600 text-sm h-auto p-0"
-            onClick={onDelete}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              onDelete();
+            }}
           >
             删除订单
           </Button>
         </div>
       </CardHeader>
 
-      {/* 主体内容 */}
-      <CardContent className="px-6 pt-0">
-        <div className="flex justify-between">
-          {/* Left side: display flight info */}
-          <div className="space-y-4">
-            {/* Outbound flight */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold">
-                {order.outboundFlight.departureCityName} —{" "}
-                {order.outboundFlight.arrivalCityName}
-              </h3>
-              <div className="text-sm text-gray-600 space-y-1">
-                <div>
-                  出发日期:{" "}
-                  {format(
-                    new Date(order.outboundFlight.departureDatetime),
-                    "yyyy-MM-dd HH:mm"
-                  )}{" "}
-                  至{" "}
-                  {format(
-                    new Date(order.outboundFlight.arrivalDatetime),
-                    "HH:mm"
-                  )}{" "}
-                  {order.outboundFlight.flightNumber}
-                </div>
-                <div>出行人：{order.passengerNames.join("、")}</div>
-              </div>
-            </div>
-
-            {/* Inbound flight */}
-            {order.inboundFlight && (
+      {/* 主体内容 - Clickable area */}
+      <Link href={`/orders/${order.id}`} className="block">
+        <CardContent className="px-6 py-4 cursor-pointer">
+          <div className="flex justify-between">
+            {/* Left side: display flight info */}
+            <div className="space-y-4 flex-1">
+              {/* Outbound flight */}
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold">
-                  {order.inboundFlight.departureCityName} —{" "}
-                  {order.inboundFlight.arrivalCityName}
+                  {order.outboundFlight.departureCityName} —{" "}
+                  {order.outboundFlight.arrivalCityName}
                 </h3>
                 <div className="text-sm text-gray-600 space-y-1">
                   <div>
                     出发日期:{" "}
                     {format(
-                      new Date(order.inboundFlight.departureDatetime),
+                      new Date(order.outboundFlight.departureDatetime),
                       "yyyy-MM-dd HH:mm"
                     )}{" "}
                     至{" "}
                     {format(
-                      new Date(order.inboundFlight.arrivalDatetime),
+                      new Date(order.outboundFlight.arrivalDatetime),
                       "HH:mm"
                     )}{" "}
-                    {order.inboundFlight.flightNumber}
+                    {order.outboundFlight.flightNumber}
                   </div>
                   <div>出行人：{order.passengerNames.join("、")}</div>
                 </div>
               </div>
-            )}
-          </div>
 
-          {/* Right side: order status and price */}
-          <div className="flex flex-col items-end gap-1">
-            <span className="text-blue-500 font-semibold">
-              {getOrderStatusLabel(order.status)}
-            </span>
-            <div className="text-lg font-semibold text-gray-900">
-              ¥{order.totalAmount}
+              {/* Inbound flight */}
+              {order.inboundFlight && (
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">
+                    {order.inboundFlight.departureCityName} —{" "}
+                    {order.inboundFlight.arrivalCityName}
+                  </h3>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <div>
+                      出发日期:{" "}
+                      {format(
+                        new Date(order.inboundFlight.departureDatetime),
+                        "yyyy-MM-dd HH:mm"
+                      )}{" "}
+                      至{" "}
+                      {format(
+                        new Date(order.inboundFlight.arrivalDatetime),
+                        "HH:mm"
+                      )}{" "}
+                      {order.inboundFlight.flightNumber}
+                    </div>
+                    <div>出行人：{order.passengerNames.join("、")}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Right side: order status and price */}
+            <div className="flex flex-col items-end gap-2 justify-betweem h-full">
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-blue-500 font-semibold">
+                  {getOrderStatusLabel(order.status)}
+                </span>
+                <div className="text-lg font-semibold text-gray-900">
+                  ¥{order.totalAmount}
+                </div>
+              </div>
+              {/* Action button */}
+              <div className="mt-auto pt-4">{getActionButton()}</div>
             </div>
           </div>
-        </div>
-      </CardContent>
+        </CardContent>
+      </Link>
     </Card>
   );
 }

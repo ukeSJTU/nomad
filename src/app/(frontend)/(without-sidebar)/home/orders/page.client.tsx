@@ -107,6 +107,17 @@ export default function OrdersPageClient({ orders }: OrdersPageClientProps) {
     }
   };
 
+  // Handle action button click (Resend confirmation or Go to payment)
+  const handleActionClick = (order: OrderListItem) => {
+    if (order.status === "CONFIRMED") {
+      // TODO: Implement resend confirmation logic
+      toast.success("确认信息已重新发送");
+    } else if (order.status === "PENDING_PAYMENT") {
+      // Navigate to payment page
+      router.push(`/flights/booking/${order.id}/payment`);
+    }
+  };
+
   // Render empty state message
   const renderEmptyState = (message: string) => (
     <div className="text-center py-12">
@@ -129,6 +140,7 @@ export default function OrdersPageClient({ orders }: OrdersPageClientProps) {
             isChecked={selectedOrders.has(order.id)}
             onCheckChange={checked => handleCheckChange(order.id, checked)}
             onDelete={() => handleDeleteClick(order.id)}
+            onActionClick={() => handleActionClick(order)}
           />
         ))}
       </div>

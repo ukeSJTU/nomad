@@ -45,8 +45,15 @@ export const OneWayPendingPayment: Story = {
       totalAmount: "1000",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
+    onActionClick: () => {
+      console.log("Go to payment clicked");
+    },
   },
 };
 
@@ -79,8 +86,15 @@ export const OneWayConfirmed: Story = {
       totalAmount: "1688",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
+    onActionClick: () => {
+      console.log("Resend confirmation clicked");
+    },
   },
 };
 
@@ -113,8 +127,12 @@ export const OneWayCancelled: Story = {
       totalAmount: "488",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
   },
 };
 
@@ -147,8 +165,12 @@ export const OneWayRefunded: Story = {
       totalAmount: "888",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
   },
 };
 
@@ -197,8 +219,15 @@ export const RoundTripPendingPayment: Story = {
       totalAmount: "2000",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
+    onActionClick: () => {
+      console.log("Go to payment clicked");
+    },
   },
 };
 
@@ -245,8 +274,15 @@ export const RoundTripConfirmed: Story = {
       totalAmount: "4388",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
+    onActionClick: () => {
+      console.log("Resend confirmation clicked");
+    },
   },
 };
 
@@ -293,8 +329,12 @@ export const RoundTripCancelled: Story = {
       totalAmount: "1888",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
   },
 };
 
@@ -341,7 +381,11 @@ export const RoundTripRefunded: Story = {
       totalAmount: "2688",
     } as OrderListItem,
     isChecked: false,
-    onCheckChange: () => {},
-    onDelete: () => {},
+    onCheckChange: () => {
+      console.log("Check changed");
+    },
+    onDelete: () => {
+      console.log("Delete clicked");
+    },
   },
 };

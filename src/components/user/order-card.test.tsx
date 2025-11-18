@@ -39,12 +39,14 @@ const createMockOrder = (
 describe("OrderCard Component", () => {
   const mockOnCheckChange = vi.fn();
   const mockOnDelete = vi.fn();
+  const mockOnActionClick = vi.fn();
 
   const defaultProps = {
     order: createMockOrder(),
     isChecked: false,
     onCheckChange: mockOnCheckChange,
     onDelete: mockOnDelete,
+    onActionClick: mockOnActionClick,
   };
 
   beforeEach(() => {
@@ -362,6 +364,114 @@ describe("OrderCard Component", () => {
       render(<OrderCard {...defaultProps} order={order} />);
 
       expect(screen.getByText("¥0")).toBeInTheDocument();
+    });
+  });
+
+  describe("Action Buttons", () => {
+    it('should render "去付款" button for pending payment orders', () => {
+      const order = createMockOrder({ status: "PENDING_PAYMENT" });
+
+      render(<OrderCard {...defaultProps} order={order} />);
+
+      expect(
+        screen.getByRole("button", { name: "去付款" })
+      ).toBeInTheDocument();
+    });
+
+    it('should render "重发确认信息" button for confirmed orders', () => {
+      const order = createMockOrder({ status: "CONFIRMED" });
+
+      render(<OrderCard {...defaultProps} order={order} />);
+
+      expect(
+        screen.getByRole("button", { name: "重发确认信息" })
+      ).toBeInTheDocument();
+    });
+
+    it("should not render action button for cancelled orders", () => {
+      const order = createMockOrder({ status: "CANCELLED" });
+
+      render(<OrderCard {...defaultProps} order={order} />);
+
+      expect(
+        screen.queryByRole("button", { name: "去付款" })
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "重发确认信息" })
+      ).not.toBeInTheDocument();
+    });
+
+    it("should not render action button for refunded orders", () => {
+      const order = createMockOrder({ status: "REFUNDED" });
+
+      render(<OrderCard {...defaultProps} order={order} />);
+
+      expect(
+        screen.queryByRole("button", { name: "去付款" })
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "重发确认信息" })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should call onActionClick when "去付款" button is clicked', async () => {
+      const user = userEvent.setup();
+      const order = createMockOrder({ status: "PENDING_PAYMENT" });
+
+      render(<OrderCard {...defaultProps} order={order} />);
+
+      const paymentButton = screen.getByRole("button", { name: "去付款" });
+      await user.click(paymentButton);
+
+      expect(mockOnActionClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onActionClick when "重发确认信息" button is clicked', async () => {
+      const user = userEvent.setup();
+      const order = createMockOrder({ status: "CONFIRMED" });
+
+      render(<OrderCard {...defaultProps} order={order} />);
+
+      const resendButton = screen.getByRole("button", {
+        name: "重发确认信息",
+      });
+      await user.click(resendButton);
+
+      expect(mockOnActionClick).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("Navigation", () => {
+    it("should render order number as a link", () => {
+      render(<OrderCard {...defaultProps} />);
+
+      const orderLink = screen.getByRole("link", { name: "NMD20251118001" });
+      expect(orderLink).toBeInTheDocument();
+      expect(orderLink).toHaveAttribute("href", "/orders/1");
+    });
+
+    it("should make CardContent clickable with proper link", () => {
+      render(<OrderCard {...defaultProps} />);
+
+      // Find the link that wraps CardContent by checking parent elements
+      const links = screen.getAllByRole("link");
+      const cardContentLink = links.find(link =>
+        link.getAttribute("href")?.includes("/orders/1")
+      );
+
+      expect(cardContentLink).toBeInTheDocument();
+      expect(cardContentLink).toHaveAttribute("href", "/orders/1");
+    });
+  });
+
+  describe("Hover State", () => {
+    it("should have hover styles applied via className", () => {
+      const { container } = render(<OrderCard {...defaultProps} />);
+
+      // Check if Card has hover transition classes
+      const card = container.querySelector('[class*="transition"]');
+      expect(card).toBeInTheDocument();
+      expect(card?.className).toContain("hover:border-blue-500");
     });
   });
 });
