@@ -6,7 +6,14 @@ import { Toaster } from "@/components/ui/sonner";
 
 export function SidebarWrapper({ children }: { children: ReactNode }) {
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider
+      defaultOpen={true}
+      style={
+        {
+          "--sidebar-width-icon": "4.75rem",
+        } as React.CSSProperties
+      }
+    >
       <Suspense fallback={<div>Loading...</div>}>
         <MainSidebar />
       </Suspense>
