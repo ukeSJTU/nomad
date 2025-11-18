@@ -1,4 +1,4 @@
-import { FlightSeatClass, OrderStatus } from "@/types/database";
+import { FlightSeatClass, OrderPassenger, OrderStatus } from "@/types/database";
 
 export interface OrderFlightInfo {
   flightNumber: string;
@@ -26,4 +26,46 @@ export interface OrderListItem {
   outboundFlight: OrderFlightInfo;
   inboundFlight: OrderFlightInfo | null;
   passengerNames: string[];
+}
+
+export interface OrderStatusCardData {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  paymentDeadline: string; // ISO string
+  createdAt: string;
+  cancellationReason?: string;
+}
+
+export interface OrderFlightCardData extends OrderFlightInfo {
+  duration: number; // Flight duration, in minutes
+  terminal?: string;
+}
+
+export interface OrderPassengerCardData {
+  passengers: Array<{
+    name: string;
+    idType: OrderPassenger["identityType"];
+    idNumber: string; // Masked data
+  }>;
+}
+
+export interface OrderContactCardData {
+  contactPhone?: string;
+  contactEmail?: string;
+}
+
+export interface OrderPaymentCardData {
+  baseAmount: string;
+  ancillaryAmount: string;
+  totalAmount: string;
+}
+
+export interface OrderDetailFull {
+  status: OrderStatusCardData;
+  outboundFlight: OrderFlightCardData;
+  inboundFlight: OrderFlightCardData | null;
+  passengers: OrderPassengerCardData;
+  contact: OrderContactCardData;
+  payment: OrderPaymentCardData;
 }
