@@ -35,6 +35,11 @@ export function OrderContactInfo({ contactInfo }: OrderContactInfoProps) {
             )}
           </div>
         ) : (
+          /**
+           * Edge case fallback
+           * Note: Order creation requires either phone or email,
+           * this should not occur under normal circumstances
+           */
           <div className="text-sm text-muted-foreground">暂无联系信息</div>
         )}
       </CardContent>
