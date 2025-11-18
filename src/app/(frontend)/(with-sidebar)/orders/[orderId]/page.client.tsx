@@ -5,28 +5,18 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import {
+  CancelOrderDialog,
   OrderContactInfo,
   OrderFlightInfo,
   OrderPassengerInfo,
   OrderPaymentDetails,
   OrderStatusCard,
 } from "@/components/flights/orders";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { cancelOrderAction } from "@/lib/actions/orders";
-
-import type { OrderDetailsWithAirports } from "./queries";
+import { OrderDetailFull } from "@/types/dto/orders";
 
 type OrderDetailsPageClientProps = {
-  order: OrderDetailsWithAirports;
+  order: OrderDetailFull;
 };
 
 /**
@@ -55,14 +45,14 @@ export default function OrderDetailsPageClient({
 
   // Handle actual cancel order
   const handleConfirmCancel = async () => {
-    setShowCancelDialog(false);
     setIsCancelling(true);
 
     try {
-      const result = await cancelOrderAction(order.id);
+      const result = await cancelOrderAction(order.status.id);
 
       if (result.success) {
         toast.success("订单已成功取消");
+        setShowCancelDialog(false);
         // Refresh the page to show updated order status
         router.refresh();
       } else {
@@ -77,7 +67,7 @@ export default function OrderDetailsPageClient({
 
   // Handle go to payment
   const handleGoToPayment = () => {
-    router.push(`/flights/booking/payment?orderId=${order.id}`);
+    router.push(`/flights/booking/payment?orderId=${order.status.id}`);
   };
 
   return (
@@ -88,10 +78,9 @@ export default function OrderDetailsPageClient({
           <div className="lg:col-span-2 space-y-6">
             {/* Order Status Card */}
             <OrderStatusCard
-              order={order}
-              onCancelOrder={handleCancelOrderClick}
+              data={order.status}
               onGoToPayment={handleGoToPayment}
-              isCancelling={isCancelling}
+              onResendConfirmation={handleCancelOrderClick}
             />
 
             {/* Flight Information Card */}
@@ -104,36 +93,23 @@ export default function OrderDetailsPageClient({
             <OrderPassengerInfo passengers={order.passengers} />
 
             {/* Contact Information Card */}
-            <OrderContactInfo
-              contactPhone={order.contactPhone}
-              contactEmail={order.contactEmail}
-            />
+            <OrderContactInfo contactInfo={order.contact} />
           </div>
 
           {/* Right Side - Payment Details (Sticky) */}
           <div className="lg:col-span-1">
-            <OrderPaymentDetails order={order} />
+            <OrderPaymentDetails paymentData={order.payment} />
           </div>
         </div>
       </div>
 
       {/* Cancel Order Confirmation Dialog */}
-      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>确认取消订单</AlertDialogTitle>
-            <AlertDialogDescription>
-              确定要取消此订单吗？取消后将释放座位，订单无法恢复。
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmCancel}>
-              确认取消订单
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <CancelOrderDialog
+        open={showCancelDialog}
+        onOpenChange={setShowCancelDialog}
+        onConfirm={handleConfirmCancel}
+        isLoading={isCancelling}
+      />
     </>
   );
 }

@@ -2,15 +2,9 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { getOrderDetailById } from "@/lib/queries/orders";
 
 import OrderDetailsPageClient from "./page.client";
-import { getOrderDetails } from "./queries";
-
-type PageProps = {
-  params: Promise<{
-    orderId: string;
-  }>;
-};
 
 /**
  * Order Details Page - Server Component
@@ -26,7 +20,13 @@ type PageProps = {
  * - Requires authentication (handled by middleware)
  * - Only order owner can view the order
  */
-export default async function OrderDetailsPage({ params }: PageProps) {
+export default async function OrderDetailsPage({
+  params,
+}: {
+  params: Promise<{
+    orderId: string;
+  }>;
+}) {
   // Get authentication
   const headersList = await headers();
   const session = await auth.api.getSession({
@@ -45,7 +45,7 @@ export default async function OrderDetailsPage({ params }: PageProps) {
   const orderId = resolvedParams.orderId;
 
   // Fetch order details
-  const order = await getOrderDetails(orderId, session.user.id);
+  const order = await getOrderDetailById(orderId, session.user.id);
 
   // Return 404 if order not found or user doesn't have permission
   if (!order) {
