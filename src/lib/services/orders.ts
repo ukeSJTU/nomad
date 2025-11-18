@@ -76,6 +76,7 @@ export async function cancelOrder(
         .update(orders)
         .set({
           status: "CANCELLED",
+          cancellationReason: "用户取消",
           updatedAt: now,
         })
         .where(eq(orders.id, orderId));
@@ -88,14 +89,6 @@ export async function cancelOrder(
           updatedAt: now,
         })
         .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
-
-      // Mark cancellation reason
-      await tx
-        .update(orders)
-        .set({
-          cancellationReason: "用户取消",
-        })
-        .where(eq(orders.id, orderId));
 
       // Release inbound flight seats (if round-trip)
       if (order.inboundFlightSeatClassId) {
@@ -212,6 +205,7 @@ export async function cancelExpiredOrders(): Promise<CancelExpiredOrdersResult> 
         .update(orders)
         .set({
           status: "CANCELLED",
+          cancellationReason: "支付失败",
           updatedAt: now,
         })
         .where(
