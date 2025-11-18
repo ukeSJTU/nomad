@@ -1,130 +1,124 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { OrderStatusCard } from "@/components/flights/orders";
+import { OrderStatusCard } from "@/components/flights/orders/order-status-card";
+import type { OrderStatusCardData } from "@/types/dto/orders";
 
-const meta: Meta<typeof OrderStatusCard> = {
+const meta = {
   title: "Flights/Orders/OrderStatusCard",
   component: OrderStatusCard,
   parameters: {
     layout: "padded",
   },
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof OrderStatusCard>;
 
 export default meta;
-type Story = StoryObj<typeof OrderStatusCard>;
-
-// Mock order data
-const mockOrder = {
-  id: "order-1",
-  orderNumber: "ORD20250115001",
-  userId: "user-1",
-  outboundFlightSeatClassId: "seat-1",
-  inboundFlightSeatClassId: null,
-  status: "PENDING_PAYMENT" as const,
-  paymentDeadline: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes from now
-  passengerCount: 1,
-  contactPhone: "13800138000",
-  contactEmail: "user@example.com",
-  pricePerTicket: "1280.00",
-  baseAmount: "1280.00",
-  ancillaryAmount: "0.00",
-  totalAmount: "1280.00",
-  ancillaryDetails: null,
-  deletedAt: null,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  passengers: [],
-  outboundFlight: {} as any,
-  inboundFlight: null,
-};
+type Story = StoryObj<typeof meta>;
 
 /**
- * Pending payment status with countdown timer
+ * Helper function to create mock order status data
+ */
+const createMockStatusData = (
+  overrides?: Partial<OrderStatusCardData>
+): OrderStatusCardData => ({
+  id: "order-123",
+  orderNumber: "NMD20251118001",
+  status: "PENDING_PAYMENT",
+  paymentDeadline: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes from now
+  createdAt: new Date().toISOString(),
+  ...overrides,
+});
+
+// ============================================================================
+// Stories
+// ============================================================================
+
+/**
+ * Pending Payment Status
+ *
+ * Shows an order awaiting payment with:
+ * - Orange theme (warning state)
+ * - Real-time countdown timer
+ * - "Go to Payment" action button
+ * - Alert message with payment deadline
  */
 export const PendingPayment: Story = {
   args: {
-    order: mockOrder,
-    onCancelOrder: () => console.log("Cancel order clicked"),
-    onGoToPayment: () => console.log("Go to payment clicked"),
-    isCancelling: false,
-  },
-};
-
-/**
- * Pending payment with cancelling state
- */
-export const PendingPaymentCancelling: Story = {
-  args: {
-    order: mockOrder,
-    onCancelOrder: () => console.log("Cancel order clicked"),
-    onGoToPayment: () => console.log("Go to payment clicked"),
-    isCancelling: true,
-  },
-};
-
-/**
- * Payment expired (deadline passed)
- */
-export const PaymentExpired: Story = {
-  args: {
-    order: {
-      ...mockOrder,
-      paymentDeadline: new Date(Date.now() - 1000), // 1 second ago
+    data: createMockStatusData({
+      status: "PENDING_PAYMENT",
+      orderNumber: "NMD20251118001",
+      paymentDeadline: new Date(Date.now() + 850 * 1000).toISOString(), // 14:10 remaining
+    }),
+    onGoToPayment: () => {
+      console.log("Navigate to payment page");
     },
-    onCancelOrder: () => console.log("Cancel order clicked"),
-    onGoToPayment: () => console.log("Go to payment clicked"),
-    isCancelling: false,
+    isLoading: false,
   },
 };
 
 /**
- * Confirmed order status
+ * Confirmed Status
+ *
+ * Shows a successfully confirmed order with:
+ * - Green theme (success state)
+ * - Success confirmation message
+ * - "Resend Confirmation" action button
+ * - Email sent notification
  */
 export const Confirmed: Story = {
   args: {
-    order: {
-      ...mockOrder,
-      status: "CONFIRMED" as const,
+    data: createMockStatusData({
+      status: "CONFIRMED",
+      orderNumber: "NMD20251117003",
+      paymentDeadline: new Date(Date.now() - 3600 * 1000).toISOString(), // Paid 1 hour ago
+      createdAt: new Date(Date.now() - 3600 * 1000).toISOString(),
+    }),
+    onResendConfirmation: () => {
+      console.log("Resend confirmation email");
     },
+    isLoading: false,
   },
 };
 
 /**
- * Cancelled order status
+ * Cancelled Status
+ *
+ * Shows a cancelled order with:
+ * - Gray theme (neutral/inactive state)
+ * - Cancellation reason display
+ * - No action buttons
+ * - Information about cancellation
  */
 export const Cancelled: Story = {
   args: {
-    order: {
-      ...mockOrder,
-      status: "CANCELLED" as const,
-    },
+    data: createMockStatusData({
+      status: "CANCELLED",
+      orderNumber: "NMD20251116004",
+      paymentDeadline: new Date(Date.now() - 7200 * 1000).toISOString(),
+      createdAt: new Date(Date.now() - 7200 * 1000).toISOString(),
+      cancellationReason: "支付失败",
+    }),
+    isLoading: false,
   },
 };
 
 /**
- * Refunded order status
+ * Refunded Status
+ *
+ * Shows a refunded order with:
+ * - Blue theme (informational state)
+ * - Refund completion message
+ * - No action buttons
+ * - Estimated arrival time for refund
  */
 export const Refunded: Story = {
   args: {
-    order: {
-      ...mockOrder,
-      status: "REFUNDED" as const,
-    },
-  },
-};
-
-/**
- * Payment deadline in 1 minute (urgent)
- */
-export const PaymentUrgent: Story = {
-  args: {
-    order: {
-      ...mockOrder,
-      paymentDeadline: new Date(Date.now() + 45 * 1000), // 45 seconds from now
-    },
-    onCancelOrder: () => console.log("Cancel order clicked"),
-    onGoToPayment: () => console.log("Go to payment clicked"),
-    isCancelling: false,
+    data: createMockStatusData({
+      status: "REFUNDED",
+      orderNumber: "NMD20251115006",
+      paymentDeadline: new Date(Date.now() - 86400 * 1000).toISOString(),
+      createdAt: new Date(Date.now() - 86400 * 1000).toISOString(),
+    }),
+    isLoading: false,
   },
 };
