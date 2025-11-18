@@ -19,8 +19,10 @@ type Story = StoryObj<typeof OrderContactInfo>;
  */
 export const Complete: Story = {
   args: {
-    contactPhone: "13800138000",
-    contactEmail: "user@example.com",
+    contactInfo: {
+      contactEmail: "foobar@nomad.com",
+      contactPhone: "13800001111",
+    },
   },
 };
 
@@ -29,8 +31,10 @@ export const Complete: Story = {
  */
 export const PhoneOnly: Story = {
   args: {
-    contactPhone: "13800138000",
-    contactEmail: null,
+    contactInfo: {
+      contactPhone: "13800001111",
+      contactEmail: undefined,
+    },
   },
 };
 
@@ -39,8 +43,10 @@ export const PhoneOnly: Story = {
  */
 export const EmailOnly: Story = {
   args: {
-    contactPhone: null,
-    contactEmail: "user@example.com",
+    contactInfo: {
+      contactPhone: undefined,
+      contactEmail: "foobar@nomad.com",
+    },
   },
 };
 
@@ -49,27 +55,9 @@ export const EmailOnly: Story = {
  */
 export const Empty: Story = {
   args: {
-    contactPhone: null,
-    contactEmail: null,
-  },
-};
-
-/**
- * International phone number
- */
-export const InternationalPhone: Story = {
-  args: {
-    contactPhone: "+1 (555) 123-4567",
-    contactEmail: "international@example.com",
-  },
-};
-
-/**
- * Long email address
- */
-export const LongEmail: Story = {
-  args: {
-    contactPhone: "13800138000",
-    contactEmail: "very.long.email.address.for.testing@example-domain.com",
+    contactInfo: {
+      contactPhone: undefined,
+      contactEmail: undefined,
+    },
   },
 };

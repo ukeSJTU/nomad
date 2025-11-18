@@ -1,11 +1,8 @@
-import { Mail, Phone } from "lucide-react";
-
-import type { OrderDetailsWithAirports } from "@/app/(frontend)/(with-sidebar)/orders/[orderId]/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrderDetailFull } from "@/types/dto/orders";
 
 export type OrderContactInfoProps = {
-  contactPhone: OrderDetailsWithAirports["contactPhone"];
-  contactEmail: OrderDetailsWithAirports["contactEmail"];
+  contactInfo: OrderDetailFull["contact"];
 };
 
 /**
@@ -13,30 +10,33 @@ export type OrderContactInfoProps = {
  *
  * Displays contact phone and email information
  */
-export function OrderContactInfo({
-  contactPhone,
-  contactEmail,
-}: OrderContactInfoProps) {
+export function OrderContactInfo({ contactInfo }: OrderContactInfoProps) {
+  const hasContactInfo = contactInfo.contactPhone || contactInfo.contactEmail;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>联系人信息</CardTitle>
+        <CardTitle>联系信息</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-          {contactPhone && (
-            <div className="flex items-center gap-2 text-sm">
-              <Phone className="h-4 w-4 text-gray-500" />
-              <span>{contactPhone}</span>
-            </div>
-          )}
-          {contactEmail && (
-            <div className="flex items-center gap-2 text-sm">
-              <Mail className="h-4 w-4 text-gray-500" />
-              <span>{contactEmail}</span>
-            </div>
-          )}
-        </div>
+        {hasContactInfo ? (
+          <div className="space-y-3">
+            {contactInfo.contactPhone && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">手机号：</span>
+                <span className="font-medium">{contactInfo.contactPhone}</span>
+              </div>
+            )}
+            {contactInfo.contactEmail && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">邮箱地址：</span>
+                <span className="font-medium">{contactInfo.contactEmail}</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-sm text-muted-foreground">暂无联系信息</div>
+        )}
       </CardContent>
     </Card>
   );

@@ -3,6 +3,7 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { orders } from "@/lib/schema/orders";
 import { OrderDetailFull, OrderListItem } from "@/types/dto/orders";
+import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
 
 /**
  * Retrieves all orders for a specific user
@@ -287,8 +288,12 @@ export async function getOrderDetailById(
 
     // Contact Card Data
     contact: {
-      contactPhone: order.contactPhone || undefined,
-      contactEmail: order.contactEmail || undefined,
+      contactPhone: order.contactPhone
+        ? maskPhoneNumber(order.contactPhone)
+        : undefined,
+      contactEmail: order.contactEmail
+        ? maskEmail(order.contactEmail)
+        : undefined,
     },
 
     // Payment Card Data
