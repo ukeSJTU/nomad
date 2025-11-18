@@ -1,10 +1,43 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { auth } from "@/lib/auth";
 import { getOrderDetailById } from "@/lib/queries/orders";
 
 import OrderDetailsPageClient from "./page.client";
+
+function BreadCrumbNav() {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/home/info">我的携程</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/home/orders">机票订单</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>订单详情</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
 
 /**
  * Order Details Page - Server Component
@@ -52,5 +85,10 @@ export default async function OrderDetailsPage({
     notFound();
   }
 
-  return <OrderDetailsPageClient order={order} />;
+  return (
+    <div className="flex flex-col">
+      <BreadCrumbNav />
+      <OrderDetailsPageClient order={order} />;
+    </div>
+  );
 }
