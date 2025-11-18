@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { OrderPaymentDetails } from "@/components/flights/orders";
+import type { OrderPaymentCardData } from "@/types/dto/orders";
 
 const meta: Meta<typeof OrderPaymentDetails> = {
   title: "Flights/Orders/OrderPaymentDetails",
@@ -14,153 +15,129 @@ const meta: Meta<typeof OrderPaymentDetails> = {
 export default meta;
 type Story = StoryObj<typeof OrderPaymentDetails>;
 
-// Base mock order
-const mockOrder = {
-  id: "order-1",
-  orderNumber: "ORD20250115001",
-  userId: "user-1",
-  outboundFlightSeatClassId: "seat-1",
-  inboundFlightSeatClassId: null,
-  status: "PENDING_PAYMENT" as const,
-  paymentDeadline: new Date(Date.now() + 15 * 60 * 1000),
-  passengerCount: 1,
-  contactPhone: "13800138000",
-  contactEmail: "user@example.com",
-  pricePerTicket: "1280.00",
+/**
+ * Helper function to create mock payment data
+ */
+const createMockPaymentData = (
+  overrides?: Partial<OrderPaymentCardData>
+): OrderPaymentCardData => ({
+  createdAt: "2026-01-18T10:30:00Z",
+  outboundFlight: {
+    depatureCityName: "北京",
+    arrivalCityName: "上海",
+    unitPrice: "1280.00",
+    passengerCount: 1,
+  },
+  ancillaryServices: [],
   baseAmount: "1280.00",
   ancillaryAmount: "0.00",
   totalAmount: "1280.00",
-  ancillaryDetails: null,
-  deletedAt: null,
-  createdAt: new Date("2025-01-15T10:30:00Z"),
-  updatedAt: new Date("2025-01-15T10:30:00Z"),
-  passengers: [],
-  outboundFlight: {} as any,
-  inboundFlight: null,
-};
+  ...overrides,
+});
 
 /**
- * Basic order without ancillary services
+ * 1. 单程1人
  */
-export const BasicOrder: Story = {
+export const OneWaySinglePassenger: Story = {
   args: {
-    order: mockOrder,
+    paymentData: createMockPaymentData(),
   },
 };
 
 /**
- * Order with ancillary services
- */
-export const WithAncillaryServices: Story = {
-  args: {
-    order: {
-      ...mockOrder,
-      baseAmount: "1280.00",
-      ancillaryAmount: "150.00",
-      totalAmount: "1430.00",
-      ancillaryDetails: ["baggage_20kg", "meal_standard"],
-    },
-  },
-};
-
-/**
- * High-value order
- */
-export const HighValue: Story = {
-  args: {
-    order: {
-      ...mockOrder,
-      baseAmount: "8500.00",
-      ancillaryAmount: "500.00",
-      totalAmount: "9000.00",
-      ancillaryDetails: ["baggage_32kg", "meal_premium", "lounge_access"],
-    },
-  },
-};
-
-/**
- * Confirmed order (no payment deadline)
- */
-export const ConfirmedOrder: Story = {
-  args: {
-    order: {
-      ...mockOrder,
-      status: "CONFIRMED" as const,
-    },
-  },
-};
-
-/**
- * Round-trip order with multiple passengers
+ * 2. 往返多人
  */
 export const RoundTripMultiplePassengers: Story = {
   args: {
-    order: {
-      ...mockOrder,
-      passengerCount: 3,
-      baseAmount: "3840.00",
-      ancillaryAmount: "300.00",
-      totalAmount: "4140.00",
-      ancillaryDetails: ["baggage_20kg", "meal_standard"],
-    },
+    paymentData: createMockPaymentData({
+      outboundFlight: {
+        depatureCityName: "北京",
+        arrivalCityName: "上海",
+        unitPrice: "1280.00",
+        passengerCount: 3,
+      },
+      inboundFlight: {
+        depatureCityName: "上海",
+        arrivalCityName: "北京",
+        unitPrice: "1380.00",
+        passengerCount: 3,
+      },
+      baseAmount: "7980.00", // (1280 + 1380) × 3
+      ancillaryAmount: "0.00",
+      totalAmount: "7980.00",
+    }),
   },
 };
 
 /**
- * Order with all ancillary services
+ * 3. 单程多人有一个附加服务
  */
-export const AllAncillaryServices: Story = {
+export const OneWayWithAncillaryService: Story = {
   args: {
-    order: {
-      ...mockOrder,
-      baseAmount: "2500.00",
-      ancillaryAmount: "850.00",
-      totalAmount: "3350.00",
-      ancillaryDetails: [
-        "baggage_20kg",
-        "baggage_32kg",
-        "meal_standard",
-        "meal_premium",
-        "seat_selection",
-        "lounge_access",
-        "priority_boarding",
+    paymentData: createMockPaymentData({
+      outboundFlight: {
+        depatureCityName: "北京",
+        arrivalCityName: "广州",
+        unitPrice: "1580.00",
+        passengerCount: 2,
+      },
+      ancillaryServices: [
+        {
+          name: "行李托运",
+          code: "BAGGAGE_20KG",
+          unitPrice: "150.00",
+          quantity: 2,
+        },
       ],
-    },
+      baseAmount: "3160.00", // 1580 × 2
+      ancillaryAmount: "300.00", // 150 × 2
+      totalAmount: "3460.00", // 3160 + 300
+    }),
   },
 };
 
 /**
- * Cancelled order
+ * 4. 往返一人有多个附加服务
  */
-export const CancelledOrder: Story = {
+export const RoundTripWithMultipleAncillaries: Story = {
   args: {
-    order: {
-      ...mockOrder,
-      status: "CANCELLED" as const,
-    },
-  },
-};
-
-/**
- * Refunded order
- */
-export const RefundedOrder: Story = {
-  args: {
-    order: {
-      ...mockOrder,
-      status: "REFUNDED" as const,
-    },
-  },
-};
-
-/**
- * Order with long order number
- */
-export const LongOrderNumber: Story = {
-  args: {
-    order: {
-      ...mockOrder,
-      orderNumber: "ORD20250115001234567890",
-    },
+    paymentData: createMockPaymentData({
+      createdAt: "2026-01-18T15:20:00Z",
+      outboundFlight: {
+        depatureCityName: "上海",
+        arrivalCityName: "成都",
+        unitPrice: "980.00",
+        passengerCount: 1,
+      },
+      inboundFlight: {
+        depatureCityName: "成都",
+        arrivalCityName: "上海",
+        unitPrice: "1080.00",
+        passengerCount: 1,
+      },
+      ancillaryServices: [
+        {
+          name: "行李托运20kg",
+          code: "BAGGAGE_20KG",
+          unitPrice: "150.00",
+          quantity: 2,
+        },
+        {
+          name: "机场贵宾室",
+          code: "LOUNGE_ACCESS",
+          unitPrice: "200.00",
+          quantity: 2,
+        },
+        {
+          name: "优先登机",
+          code: "PRIORITY_BOARDING",
+          unitPrice: "50.00",
+          quantity: 2,
+        },
+      ],
+      baseAmount: "2060.00", // 980 + 1080
+      ancillaryAmount: "800.00", // (150 + 200 + 50) × 2
+      totalAmount: "2860.00", // 2060 + 800
+    }),
   },
 };
