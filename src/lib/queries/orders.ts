@@ -278,13 +278,11 @@ export async function getOrderDetailById(
       : null,
 
     // Passenger Card Data
-    passengers: {
-      passengers: order.orderPassengers.map(passenger => ({
-        name: passenger.name,
-        idType: passenger.identityType,
-        idNumber: passenger.identityNumber,
-      })),
-    },
+    passengers: order.orderPassengers.map(passenger => ({
+      name: passenger.name,
+      idType: passenger.identityType,
+      idNumber: passenger.identityNumber,
+    })),
 
     // Contact Card Data
     contact: {

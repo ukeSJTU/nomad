@@ -44,13 +44,11 @@ export interface OrderFlightCardData extends OrderFlightInfo {
   arrivalTerminal?: string;
 }
 
-export interface OrderPassengerCardData {
-  passengers: Array<{
-    name: string;
-    idType: OrderPassenger["identityType"];
-    idNumber: string; // Masked data
-  }>;
-}
+export type OrderPassengerCardData = Array<{
+  name: string;
+  idType: OrderPassenger["identityType"];
+  idNumber: string;
+}>;
 
 export interface OrderContactCardData {
   contactPhone?: string;
