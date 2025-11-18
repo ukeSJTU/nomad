@@ -35,7 +35,7 @@ const createMockFlight = (
   arrivalDatetime: "2026-01-18T09:45:00Z",
   seatClassType: "ECONOMY",
   duration: 135, // 2h15m
-  terminal: "T1",
+  arrivalTerminal: "T1",
   ...overrides,
 });
 

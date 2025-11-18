@@ -39,7 +39,8 @@ export interface OrderStatusCardData {
 
 export interface OrderFlightCardData extends OrderFlightInfo {
   duration: number; // Flight duration, in minutes
-  terminal?: string;
+  departureTerminal?: string;
+  arrivalTerminal?: string;
 }
 
 export interface OrderPassengerCardData {

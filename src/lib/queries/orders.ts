@@ -251,7 +251,8 @@ export async function getOrderDetailById(
       flightSeatClass.flight.departureDatetime,
       flightSeatClass.flight.arrivalDatetime
     ),
-    terminal: flightSeatClass.flight.departureTerminal || undefined,
+    departureTerminal: flightSeatClass.flight.departureTerminal || undefined,
+    arrivalTerminal: flightSeatClass.flight.arrivalTerminal || undefined,
   });
 
   // Construct and return the complete order detail DTO
