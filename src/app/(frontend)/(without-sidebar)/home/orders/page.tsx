@@ -2,26 +2,31 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
-import {
-  getPendingPaymentOrders,
-  getUpcomingOrders,
-  getUserOrders,
-} from "@/lib/queries/orders";
+import { getAllOrdersByUserId } from "@/lib/queries/orders";
 
 import OrdersPageClient from "./page.client";
 
 /**
- * Orders Page (Server Component)
+ * Orders Management Page (Server Component)
  *
- * Purpose:
- * - Verify user authentication
- * - Fetch initial order data for all tabs
- * - Pass data to client component for rendering and interaction
+ * @description
+ * Server-side page component that handles user authentication and initial data fetching
+ * for the orders management interface. Implements the server-client component pattern
+ * for optimal performance and user experience.
+ *
+ * @remarks
+ * Authentication Flow:
+ * - Validates user session using Better Auth
+ * - Redirects unauthenticated users to sign-in page
+ *
+ * Data Fetching Strategy:
+ * - Fetches all orders in a single database query for optimal performance
+ * - Client-side filtering provides instant tab switching without re-fetching
+ * - Reduces database load by eliminating redundant queries
  *
  * Route: /home/orders
  */
 export default async function OrdersPage() {
-  // Step 1: Verify authentication
   const headersList = await headers();
   const session = await auth.api.getSession({ headers: headersList });
 
@@ -29,19 +34,7 @@ export default async function OrdersPage() {
     redirect("/auth/sign-in");
   }
 
-  // Step 2: Fetch order data for all tabs in parallel
-  const [allOrders, upcomingOrders, pendingPaymentOrders] = await Promise.all([
-    getUserOrders(session.user.id),
-    getUpcomingOrders(session.user.id),
-    getPendingPaymentOrders(session.user.id),
-  ]);
+  const allOrders = await getAllOrdersByUserId(session.user.id);
 
-  // Step 3: Pass data to client component
-  return (
-    <OrdersPageClient
-      allOrders={allOrders}
-      upcomingOrders={upcomingOrders}
-      pendingPaymentOrders={pendingPaymentOrders}
-    />
-  );
+  return <OrdersPageClient orders={allOrders} />;
 }
