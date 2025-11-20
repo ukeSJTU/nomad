@@ -65,6 +65,19 @@ Nomad is a modern Online Travel Agency (OTA) platform designed to provide a **cl
 - **Mermaid 11.12.0** - Diagram and flowchart rendering
 - **Shiki 3.13.0** - Code syntax highlighting
 
+All official documentation (requirements, technical design, testing strategy, contributor guides, etc.) **MUST** live in `content/docs` so that the Fumadocs site at `/docs` remains the single source of truth. Keep the MoSCoW-aligned requirement pages, supporting design write-ups, and deployment/process notes up to date there and surface their navigation via `content/docs/meta.json` and the site’s sidebar.
+
+### Documentation & Storybook Requirements
+
+- `content/docs` **MUST** be the living repository for product decisions, runbooks, and release evidence; updates are required whenever a story affects behavior, architecture, or test coverage so reviewers can browse the latest state without digging into code.
+- All shared UI components **MUST** publish at least one Storybook story under `src/stories/*.stories.tsx`, using `Meta` and `StoryObj` from `@storybook/nextjs-vite` for type safety.
+- Storybook **MUST** stay in sync with the main docs, with navigation links pointing to stories that demonstrate the most recent component states and interactive flows (e.g., logged-in vs. logged-out menus, loading states, error variants).
+
+#### Scenario: Documenting a new component behavior
+
+- **WHEN** a story introduces a new user interface or interaction that users or reviewers must understand
+- **THEN** the team **MUST** add or expand the relevant `content/docs/` page and ensure the Storybook story reflects the updated states so both narrative and visual documentation are available for inspection
+
 ### Utilities
 
 - **date-fns 4.1.0** - Date manipulation
