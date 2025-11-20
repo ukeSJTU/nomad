@@ -212,7 +212,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
       if (url === "#") return false;
 
       try {
-        const urlObj = new URL(url, window.location.origin);
+        const urlObj = new URL(url, "http://localhost");
         const urlPath = urlObj.pathname;
         const urlParams = urlObj.searchParams;
 
@@ -260,12 +260,12 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     <SidebarMenuButton
       onClick={() => handleClick(item.url, item.title)}
       className={cn(
-        "h-9 cursor-pointer px-2",
+        "h-9 cursor-pointer px-2 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:[&>span:last-child]:hidden [&>svg]:size-6",
         isActive &&
           "bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-full"
       )}
     >
-      <Icon className="size-4" />
+      <Icon className="size-4" strokeWidth={1.5} />
       <span className="text-sm">{item.title}</span>
     </SidebarMenuButton>
   );
@@ -289,7 +289,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
                 variant="ghost"
                 onClick={() => handleClick(subItem.url, subItem.title)}
                 className={cn(
-                  "w-full text-left px-3 py-2 text-sm rounded-md transition-colors",
+                  "w-full text-left px-3 py-2 text-sm rounded-md transition-colors justify-start",
                   isSubActive
                     ? "text-blue-500 font-medium"
                     : "text-muted-foreground hover:text-foreground"
@@ -336,17 +336,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" className="w-48" {...props}>
-      <SidebarHeader className="gap-2 p-2 flex items-center justify-center">
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="gap-2 p-2 pl-3 flex items-center justify-start">
         {/* Toggle sidebar button */}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               aria-label="Toggle Sidebar"
-              className="px-3 py-3 size-8 justify-center rounded-md [&>svg]:size-7"
+              className="size-9 grid place-items-center rounded-md group-data-[collapsible=icon]:p-0! [&>svg]:size-6 [&>svg]:-translate-y-[3px] [&>svg]:translate-x-[-1px] 
+              group-data-[collapsible=icon]:[&>svg]:translate-x-0 group-data-[collapsible=icon]:[&>svg]:translate-y-0 transition-transform duration-200 ease-linear"
               onClick={() => toggleSidebar()}
             >
-              <Menu strokeWidth={1.5} className="text-black" />
+              <Menu strokeWidth={1.25} className="text-black" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -354,9 +355,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent className="px-2">
         {/* Travel Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3">
               {data.travel.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -364,12 +365,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-2" />
+        <Separator className="mx-auto w-[calc(100%-1rem)]" />
 
         {/* Business Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3">
               {data.business.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -377,12 +378,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-2" />
+        <Separator className="mx-auto w-[calc(100%-1rem)]" />
 
         {/* Finance Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3">
               {data.finance.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -390,12 +391,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-2" />
+        <Separator className="mx-auto w-[calc(100%-1rem)]" />
 
         {/* Extras Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3">
               {data.extras.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
