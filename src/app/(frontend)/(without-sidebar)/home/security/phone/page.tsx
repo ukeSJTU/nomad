@@ -1,9 +1,8 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
 import { getUserSecurityStatus } from "@/lib/queries";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import PhonePageClient from "./page.client";
 
@@ -20,19 +19,11 @@ import PhonePageClient from "./page.client";
  * - Delegates to client component for form handling
  */
 export default async function PhonePage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch user security status to get current phone number
-  const securityStatus = await getUserSecurityStatus(session.user.id);
+  const securityStatus = await getUserSecurityStatus(userId);
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!securityStatus) {

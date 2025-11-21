@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingAncillaryPageClient } from "./page.client";
 import { getOrderById } from "./queries";
@@ -22,19 +21,11 @@ export default async function BookingAncillaryPage({
     redirect("/flights");
   }
 
-  // Get user session
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch order details
-  const order = await getOrderById(params.orderId, session.user.id);
+  const order = await getOrderById(params.orderId, userId);
 
   // If order not found or doesn't belong to user, redirect
   if (!order) {

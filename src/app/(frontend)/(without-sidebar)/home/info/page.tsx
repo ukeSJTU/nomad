@@ -1,11 +1,10 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Separator } from "@/components/ui/separator";
 import { UserInfoForm } from "@/components/user";
-import { auth } from "@/lib/auth";
 import { getUserInfo } from "@/lib/queries";
+import { requireAuth } from "@/utils/auth-helpers";
 
 /**
  * User Information Page (Server Component)
@@ -21,19 +20,11 @@ import { getUserInfo } from "@/lib/queries";
  * - Update functionality via Server Actions
  */
 export default async function UserInfoPage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch user information (with masked sensitive data)
-  const userData = await getUserInfo(session.user.id);
+  const userData = await getUserInfo(userId);
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!userData) {

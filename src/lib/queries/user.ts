@@ -14,12 +14,8 @@ import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
  * @param userId - The ID of the user to fetch
  * @returns User info with masked sensitive data, or null if user not found
  */
-export async function getUserInfo(userId: string): Promise<UserInfo | null> {
+export async function getUserInfo(userId: string): Promise<UserInfo> {
   const [result] = await db.select().from(user).where(eq(user.id, userId));
-
-  if (!result) {
-    return null;
-  }
 
   // Apply data masking for sensitive fields
   const maskedEmail = maskEmail(result.email);
@@ -59,13 +55,9 @@ export async function getUserInfo(userId: string): Promise<UserInfo | null> {
  */
 export async function getUserSecurityStatus(
   userId: string
-): Promise<UserSecurityStatus | null> {
+): Promise<UserSecurityStatus> {
   // Fetch user data
   const [userData] = await db.select().from(user).where(eq(user.id, userId));
-
-  if (!userData) {
-    return null;
-  }
 
   // Check if user has a password by querying account table for credential provider
   const credentialAccounts = await db

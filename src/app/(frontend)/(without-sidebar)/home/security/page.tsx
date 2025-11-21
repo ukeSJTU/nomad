@@ -1,12 +1,11 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
 import { getUserSecurityStatus } from "@/lib/queries";
+import { requireAuth } from "@/utils/auth-helpers";
 
 /**
  * Account Security Page (Server Component)
@@ -23,19 +22,11 @@ import { getUserSecurityStatus } from "@/lib/queries";
  * - Action buttons for each security item
  */
 export default async function SecurityPage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch user security status
-  const securityStatus = await getUserSecurityStatus(session.user.id);
+  const securityStatus = await getUserSecurityStatus(userId);
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!securityStatus) {

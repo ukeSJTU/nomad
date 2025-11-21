@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 
@@ -59,29 +60,35 @@ export async function getAuthenticatedUserId(): Promise<AuthResult> {
 }
 
 /**
- * Get authenticated user ID or throw an error
+ * Require authentication and redirect to sign-in page if not authenticated
  *
- * This is a stricter version that throws an error if authentication fails.
- * Useful for actions that should redirect or fail hard on auth failure.
+ * This is designed for Server Components that need to protect pages.
+ * It automatically redirects to the sign-in page if the user is not authenticated.
  *
- * @throws Error if user is not authenticated
+ * @param redirectTo - Optional path to redirect back to after login
  * @returns The authenticated user ID
  *
  * @example
  * ```ts
- * try {
- *   const userId = await requireAuthenticatedUserId();
- *   // Use userId...
- * } catch (error) {
- *   redirect("/auth/sign-in");
- * }
+ * // In a Server Component
+ * const userId = await requireAuth();
+ * // User is guaranteed to be authenticated here
+ * ```
+ *
+ * @example
+ * ```ts
+ * // With redirect back to current page after login
+ * const userId = await requireAuth("/home/passengers");
  * ```
  */
-export async function requireAuthenticatedUserId(): Promise<string> {
+export async function requireAuth(redirectTo?: string): Promise<string> {
   const authResult = await getAuthenticatedUserId();
 
   if (!authResult.success || !authResult.userId) {
-    throw new Error(authResult.error || "Authentication required");
+    const loginUrl = redirectTo
+      ? `/auth/sign-in?redirect=${encodeURIComponent(redirectTo)}`
+      : "/auth/sign-in";
+    redirect(loginUrl);
   }
 
   return authResult.userId;

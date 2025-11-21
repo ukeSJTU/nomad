@@ -1,8 +1,5 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-
-import { auth } from "@/lib/auth";
 import { getAllOrdersByUserId } from "@/lib/queries/orders";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import OrdersPageClient from "./page.client";
 
@@ -27,14 +24,10 @@ import OrdersPageClient from "./page.client";
  * Route: /home/orders
  */
 export default async function OrdersPage() {
-  const headersList = await headers();
-  const session = await auth.api.getSession({ headers: headersList });
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
-
-  const allOrders = await getAllOrdersByUserId(session.user.id);
+  const allOrders = await getAllOrdersByUserId(userId);
 
   return <OrdersPageClient orders={allOrders} />;
 }

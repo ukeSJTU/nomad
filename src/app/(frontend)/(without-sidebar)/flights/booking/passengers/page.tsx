@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingPassengersPageClient } from "./page.client";
 import { getFlightSeatClassById, getSavedPassengers } from "./queries";
@@ -24,16 +23,8 @@ export default async function BookingPassengersPage({
     redirect("/flights");
   }
 
-  // Get user session
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch flight details and saved passengers in parallel
   const [outboundFlightData, inboundFlightData, savedPassengers] =
@@ -46,7 +37,7 @@ export default async function BookingPassengersPage({
       params.inboundSeatClassId
         ? getFlightSeatClassById(params.inboundSeatClassId)
         : null,
-      getSavedPassengers(session.user.id),
+      getSavedPassengers(userId),
     ]);
 
   const outboundFlight = outboundFlightData;

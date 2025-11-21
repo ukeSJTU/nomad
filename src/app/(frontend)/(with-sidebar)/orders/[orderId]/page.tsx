@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import {
   Breadcrumb,
@@ -10,8 +9,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { auth } from "@/lib/auth";
 import { getOrderDetailById } from "@/lib/queries/orders";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import OrderDetailsPageClient from "./page.client";
 
@@ -60,25 +59,15 @@ export default async function OrderDetailsPage({
     orderId: string;
   }>;
 }) {
-  // Get authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  // This is a fallback - middleware should handle this
-  if (!session?.user?.id) {
-    const resolvedParams = await params;
-    redirect(`/auth/sign-in?redirect=/orders/${resolvedParams.orderId}`);
-  }
-
   // Get orderId from params
   const resolvedParams = await params;
   const orderId = resolvedParams.orderId;
 
+  // Check authentication (redirects to sign-in with return URL if not authenticated)
+  const userId = await requireAuth(`/orders/${orderId}`);
+
   // Fetch order details
-  const order = await getOrderDetailById(orderId, session.user.id);
+  const order = await getOrderDetailById(orderId, userId);
 
   // Return 404 if order not found or user doesn't have permission
   if (!order) {
