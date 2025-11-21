@@ -40,28 +40,30 @@ export const TripType = {
 export type TripType = (typeof TripType)[keyof typeof TripType];
 
 /**
- * Seat classes for flights (lowercase - used in search history)
+ * Seat class filter options for flight searches (includes "any" option)
+ * Used in search forms and search history
  */
-export const SeatClass = {
-  ANY: "any", // No seat class filter - show all classes
+export const SearchSeatClass = {
+  ANY: "any", // Special filter: show all classes
   ECONOMY: "economy",
   BUSINESS: "business",
   FIRST: "first",
 } as const;
 
-export type SeatClass = (typeof SeatClass)[keyof typeof SeatClass];
+export type SearchSeatClass =
+  (typeof SearchSeatClass)[keyof typeof SearchSeatClass];
 
 /**
- * Flight seat class types (uppercase - used in seat inventory)
+ * Actual seat class types stored in database
+ * Used in flight seat inventory and orders (does not include "any")
  */
-export const FlightSeatClassType = {
+export const SeatClassType = {
   ECONOMY: "ECONOMY",
   BUSINESS: "BUSINESS",
   FIRST: "FIRST",
 } as const;
 
-export type FlightSeatClassType =
-  (typeof FlightSeatClassType)[keyof typeof FlightSeatClassType];
+export type SeatClassType = (typeof SeatClassType)[keyof typeof SeatClassType];
 
 /**
  * Continents for international cities
@@ -86,14 +88,14 @@ export type Continent = (typeof Continent)[keyof typeof Continent];
 export const TRIP_TYPES = Object.values(TripType);
 
 /**
- * Array of all valid seat classes
+ * Array of all valid search seat class filters
  */
-export const SEAT_CLASSES = Object.values(SeatClass);
+export const SEARCH_SEAT_CLASSES = Object.values(SearchSeatClass);
 
 /**
- * Array of all valid flight seat class types
+ * Array of all valid seat class types
  */
-export const FLIGHT_SEAT_CLASS_TYPES = Object.values(FlightSeatClassType);
+export const SEAT_CLASS_TYPES = Object.values(SeatClassType);
 
 /**
  * Array of all valid continents
