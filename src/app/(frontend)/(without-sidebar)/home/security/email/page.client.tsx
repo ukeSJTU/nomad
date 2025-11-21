@@ -1,10 +1,10 @@
 "use client";
 
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import TurnstileWidget from "@/components/auth/turnstile-widget";
 import UpdateEmailForm from "@/components/security/update-email-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
@@ -40,12 +40,8 @@ export default function EmailPageClient({
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const {
-    captchaError,
-    setCaptchaError,
-    resetSignal,
-    handleSolved,
-    handleWidgetError,
-    handleWidgetExpire,
+    turnstileRef,
+    setError: setCaptchaError,
     prepareCaptchaRequest,
   } = useTurnstileCaptcha();
   const isCaptchaValidationError = (error?: { message?: string }) =>
@@ -56,7 +52,7 @@ export default function EmailPageClient({
    * Handle sending OTP to the new email address
    */
   const handleSendOtp = async (email: string) => {
-    const captchaRequest = prepareCaptchaRequest();
+    const captchaRequest = await prepareCaptchaRequest();
 
     if (!captchaRequest) {
       return;
@@ -97,7 +93,7 @@ export default function EmailPageClient({
    * Verify OTP and update email
    */
   const handleSubmit = async (data: { email: string; otp: string }) => {
-    const captchaRequest = prepareCaptchaRequest();
+    const captchaRequest = await prepareCaptchaRequest();
 
     if (!captchaRequest) {
       return;
@@ -173,16 +169,15 @@ export default function EmailPageClient({
           <p className="text-sm text-gray-600 text-center">
             修改邮箱前请完成人机验证，每次发送或提交验证码都会消耗一次令牌。
           </p>
-          <TurnstileWidget
+          <Turnstile
+            ref={turnstileRef}
             siteKey={TURNSTILE_SITE_KEY}
-            resetSignal={resetSignal}
-            onSuccess={handleSolved}
-            onExpire={handleWidgetExpire}
-            onError={handleWidgetError}
+            options={{
+              size: "invisible",
+              execution: "execute",
+              action: "update-email",
+            }}
           />
-          {captchaError && (
-            <p className="text-sm text-red-600 text-center">{captchaError}</p>
-          )}
         </div>
       </CardContent>
     </Card>

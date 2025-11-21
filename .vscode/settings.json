@@ -45,7 +45,8 @@
     "**/cli.json": true,
     "**/.prettierignore": true,
     "**/.prettierrc.json": true,
-    "**/.nvmrc": true
+    "**/.nvmrc": true,
+    "tsconfig.tsbuildinfo": true
   },
 
   // Language-specific settings

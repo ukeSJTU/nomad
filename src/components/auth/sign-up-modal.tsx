@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 
 export interface SignUpModalProps {
   open: boolean;
@@ -60,7 +62,7 @@ const privacyTerms = [
   { id: 16, text: "法律" },
 ];
 
-export default function SignUpModal({
+export function SignUpModal({
   open,
   onOpenChange,
   onAgree,
@@ -69,14 +71,17 @@ export default function SignUpModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-4xl max-h-[80vh] flex flex-col"
-        showCloseButton={true}
+        className="sm:max-w-[720px] max-h-[80vh] flex flex-col px-[30px] py-5"
+        showCloseButton={false}
       >
-        <DialogHeader>
-          <DialogTitle className="text-lg font-medium text-left">
+        <DialogHeader className="flex flex-row justify-between items-center">
+          <DialogTitle className="text-lg font-bold text-left">
             Nomad用户注册协议和隐私政策
           </DialogTitle>
+          <X className="text-gray-300" />
         </DialogHeader>
+
+        <Separator />
 
         <div className="flex-1 overflow-hidden overflow-y-auto">
           <DialogDescription className="text-sm text-gray-700 mb-4 leading-relaxed">
@@ -92,7 +97,7 @@ export default function SignUpModal({
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 underline mx-1"
               >
-                《服务协议》
+                服务协议
               </Link>
             </h3>
             <div className="bg-gray-50 rounded-lg p-4">
@@ -119,7 +124,7 @@ export default function SignUpModal({
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 underline mx-1"
               >
-                《隐私政策》
+                隐私政策
               </Link>
             </h3>
             <p className="text-sm text-gray-700 mb-2 leading-relaxed">
@@ -168,7 +173,7 @@ export default function SignUpModal({
           </div>
         </div>
 
-        <DialogFooter className="flex-row justify-center gap-4 pt-4">
+        <DialogFooter className="flex justify-center gap-4 pt-4 sm:justify-center">
           <Button
             variant="outline"
             onClick={onDisagree}

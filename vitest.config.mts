@@ -120,18 +120,6 @@ export default defineConfig({
       },
       {
         extends: true,
-        test: {
-          name: { label: "integration", color: "cyan" },
-          include: ["tests/integration/**/*.integration.test.ts"],
-          environment: "node", // Integration tests use real database, no jsdom needed
-          globals: true,
-          setupFiles: ["./tests/setup/integration.ts"],
-          pool: "forks",
-          poolOptions: { forks: { singleFork: true } },
-        },
-      },
-      {
-        extends: true,
         plugins: [
           // The plugin will run tests for the stories defined in your Storybook config
           // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest

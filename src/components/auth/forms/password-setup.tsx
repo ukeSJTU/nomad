@@ -16,7 +16,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { type PasswordSetupData, passwordSetupSchema } from "@/types/auth";
+import {
+  type PasswordSetupData,
+  passwordSetupSchema,
+} from "@/types/validations/auth";
 
 /**
  * Props for the PasswordSetupForm component

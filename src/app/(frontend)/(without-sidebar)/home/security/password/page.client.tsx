@@ -11,7 +11,7 @@ import {
   changePasswordAction,
   setPasswordForOAuthUserAction,
 } from "@/lib/actions/auth";
-import { type PasswordSetupData } from "@/types/auth";
+import { type PasswordSetupData } from "@/types/validations/auth";
 
 /**
  * Props for the PasswordPageClient component

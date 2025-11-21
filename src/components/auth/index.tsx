@@ -16,10 +16,7 @@ export { default as PhoneVerificationForm } from "./forms/phone-verification";
 
 // Other components
 export { LinkButton } from "./link-button";
-export { default as SignUpModal } from "./sign-up-modal";
+export { SignUpModal } from "./sign-up-modal";
 export { default as SocialAccountCard } from "./social-account-card";
 export { UnlinkButton } from "./unlink-button";
 export { default as UserSidebar } from "./user-sidebar";
-
-// Default export
-export { default } from "./sign-up-modal";

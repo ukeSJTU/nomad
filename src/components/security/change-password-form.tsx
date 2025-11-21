@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Eye, EyeOff, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,31 +15,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  type ChangePasswordData,
+  changePasswordSchema,
+} from "@/types/validations/auth";
 
-/**
- * Schema for change password form validation
- */
-const changePasswordSchema = z
-  .object({
-    currentPassword: z.string().min(1, "请输入当前密码"),
-    newPassword: z
-      .string()
-      .min(8, "密码至少需要 8 个字符")
-      .max(128, "密码最多 128 个字符")
-      .regex(/\d/, "密码必须包含至少一个数字")
-      .regex(/[a-zA-Z]/, "密码必须包含至少一个字母"),
-    confirmPassword: z.string().min(1, "请确认新密码"),
-  })
-  .refine(data => data.newPassword === data.confirmPassword, {
-    message: "两次输入的密码不一致",
-    path: ["confirmPassword"],
-  })
-  .refine(data => data.currentPassword !== data.newPassword, {
-    message: "新密码不能与当前密码相同",
-    path: ["newPassword"],
-  });
-
-type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
+type ChangePasswordFormData = ChangePasswordData;
 
 /**
  * Props for the ChangePasswordForm component

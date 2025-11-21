@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,26 +13,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-/**
- * Schema for phone number update form
- * Simplified version without agreedToTerms checkbox
- */
-const updatePhoneSchema = z.object({
-  phoneNumber: z
-    .string()
-    .min(1, "请输入手机号")
-    .regex(/^[0-9]+$/, "手机号码只能包含数字")
-    .min(11, "手机号码必须是11位")
-    .max(11, "手机号码必须是11位"),
-  otp: z
-    .string()
-    .min(6, "验证码必须是6位数字")
-    .max(6, "验证码必须是6位数字")
-    .regex(/^[0-9]{6}$/, "验证码只能包含数字"),
-});
-
-type UpdatePhoneData = z.infer<typeof updatePhoneSchema>;
+import {
+  type UpdatePhoneData,
+  updatePhoneSchema,
+} from "@/types/validations/auth";
 
 interface UpdatePhoneFormProps {
   currentPhoneNumber: string | null;

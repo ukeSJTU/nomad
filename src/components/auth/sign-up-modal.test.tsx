@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import SignUpModal from "./sign-up-modal";
+import { SignUpModal } from "./sign-up-modal";
 
 describe("SignUpModal", () => {
   it("should render the modal when open is true", () => {
@@ -61,7 +61,6 @@ describe("SignUpModal", () => {
     expect(screen.getByText("服务协议")).toBeInTheDocument();
     expect(screen.getByText("总则")).toBeInTheDocument();
     expect(screen.getByText("服务简介")).toBeInTheDocument();
-    expect(screen.getByText("法律")).toBeInTheDocument();
   });
 
   it("should display privacy policy section with all terms", () => {

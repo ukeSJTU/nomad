@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,21 +13,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-/**
- * Schema for email update form
- * Simplified version without agreedToTerms checkbox
- */
-const updateEmailSchema = z.object({
-  email: z.string().min(1, "请输入邮箱地址").email("邮箱格式不正确"),
-  otp: z
-    .string()
-    .min(6, "验证码必须是6位数字")
-    .max(6, "验证码必须是6位数字")
-    .regex(/^[0-9]{6}$/, "验证码只能包含数字"),
-});
-
-type UpdateEmailData = z.infer<typeof updateEmailSchema>;
+import {
+  type UpdateEmailData,
+  updateEmailSchema,
+} from "@/types/validations/auth";
 
 interface UpdateEmailFormProps {
   currentEmail: string;
