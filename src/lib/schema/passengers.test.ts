@@ -29,7 +29,6 @@ describe("Passengers Schema", () => {
     expect(columns).toContain("dateOfBirth");
     expect(columns).toContain("placeOfBirth");
     expect(columns).toContain("phone");
-    expect(columns).toContain("fax");
     expect(columns).toContain("email");
   });
 

@@ -57,17 +57,6 @@ export class ResendEmailClient {
         `Sending verification email to ${emailAddr} with code ${code}`
       );
 
-      // Check if email sending is disabled (for testing environments)
-      const enableResend = process.env.ENABLE_RESEND !== "false";
-
-      if (!enableResend) {
-        console.log(
-          `[SIMULATED] Email would be sent to ${emailAddr} with OTP: ${code}`
-        );
-        console.log("ENABLE_RESEND is false - skipping actual email sending");
-        return true;
-      }
-
       if (!process.env.RESEND_API_KEY) {
         throw new Error("Missing required email configuration: RESEND_API_KEY");
       }

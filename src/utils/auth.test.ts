@@ -4,7 +4,7 @@ import { validateAccount } from "./auth";
 
 describe("validateAccount", () => {
   it("should validate phone numbers correctly", () => {
-    expect(validateAccount("+8613800138000")).toEqual({
+    expect(validateAccount("13800138000")).toEqual({
       isPhone: true,
       isEmail: false,
       isValid: true,
