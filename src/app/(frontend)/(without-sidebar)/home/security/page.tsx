@@ -1,8 +1,36 @@
-import { redirect } from "next/navigation";
-
 import { SecurityItem } from "@/components/security";
 import { getUserSecurityStatus } from "@/lib/queries";
 import { requireAuth } from "@/utils/auth-helpers";
+
+/**
+ * Security items configuration
+ * Contains text content for each security setting item
+ */
+const SECURITY_ITEMS = {
+  password: {
+    title: "登录密码",
+    description:
+      "安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。",
+    setLabel: "修改",
+    notSetLabel: "设置登录密码",
+    href: "/home/security/password",
+  },
+  phone: {
+    title: "绑定手机",
+    description:
+      "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
+    setLabel: "修改",
+    notSetLabel: "设置绑定手机",
+    href: "/home/security/phone",
+  },
+  email: {
+    title: "绑定邮箱",
+    description: "绑定邮箱后，您即可使用邮箱登录账号或找回密码等。",
+    setLabel: "修改",
+    notSetLabel: "设置绑定邮箱",
+    href: "/home/security/email",
+  },
+} as const;
 
 /**
  * Account Security Page (Server Component)
@@ -15,7 +43,7 @@ import { requireAuth } from "@/utils/auth-helpers";
  * Features:
  * - Authentication check with redirect to sign-in
  * - Server-side data fetching with data masking
- * - Status indicators (✓ for set, ⚠️ for not set)
+ * - Status indicators (CheckCircle for set, AlertCircle for not set)
  * - Action buttons for each security item
  */
 export default async function SecurityPage() {
@@ -25,10 +53,10 @@ export default async function SecurityPage() {
   // Fetch user security status
   const securityStatus = await getUserSecurityStatus(userId);
 
-  // Handle case where user data is not found (should not happen for authenticated users)
-  if (!securityStatus) {
-    redirect("/auth/sign-in");
-  }
+  // Derived status flags
+  const isPhoneVerified = !!(
+    securityStatus.phoneNumber && securityStatus.phoneNumberVerified
+  );
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -45,40 +73,44 @@ export default async function SecurityPage() {
         <div className="space-y-4">
           {/* Login Password */}
           <SecurityItem
-            title="登录密码"
-            description="安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。"
+            title={SECURITY_ITEMS.password.title}
+            description={SECURITY_ITEMS.password.description}
             isSet={securityStatus.hasPassword}
             value={securityStatus.hasPassword ? "" : undefined}
-            actionHref="/home/security/password"
-            actionLabel={securityStatus.hasPassword ? "修改" : "设置登录密码"}
+            actionHref={SECURITY_ITEMS.password.href}
+            actionLabel={
+              securityStatus.hasPassword
+                ? SECURITY_ITEMS.password.setLabel
+                : SECURITY_ITEMS.password.notSetLabel
+            }
           />
 
           {/* Bound Phone */}
           <SecurityItem
-            title="绑定手机"
-            description="绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。"
-            isSet={
-              !!(
-                securityStatus.phoneNumber && securityStatus.phoneNumberVerified
-              )
-            }
+            title={SECURITY_ITEMS.phone.title}
+            description={SECURITY_ITEMS.phone.description}
+            isSet={isPhoneVerified}
             value={securityStatus.phoneNumber || undefined}
-            actionHref="/home/security/phone"
+            actionHref={SECURITY_ITEMS.phone.href}
             actionLabel={
-              securityStatus.phoneNumber && securityStatus.phoneNumberVerified
-                ? "修改"
-                : "设置绑定手机"
+              isPhoneVerified
+                ? SECURITY_ITEMS.phone.setLabel
+                : SECURITY_ITEMS.phone.notSetLabel
             }
           />
 
           {/* Bound Email */}
           <SecurityItem
-            title="绑定邮箱"
-            description="绑定邮箱后，您即可使用邮箱登录账号或找回密码等。"
+            title={SECURITY_ITEMS.email.title}
+            description={SECURITY_ITEMS.email.description}
             isSet={securityStatus.emailVerified}
             value={securityStatus.email || undefined}
-            actionHref="/home/security/email"
-            actionLabel={securityStatus.emailVerified ? "修改" : "设置绑定邮箱"}
+            actionHref={SECURITY_ITEMS.email.href}
+            actionLabel={
+              securityStatus.emailVerified
+                ? SECURITY_ITEMS.email.setLabel
+                : SECURITY_ITEMS.email.notSetLabel
+            }
           />
         </div>
       </div>
