@@ -62,10 +62,10 @@ export default function UserMenu() {
     return (
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" asChild>
-          <Link href="/auth/sign-in">Sign In</Link>
+          <Link href="/auth/sign-in">登录</Link>
         </Button>
         <Button variant="secondary" size="sm" asChild>
-          <Link href="/auth/sign-up">Sign Up</Link>
+          <Link href="/auth/sign-up">注册</Link>
         </Button>
       </div>
     );

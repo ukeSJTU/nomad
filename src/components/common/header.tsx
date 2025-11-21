@@ -19,7 +19,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between gap-4 px-4">
         {/* Left section: Favicon/Logo */}
         <Link href="/" className="flex items-center gap-2">
