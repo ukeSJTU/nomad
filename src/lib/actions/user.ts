@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { updateUserInfo } from "@/lib/services/user";
-import { userInfoUpdateSchema } from "@/types/user";
+import { userInfoUpdateSchema } from "@/types/validations";
 
 // Action state type for useActionState
 export interface UpdateUserInfoActionState {

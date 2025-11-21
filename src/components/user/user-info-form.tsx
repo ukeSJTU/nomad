@@ -30,7 +30,10 @@ import {
   type UpdateUserInfoActionState,
 } from "@/lib/actions";
 import type { UserInfo } from "@/types/dto";
-import { type UserInfoUpdateData, userInfoUpdateSchema } from "@/types/user";
+import {
+  type UserInfoUpdateData,
+  userInfoUpdateSchema,
+} from "@/types/validations";
 
 interface UserInfoFormProps {
   userData: UserInfo;

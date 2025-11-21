@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { user } from "@/lib/schema";
-import type { UserInfoUpdateData } from "@/types/user";
+import type { UserInfoUpdateData } from "@/types/validations";
 
 import type { ServiceResult } from "./types";
 
