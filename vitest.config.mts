@@ -101,7 +101,7 @@ export default defineConfig({
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from unit tests
           ],
-          setupFiles: ["./src/tests/setup/global.ts"],
+          setupFiles: ["./tests/setup/global.ts"],
         },
       },
       {
@@ -115,7 +115,7 @@ export default defineConfig({
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from component tests
           ],
-          setupFiles: ["./src/tests/setup/global.ts"],
+          setupFiles: ["./tests/setup/global.ts"],
         },
       },
       {
