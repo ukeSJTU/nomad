@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
-import { getUserSecurityStatus } from "@/lib/queries/user";
+import { getUserSecurityStatus } from "@/lib/queries";
 
 import PhonePageClient from "./page.client";
 
