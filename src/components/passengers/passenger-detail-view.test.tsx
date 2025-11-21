@@ -58,6 +58,7 @@ describe("PassengerDetailView Component", () => {
 
   it("shows '未设置' for unset optional fields", () => {
     const passengerWithMissingFields: PassengerDetailData = {
+      name: "测试用户",
       nationality: "中国大陆",
       gender: "male",
       dateOfBirth: "2004-09-12",
