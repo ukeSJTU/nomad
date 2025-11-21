@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import type { SecurityStatus } from "@/components/security";
 import { getUserSecurityStatus } from "@/lib/queries";
 import { requireAuth } from "@/utils/auth-helpers";
 
@@ -30,6 +31,21 @@ export default async function PhonePage() {
     redirect("/auth/sign-in");
   }
 
+  // Helper function to determine security status
+  const getSecurityStatus = (
+    hasValue: boolean,
+    isVerified: boolean
+  ): SecurityStatus => {
+    if (!hasValue) return "notSet";
+    if (hasValue && !isVerified) return "unverified";
+    return "verified";
+  };
+
+  const phoneStatus: SecurityStatus = getSecurityStatus(
+    !!securityStatus.phoneNumber,
+    securityStatus.phoneNumberVerified
+  );
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-2xl mx-auto">
@@ -55,7 +71,10 @@ export default async function PhonePage() {
         </div>
 
         {/* Client Component for Form Handling */}
-        <PhonePageClient currentPhoneNumber={securityStatus.phoneNumber} />
+        <PhonePageClient
+          currentPhoneNumber={securityStatus.phoneNumber}
+          currentStatus={phoneStatus}
+        />
       </div>
     </div>
   );

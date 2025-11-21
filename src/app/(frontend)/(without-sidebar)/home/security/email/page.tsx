@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import type { SecurityStatus } from "@/components/security";
 import { getUserSecurityStatus } from "@/lib/queries/user";
 import { requireAuth } from "@/utils/auth-helpers";
 
@@ -22,6 +23,21 @@ export default async function EmailPage() {
   // Fetch user security status to get current email
   const securityStatus = await getUserSecurityStatus(userId);
 
+  // Helper function to determine security status
+  const getSecurityStatus = (
+    hasValue: boolean,
+    isVerified: boolean
+  ): SecurityStatus => {
+    if (!hasValue) return "notSet";
+    if (hasValue && !isVerified) return "unverified";
+    return "verified";
+  };
+
+  const emailStatus: SecurityStatus = getSecurityStatus(
+    !!securityStatus.email,
+    securityStatus.emailVerified
+  );
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-2xl mx-auto">
@@ -39,7 +55,10 @@ export default async function EmailPage() {
         </div>
 
         {/* Client Component for Form Handling */}
-        <EmailPageClient currentEmail={securityStatus.email} />
+        <EmailPageClient
+          currentEmail={securityStatus.email}
+          currentStatus={emailStatus}
+        />
       </div>
     </div>
   );

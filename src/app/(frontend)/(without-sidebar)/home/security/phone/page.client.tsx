@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import UpdatePhoneForm from "@/components/security/update-phone-form";
+import type { SecurityStatus } from "@/components/security";
+import UpdatePhoneForm, {
+  type PhoneFormMode,
+} from "@/components/security/update-phone-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
@@ -21,14 +24,16 @@ const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 interface PhonePageClientProps {
   /** Current phone number (masked) or null if not set */
   currentPhoneNumber: string | null;
+  /** Current security status */
+  currentStatus: SecurityStatus;
 }
 
 /**
  * Client component for phone number management
  *
  * Handles the OTP verification flow:
- * 1. User enters new phone number
- * 2. Send OTP to new phone number
+ * 1. User enters new phone number (or uses current for verify mode)
+ * 2. Send OTP to phone number
  * 3. User enters OTP
  * 4. Verify OTP using better-auth
  * 5. Update database using Server Action
@@ -36,6 +41,7 @@ interface PhonePageClientProps {
  */
 export default function PhonePageClient({
   currentPhoneNumber,
+  currentStatus,
 }: PhonePageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +54,14 @@ export default function PhonePageClient({
   const isCaptchaValidationError = (error?: { message?: string }) =>
     typeof error?.message === "string" &&
     error.message.toLowerCase().includes("captcha");
+
+  // Determine form mode based on current status
+  const mode: PhoneFormMode =
+    currentStatus === "notSet"
+      ? "bind"
+      : currentStatus === "unverified"
+        ? "verify"
+        : "update";
 
   /**
    * Handle sending OTP to the new phone number
@@ -148,16 +162,27 @@ export default function PhonePageClient({
     }
   };
 
+  // Dynamic title based on mode
+  const getTitle = () => {
+    switch (mode) {
+      case "bind":
+        return "绑定手机号";
+      case "verify":
+        return "验证手机号";
+      case "update":
+        return "修改手机号";
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          {currentPhoneNumber ? "修改手机号" : "绑定手机号"}
-        </CardTitle>
+        <CardTitle>{getTitle()}</CardTitle>
       </CardHeader>
       <CardContent>
         <UpdatePhoneForm
           currentPhoneNumber={currentPhoneNumber}
+          mode={mode}
           onSubmit={handleSubmit}
           onSendOtp={handleSendOtp}
           isLoading={isLoading}
@@ -165,7 +190,12 @@ export default function PhonePageClient({
         />
         <div className="mt-6 space-y-3">
           <p className="text-sm text-gray-600 text-center">
-            绑定或修改手机号前，请先完成人机验证，每次发送或验证短信验证码都需要新的令牌。
+            {mode === "bind"
+              ? "绑定手机号前请完成人机验证"
+              : mode === "verify"
+                ? "验证手机号前请完成人机验证"
+                : "修改手机号前请完成人机验证"}
+            ，每次发送或提交验证码都会消耗一次令牌。
           </p>
           <Turnstile
             ref={turnstileRef}

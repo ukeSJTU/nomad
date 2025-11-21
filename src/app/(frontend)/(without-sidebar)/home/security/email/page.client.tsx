@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import UpdateEmailForm from "@/components/security/update-email-form";
+import type { SecurityStatus } from "@/components/security";
+import UpdateEmailForm, {
+  type EmailFormMode,
+} from "@/components/security/update-email-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
@@ -21,6 +24,8 @@ const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 interface EmailPageClientProps {
   /** Current email address (masked) */
   currentEmail: string;
+  /** Current security status */
+  currentStatus: SecurityStatus;
 }
 
 /**
@@ -36,6 +41,7 @@ interface EmailPageClientProps {
  */
 export default function EmailPageClient({
   currentEmail,
+  currentStatus,
 }: EmailPageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +54,14 @@ export default function EmailPageClient({
   const isCaptchaValidationError = (error?: { message?: string }) =>
     typeof error?.message === "string" &&
     error.message.toLowerCase().includes("captcha");
+
+  // Determine form mode based on current status
+  const mode: EmailFormMode =
+    currentStatus === "notSet"
+      ? "bind"
+      : currentStatus === "unverified"
+        ? "verify"
+        : "update";
 
   /**
    * Handle sending OTP to the new email address
@@ -143,14 +157,27 @@ export default function EmailPageClient({
     }
   };
 
+  // Dynamic title based on mode
+  const getTitle = () => {
+    switch (mode) {
+      case "bind":
+        return "绑定邮箱";
+      case "verify":
+        return "验证邮箱";
+      case "update":
+        return "修改邮箱";
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>修改邮箱</CardTitle>
+        <CardTitle>{getTitle()}</CardTitle>
       </CardHeader>
       <CardContent>
         <UpdateEmailForm
           currentEmail={currentEmail}
+          mode={mode}
           onSubmit={handleSubmit}
           onSendOtp={handleSendOtp}
           isLoading={isLoading}
@@ -158,7 +185,12 @@ export default function EmailPageClient({
         />
         <div className="mt-6 space-y-3">
           <p className="text-sm text-gray-600 text-center">
-            修改邮箱前请完成人机验证，每次发送或提交验证码都会消耗一次令牌。
+            {mode === "bind"
+              ? "绑定邮箱前请完成人机验证"
+              : mode === "verify"
+                ? "验证邮箱前请完成人机验证"
+                : "修改邮箱前请完成人机验证"}
+            ，每次发送或提交验证码都会消耗一次令牌。
           </p>
           <Turnstile
             ref={turnstileRef}
