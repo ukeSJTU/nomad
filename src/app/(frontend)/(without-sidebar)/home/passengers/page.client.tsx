@@ -19,7 +19,7 @@ import {
   batchDeletePassengersAction,
   deletePassengerAction,
 } from "@/lib/actions";
-import type { Passenger } from "@/types/api/passengers";
+import type { Passenger } from "@/types/dto/passengers";
 
 interface PassengersPageClientProps {
   initialPassengers: Passenger[];

@@ -45,7 +45,6 @@ export default async function PassengerDetailPage({
     placeOfBirth: passenger.placeOfBirth ?? undefined,
     // Mask sensitive data on server-side
     phone: passenger.phone ? maskPhoneNumber(passenger.phone) : undefined,
-    fax: passenger.fax ?? undefined,
     email: passenger.email ? maskEmail(passenger.email) : undefined,
     documentType: passenger.documentType,
     documentNumber: maskDocumentNumber(passenger.documentNumber),

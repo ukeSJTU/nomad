@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { passengers } from "@/lib/schema/passengers";
-import type { Passenger } from "@/types/api/passengers";
+import type { Passenger } from "@/types/dto/passengers";
 
 export async function getPassengers(userId: string): Promise<Passenger[]> {
   const result = await db
@@ -19,11 +19,10 @@ export async function getPassengers(userId: string): Promise<Passenger[]> {
     dateOfBirth: p.dateOfBirth,
     placeOfBirth: p.placeOfBirth,
     phone: p.phone,
-    fax: p.fax,
     email: p.email,
     documentType: p.documentType,
     documentNumber: p.documentNumber,
-    documentExpiryDate: p.documentExpiryDate ?? "",
+    documentExpiryDate: p.documentExpiryDate ?? null,
     isDeleted: false,
     createdAt: p.createdAt?.toISOString() ?? new Date().toISOString(),
     updatedAt: p.updatedAt?.toISOString() ?? new Date().toISOString(),

@@ -11,4 +11,8 @@
  */
 
 export * from "./orders";
+export {
+  type Passenger as PassengerDTO,
+  type PassengerListItem,
+} from "./passengers";
 export { type UserInfo, type UserSecurityStatus } from "./user";

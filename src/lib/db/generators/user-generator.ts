@@ -102,11 +102,6 @@ export function generatePassengers(
     // Generate phone number (max 20 chars)
     // Use simple format to ensure it fits: XXX-XXX-XXXX (12 chars)
     const phoneNumber = `${faker.string.numeric(3)}-${faker.string.numeric(3)}-${faker.string.numeric(4)}`;
-    const faxNumber = faker.helpers.maybe(
-      () =>
-        `${faker.string.numeric(3)}-${faker.string.numeric(3)}-${faker.string.numeric(4)}`,
-      { probability: 0.1 }
-    );
 
     passengers.push({
       userId,
@@ -116,7 +111,6 @@ export function generatePassengers(
       dateOfBirth: dateOfBirthStr,
       placeOfBirth: faker.location.city(),
       phone: phoneNumber,
-      fax: faxNumber,
       email: faker.internet.email({
         firstName: firstName.toLowerCase(),
         lastName: lastName.toLowerCase(),

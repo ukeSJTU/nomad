@@ -2,11 +2,11 @@ import { and, eq, inArray } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { passengers } from "@/lib/schema/passengers";
+import type { Passenger } from "@/types/dto/passengers";
 import type {
-  CreatePassengerRequest,
-  Passenger,
-  UpdatePassengerRequest,
-} from "@/types/api/passengers";
+  CreatePassengerData,
+  UpdatePassengerData,
+} from "@/types/validations/passengers";
 
 import type { ServiceResult } from "./types";
 
@@ -38,13 +38,8 @@ function isValidUUID(id: string): boolean {
 
 /**
  * Passenger input type for create/update operations
- * Extends the request schema with optional fields for flexibility
  */
-export type PassengerInput = Partial<CreatePassengerRequest> &
-  Pick<
-    CreatePassengerRequest,
-    "name" | "documentType" | "documentNumber" | "documentExpiryDate"
-  >;
+export type PassengerInput = CreatePassengerData;
 
 /**
  * Create a new passenger for a user
@@ -64,16 +59,10 @@ export async function createPassenger(
 ): Promise<ServiceResult<Passenger>> {
   try {
     // Validate required fields
-    if (
-      !data.name ||
-      !data.documentType ||
-      !data.documentNumber ||
-      !data.documentExpiryDate
-    ) {
+    if (!data.name || !data.documentType || !data.documentNumber) {
       return {
         success: false,
-        error:
-          "Name, document type, document number, and document expiry date are required",
+        error: "Name, document type, and document number are required",
       };
     }
 
@@ -86,11 +75,10 @@ export async function createPassenger(
       dateOfBirth: data.dateOfBirth || null,
       placeOfBirth: data.placeOfBirth || null,
       phone: data.phone || null,
-      fax: data.fax || null,
       email: data.email || null,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      documentExpiryDate: data.documentExpiryDate,
+      documentExpiryDate: data.documentExpiryDate || null,
       isDeleted: false,
     };
 
@@ -109,11 +97,10 @@ export async function createPassenger(
       dateOfBirth: createdPassenger.dateOfBirth,
       placeOfBirth: createdPassenger.placeOfBirth,
       phone: createdPassenger.phone,
-      fax: createdPassenger.fax,
       email: createdPassenger.email,
       documentType: createdPassenger.documentType,
       documentNumber: createdPassenger.documentNumber,
-      documentExpiryDate: createdPassenger.documentExpiryDate ?? "",
+      documentExpiryDate: createdPassenger.documentExpiryDate ?? null,
       isDeleted: false,
       createdAt:
         createdPassenger.createdAt?.toISOString() ?? new Date().toISOString(),
@@ -153,7 +140,7 @@ export async function createPassenger(
 export async function updatePassenger(
   userId: string,
   id: string,
-  data: Partial<UpdatePassengerRequest>
+  data: UpdatePassengerData
 ): Promise<ServiceResult<Passenger>> {
   try {
     // Validate UUID format
@@ -197,7 +184,6 @@ export async function updatePassenger(
     if (data.placeOfBirth !== undefined)
       updateData.placeOfBirth = data.placeOfBirth;
     if (data.phone !== undefined) updateData.phone = data.phone;
-    if (data.fax !== undefined) updateData.fax = data.fax;
     if (data.email !== undefined) updateData.email = data.email;
     if (data.documentType !== undefined)
       updateData.documentType = data.documentType;
@@ -222,11 +208,10 @@ export async function updatePassenger(
       dateOfBirth: updatedPassenger.dateOfBirth,
       placeOfBirth: updatedPassenger.placeOfBirth,
       phone: updatedPassenger.phone,
-      fax: updatedPassenger.fax,
       email: updatedPassenger.email,
       documentType: updatedPassenger.documentType,
       documentNumber: updatedPassenger.documentNumber,
-      documentExpiryDate: updatedPassenger.documentExpiryDate ?? "",
+      documentExpiryDate: updatedPassenger.documentExpiryDate ?? null,
       isDeleted: false,
       createdAt:
         updatedPassenger.createdAt?.toISOString() ?? new Date().toISOString(),
@@ -304,11 +289,10 @@ export async function getPassenger(
       dateOfBirth: passenger.dateOfBirth,
       placeOfBirth: passenger.placeOfBirth,
       phone: passenger.phone,
-      fax: passenger.fax,
       email: passenger.email,
       documentType: passenger.documentType,
       documentNumber: passenger.documentNumber,
-      documentExpiryDate: passenger.documentExpiryDate ?? "",
+      documentExpiryDate: passenger.documentExpiryDate ?? null,
       isDeleted: false,
       createdAt: passenger.createdAt?.toISOString() ?? new Date().toISOString(),
       updatedAt: passenger.updatedAt?.toISOString() ?? new Date().toISOString(),

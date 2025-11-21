@@ -54,17 +54,17 @@ export async function createPassengerAction(formData: unknown) {
       name: data.name,
       nationality: data.nationality,
       gender: data.gender,
-      dateOfBirth: data.dateOfBirth,
+      dateOfBirth: data.dateOfBirth
+        ? data.dateOfBirth.toISOString().split("T")[0]
+        : null,
       placeOfBirth: data.placeOfBirth,
       phone: data.phone,
-      fax:
-        data.faxAreaCode && data.faxPhone
-          ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`
-          : undefined,
       email: data.email,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      documentExpiryDate: data.documentExpiryDate,
+      documentExpiryDate: data.documentExpiryDate
+        ? data.documentExpiryDate.toISOString().split("T")[0]
+        : null,
     };
 
     // 3. Call service layer
@@ -112,17 +112,17 @@ export async function updatePassengerAction(id: string, formData: unknown) {
       name: data.name,
       nationality: data.nationality,
       gender: data.gender,
-      dateOfBirth: data.dateOfBirth,
+      dateOfBirth: data.dateOfBirth
+        ? data.dateOfBirth.toISOString().split("T")[0]
+        : null,
       placeOfBirth: data.placeOfBirth,
       phone: data.phone,
-      fax:
-        data.faxAreaCode && data.faxPhone
-          ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`
-          : undefined,
       email: data.email,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      documentExpiryDate: data.documentExpiryDate,
+      documentExpiryDate: data.documentExpiryDate
+        ? data.documentExpiryDate.toISOString().split("T")[0]
+        : null,
     };
 
     // 3. Call service layer

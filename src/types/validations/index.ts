@@ -10,4 +10,5 @@
  */
 
 export * from "./auth";
+export * from "./passengers";
 export * from "./user";

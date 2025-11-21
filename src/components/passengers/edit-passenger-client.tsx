@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import PassengerForm from "@/components/passengers/forms/passenger-form";
 import { updatePassengerAction } from "@/lib/actions";
-import type { Passenger } from "@/types/api/passengers";
+import type { Passenger } from "@/types/dto/passengers";
 
 interface EditPassengerClientProps {
   passenger: Passenger;
@@ -41,36 +41,22 @@ export function EditPassengerClient({ passenger }: EditPassengerClientProps) {
   };
 
   // Convert passenger data to form format
-  const convertPassengerToFormData = (passenger: Passenger) => {
-    // Parse fax if it exists
-    let faxAreaCode, faxPhone, faxExtension;
-    if (passenger.fax) {
-      const faxParts = passenger.fax.split("-");
-      faxAreaCode = faxParts[0] || undefined;
-      faxPhone = faxParts[1] || undefined;
-      faxExtension = faxParts[2] || undefined;
-    }
-
-    return {
-      name: passenger.name,
-      nationality: passenger.nationality || undefined,
-      gender: passenger.gender || undefined,
-      dateOfBirth: passenger.dateOfBirth
-        ? new Date(passenger.dateOfBirth)
-        : undefined,
-      placeOfBirth: passenger.placeOfBirth || undefined,
-      phone: passenger.phone || undefined,
-      faxAreaCode,
-      faxPhone,
-      faxExtension,
-      email: passenger.email || undefined,
-      documentType: passenger.documentType,
-      documentNumber: passenger.documentNumber,
-      documentExpiryDate: passenger.documentExpiryDate
-        ? new Date(passenger.documentExpiryDate)
-        : undefined,
-    };
-  };
+  const convertPassengerToFormData = (passenger: Passenger) => ({
+    name: passenger.name,
+    nationality: passenger.nationality ?? undefined,
+    gender: passenger.gender ?? undefined,
+    dateOfBirth: passenger.dateOfBirth
+      ? new Date(passenger.dateOfBirth)
+      : undefined,
+    placeOfBirth: passenger.placeOfBirth ?? undefined,
+    phone: passenger.phone ?? undefined,
+    email: passenger.email ?? undefined,
+    documentType: passenger.documentType,
+    documentNumber: passenger.documentNumber,
+    documentExpiryDate: passenger.documentExpiryDate
+      ? new Date(passenger.documentExpiryDate)
+      : undefined,
+  });
 
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4">

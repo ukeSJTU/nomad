@@ -8,7 +8,6 @@ export interface PassengerDetailData {
   dateOfBirth: Date | string;
   placeOfBirth?: string;
   phone?: string;
-  fax?: string;
   email?: string;
   documentType: "id_card" | "passport" | "other";
   documentNumber: string;
@@ -92,14 +91,6 @@ export default function PassengerDetailView({
             <label className="pt-1 text-sm text-gray-600">手机号码</label>
             <div className="text-sm text-gray-900">
               {passenger.phone || "未设置"}
-            </div>
-          </div>
-
-          {/* Fax */}
-          <div className="grid grid-cols-[120px_1fr] items-start gap-4">
-            <label className="pt-1 text-sm text-gray-600">传真号码</label>
-            <div className="text-sm text-gray-900">
-              {passenger.fax || "未设置"}
             </div>
           </div>
 
