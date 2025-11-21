@@ -11,9 +11,8 @@ import {
   getTurnstileSecretKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
 } from "@/services/turnstile";
+import { isProduction } from "@/utils/env";
 import logger from "@/utils/logger";
-
-import { isProduction } from "./utils";
 
 /**
  * Determine whether Aliyun SMS service should be enabled

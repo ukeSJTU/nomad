@@ -1,11 +1,9 @@
 import pino from "pino";
 import pretty from "pino-pretty";
 
-// Environment detection flags for conditional logger configuration
-const isDevelopment = process.env.NODE_ENV === "development";
-const isProduction = process.env.NODE_ENV === "production";
-const isTest = process.env.NODE_ENV === "test";
+import { isDevelopment, isProduction, isTest } from "@/utils/env";
 
+// Environment detection flags for conditional logger configuration
 const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
   "fatal",
   "error",
@@ -28,7 +26,7 @@ const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
  * 4. Production: info level for essential logs only
  */
 const getLogLevel = (): pino.LevelWithSilent => {
-  if (isTest) return "silent";
+  if (isTest()) return "silent";
   if (process.env.LOG_LEVEL) {
     const envLevel = process.env.LOG_LEVEL as pino.LevelWithSilent;
     // Validate the environment variable
@@ -37,7 +35,7 @@ const getLogLevel = (): pino.LevelWithSilent => {
     }
     console.warn(`Invalid LOG_LEVEL: ${process.env.LOG_LEVEL}, using default`);
   }
-  return isDevelopment ? "debug" : "info";
+  return isDevelopment() ? "debug" : "info";
 };
 
 // Configuration object for the pino logger with environment-specific settings
@@ -46,7 +44,7 @@ const pinoOptions: pino.LoggerOptions = {
 
   // Production environment configuration
   // Optimized for structured logging in production systems
-  ...(isProduction && {
+  ...(isProduction() && {
     formatters: {
       // Use simple level labels instead of numeric values
       level: label => ({ level: label }),
@@ -57,7 +55,7 @@ const pinoOptions: pino.LoggerOptions = {
 
   // Development environment configuration
   // Enhanced with request/response/error serializers for debugging
-  ...(isDevelopment && {
+  ...(isDevelopment() && {
     serializers: {
       req: pino.stdSerializers.req, // HTTP request serializer
       res: pino.stdSerializers.res, // HTTP response serializer
@@ -72,7 +70,7 @@ const pinoOptions: pino.LoggerOptions = {
  * Uses standard process.stdout in production for structured logging.
  */
 const createLoggerStream = () => {
-  if (isDevelopment && !isTest) {
+  if (isDevelopment() && !isTest()) {
     // Development: Use pino-pretty stream for enhanced readability
     return pretty({
       colorize: true, // Add colors to log levels
