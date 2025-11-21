@@ -31,6 +31,10 @@ interface PasswordSetupFormProps {
   isLoading?: boolean;
   /** Masked phone number or email to display (e.g., "138****5678") */
   maskedIdentifier?: string;
+  /** Custom submit button text (default: "完成注册") */
+  submitButtonText?: string;
+  /** Whether to show the help link at the bottom (default: true) */
+  showHelpLink?: boolean;
 }
 
 /**
@@ -42,6 +46,8 @@ export default function PasswordSetupForm({
   onSubmit,
   isLoading = false,
   maskedIdentifier,
+  submitButtonText = "完成注册",
+  showHelpLink = true,
 }: PasswordSetupFormProps) {
   // Initialize form with Zod validation schema
   const form = useForm<PasswordSetupData>({
@@ -264,15 +270,16 @@ export default function PasswordSetupForm({
           className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-medium"
           disabled={isLoading}
         >
-          {isLoading ? "创建中..." : "完成注册"}{" "}
-          {/* Creating... : Complete Registration */}
+          {isLoading ? "设置中..." : submitButtonText}
         </Button>
 
-        <div className="text-center mt-4">
-          <a href="#" className="text-sm text-blue-600 hover:underline">
-            注册遇到问题？
-          </a>
-        </div>
+        {showHelpLink && (
+          <div className="text-center mt-4">
+            <a href="#" className="text-sm text-blue-600 hover:underline">
+              注册遇到问题？
+            </a>
+          </div>
+        )}
       </form>
     </Form>
   );

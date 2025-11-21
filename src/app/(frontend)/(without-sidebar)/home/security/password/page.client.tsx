@@ -125,6 +125,8 @@ export default function PasswordPageClient({
             <PasswordSetupForm
               onSubmit={handleSetPassword}
               isLoading={isLoading}
+              submitButtonText="确认设置"
+              showHelpLink={false}
             />
           </div>
         )}

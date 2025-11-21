@@ -20,6 +20,7 @@ const SECURITY_ITEMS = {
     description:
       "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
     setLabel: "修改",
+    verifyLabel: "验证",
     notSetLabel: "设置绑定手机",
     href: "/home/security/phone",
   },
@@ -27,6 +28,7 @@ const SECURITY_ITEMS = {
     title: "绑定邮箱",
     description: "绑定邮箱后，您即可使用邮箱登录账号或找回密码等。",
     setLabel: "修改",
+    verifyLabel: "验证",
     notSetLabel: "设置绑定邮箱",
     href: "/home/security/email",
   },
@@ -115,7 +117,9 @@ export default async function SecurityPage() {
             actionLabel={
               phoneStatus === "verified"
                 ? SECURITY_ITEMS.phone.setLabel
-                : SECURITY_ITEMS.phone.notSetLabel
+                : phoneStatus === "unverified"
+                  ? SECURITY_ITEMS.phone.verifyLabel
+                  : SECURITY_ITEMS.phone.notSetLabel
             }
           />
 
@@ -129,7 +133,9 @@ export default async function SecurityPage() {
             actionLabel={
               emailStatus === "verified"
                 ? SECURITY_ITEMS.email.setLabel
-                : SECURITY_ITEMS.email.notSetLabel
+                : emailStatus === "unverified"
+                  ? SECURITY_ITEMS.email.verifyLabel
+                  : SECURITY_ITEMS.email.notSetLabel
             }
           />
         </div>
