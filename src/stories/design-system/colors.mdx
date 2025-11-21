@@ -13,7 +13,11 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 # 颜色系统
 
-本项目使用基于 Tailwind CSS 的语义化颜色系统，采用 OKLCH 颜色空间。
+本项目使用蓝色+橙色的配色方案，采用 OKLCH 颜色空间。
+
+**配色理念：**
+- **蓝色（Primary）**: 专业、可信赖，用于主要内容和信息展示
+- **橙色（Secondary）**: 活力、行动感，用于操作按钮和重要交互
 
 ## 主题颜色
 
@@ -21,92 +25,100 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 ---
 
-### Primary（主色）
+### Primary（主色 - 蓝色）
 
-品牌主色，用于最重要的操作和元素。
+专业蓝色，用于主要内容、信息展示和导航。传达专业、可信赖的品牌形象。
 
 **使用场景：**
-- 主要操作按钮（预订、提交、确认、购买）
-- 关键导航链接
-- 激活状态（选中的标签页、当前页面导航）
-- 进度条、加载指示器
-- 需要强调的图标和徽章
+- 品牌 Logo 和标识
+- 重要信息展示（航班信息、价格标签）
+- 导航链接和激活状态
+- 信息类图标
+- 状态指示（进行中、已确认）
+- 超链接文字
 
 **代码示例：**
 ```tsx
-// 主要按钮
-<Button className="bg-primary text-primary-foreground">
-  预订航班
-</Button>
+// 信息展示
+<div className="text-primary font-semibold text-2xl">
+  ¥2,580
+</div>
 
 // 激活的导航项
-<NavLink className="text-primary font-medium">
-  我的订单
+<NavLink className="text-primary font-medium border-b-2 border-primary">
+  航班搜索
 </NavLink>
 
-// 进度条
-<div className="h-2 bg-primary rounded-full" style={{width: '60%'}} />
+// 信息图标
+<InfoIcon className="text-primary" />
 ```
 
 <ColorPalette>
   <ColorItem
     title="Primary"
-    subtitle="主要颜色"
+    subtitle="专业蓝色 - oklch(0.55 0.18 240)"
     colors={{
-      'Light Mode': 'oklch(0.205 0 0)',
-      'Dark Mode': 'oklch(0.922 0 0)',
+      'Light Mode': 'oklch(0.55 0.18 240)',
+      'Dark Mode': 'oklch(0.65 0.20 240)',
     }}
   />
   <ColorItem
     title="Primary Foreground"
-    subtitle="主色前景色（按钮上的文字颜色）"
+    subtitle="蓝色按钮上的文字颜色"
     colors={{
-      'Light Mode': 'oklch(0.985 0 0)',
-      'Dark Mode': 'oklch(0.205 0 0)',
+      'Light Mode': 'oklch(0.99 0 0)',
+      'Dark Mode': 'oklch(0.98 0 0)',
     }}
   />
 </ColorPalette>
 
 ---
 
-### Secondary（次要色）
+### Secondary（操作色 - 橙色）
 
-用于次要操作和辅助性内容，视觉优先级低于主色。
+活力橙色，用于所有操作按钮和需要用户点击的交互元素。吸引注意力，促进行动。
 
 **使用场景：**
-- 次要操作按钮（取消、返回、跳过）
-- 辅助功能按钮（筛选、排序）
-- 非关键信息的背景区域
-- 可选操作
+- 所有主要操作按钮（预订、购买、提交、确认）
+- 行动召唤（CTA）按钮
+- 添加、创建等积极操作
+- 需要强调的功能入口
+- 悬浮操作按钮（FAB）
 
 **代码示例：**
 ```tsx
-// 次要按钮
-<Button className="bg-secondary text-secondary-foreground">
-  取消
+// 主要操作按钮
+<Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+  立即预订
 </Button>
 
-// 辅助区域
-<div className="bg-secondary text-secondary-foreground p-4 rounded-lg">
-  <p>提示信息</p>
-</div>
+// 表单提交
+<Button type="submit" className="bg-secondary text-secondary-foreground">
+  确认订单
+</Button>
+
+// 添加操作
+<Button className="bg-secondary text-secondary-foreground">
+  <Plus className="mr-2" />
+  添加乘客
+</Button>
 ```
 
 <ColorPalette>
   <ColorItem
     title="Secondary"
-    subtitle="次要颜色"
+    subtitle="活力橙色 - oklch(0.68 0.17 45)"
     colors={{
-      'Light Mode': 'oklch(0.97 0 0)',
-      'Dark Mode': 'oklch(0.269 0 0)',
+      'Light Mode': 'oklch(0.68 0.17 45)',
+      'Dark Mode': 'oklch(0.72 0.18 45)',
     }}
   />
   <ColorItem
     title="Secondary Foreground"
-    subtitle="次要色前景色"
+    subtitle="橙色按钮上的文字颜色"
     colors={{
-      'Light Mode': 'oklch(0.205 0 0)',
-      'Dark Mode': 'oklch(0.985 0 0)',
+      'Light Mode': 'oklch(0.99 0 0)',
+      'Dark Mode': 'oklch(0.15 0.01 45)',
     }}
   />
 </ColorPalette>
@@ -203,18 +215,18 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 <ColorPalette>
   <ColorItem
     title="Background"
-    subtitle="页面背景色"
+    subtitle="页面背景色 - oklch(0.99 0.002 240)"
     colors={{
-      'Light Mode': 'oklch(1 0 0)',
-      'Dark Mode': 'oklch(0.145 0 0)',
+      'Light Mode': 'oklch(0.99 0.002 240)',
+      'Dark Mode': 'oklch(0.15 0.01 240)',
     }}
   />
   <ColorItem
     title="Foreground"
     subtitle="主要文字颜色"
     colors={{
-      'Light Mode': 'oklch(0.145 0 0)',
-      'Dark Mode': 'oklch(0.985 0 0)',
+      'Light Mode': 'oklch(0.20 0.015 240)',
+      'Dark Mode': 'oklch(0.95 0.005 240)',
     }}
   />
 </ColorPalette>
@@ -237,24 +249,28 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 <div className="bg-card text-card-foreground border border-border rounded-lg p-6">
   <h3 className="font-semibold text-lg">上海 → 北京</h3>
   <p className="text-sm text-muted-foreground">2025-11-22 08:00</p>
+  <div className="text-primary font-bold text-2xl mt-2">¥580</div>
+  <Button className="bg-secondary text-secondary-foreground mt-4 w-full">
+    预订
+  </Button>
 </div>
 ```
 
 <ColorPalette>
   <ColorItem
     title="Card"
-    subtitle="卡片背景色"
+    subtitle="卡片背景色 - oklch(1 0 0)"
     colors={{
       'Light Mode': 'oklch(1 0 0)',
-      'Dark Mode': 'oklch(0.205 0 0)',
+      'Dark Mode': 'oklch(0.20 0.012 240)',
     }}
   />
   <ColorItem
     title="Card Foreground"
     subtitle="卡片文字颜色"
     colors={{
-      'Light Mode': 'oklch(0.145 0 0)',
-      'Dark Mode': 'oklch(0.985 0 0)',
+      'Light Mode': 'oklch(0.20 0.015 240)',
+      'Dark Mode': 'oklch(0.95 0.005 240)',
     }}
   />
 </ColorPalette>
@@ -288,18 +304,18 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 <ColorPalette>
   <ColorItem
     title="Popover"
-    subtitle="弹出层背景色"
+    subtitle="弹出层背景色 - oklch(1 0 0)"
     colors={{
       'Light Mode': 'oklch(1 0 0)',
-      'Dark Mode': 'oklch(0.205 0 0)',
+      'Dark Mode': 'oklch(0.20 0.012 240)',
     }}
   />
   <ColorItem
     title="Popover Foreground"
     subtitle="弹出层文字颜色"
     colors={{
-      'Light Mode': 'oklch(0.145 0 0)',
-      'Dark Mode': 'oklch(0.985 0 0)',
+      'Light Mode': 'oklch(0.20 0.015 240)',
+      'Dark Mode': 'oklch(0.95 0.005 240)',
     }}
   />
 </ColorPalette>
@@ -341,18 +357,18 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 <ColorPalette>
   <ColorItem
     title="Muted"
-    subtitle="弱化背景色"
+    subtitle="弱化背景色 - oklch(0.96 0.005 240)"
     colors={{
-      'Light Mode': 'oklch(0.97 0 0)',
-      'Dark Mode': 'oklch(0.269 0 0)',
+      'Light Mode': 'oklch(0.96 0.005 240)',
+      'Dark Mode': 'oklch(0.25 0.012 240)',
     }}
   />
   <ColorItem
     title="Muted Foreground"
     subtitle="辅助文字颜色"
     colors={{
-      'Light Mode': 'oklch(0.556 0 0)',
-      'Dark Mode': 'oklch(0.708 0 0)',
+      'Light Mode': 'oklch(0.50 0.01 240)',
+      'Dark Mode': 'oklch(0.65 0.015 240)',
     }}
   />
 </ColorPalette>
@@ -361,18 +377,19 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 ### Accent
 
-强调色，用于需要吸引注意但不如主色重要的元素。
+强调色，用于需要吸引注意但不如操作色重要的元素。使用浅蓝色与主题协调。
 
 **使用场景：**
-- 悬停状态背景
+- 列表项悬停状态背景
 - 高亮选中项
 - 通知徽章背景
 - 需要微妙强调的区域
+- 辅助性的高亮效果
 
 **代码示例：**
 ```tsx
 // 列表项悬停效果
-<li className="hover:bg-accent hover:text-accent-foreground p-2 rounded">
+<li className="hover:bg-accent hover:text-accent-foreground p-2 rounded cursor-pointer">
   航班选项
 </li>
 
@@ -380,23 +397,28 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 <div className="bg-accent text-accent-foreground px-2 py-1 rounded text-xs">
   新功能
 </div>
+
+// 选中的筛选项
+<button className="bg-accent text-accent-foreground px-3 py-1 rounded-full">
+  直飞
+</button>
 ```
 
 <ColorPalette>
   <ColorItem
     title="Accent"
-    subtitle="强调背景色"
+    subtitle="强调背景色 - oklch(0.94 0.04 240)"
     colors={{
-      'Light Mode': 'oklch(0.97 0 0)',
-      'Dark Mode': 'oklch(0.269 0 0)',
+      'Light Mode': 'oklch(0.94 0.04 240)',
+      'Dark Mode': 'oklch(0.28 0.025 240)',
     }}
   />
   <ColorItem
     title="Accent Foreground"
     subtitle="强调前景色"
     colors={{
-      'Light Mode': 'oklch(0.205 0 0)',
-      'Dark Mode': 'oklch(0.985 0 0)',
+      'Light Mode': 'oklch(0.25 0.08 240)',
+      'Dark Mode': 'oklch(0.75 0.08 240)',
     }}
   />
 </ColorPalette>
@@ -429,26 +451,26 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 <ColorPalette>
   <ColorItem
     title="Border"
-    subtitle="边框颜色"
+    subtitle="边框颜色 - oklch(0.90 0.005 240)"
     colors={{
-      'Light Mode': 'oklch(0.922 0 0)',
-      'Dark Mode': 'oklch(1 0 0 / 10%)',
+      'Light Mode': 'oklch(0.90 0.005 240)',
+      'Dark Mode': 'oklch(0.95 0 0 / 12%)',
     }}
   />
   <ColorItem
     title="Input"
     subtitle="输入框边框颜色"
     colors={{
-      'Light Mode': 'oklch(0.922 0 0)',
-      'Dark Mode': 'oklch(1 0 0 / 15%)',
+      'Light Mode': 'oklch(0.90 0.005 240)',
+      'Dark Mode': 'oklch(0.95 0 0 / 18%)',
     }}
   />
   <ColorItem
     title="Ring"
-    subtitle="焦点环颜色"
+    subtitle="焦点环颜色（蓝色）"
     colors={{
-      'Light Mode': 'oklch(0.708 0 0)',
-      'Dark Mode': 'oklch(0.556 0 0)',
+      'Light Mode': 'oklch(0.55 0.18 240)',
+      'Dark Mode': 'oklch(0.65 0.20 240)',
     }}
   />
 </ColorPalette>
@@ -457,7 +479,7 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 ## 图表颜色
 
-用于数据可视化、图表和统计数据展示。使用 `chart-1` 到 `chart-5` 来区分不同的数据系列。
+用于数据可视化、图表和统计数据展示。配色以蓝橙为主，搭配协调的辅助色。
 
 **使用场景：**
 - 折线图、柱状图的不同线条/柱子
@@ -465,17 +487,26 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 - 数据对比
 - 仪表盘统计卡片
 
+**配色顺序：** 蓝色 → 橙色 → 青色 → 紫色 → 绿色
+
 **代码示例：**
 ```tsx
 // 统计卡片
-<div className="border border-border rounded-lg p-4">
-  <div className="w-3 h-3 rounded-full bg-chart-1 inline-block mr-2" />
-  <span>已完成订单: 120</span>
-</div>
-
-<div className="border border-border rounded-lg p-4">
-  <div className="w-3 h-3 rounded-full bg-chart-2 inline-block mr-2" />
-  <span>进行中: 45</span>
+<div className="grid grid-cols-3 gap-4">
+  <div className="border border-border rounded-lg p-4">
+    <div className="w-3 h-3 rounded-full bg-chart-1 inline-block mr-2" />
+    <span>已完成: 120</span>
+  </div>
+  
+  <div className="border border-border rounded-lg p-4">
+    <div className="w-3 h-3 rounded-full bg-chart-2 inline-block mr-2" />
+    <span>进行中: 45</span>
+  </div>
+  
+  <div className="border border-border rounded-lg p-4">
+    <div className="w-3 h-3 rounded-full bg-chart-3 inline-block mr-2" />
+    <span>待支付: 12</span>
+  </div>
 </div>
 ```
 
@@ -483,29 +514,29 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 <ColorPalette>
   <ColorItem
-    title="Chart 1"
-    subtitle="图表主色"
-    colors={{ 'Light Mode': 'oklch(0.646 0.222 41.116)' }}
+    title="Chart 1 - 蓝色"
+    subtitle="oklch(0.55 0.18 240)"
+    colors={{ 'Light Mode': 'oklch(0.55 0.18 240)' }}
   />
   <ColorItem
-    title="Chart 2"
-    subtitle="图表辅色 1"
-    colors={{ 'Light Mode': 'oklch(0.6 0.118 184.704)' }}
+    title="Chart 2 - 橙色"
+    subtitle="oklch(0.68 0.17 45)"
+    colors={{ 'Light Mode': 'oklch(0.68 0.17 45)' }}
   />
   <ColorItem
-    title="Chart 3"
-    subtitle="图表辅色 2"
-    colors={{ 'Light Mode': 'oklch(0.398 0.07 227.392)' }}
+    title="Chart 3 - 青色"
+    subtitle="oklch(0.60 0.15 180)"
+    colors={{ 'Light Mode': 'oklch(0.60 0.15 180)' }}
   />
   <ColorItem
-    title="Chart 4"
-    subtitle="图表辅色 3"
-    colors={{ 'Light Mode': 'oklch(0.828 0.189 84.429)' }}
+    title="Chart 4 - 紫色"
+    subtitle="oklch(0.65 0.14 320)"
+    colors={{ 'Light Mode': 'oklch(0.65 0.14 320)' }}
   />
   <ColorItem
-    title="Chart 5"
-    subtitle="图表辅色 4"
-    colors={{ 'Light Mode': 'oklch(0.769 0.188 70.08)' }}
+    title="Chart 5 - 绿色"
+    subtitle="oklch(0.70 0.12 150)"
+    colors={{ 'Light Mode': 'oklch(0.70 0.12 150)' }}
   />
 </ColorPalette>
 
@@ -513,29 +544,29 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 <ColorPalette>
   <ColorItem
-    title="Chart 1"
-    subtitle="图表主色"
-    colors={{ 'Dark Mode': 'oklch(0.488 0.243 264.376)' }}
+    title="Chart 1 - 亮蓝"
+    subtitle="oklch(0.60 0.20 240)"
+    colors={{ 'Dark Mode': 'oklch(0.60 0.20 240)' }}
   />
   <ColorItem
-    title="Chart 2"
-    subtitle="图表辅色 1"
-    colors={{ 'Dark Mode': 'oklch(0.696 0.17 162.48)' }}
+    title="Chart 2 - 亮橙"
+    subtitle="oklch(0.72 0.18 45)"
+    colors={{ 'Dark Mode': 'oklch(0.72 0.18 45)' }}
   />
   <ColorItem
-    title="Chart 3"
-    subtitle="图表辅色 2"
-    colors={{ 'Dark Mode': 'oklch(0.769 0.188 70.08)' }}
+    title="Chart 3 - 亮青"
+    subtitle="oklch(0.65 0.18 180)"
+    colors={{ 'Dark Mode': 'oklch(0.65 0.18 180)' }}
   />
   <ColorItem
-    title="Chart 4"
-    subtitle="图表辅色 3"
-    colors={{ 'Dark Mode': 'oklch(0.627 0.265 303.9)' }}
+    title="Chart 4 - 亮紫"
+    subtitle="oklch(0.68 0.16 320)"
+    colors={{ 'Dark Mode': 'oklch(0.68 0.16 320)' }}
   />
   <ColorItem
-    title="Chart 5"
-    subtitle="图表辅色 4"
-    colors={{ 'Dark Mode': 'oklch(0.645 0.246 16.439)' }}
+    title="Chart 5 - 亮绿"
+    subtitle="oklch(0.70 0.15 150)"
+    colors={{ 'Dark Mode': 'oklch(0.70 0.15 150)' }}
   />
 </ColorPalette>
 
@@ -571,42 +602,42 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 <ColorPalette>
   <ColorItem
     title="Sidebar"
-    subtitle="侧边栏背景色"
+    subtitle="侧边栏背景色 - oklch(0.98 0.008 240)"
     colors={{
-      'Light Mode': 'oklch(0.985 0 0)',
-      'Dark Mode': 'oklch(0.205 0 0)',
+      'Light Mode': 'oklch(0.98 0.008 240)',
+      'Dark Mode': 'oklch(0.18 0.015 240)',
     }}
   />
   <ColorItem
     title="Sidebar Foreground"
     subtitle="侧边栏文字颜色"
     colors={{
-      'Light Mode': 'oklch(0.145 0 0)',
-      'Dark Mode': 'oklch(0.985 0 0)',
+      'Light Mode': 'oklch(0.25 0.02 240)',
+      'Dark Mode': 'oklch(0.90 0.008 240)',
     }}
   />
   <ColorItem
     title="Sidebar Primary"
-    subtitle="侧边栏主色"
+    subtitle="侧边栏主色（当前页面）- 蓝色"
     colors={{
-      'Light Mode': 'oklch(0.205 0 0)',
-      'Dark Mode': 'oklch(0.488 0.243 264.376)',
+      'Light Mode': 'oklch(0.55 0.18 240)',
+      'Dark Mode': 'oklch(0.65 0.20 240)',
     }}
   />
   <ColorItem
     title="Sidebar Accent"
-    subtitle="侧边栏强调色"
+    subtitle="侧边栏强调色（悬停）"
     colors={{
-      'Light Mode': 'oklch(0.97 0 0)',
-      'Dark Mode': 'oklch(0.269 0 0)',
+      'Light Mode': 'oklch(0.94 0.03 240)',
+      'Dark Mode': 'oklch(0.25 0.020 240)',
     }}
   />
   <ColorItem
     title="Sidebar Border"
     subtitle="侧边栏边框颜色"
     colors={{
-      'Light Mode': 'oklch(0.922 0 0)',
-      'Dark Mode': 'oklch(1 0 0 / 10%)',
+      'Light Mode': 'oklch(0.92 0.008 240)',
+      'Dark Mode': 'oklch(0.95 0 0 / 12%)',
     }}
   />
 </ColorPalette>
@@ -620,29 +651,34 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 使用 Tailwind 的语义化 class 名称：
 
 ```tsx
-// 主要按钮
-<button className="bg-primary text-primary-foreground hover:bg-primary/90">
-  点击我
+// 操作按钮 - 使用橙色
+<button className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+  立即预订
 </button>
 
-// 次要按钮
-<button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
-  取消
+// 信息展示 - 使用蓝色
+<div className="text-primary font-semibold text-xl">
+  航班 CA1234
+</div>
+
+// 次要按钮 - 使用边框样式
+<button className="border border-input bg-background hover:bg-accent hover:text-accent-foreground">
+  查看详情
 </button>
 
-// 破坏性操作
+// 危险操作 - 使用红色
 <button className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-  删除
+  取消订单
 </button>
 
 // 卡片容器
 <div className="bg-card text-card-foreground border border-border rounded-lg p-4">
-  <h3 className="font-semibold">卡片标题</h3>
-  <p className="text-muted-foreground">这是一段辅助说明文字</p>
+  <h3 className="font-semibold">标题</h3>
+  <p className="text-muted-foreground">辅助说明</p>
 </div>
 
 // 输入框
-<input className="bg-background text-foreground border border-input focus:ring-2 focus:ring-ring" />
+<input className="bg-background text-foreground border border-input focus:ring-2 focus:ring-ring rounded px-3 py-2" />
 ```
 
 ### 透明度修饰符
@@ -664,30 +700,32 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 ### 按钮颜色选择
 
-| 按钮类型 | 背景色 | 文字颜色 |
-|---------|--------|---------|
-| 主要操作 | `bg-primary` | `text-primary-foreground` |
-| 次要操作 | `bg-secondary` | `text-secondary-foreground` |
-| 危险操作 | `bg-destructive` | `text-destructive-foreground` |
-| 幽灵按钮 | `bg-transparent` | `text-foreground` |
-| 链接按钮 | 无背景 | `text-primary` |
+| 按钮类型 | 背景色 | 文字颜色 | 说明 |
+|---------|--------|---------|------|
+| 主要操作（CTA） | `bg-secondary` | `text-secondary-foreground` | 橙色，吸引点击 |
+| 次要操作 | `bg-background border border-input` | `text-foreground` | 白底描边 |
+| 危险操作 | `bg-destructive` | `text-destructive-foreground` | 红色 |
+| 幽灵按钮 | `bg-transparent hover:bg-accent` | `text-foreground` | 透明背景 |
+| 链接按钮 | 无背景 | `text-primary hover:underline` | 蓝色文字 |
 
 ### 文字颜色选择
 
-| 文字类型 | class |
-|---------|-------|
-| 正文 | `text-foreground` |
-| 辅助说明 | `text-muted-foreground` |
-| 重要信息 | `text-primary` |
-| 错误信息 | `text-destructive` |
-| 链接 | `text-primary hover:underline` |
+| 文字类型 | class | 说明 |
+|---------|-------|------|
+| 正文 | `text-foreground` | 深灰色 |
+| 辅助说明 | `text-muted-foreground` | 中灰色 |
+| 重要信息 | `text-primary` | 蓝色 |
+| 价格/数字 | `text-primary font-bold` | 蓝色加粗 |
+| 错误信息 | `text-destructive` | 红色 |
+| 链接 | `text-primary hover:underline` | 蓝色 |
 
 ### 背景颜色选择
 
-| 元素类型 | class |
-|---------|-------|
-| 页面主背景 | `bg-background` |
-| 卡片 | `bg-card` |
-| 次要区域 | `bg-secondary` |
-| 强调区域 | `bg-accent` |
-| 悬停效果 | `hover:bg-accent` |
+| 元素类型 | class | 说明 |
+|---------|-------|------|
+| 页面主背景 | `bg-background` | 微蓝灰 |
+| 卡片 | `bg-card` | 纯白 |
+| 操作按钮 | `bg-secondary` | 橙色 |
+| 信息标签 | `bg-primary/10 text-primary` | 浅蓝底+蓝字 |
+| 悬停效果 | `hover:bg-accent` | 浅蓝 |
+| 禁用状态 | `bg-muted` | 浅灰 |
