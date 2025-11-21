@@ -1,9 +1,10 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { PassengersPageClient } from "@/components/passengers/passengers-page-client";
 import { auth } from "@/lib/auth";
 import { getPassengers } from "@/lib/queries";
+
+import { PassengersPageClient } from "./page.client";
 
 export default async function PassengersPage() {
   const headersList = await headers();
