@@ -1,0 +1,125 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta
+  title="其他"
+  parameters={{
+    previewTabs: {
+      canvas: { hidden: true }
+    },
+    viewMode: 'docs',
+  }}
+/>
+
+# 其他设计规范
+
+## 圆角 (Radius)
+
+基础圆角值：`--radius: 0.625rem` (10px)
+
+| CSS 变量 | Tailwind Class | 计算值 | 使用场景 |
+|----------|----------------|--------|----------|
+| `--radius-sm` | `rounded-sm` | 6px | 小型元素、徽章 |
+| `--radius-md` | `rounded-md` | 8px | 按钮、输入框 |
+| `--radius-lg` | `rounded-lg` | 10px | 卡片、对话框 |
+| `--radius-xl` | `rounded-xl` | 14px | 大型容器 |
+
+### 使用示例
+
+```tsx
+// 按钮
+<button className="rounded-md">按钮</button>
+
+// 卡片
+<div className="rounded-lg border bg-card p-4">卡片内容</div>
+
+// 输入框
+<input className="rounded-md border" />
+
+// 完全圆角（头像、图标按钮）
+<div className="rounded-full">圆形</div>
+```
+
+---
+
+## 间距 (Spacing)
+
+使用 Tailwind 默认的 4px 间距系统：
+
+| Class | 值 | 常用场景 |
+|-------|-----|----------|
+| `1` | 4px | 图标与文字间距 |
+| `2` | 8px | 紧凑元素间距 |
+| `3` | 12px | 表单元素间距 |
+| `4` | 16px | 标准元素间距 |
+| `6` | 24px | 区块间距 |
+| `8` | 32px | 大区块间距 |
+
+### 常用模式
+
+```tsx
+// 卡片内边距
+<div className="p-4">标准卡片</div>
+<div className="p-6">宽松卡片</div>
+
+// 表单元素间距
+<div className="space-y-4">
+  <Input />
+  <Input />
+</div>
+
+// 按钮组间距
+<div className="flex gap-2">
+  <Button>取消</Button>
+  <Button>确定</Button>
+</div>
+
+// 页面区块间距
+<section className="py-8">
+  <h2 className="mb-4">标题</h2>
+  <p>内容</p>
+</section>
+```
+
+### 间距原则
+
+- **4px 倍数**：所有间距使用 4 的倍数
+- **内外一致**：`padding` 和 `margin` 使用相同的值
+- **层级区分**：相关元素间距小，不相关元素间距大
+
+---
+
+## 阴影 (Shadow)
+
+使用 Tailwind 默认阴影系统：
+
+| Class | 使用场景 |
+|-------|----------|
+| `shadow-sm` | 微妙提升，如卡片边缘 |
+| `shadow` | 标准卡片 |
+| `shadow-md` | 下拉菜单、弹出层 |
+| `shadow-lg` | 对话框、模态框 |
+
+### 使用示例
+
+```tsx
+// 卡片
+<div className="rounded-lg border bg-card shadow-sm">
+  基础卡片
+</div>
+
+// 下拉菜单
+<div className="rounded-md bg-popover shadow-md">
+  菜单内容
+</div>
+
+// 对话框
+<div className="rounded-lg bg-background shadow-lg">
+  对话框内容
+</div>
+```
+
+### 注意事项
+
+1. **深色模式**：阴影在深色模式下效果不明显，可配合 `border` 使用
+2. **层级关系**：浮动元素使用更深的阴影
+3. **性能考虑**：避免大量元素使用 `shadow-lg` 以上的阴影

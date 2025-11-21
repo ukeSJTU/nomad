@@ -1,0 +1,83 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta
+  title="字体"
+  parameters={{
+    previewTabs: {
+      canvas: { hidden: true }
+    },
+    viewMode: 'docs',
+  }}
+/>
+
+# 字体系统
+
+## 字体族
+
+本项目使用 Geist 字体系列：
+
+| 用途 | CSS 变量 | Tailwind Class |
+|------|----------|----------------|
+| 正文 | `--font-geist-sans` | `font-sans` |
+| 代码 | `--font-geist-mono` | `font-mono` |
+
+## 字体大小
+
+使用 Tailwind 默认的字体大小系统：
+
+| Class | 大小 | 行高 | 使用场景 |
+|-------|------|------|----------|
+| `text-xs` | 12px | 16px | 标签、辅助信息 |
+| `text-sm` | 14px | 20px | 次要文本、表单标签 |
+| `text-base` | 16px | 24px | 正文 |
+| `text-lg` | 18px | 28px | 强调文本 |
+| `text-xl` | 20px | 28px | 小标题 |
+| `text-2xl` | 24px | 32px | 二级标题 |
+| `text-3xl` | 30px | 36px | 一级标题 |
+| `text-4xl` | 36px | 40px | 页面标题 |
+
+## 字重
+
+| Class | 字重 | 使用场景 |
+|-------|------|----------|
+| `font-normal` | 400 | 正文 |
+| `font-medium` | 500 | 强调文本、按钮 |
+| `font-semibold` | 600 | 小标题 |
+| `font-bold` | 700 | 主标题 |
+
+## 使用示例
+
+```tsx
+// 页面标题
+<h1 className="text-3xl font-bold">页面标题</h1>
+
+// 二级标题
+<h2 className="text-xl font-semibold">章节标题</h2>
+
+// 正文
+<p className="text-base text-foreground">正文内容</p>
+
+// 辅助文本
+<span className="text-sm text-muted-foreground">辅助说明</span>
+
+// 标签
+<label className="text-sm font-medium">表单标签</label>
+
+// 代码
+<code className="font-mono text-sm">const foo = 'bar'</code>
+```
+
+## 文本颜色
+
+| Class | 用途 |
+|-------|------|
+| `text-foreground` | 主要文本 |
+| `text-muted-foreground` | 辅助文本、占位符 |
+| `text-primary` | 强调文本、链接 |
+| `text-destructive` | 错误信息 |
+
+## 注意事项
+
+1. **避免使用绝对字体大小**：使用 Tailwind class 而不是 `font-size: 14px`
+2. **保持层次清晰**：页面中最多使用 3-4 种字体大小
+3. **响应式调整**：大标题在移动端可以适当减小，如 `text-2xl md:text-3xl`

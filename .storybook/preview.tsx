@@ -23,7 +23,7 @@ const preview: Preview = {
   parameters: {
     options: {
       storySort: {
-        order: ["介绍", "颜色", "*"],
+        order: ["介绍", "颜色", "字体", "其他", "*"],
       },
     },
     controls: {
