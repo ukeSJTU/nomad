@@ -1,14 +1,21 @@
 /**
- * src/types/ folder contains Zod validation schemas and utilities
+ * Root type exports
  *
- * All schemas are compatible with Zod v4 and align with the database schema.
- *
- * Naming conventions:
- * - Schemas: camelCase ending with "Schema" (e.g., userInfoUpdateSchema)
- * - Types: PascalCase ending with "Data" (e.g., UserInfoUpdateData)
+ * Provides centralized access to all type categories:
+ * - database: Drizzle-inferred types (single source of truth)
+ * - dto: Data transfer objects for UI/API consumption
+ * - validations: Zod schemas for runtime validation
+ * - actions: Server action result types (import directly from @/types/actions)
+ * - api: API response formats
+ * - common: Shared utility types
  */
 
-// src/types/ 主要用来存放前后端契约，方便类型检查
-
 export * from "./api";
-export * from "./auth";
+export * from "./common";
+export * from "./database";
+export * from "./dto";
+export * from "./http";
+export * from "./validations";
+
+// Note: actions/* exports are not re-exported here to avoid naming conflicts
+// Import action types directly: import { ... } from "@/types/actions"

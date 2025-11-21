@@ -29,7 +29,7 @@ import {
   updateUserInfoAction,
   type UpdateUserInfoActionState,
 } from "@/lib/actions";
-import type { UserInfo } from "@/lib/queries/user";
+import type { UserInfo } from "@/types/dto";
 import { type UserInfoUpdateData, userInfoUpdateSchema } from "@/types/user";
 
 interface UserInfoFormProps {

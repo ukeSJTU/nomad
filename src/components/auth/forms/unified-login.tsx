@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { cn } from "@/lib/utils";
-import type { ActionResult } from "@/types/dto/action";
+import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import {
   type OtpLoginData,

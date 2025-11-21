@@ -1,20 +1,13 @@
 /**
- * Database Types
+ * Database layer types - Single source of truth
  *
- * This module serves as the central export point for all database-related types.
- * All types in this layer are automatically inferred from Drizzle ORM schema definitions,
- * ensuring they stay in sync with the actual database structure.
+ * All types are inferred from Drizzle schema definitions in src/lib/schema/
+ * Used in services, repositories, queries, and server actions (data layer)
  *
- * ## Purpose
- * - Provide TypeScript types for database tables and their fields
- * - Serve as the foundation for all other type layers (DTO, Validation, Actions)
- * - Maintain a single source of truth derived from the database schema
- *
- * ## Type Categories
- * 1. **Select Types**: Represent data as returned from SELECT queries (e.g., `User`, `Order`)
- * 2. **Insert Types**: Represent data for INSERT operations (e.g., `NewUser`, `NewOrder`)
- * 3. **Field Types**: Specific field types extracted from tables (e.g., `OrderStatus`, `UserGender`)
- 
+ * Type naming:
+ * - Select types: User, Order (data returned from SELECT queries)
+ * - Insert types: NewUser, NewOrder (data for INSERT operations)
+ * - Field types: OrderStatus, UserGender (extracted from table fields)
  */
 
 // ============================================================================

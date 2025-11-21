@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { ActionResult } from "@/types/common";
+
 /**
  * Server Action Result Types for Orders
  *
@@ -12,48 +14,9 @@ import { z } from "zod";
  * Naming conventions:
  * - Schemas: camelCase ending with "Schema" (e.g., createOrderDataSchema)
  * - Types: PascalCase (e.g., CreateOrderData, CreateOrderResult)
- * - Generic types: PascalCase (e.g., ActionResult)
  *
  * Note: These schemas align with the orders table and related tables in the database schema.
  */
-
-// ============================================================================
-// Base Action Result Type
-// ============================================================================
-
-/**
- * Generic action result type for Server Actions
- *
- * Provides a discriminated union type for success/failure results.
- * This pattern ensures type-safe error handling in Server Actions.
- *
- * @template T - Type of the data returned on success (defaults to void)
- *
- * Success case:
- * - success: true
- * - data: T (the result data)
- * - error: undefined
- * - fieldErrors: undefined
- *
- * Failure case:
- * - success: false
- * - error: string (general error message)
- * - data: undefined
- * - fieldErrors: optional field-specific validation errors
- */
-export type ActionResult<T = void> =
-  | {
-      success: true;
-      data: T;
-      error?: undefined;
-      fieldErrors?: undefined;
-    }
-  | {
-      success: false;
-      error: string;
-      data?: undefined;
-      fieldErrors?: Record<string, string[]>;
-    };
 
 // ============================================================================
 // Create Order Action

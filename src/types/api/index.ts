@@ -1,7 +1,10 @@
 /**
- * src/types/api/ is the folder for API validation schemas
+ * API response format types
  *
- * Even though we are mostly using Server Actions in this project, APIs are still reserved for external services.
+ * Standard response structures for REST API endpoints
+ * Used in API routes and external service integrations
+ *
+ * Note: Most internal operations use Server Actions instead of REST APIs
  */
 
 export * from "./health";

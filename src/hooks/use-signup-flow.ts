@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { setInitialPasswordAction } from "@/lib/actions";
 import { authClient } from "@/lib/auth/client";
-import type { ActionResult } from "@/types/dto/action";
+import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
   EmailVerificationData,
