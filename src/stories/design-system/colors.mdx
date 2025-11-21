@@ -1,0 +1,491 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
+
+<Meta
+  title="颜色"
+  parameters={{
+    previewTabs: {
+      canvas: { hidden: true }
+    },
+    viewMode: 'docs',
+  }}
+  tags={['autodocs']}
+/>
+
+# 颜色系统
+
+本项目使用基于 Tailwind CSS 的颜色系统，采用 OKLCH 颜色空间以确保视觉一致性和更好的感知均匀性。
+
+## 主题颜色
+
+我们的颜色系统支持浅色和深色主题，自动适应用户偏好设置。
+
+### Primary（主色）
+
+用于主要的行动召唤按钮、重要的链接和强调元素。
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="主要颜色"
+    colors={{
+      'Light Mode': 'oklch(0.205 0 0)',
+      'Dark Mode': 'oklch(0.922 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Primary Foreground"
+    subtitle="主色前景色"
+    colors={{
+      'Light Mode': 'oklch(0.985 0 0)',
+      'Dark Mode': 'oklch(0.205 0 0)',
+    }}
+  />
+</ColorPalette>
+
+**使用场景：**
+- 主要操作按钮
+- 重要链接
+- 关键信息提示
+- 选中状态
+
+### Secondary（次要色）
+
+用于次要的操作和辅助性内容。
+
+<ColorPalette>
+  <ColorItem
+    title="Secondary"
+    subtitle="次要颜色"
+    colors={{
+      'Light Mode': 'oklch(0.97 0 0)',
+      'Dark Mode': 'oklch(0.269 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Secondary Foreground"
+    subtitle="次要色前景色"
+    colors={{
+      'Light Mode': 'oklch(0.205 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+</ColorPalette>
+
+**使用场景：**
+- 次要操作按钮
+- 辅助性内容区域
+- 非关键信息
+
+### Destructive（破坏性操作色）
+
+用于删除、警告等破坏性操作，引起用户注意。
+
+<ColorPalette>
+  <ColorItem
+    title="Destructive"
+    subtitle="破坏性操作颜色"
+    colors={{
+      'Light Mode': 'oklch(0.577 0.245 27.325)',
+      'Dark Mode': 'oklch(0.704 0.191 22.216)',
+    }}
+  />
+  <ColorItem
+    title="Destructive Foreground"
+    subtitle="破坏性操作前景色"
+    colors={{
+      'Light Mode': 'oklch(0.985 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+</ColorPalette>
+
+**使用场景：**
+- 删除操作
+- 错误提示
+- 危险警告
+- 取消/拒绝操作
+
+## 语义颜色
+
+### Background & Foreground
+
+基础背景色和文字颜色，应用于整个应用程序。
+
+<ColorPalette>
+  <ColorItem
+    title="Background"
+    subtitle="页面背景色"
+    colors={{
+      'Light Mode': 'oklch(1 0 0)',
+      'Dark Mode': 'oklch(0.145 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Foreground"
+    subtitle="主要文字颜色"
+    colors={{
+      'Light Mode': 'oklch(0.145 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+</ColorPalette>
+
+### Card
+
+用于卡片容器和独立内容区域。
+
+<ColorPalette>
+  <ColorItem
+    title="Card"
+    subtitle="卡片背景色"
+    colors={{
+      'Light Mode': 'oklch(1 0 0)',
+      'Dark Mode': 'oklch(0.205 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Card Foreground"
+    subtitle="卡片文字颜色"
+    colors={{
+      'Light Mode': 'oklch(0.145 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+</ColorPalette>
+
+### Popover
+
+用于弹出层、下拉菜单等浮动元素。
+
+<ColorPalette>
+  <ColorItem
+    title="Popover"
+    subtitle="弹出层背景色"
+    colors={{
+      'Light Mode': 'oklch(1 0 0)',
+      'Dark Mode': 'oklch(0.205 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Popover Foreground"
+    subtitle="弹出层文字颜色"
+    colors={{
+      'Light Mode': 'oklch(0.145 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+</ColorPalette>
+
+### Muted
+
+用于不太重要的元素和辅助文本。
+
+<ColorPalette>
+  <ColorItem
+    title="Muted"
+    subtitle="弱化背景色"
+    colors={{
+      'Light Mode': 'oklch(0.97 0 0)',
+      'Dark Mode': 'oklch(0.269 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Muted Foreground"
+    subtitle="辅助文字颜色"
+    colors={{
+      'Light Mode': 'oklch(0.556 0 0)',
+      'Dark Mode': 'oklch(0.708 0 0)',
+    }}
+  />
+</ColorPalette>
+
+**使用场景：**
+- 占位符文字
+- 禁用状态
+- 辅助说明文字
+- 次要信息
+
+### Accent
+
+用于强调和高亮元素。
+
+<ColorPalette>
+  <ColorItem
+    title="Accent"
+    subtitle="强调背景色"
+    colors={{
+      'Light Mode': 'oklch(0.97 0 0)',
+      'Dark Mode': 'oklch(0.269 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Accent Foreground"
+    subtitle="强调前景色"
+    colors={{
+      'Light Mode': 'oklch(0.205 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+</ColorPalette>
+
+### Border, Input & Ring
+
+用于边框、输入框和焦点环。
+
+<ColorPalette>
+  <ColorItem
+    title="Border"
+    subtitle="边框颜色"
+    colors={{
+      'Light Mode': 'oklch(0.922 0 0)',
+      'Dark Mode': 'oklch(1 0 0 / 10%)',
+    }}
+  />
+  <ColorItem
+    title="Input"
+    subtitle="输入框边框颜色"
+    colors={{
+      'Light Mode': 'oklch(0.922 0 0)',
+      'Dark Mode': 'oklch(1 0 0 / 15%)',
+    }}
+  />
+  <ColorItem
+    title="Ring"
+    subtitle="焦点环颜色"
+    colors={{
+      'Light Mode': 'oklch(0.708 0 0)',
+      'Dark Mode': 'oklch(0.556 0 0)',
+    }}
+  />
+</ColorPalette>
+
+## 图表颜色
+
+用于数据可视化和图表的颜色系统，确保在不同主题下都具有良好的可读性。
+
+### 浅色模式图表颜色
+
+<ColorPalette>
+  <ColorItem
+    title="Chart 1"
+    subtitle="图表主色"
+    colors={{ 'Light Mode': 'oklch(0.646 0.222 41.116)' }}
+  />
+  <ColorItem
+    title="Chart 2"
+    subtitle="图表辅色 1"
+    colors={{ 'Light Mode': 'oklch(0.6 0.118 184.704)' }}
+  />
+  <ColorItem
+    title="Chart 3"
+    subtitle="图表辅色 2"
+    colors={{ 'Light Mode': 'oklch(0.398 0.07 227.392)' }}
+  />
+  <ColorItem
+    title="Chart 4"
+    subtitle="图表辅色 3"
+    colors={{ 'Light Mode': 'oklch(0.828 0.189 84.429)' }}
+  />
+  <ColorItem
+    title="Chart 5"
+    subtitle="图表辅色 4"
+    colors={{ 'Light Mode': 'oklch(0.769 0.188 70.08)' }}
+  />
+</ColorPalette>
+
+### 深色模式图表颜色
+
+<ColorPalette>
+  <ColorItem
+    title="Chart 1"
+    subtitle="图表主色"
+    colors={{ 'Dark Mode': 'oklch(0.488 0.243 264.376)' }}
+  />
+  <ColorItem
+    title="Chart 2"
+    subtitle="图表辅色 1"
+    colors={{ 'Dark Mode': 'oklch(0.696 0.17 162.48)' }}
+  />
+  <ColorItem
+    title="Chart 3"
+    subtitle="图表辅色 2"
+    colors={{ 'Dark Mode': 'oklch(0.769 0.188 70.08)' }}
+  />
+  <ColorItem
+    title="Chart 4"
+    subtitle="图表辅色 3"
+    colors={{ 'Dark Mode': 'oklch(0.627 0.265 303.9)' }}
+  />
+  <ColorItem
+    title="Chart 5"
+    subtitle="图表辅色 4"
+    colors={{ 'Dark Mode': 'oklch(0.645 0.246 16.439)' }}
+  />
+</ColorPalette>
+
+## 侧边栏颜色
+
+专门为侧边栏设计的颜色系统。
+
+<ColorPalette>
+  <ColorItem
+    title="Sidebar"
+    subtitle="侧边栏背景色"
+    colors={{
+      'Light Mode': 'oklch(0.985 0 0)',
+      'Dark Mode': 'oklch(0.205 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Sidebar Foreground"
+    subtitle="侧边栏文字颜色"
+    colors={{
+      'Light Mode': 'oklch(0.145 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Sidebar Primary"
+    subtitle="侧边栏主色"
+    colors={{
+      'Light Mode': 'oklch(0.205 0 0)',
+      'Dark Mode': 'oklch(0.488 0.243 264.376)',
+    }}
+  />
+  <ColorItem
+    title="Sidebar Accent"
+    subtitle="侧边栏强调色"
+    colors={{
+      'Light Mode': 'oklch(0.97 0 0)',
+      'Dark Mode': 'oklch(0.269 0 0)',
+    }}
+  />
+  <ColorItem
+    title="Sidebar Border"
+    subtitle="侧边栏边框颜色"
+    colors={{
+      'Light Mode': 'oklch(0.922 0 0)',
+      'Dark Mode': 'oklch(1 0 0 / 10%)',
+    }}
+  />
+</ColorPalette>
+
+## 使用指南
+
+### 在组件中使用颜色
+
+使用 Tailwind 的语义化 class 名称：
+
+```tsx
+// 主要按钮
+<button className="bg-primary text-primary-foreground hover:bg-primary/90">
+  点击我
+</button>
+
+// 次要按钮
+<button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
+  取消
+</button>
+
+// 破坏性操作
+<button className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+  删除
+</button>
+
+// 卡片容器
+<div className="bg-card text-card-foreground border border-border rounded-lg p-4">
+  <h3 className="font-semibold">卡片标题</h3>
+  <p className="text-muted-foreground">这是一段辅助说明文字</p>
+</div>
+
+// 输入框
+<input className="bg-background text-foreground border border-input focus:ring-2 focus:ring-ring" />
+```
+
+### 透明度修饰符
+
+可以使用 Tailwind 的透明度语法来调整颜色透明度：
+
+```tsx
+<div className="bg-primary/10">10% 透明度</div>
+<div className="bg-primary/50">50% 透明度</div>
+<div className="bg-primary/90">90% 透明度</div>
+```
+
+### 自定义颜色值
+
+如需添加新的颜色，请在 `src/app/(frontend)/globals.css` 中修改 CSS 变量：
+
+1. 在 `:root` 中添加浅色模式的颜色值
+2. 在 `.dark` 中添加深色模式的颜色值
+3. 在 `@theme inline` 中添加对应的 Tailwind 映射
+
+示例：
+
+```css
+:root {
+  /* 添加新颜色 */
+  --success: oklch(0.6 0.15 150);
+  --success-foreground: oklch(1 0 0);
+}
+
+.dark {
+  --success: oklch(0.7 0.18 150);
+  --success-foreground: oklch(0.1 0 0);
+}
+
+@theme inline {
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+}
+```
+
+## 最佳实践
+
+### 1. 优先使用语义化颜色名称
+
+✅ **推荐：**
+```tsx
+<button className="bg-primary text-primary-foreground">提交</button>
+```
+
+❌ **不推荐：**
+```tsx
+<button className="bg-[oklch(0.205_0_0)] text-white">提交</button>
+```
+
+### 2. 确保无障碍性
+
+所有前景色和背景色的对比度应符合 WCAG AA 标准（至少 4.5:1）。本项目的颜色系统已经考虑了无障碍性要求。
+
+### 3. 深色模式测试
+
+所有颜色选择都应在浅色和深色模式下测试，确保在两种模式下都有良好的视觉效果。使用 Storybook 右上角的主题切换器进行测试。
+
+### 4. 保持一致性
+
+- 相同功能的元素使用相同的颜色
+- 破坏性操作统一使用 `destructive` 颜色
+- 辅助信息统一使用 `muted-foreground` 颜色
+
+### 5. 适度使用颜色
+
+- 避免在一个界面中使用过多颜色
+- 保持视觉层次清晰
+- 颜色应该引导用户注意力，而不是分散注意力
+
+## OKLCH 颜色空间的优势
+
+相比传统的 RGB 或 HSL 颜色空间，OKLCH 具有以下优势：
+
+1. **感知均匀性**：亮度变化在视觉上更加均匀
+2. **更宽的色域**：支持更多鲜艳的颜色
+3. **更好的可预测性**：调整色相时亮度保持一致
+4. **无障碍友好**：更容易创建符合对比度要求的颜色组合
+
+## 相关资源
+
+- [Tailwind CSS 颜色文档](https://tailwindcss.com/docs/customizing-colors)
+- [OKLCH 颜色空间](https://oklch.com/)
+- [WCAG 对比度指南](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)
+- [Radix UI Colors](https://www.radix-ui.com/colors) - 我们的颜色系统参考

@@ -21,6 +21,11 @@ const preview: Preview = {
   tags: ["autodocs"],
 
   parameters: {
+    options: {
+      storySort: {
+        order: ["介绍", "颜色", "*"],
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
