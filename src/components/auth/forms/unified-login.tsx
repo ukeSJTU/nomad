@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { AlertCircle, Github } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -23,6 +23,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
@@ -321,7 +322,7 @@ function OtpLoginForm({
   isLoading = false,
   className,
 }: OtpLoginFormProps) {
-  const [countdown, setCountdown] = useState(0);
+  const { countdown, start: startCountdown } = useOtpCountdown();
   const [showCaptcha, setShowCaptcha] = useState(false); // Control widget visibility
   const { siteKey, turnstileRef, isVerifying, prepareCaptchaRequest } =
     useTurnstileCaptcha();
@@ -337,14 +338,6 @@ function OtpLoginForm({
       agreedToTerms: false,
     },
   });
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [countdown]);
 
   const handleSendOtp = async () => {
     // Validate account field before sending OTP
@@ -373,7 +366,7 @@ function OtpLoginForm({
 
       // Start countdown only if backend returns success
       if (success) {
-        setCountdown(60);
+        startCountdown();
       } else {
         toast.error("发送验证码失败，请重试");
       }

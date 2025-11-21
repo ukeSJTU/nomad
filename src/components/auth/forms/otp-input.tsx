@@ -31,6 +31,16 @@ export interface OtpInputProps {
   inputClassName?: string;
 }
 
+function getOtpButtonText(
+  isVerifying: boolean,
+  countdown: number,
+  hasSent: boolean
+): string {
+  if (isVerifying) return "验证中...";
+  if (countdown > 0) return `${countdown}秒后重试`;
+  return hasSent ? "重发验证码" : "发送验证码";
+}
+
 /**
  * OTP Input component with inline send button
  * Used for phone/email verification flows
@@ -61,18 +71,12 @@ export default function OtpInput({
     }
   }, [countdown]);
 
-  const getButtonText = () => {
-    if (isVerifying) return "验证中...";
-    if (countdown > 0) return `${countdown}秒后重试`;
-    return hasSentRef.current ? "重发验证码" : "发送验证码";
-  };
-
   return (
     <div className={cn("relative", className)}>
       <Input
         type="text"
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value.replace(/\D/g, ""))}
         placeholder={placeholder}
         className={cn("h-12 pr-28", inputClassName)}
         maxLength={maxLength}
@@ -86,7 +90,7 @@ export default function OtpInput({
         disabled={isButtonDisabled}
         className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-700"
       >
-        {getButtonText()}
+        {getOtpButtonText(isVerifying, countdown, hasSentRef.current)}
       </Button>
     </div>
   );

@@ -1,10 +1,11 @@
 "use client";
 
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
@@ -66,21 +67,13 @@ export default function UnifiedSignUpForm({
   className,
 }: UnifiedSignUpFormProps) {
   const [_method, setMethod] = useState<"phone" | "email">(initialMethod);
-  const [countdown, setCountdown] = useState(0);
+  const { countdown, start: startCountdown } = useOtpCountdown();
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
   const [currentEmail, setCurrentEmail] = useState("");
 
   const { siteKey, turnstileRef, isVerifying, prepareCaptchaRequest } =
     useTurnstileCaptcha();
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [countdown]);
 
   const handleMethodChange = (value: string) => {
     const newMethod = value as "phone" | "email";
@@ -111,7 +104,7 @@ export default function UnifiedSignUpForm({
       );
 
       if (success) {
-        setCountdown(60);
+        startCountdown();
       } else {
         toast.error("发送验证码失败，请重试");
       }
@@ -140,7 +133,7 @@ export default function UnifiedSignUpForm({
       const success = await onSendEmailOtp(currentEmail, context.fetchOptions);
 
       if (success) {
-        setCountdown(60);
+        startCountdown();
       } else {
         toast.error("发送验证码失败，请重试");
       }
