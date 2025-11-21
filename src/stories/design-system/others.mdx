@@ -22,12 +22,12 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 | 场景 | 间距值 | Class |
 |------|--------|-------|
-| 图标与文字 | 4-8px | `gap-1` 或 `gap-2` |
-| 按钮内边距 | 水平 16-24px，垂直 8-12px | `px-4 py-2` 或 `px-6 py-3` |
+| 图标与文字 | 8px | `gap-2` |
+| 按钮内边距 | 水平 16px，垂直 8px | `px-4 py-2` |
 | 表单字段间距 | 16px | `space-y-4` |
-| 卡片内边距 | 16-24px | `p-4` 或 `p-6` |
-| 区块间距 | 24-32px | `space-y-6` 或 `space-y-8` |
-| 页面左右边距 | 16-24px | `px-4` 或 `px-6` |
+| 卡片内边距 | 24px | `p-6` |
+| 区块间距 | 24px | `space-y-6` |
+| 页面左右边距 | 16px | `px-4` |
 
 ### 常用圆角
 
@@ -38,13 +38,13 @@ import { Meta } from '@storybook/addon-docs/blocks';
 | 卡片 | 10px | `rounded-lg` |
 | 徽章/标签 | 完全圆角 | `rounded-full` |
 | 头像 | 完全圆角 | `rounded-full` |
-| 对话框 | 10-14px | `rounded-lg` 或 `rounded-xl` |
+| 对话框 | 10px | `rounded-lg` |
 
 ### 常用阴影
 
 | 元素类型 | 阴影 | Class |
 |---------|------|-------|
-| 平面卡片 | 微妙阴影 | `shadow-sm` 或无阴影 + `border` |
+| 平面卡片 | 无阴影+边框 | `border` |
 | 悬浮卡片 | 标准阴影 | `shadow` |
 | 下拉菜单 | 中等阴影 | `shadow-md` |
 | 对话框 | 深阴影 | `shadow-lg` |
@@ -77,14 +77,11 @@ import { Meta } from '@storybook/addon-docs/blocks';
 用于元素内部的空间。
 
 ```tsx
-// 按钮内边距
+// 按钮内边距 - 统一标准
 <button className="px-4 py-2">标准按钮</button>
-<button className="px-6 py-3">大按钮</button>
-<button className="px-3 py-1.5">小按钮</button>
 
-// 卡片内边距
-<div className="p-4">标准卡片（16px）</div>
-<div className="p-6">宽松卡片（24px）</div>
+// 卡片内边距 - 统一 p-6
+<div className="p-6">标准卡片（24px）</div>
 
 // 不同方向的内边距
 <div className="pt-4 pb-6">上4下6</div>
@@ -327,25 +324,290 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 ### 使用示例
 
+### 使用示例
+
 ```tsx
-// 卡片
-<div className="rounded-lg border bg-card shadow-sm">
-  基础卡片
+// 平面卡片（使用边框，无阴影）
+<div className="bg-card border border-border rounded-lg p-6">
+  平面设计，使用边框区分
+</div>
+
+// 微妙悬浮卡片
+<div className="bg-card rounded-lg shadow-sm p-6">
+  轻微悬浮效果
+</div>
+
+// 标准卡片
+<div className="bg-card rounded-lg shadow p-6">
+  标准悬浮卡片
 </div>
 
 // 下拉菜单
-<div className="rounded-md bg-popover shadow-md">
-  菜单内容
+<div className="bg-popover rounded-lg shadow-md p-2">
+  <button className="w-full px-4 py-2 text-left hover:bg-accent rounded-md">选项1</button>
+  <button className="w-full px-4 py-2 text-left hover:bg-accent rounded-md">选项2</button>
 </div>
 
 // 对话框
-<div className="rounded-lg bg-background shadow-lg">
-  对话框内容
+<div className="bg-background rounded-lg shadow-lg p-6 max-w-md">
+  <h3 className="text-xl font-semibold">对话框标题</h3>
+  <p className="text-muted-foreground mt-2">对话框内容</p>
+  <div className="flex gap-2 justify-end mt-6">
+    <button className="px-4 py-2 rounded-md border border-input">取消</button>
+    <button className="px-4 py-2 rounded-md bg-secondary text-secondary-foreground">确认</button>
+  </div>
 </div>
 ```
 
-### 注意事项
+### 悬停效果
 
-1. **深色模式**：阴影在深色模式下效果不明显，可配合 `border` 使用
-2. **层级关系**：浮动元素使用更深的阴影
-3. **性能考虑**：避免大量元素使用 `shadow-lg` 以上的阴影
+```tsx
+// 卡片悬停时增加阴影
+<div className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer">
+  可交互卡片
+</div>
+
+// 按钮悬停时增加阴影
+<button className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:shadow transition-shadow">
+  按钮
+</button>
+```
+
+### 深色模式下的阴影
+
+深色模式下阴影效果不明显，建议配合边框使用：
+
+```tsx
+// 在深色模式下也清晰的卡片
+<div className="bg-card border border-border rounded-lg p-6 shadow-sm">
+  内容
+</div>
+```
+
+---
+
+## 布局原则
+
+### 容器宽度
+
+```tsx
+// 全宽容器
+<div className="w-full">全宽</div>
+
+// 响应式容器（Tailwind container）
+<div className="container mx-auto px-4">
+  自动居中，带左右内边距
+</div>
+
+// 最大宽度限制
+<div className="max-w-7xl mx-auto px-4">
+  最大宽度 1280px
+</div>
+
+<div className="max-w-4xl mx-auto px-4">
+  内容区域，最大宽度 896px
+</div>
+
+<div className="max-w-md mx-auto px-4">
+  表单/对话框，最大宽度 448px
+</div>
+```
+
+### 栅格布局
+
+```tsx
+// 简单两列布局
+<div className="grid grid-cols-2 gap-4">
+  <div>列1</div>
+  <div>列2</div>
+</div>
+
+// 响应式栅格（移动端1列，平板2列，桌面3列）
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div>卡片1</div>
+  <div>卡片2</div>
+  <div>卡片3</div>
+</div>
+
+// 航班搜索结果列表（卡片式布局）
+<div className="grid grid-cols-1 gap-4">
+  <div className="bg-card border border-border rounded-lg p-6">航班1</div>
+  <div className="bg-card border border-border rounded-lg p-6">航班2</div>
+  <div className="bg-card border border-border rounded-lg p-6">航班3</div>
+</div>
+```
+
+### Flexbox 布局
+
+```tsx
+// 水平排列
+<div className="flex items-center gap-4">
+  <div>项目1</div>
+  <div>项目2</div>
+</div>
+
+// 两端对齐
+<div className="flex items-center justify-between">
+  <div>左侧内容</div>
+  <div>右侧内容</div>
+</div>
+
+// 垂直居中
+<div className="flex items-center justify-center min-h-screen">
+  <div>居中内容</div>
+</div>
+
+// 卡片内部布局（常见）
+<div className="bg-card border border-border rounded-lg p-6">
+  <div className="flex items-start justify-between mb-4">
+    <div>
+      <h3 className="text-xl font-semibold">标题</h3>
+      <p className="text-sm text-muted-foreground">副标题</p>
+    </div>
+    <div className="text-2xl font-bold text-primary">¥580</div>
+  </div>
+  <div className="flex gap-2">
+    <button className="flex-1 border border-input rounded-md py-2">详情</button>
+    <button className="flex-1 bg-secondary text-secondary-foreground rounded-md py-2">预订</button>
+  </div>
+</div>
+```
+
+### 页面布局模式
+
+```tsx
+// 基础页面布局
+<div className="min-h-screen bg-background">
+  {/* 顶部导航 */}
+  <header className="border-b border-border bg-card">
+    <div className="container mx-auto px-4 py-4">
+      导航内容
+    </div>
+  </header>
+  
+  {/* 主内容区 */}
+  <main className="container mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto space-y-8">
+      <section>内容区域</section>
+    </div>
+  </main>
+  
+  {/* 底部 */}
+  <footer className="border-t border-border bg-card mt-auto">
+    <div className="container mx-auto px-4 py-6">
+      底部内容
+    </div>
+  </footer>
+</div>
+
+// 侧边栏布局
+<div className="min-h-screen bg-background">
+  <div className="flex">
+    {/* 侧边栏 */}
+    <aside className="w-64 border-r border-border bg-sidebar">
+      侧边栏内容
+    </aside>
+    
+    {/* 主内容 */}
+    <main className="flex-1 p-8">
+      主要内容
+    </main>
+  </div>
+</div>
+```
+
+---
+
+## 组件间距规范
+
+### 表单间距
+
+```tsx
+<form className="space-y-6">
+  {/* 表单分组 - 6 (24px) */}
+  <div className="space-y-2">
+    {/* 标签与输入框 - 2 (8px) */}
+    <label className="block text-sm font-medium">标签</label>
+    <input className="w-full px-3 py-2 border border-input rounded-md" />
+    <p className="text-sm text-muted-foreground">辅助文字</p>
+  </div>
+  
+  <div className="space-y-2">
+    <label className="block text-sm font-medium">标签</label>
+    <input className="w-full px-3 py-2 border border-input rounded-md" />
+  </div>
+  
+  {/* 按钮区域 */}
+  <div className="flex gap-2 justify-end pt-4">
+    <button className="px-4 py-2 border border-input rounded-md">取消</button>
+    <button className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md">提交</button>
+  </div>
+</form>
+```
+
+### 卡片间距
+
+```tsx
+<div className="bg-card border border-border rounded-lg p-6 space-y-4">
+  {/* 卡片内容间距 - 4 (16px) */}
+  <h3 className="text-xl font-semibold">卡片标题</h3>
+  <p className="text-muted-foreground">卡片描述内容</p>
+  <div className="flex gap-2">
+    <button>操作1</button>
+    <button>操作2</button>
+  </div>
+</div>
+```
+
+### 列表间距
+
+```tsx
+<div className="space-y-2">
+  {/* 列表项之间 - 2 (8px) */}
+  <div className="p-4 bg-accent rounded-lg">列表项1</div>
+  <div className="p-4 bg-accent rounded-lg">列表项2</div>
+  <div className="p-4 bg-accent rounded-lg">列表项3</div>
+</div>
+```
+
+---
+
+## 断点系统
+
+Tailwind 默认断点：
+
+| 断点 | 最小宽度 | 设备类型 |
+|------|----------|----------|
+| `sm` | 640px | 大型手机 |
+| `md` | 768px | 平板 |
+| `lg` | 1024px | 小型笔记本 |
+| `xl` | 1280px | 桌面 |
+| `2xl` | 1536px | 大屏幕 |
+
+### 响应式使用示例
+
+```tsx
+// 响应式栅格
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  卡片
+</div>
+
+// 响应式间距
+<div className="p-4 md:p-6 lg:p-8">
+  内容
+</div>
+
+// 响应式文字
+<h1 className="text-2xl md:text-3xl lg:text-4xl">
+  标题
+</h1>
+
+// 响应式显示/隐藏
+<div className="hidden md:block">
+  桌面端显示
+</div>
+
+<div className="block md:hidden">
+  移动端显示
+</div>
+```

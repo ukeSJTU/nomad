@@ -28,26 +28,26 @@ import { Meta } from '@storybook/addon-docs/blocks';
 ### 我应该用什么字体大小？
 
 **这是标题吗？**
-- 页面主标题 → `text-3xl` 或 `text-4xl` + `font-bold`
-- 卡片/分组标题 → `text-xl` 或 `text-2xl` + `font-semibold`
-- 小节标题 → `text-lg` + `font-medium`
+- 页面主标题 → `text-3xl font-bold`
+- 卡片/分组标题 → `text-xl font-semibold`
+- 小节标题 → `text-lg font-medium`
 
 **这是正文吗？**
-- 主要内容 → `text-base` + `font-normal`（默认，不用写）
-- 强调内容 → `text-base` + `font-medium`
-- 次要说明 → `text-sm` + `text-muted-foreground`
+- 主要内容 → `text-base font-normal`（默认，不用写）
+- 强调内容 → `text-base font-medium`
+- 次要说明 → `text-sm text-muted-foreground`
 
 **这是按钮吗？**
-- 统一使用 → `text-base` + `font-medium`
-- 小按钮 → `text-sm` + `font-medium`
+- 标准按钮 → `text-base font-medium`
+- 小按钮 → `text-sm font-medium`
 
 **这是价格/数字吗？**
-- 突出显示 → `text-2xl` 或更大 + `font-bold` + `text-primary`
-- 列表中 → `text-xl` + `font-semibold` + `text-primary`
+- 突出显示 → `text-2xl font-bold text-primary`
+- 列表中 → `text-xl font-semibold text-primary`
 
 **这是辅助信息吗？**
-- 说明文字 → `text-sm` + `text-muted-foreground`
-- 时间戳 → `text-xs` + `text-muted-foreground`
+- 说明文字 → `text-sm text-muted-foreground`
+- 时间戳 → `text-xs text-muted-foreground`
 
 ---
 
@@ -63,8 +63,8 @@ import { Meta } from '@storybook/addon-docs/blocks';
 | `text-xl` | 20px | 28px | 三级标题 | 列表项标题、小节标题 |
 
 **使用建议：**
-- 每个页面只有一个 `text-4xl` 或 `text-3xl` 标题
-- 标题使用 `font-semibold` 或 `font-bold` 字重
+- 每个页面只有一个 `text-3xl` 标题
+- 标题使用 `font-semibold` 字重
 - 移动端可适当减小：`text-2xl md:text-3xl`
 
 ---
@@ -96,7 +96,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 **使用建议：**
 - 按钮统一使用 `font-medium`
-- 价格/金额使用 `font-semibold` 或 `font-bold`
+- 价格/金额使用 `font-semibold`
 - 避免在正文中使用 `font-bold`（显得突兀）
 
 ---
