@@ -2,11 +2,12 @@
 
 import { Turnstile } from "@marsidev/react-turnstile";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import UpdateEmailForm from "@/components/security/update-email-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { updateEmailAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
@@ -38,7 +39,7 @@ export default function EmailPageClient({
 }: EmailPageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(0);
+  const { countdown, start: startCountdown } = useOtpCountdown();
   const {
     turnstileRef,
     setError: setCaptchaError,
@@ -77,7 +78,7 @@ export default function EmailPageClient({
         toast.error("发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送到新邮箱");
-        setCountdown(60); // Start 60-second countdown
+        startCountdown();
       }
     } catch (error) {
       console.error("发送验证码异常:", error);
@@ -141,16 +142,6 @@ export default function EmailPageClient({
       setIsLoading(false);
     }
   };
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [countdown]);
 
   return (
     <Card>

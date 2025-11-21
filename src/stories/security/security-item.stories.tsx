@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import SecurityItem from "@/components/security/security-item";
+import SecurityItem, {
+  SecurityStatus,
+} from "@/components/security/security-item";
 
 const meta = {
   title: "Security/SecurityItem",
@@ -18,9 +20,15 @@ const meta = {
       control: "text",
       description: "Detailed description of the security item",
     },
-    isSet: {
-      control: "boolean",
-      description: "Whether the security item is set/configured",
+    status: {
+      control: "select",
+      options: [
+        "verified",
+        "unverified",
+        "notSet",
+      ] as readonly SecurityStatus[],
+      description:
+        "Security status: verified (set and verified), unverified (set but not verified), notSet (not set)",
     },
     value: {
       control: "text",
@@ -43,14 +51,14 @@ type StoryWithRender = Omit<StoryObj<typeof meta>, "args">;
 
 /**
  * Default state of a security item that is not yet set up.
- * Shows a warning icon and "未绑定" status.
+ * Shows an X icon and "未设置" status.
  */
-export const PasswordNotSet: Story = {
+export const NotSet: Story = {
   args: {
     title: "登录密码",
     description:
       "安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。",
-    isSet: false,
+    status: "notSet",
     actionHref: "/home/security/password",
     actionLabel: "设置登录密码",
   },
@@ -62,15 +70,15 @@ export const PasswordNotSet: Story = {
 };
 
 /**
- * Password security item when already set.
+ * Password security item when already set and verified.
  * Shows a check icon and "已绑定" status without a value.
  */
-export const PasswordSet: Story = {
+export const PasswordVerified: Story = {
   args: {
     title: "登录密码",
     description:
       "安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。",
-    isSet: true,
+    status: "verified",
     actionHref: "/home/security/password",
     actionLabel: "修改",
   },
@@ -82,15 +90,15 @@ export const PasswordSet: Story = {
 };
 
 /**
- * Phone number security item when not bound.
- * Shows a warning icon and "未绑定" status.
+ * Phone number security item when not set.
+ * Shows an X icon and "未设置" status.
  */
-export const PhoneNotBound: Story = {
+export const PhoneNotSet: Story = {
   args: {
     title: "绑定手机",
     description:
       "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
-    isSet: false,
+    status: "notSet",
     actionHref: "/home/security/phone",
     actionLabel: "设置绑定手机",
   },
@@ -102,15 +110,36 @@ export const PhoneNotBound: Story = {
 };
 
 /**
- * Phone number security item when bound.
- * Shows a check icon, "已绑定" status with masked phone number.
+ * Phone number security item when set but not verified.
+ * Shows an alert icon and "已设置但未验证" status with masked phone number.
  */
-export const PhoneBound: Story = {
+export const PhoneUnverified: Story = {
   args: {
     title: "绑定手机",
     description:
       "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
-    isSet: true,
+    status: "unverified",
+    value: "+86138****5678",
+    actionHref: "/home/security/phone",
+    actionLabel: "验证手机号",
+  },
+  render: args => (
+    <div className="w-[700px]">
+      <SecurityItem {...args} />
+    </div>
+  ),
+};
+
+/**
+ * Phone number security item when verified.
+ * Shows a check icon, "已绑定" status with masked phone number.
+ */
+export const PhoneVerified: Story = {
+  args: {
+    title: "绑定手机",
+    description:
+      "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
+    status: "verified",
     value: "+86138****5678",
     actionHref: "/home/security/phone",
     actionLabel: "修改",
@@ -123,14 +152,14 @@ export const PhoneBound: Story = {
 };
 
 /**
- * Email security item when not bound.
- * Shows a warning icon and "未绑定" status.
+ * Email security item when not set.
+ * Shows an X icon and "未设置" status.
  */
-export const EmailNotBound: Story = {
+export const EmailNotSet: Story = {
   args: {
     title: "绑定邮箱",
     description: "绑定邮箱后，您即可使用邮箱登录账号或找回密码等。",
-    isSet: false,
+    status: "notSet",
     actionHref: "/home/security/email",
     actionLabel: "设置绑定邮箱",
   },
@@ -142,14 +171,34 @@ export const EmailNotBound: Story = {
 };
 
 /**
- * Email security item when bound.
- * Shows a check icon, "已绑定" status with the email address.
+ * Email security item when set but not verified.
+ * Shows an alert icon and "已设置但未验证" status with the email address.
  */
-export const EmailBound: Story = {
+export const EmailUnverified: Story = {
   args: {
     title: "绑定邮箱",
     description: "绑定邮箱后，您即可使用邮箱登录账号或找回密码等。",
-    isSet: true,
+    status: "unverified",
+    value: "user@example.com",
+    actionHref: "/home/security/email",
+    actionLabel: "验证邮箱",
+  },
+  render: args => (
+    <div className="w-[700px]">
+      <SecurityItem {...args} />
+    </div>
+  ),
+};
+
+/**
+ * Email security item when verified.
+ * Shows a check icon, "已绑定" status with the email address.
+ */
+export const EmailVerified: Story = {
+  args: {
+    title: "绑定邮箱",
+    description: "绑定邮箱后，您即可使用邮箱登录账号或找回密码等。",
+    status: "verified",
     value: "user@example.com",
     actionHref: "/home/security/email",
     actionLabel: "修改",
@@ -163,7 +212,7 @@ export const EmailBound: Story = {
 
 /**
  * Multiple security items stacked together.
- * Demonstrates how security items look when displayed in a list.
+ * Demonstrates how security items look when displayed in a list with different statuses.
  */
 export const StackedItems: StoryWithRender = {
   render: () => (
@@ -171,22 +220,22 @@ export const StackedItems: StoryWithRender = {
       <SecurityItem
         title="登录密码"
         description="安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。"
-        isSet={true}
+        status="verified"
         actionHref="/home/security/password"
         actionLabel="修改"
       />
       <SecurityItem
         title="绑定手机"
         description="绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。"
-        isSet={true}
+        status="unverified"
         value="+86138****5678"
         actionHref="/home/security/phone"
-        actionLabel="修改"
+        actionLabel="验证手机号"
       />
       <SecurityItem
         title="绑定邮箱"
         description="绑定邮箱后，您即可使用邮箱登录账号或找回密码等。"
-        isSet={false}
+        status="notSet"
         actionHref="/home/security/email"
         actionLabel="设置绑定邮箱"
       />
@@ -203,7 +252,7 @@ export const LongDescription: Story = {
     title: "账号安全设置",
     description:
       "这是一个非常长的描述文本，用于测试组件在处理大量文本时的表现。安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。同时，请确保您的密码不易被猜测，避免使用生日、电话号码等个人信息作为密码。",
-    isSet: false,
+    status: "notSet",
     actionHref: "/home/security",
     actionLabel: "立即设置",
   },
@@ -222,7 +271,7 @@ export const CustomActionLabel: Story = {
   args: {
     title: "双因素认证",
     description: "启用双因素认证可以大大提高账号安全性。",
-    isSet: false,
+    status: "notSet",
     actionHref: "/home/security/2fa",
     actionLabel: "立即启用",
   },

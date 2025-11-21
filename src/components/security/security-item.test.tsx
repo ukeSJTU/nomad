@@ -23,7 +23,7 @@ describe("SecurityItem Component", () => {
   const defaultProps = {
     title: "登录密码",
     description: "安全性高的密码以便账号更安全。",
-    isSet: false,
+    status: "notSet" as const,
     actionHref: "/home/security/password",
     actionLabel: "设置登录密码",
   };
@@ -55,33 +55,57 @@ describe("SecurityItem Component", () => {
   });
 
   describe("Status Display - Not Set", () => {
-    it("should display '未绑定' when isSet is false", () => {
-      render(<SecurityItem {...defaultProps} isSet={false} />);
-      expect(screen.getByText("未绑定")).toBeInTheDocument();
+    it("should display '未设置' when status is notSet", () => {
+      render(<SecurityItem {...defaultProps} status="notSet" />);
+      expect(screen.getByText("未设置")).toBeInTheDocument();
     });
   });
 
-  describe("Status Display - Set", () => {
-    it("should display '已绑定' when isSet is true without value", () => {
-      render(<SecurityItem {...defaultProps} isSet={true} />);
+  describe("Status Display - Unverified", () => {
+    it("should display '已设置但未验证' when status is unverified", () => {
+      render(<SecurityItem {...defaultProps} status="unverified" />);
+      expect(screen.getByText("已设置但未验证")).toBeInTheDocument();
+    });
+
+    it("should display '已设置但未验证' with value when provided", () => {
+      render(
+        <SecurityItem
+          {...defaultProps}
+          status="unverified"
+          value="+86138****5678"
+        />
+      );
+      expect(
+        screen.getByText("已设置但未验证 +86138****5678")
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("Status Display - Verified", () => {
+    it("should display '已绑定' when status is verified without value", () => {
+      render(<SecurityItem {...defaultProps} status="verified" />);
       expect(screen.getByText("已绑定")).toBeInTheDocument();
     });
 
     it("should display '已绑定' with value when provided", () => {
       render(
-        <SecurityItem {...defaultProps} isSet={true} value="+86138****5678" />
+        <SecurityItem
+          {...defaultProps}
+          status="verified"
+          value="+86138****5678"
+        />
       );
-      expect(screen.getByText("已绑定+86138****5678")).toBeInTheDocument();
+      expect(screen.getByText("已绑定 +86138****5678")).toBeInTheDocument();
     });
   });
 
   describe("Different Security Items", () => {
-    it("should render phone security item correctly", () => {
+    it("should render phone security item correctly when verified", () => {
       render(
         <SecurityItem
           title="绑定手机"
           description="绑定手机后，您即可享受手机号登录。"
-          isSet={true}
+          status="verified"
           value="+86138****5678"
           actionHref="/home/security/phone"
           actionLabel="修改"
@@ -92,8 +116,28 @@ describe("SecurityItem Component", () => {
       expect(
         screen.getByText("绑定手机后，您即可享受手机号登录。")
       ).toBeInTheDocument();
-      expect(screen.getByText("已绑定+86138****5678")).toBeInTheDocument();
+      expect(screen.getByText("已绑定 +86138****5678")).toBeInTheDocument();
       const button = screen.getByRole("link", { name: "修改" });
+      expect(button).toHaveAttribute("href", "/home/security/phone");
+    });
+
+    it("should render phone security item correctly when unverified", () => {
+      render(
+        <SecurityItem
+          title="绑定手机"
+          description="绑定手机后，您即可享受手机号登录。"
+          status="unverified"
+          value="+86138****5678"
+          actionHref="/home/security/phone"
+          actionLabel="验证"
+        />
+      );
+
+      expect(screen.getByText("绑定手机")).toBeInTheDocument();
+      expect(
+        screen.getByText("已设置但未验证 +86138****5678")
+      ).toBeInTheDocument();
+      const button = screen.getByRole("link", { name: "验证" });
       expect(button).toHaveAttribute("href", "/home/security/phone");
     });
 
@@ -102,7 +146,7 @@ describe("SecurityItem Component", () => {
         <SecurityItem
           title="绑定邮箱"
           description="绑定邮箱后，您即可使用邮箱登录账号。"
-          isSet={true}
+          status="verified"
           value="user@example.com"
           actionHref="/home/security/email"
           actionLabel="修改"
@@ -113,7 +157,7 @@ describe("SecurityItem Component", () => {
       expect(
         screen.getByText("绑定邮箱后，您即可使用邮箱登录账号。")
       ).toBeInTheDocument();
-      expect(screen.getByText("已绑定user@example.com")).toBeInTheDocument();
+      expect(screen.getByText("已绑定 user@example.com")).toBeInTheDocument();
       const button = screen.getByRole("link", { name: "修改" });
       expect(button).toHaveAttribute("href", "/home/security/email");
     });
@@ -123,7 +167,7 @@ describe("SecurityItem Component", () => {
         <SecurityItem
           title="登录密码"
           description="安全性高的密码以便账号更安全。"
-          isSet={true}
+          status="verified"
           actionHref="/home/security/password"
           actionLabel="修改"
         />
@@ -141,7 +185,7 @@ describe("SecurityItem Component", () => {
       render(
         <SecurityItem
           {...defaultProps}
-          isSet={false}
+          status="notSet"
           actionLabel="设置登录密码"
         />
       );
@@ -152,9 +196,20 @@ describe("SecurityItem Component", () => {
 
     it("should show '修改' action when already set", () => {
       render(
-        <SecurityItem {...defaultProps} isSet={true} actionLabel="修改" />
+        <SecurityItem {...defaultProps} status="verified" actionLabel="修改" />
       );
       expect(screen.getByRole("link", { name: "修改" })).toBeInTheDocument();
+    });
+
+    it("should show '验证' action when unverified", () => {
+      render(
+        <SecurityItem
+          {...defaultProps}
+          status="unverified"
+          actionLabel="验证"
+        />
+      );
+      expect(screen.getByRole("link", { name: "验证" })).toBeInTheDocument();
     });
   });
 

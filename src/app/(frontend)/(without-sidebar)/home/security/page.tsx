@@ -1,4 +1,4 @@
-import { SecurityItem } from "@/components/security";
+import { SecurityItem, type SecurityStatus } from "@/components/security";
 import { getUserSecurityStatus } from "@/lib/queries";
 import { requireAuth } from "@/utils/auth-helpers";
 
@@ -53,9 +53,29 @@ export default async function SecurityPage() {
   // Fetch user security status
   const securityStatus = await getUserSecurityStatus(userId);
 
-  // Derived status flags
-  const isPhoneVerified = !!(
-    securityStatus.phoneNumber && securityStatus.phoneNumberVerified
+  // Helper function to determine security status
+  const getSecurityStatus = (
+    hasValue: boolean,
+    isVerified: boolean
+  ): SecurityStatus => {
+    if (!hasValue) return "notSet";
+    if (hasValue && !isVerified) return "unverified";
+    return "verified";
+  };
+
+  // Derived status for each security item
+  const passwordStatus: SecurityStatus = securityStatus.hasPassword
+    ? "verified"
+    : "notSet";
+
+  const phoneStatus: SecurityStatus = getSecurityStatus(
+    !!securityStatus.phoneNumber,
+    securityStatus.phoneNumberVerified
+  );
+
+  const emailStatus: SecurityStatus = getSecurityStatus(
+    !!securityStatus.email,
+    securityStatus.emailVerified
   );
 
   return (
@@ -75,11 +95,11 @@ export default async function SecurityPage() {
           <SecurityItem
             title={SECURITY_ITEMS.password.title}
             description={SECURITY_ITEMS.password.description}
-            isSet={securityStatus.hasPassword}
-            value={securityStatus.hasPassword ? "" : undefined}
+            status={passwordStatus}
+            value={undefined}
             actionHref={SECURITY_ITEMS.password.href}
             actionLabel={
-              securityStatus.hasPassword
+              passwordStatus === "verified"
                 ? SECURITY_ITEMS.password.setLabel
                 : SECURITY_ITEMS.password.notSetLabel
             }
@@ -89,11 +109,11 @@ export default async function SecurityPage() {
           <SecurityItem
             title={SECURITY_ITEMS.phone.title}
             description={SECURITY_ITEMS.phone.description}
-            isSet={isPhoneVerified}
+            status={phoneStatus}
             value={securityStatus.phoneNumber || undefined}
             actionHref={SECURITY_ITEMS.phone.href}
             actionLabel={
-              isPhoneVerified
+              phoneStatus === "verified"
                 ? SECURITY_ITEMS.phone.setLabel
                 : SECURITY_ITEMS.phone.notSetLabel
             }
@@ -103,11 +123,11 @@ export default async function SecurityPage() {
           <SecurityItem
             title={SECURITY_ITEMS.email.title}
             description={SECURITY_ITEMS.email.description}
-            isSet={securityStatus.emailVerified}
+            status={emailStatus}
             value={securityStatus.email || undefined}
             actionHref={SECURITY_ITEMS.email.href}
             actionLabel={
-              securityStatus.emailVerified
+              emailStatus === "verified"
                 ? SECURITY_ITEMS.email.setLabel
                 : SECURITY_ITEMS.email.notSetLabel
             }

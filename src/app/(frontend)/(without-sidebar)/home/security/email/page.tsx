@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { getUserSecurityStatus } from "@/lib/queries/user";
 import { requireAuth } from "@/utils/auth-helpers";
@@ -22,11 +21,6 @@ export default async function EmailPage() {
 
   // Fetch user security status to get current email
   const securityStatus = await getUserSecurityStatus(userId);
-
-  // Handle case where user data is not found (should not happen for authenticated users)
-  if (!securityStatus) {
-    redirect("/auth/sign-in");
-  }
 
   return (
     <div className="container mx-auto py-8 px-4">
