@@ -13,15 +13,40 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 # 颜色系统
 
-本项目使用基于 Tailwind CSS 的颜色系统，采用 OKLCH 颜色空间以确保视觉一致性和更好的感知均匀性。
+本项目使用基于 Tailwind CSS 的语义化颜色系统，采用 OKLCH 颜色空间。
 
 ## 主题颜色
 
-我们的颜色系统支持浅色和深色主题，自动适应用户偏好设置。
+支持浅色和深色主题，自动适应用户偏好设置。
+
+---
 
 ### Primary（主色）
 
-用于主要的行动召唤按钮、重要的链接和强调元素。
+品牌主色，用于最重要的操作和元素。
+
+**使用场景：**
+- 主要操作按钮（预订、提交、确认、购买）
+- 关键导航链接
+- 激活状态（选中的标签页、当前页面导航）
+- 进度条、加载指示器
+- 需要强调的图标和徽章
+
+**代码示例：**
+```tsx
+// 主要按钮
+<Button className="bg-primary text-primary-foreground">
+  预订航班
+</Button>
+
+// 激活的导航项
+<NavLink className="text-primary font-medium">
+  我的订单
+</NavLink>
+
+// 进度条
+<div className="h-2 bg-primary rounded-full" style={{width: '60%'}} />
+```
 
 <ColorPalette>
   <ColorItem
@@ -34,7 +59,7 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
   <ColorItem
     title="Primary Foreground"
-    subtitle="主色前景色"
+    subtitle="主色前景色（按钮上的文字颜色）"
     colors={{
       'Light Mode': 'oklch(0.985 0 0)',
       'Dark Mode': 'oklch(0.205 0 0)',
@@ -42,15 +67,30 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
-**使用场景：**
-- 主要操作按钮
-- 重要链接
-- 关键信息提示
-- 选中状态
+---
 
 ### Secondary（次要色）
 
-用于次要的操作和辅助性内容。
+用于次要操作和辅助性内容，视觉优先级低于主色。
+
+**使用场景：**
+- 次要操作按钮（取消、返回、跳过）
+- 辅助功能按钮（筛选、排序）
+- 非关键信息的背景区域
+- 可选操作
+
+**代码示例：**
+```tsx
+// 次要按钮
+<Button className="bg-secondary text-secondary-foreground">
+  取消
+</Button>
+
+// 辅助区域
+<div className="bg-secondary text-secondary-foreground p-4 rounded-lg">
+  <p>提示信息</p>
+</div>
+```
 
 <ColorPalette>
   <ColorItem
@@ -71,14 +111,11 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
-**使用场景：**
-- 次要操作按钮
-- 辅助性内容区域
-- 非关键信息
+---
 
-### Destructive（破坏性操作色）
+### Destructive（危险操作色）
 
-用于删除、警告等破坏性操作，引起用户注意。
+用于删除、警告等不可逆的危险操作。
 
 <ColorPalette>
   <ColorItem
@@ -99,17 +136,69 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
-**使用场景：**
-- 删除操作
-- 错误提示
-- 危险警告
-- 取消/拒绝操作
+### Destructive（危险操作色）
 
-## 语义颜色
+用于删除、警告等不可逆的危险操作。
+
+**使用场景：**
+- 删除按钮（删除订单、删除账户）
+- 错误提示信息
+- 危险警告横幅
+- 拒绝、取消订单等操作
+
+**代码示例：**
+```tsx
+// 删除按钮
+<Button className="bg-destructive text-destructive-foreground">
+  删除订单
+</Button>
+
+// 错误提示
+<Alert className="border-destructive/50 text-destructive">
+  <AlertTitle>操作失败</AlertTitle>
+  <AlertDescription>请检查网络连接后重试</AlertDescription>
+</Alert>
+```
+
+<ColorPalette>
+  <ColorItem
+    title="Destructive"
+    subtitle="破坏性操作颜色"
+    colors={{
+      'Light Mode': 'oklch(0.577 0.245 27.325)',
+      'Dark Mode': 'oklch(0.704 0.191 22.216)',
+    }}
+  />
+  <ColorItem
+    title="Destructive Foreground"
+    subtitle="破坏性操作前景色"
+    colors={{
+      'Light Mode': 'oklch(0.985 0 0)',
+      'Dark Mode': 'oklch(0.985 0 0)',
+    }}
+  />
+</ColorPalette>
+
+---
+
+## 基础颜色
 
 ### Background & Foreground
 
-基础背景色和文字颜色，应用于整个应用程序。
+页面和组件的基础背景色与文字颜色。
+
+**使用场景：**
+- 页面主背景（`background`）
+- 正文文字（`foreground`）
+- 任何需要默认文字颜色的地方
+
+**代码示例：**
+```tsx
+// 页面容器
+<div className="bg-background text-foreground min-h-screen">
+  <p>这是正文内容</p>
+</div>
+```
 
 <ColorPalette>
   <ColorItem
@@ -130,9 +219,26 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
+---
+
 ### Card
 
-用于卡片容器和独立内容区域。
+卡片容器的背景色和文字颜色。
+
+**使用场景：**
+- 信息卡片（航班卡片、订单卡片）
+- 内容区块
+- 独立的功能模块容器
+- 需要与页面背景区分的区域
+
+**代码示例：**
+```tsx
+// 航班信息卡片
+<div className="bg-card text-card-foreground border border-border rounded-lg p-6">
+  <h3 className="font-semibold text-lg">上海 → 北京</h3>
+  <p className="text-sm text-muted-foreground">2025-11-22 08:00</p>
+</div>
+```
 
 <ColorPalette>
   <ColorItem
@@ -153,9 +259,31 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
+---
+
 ### Popover
 
-用于弹出层、下拉菜单等浮动元素。
+弹出层、下拉菜单等浮动元素的颜色。
+
+**使用场景：**
+- 下拉菜单
+- 弹出提示框（Tooltip）
+- 日期选择器弹层
+- 上下文菜单
+- 悬浮信息面板
+
+**代码示例：**
+```tsx
+// 下拉菜单
+<Popover>
+  <PopoverContent className="bg-popover text-popover-foreground">
+    <div className="space-y-2">
+      <button>选项 1</button>
+      <button>选项 2</button>
+    </div>
+  </PopoverContent>
+</Popover>
+```
 
 <ColorPalette>
   <ColorItem
@@ -176,9 +304,39 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
+---
+
 ### Muted
 
-用于不太重要的元素和辅助文本。
+弱化的背景色和辅助文字颜色，用于次要信息。
+
+**使用场景：**
+- 输入框占位符文字（`muted-foreground`）
+- 禁用状态的元素
+- 辅助说明文字、时间戳
+- 次要信息标签
+- 不活跃的导航项
+- 微妙的背景区域（`muted`）
+
+**代码示例：**
+```tsx
+// 表单字段说明
+<div>
+  <Label>邮箱地址</Label>
+  <Input placeholder="请输入邮箱" />
+  <p className="text-sm text-muted-foreground mt-1">
+    我们会向该邮箱发送确认信息
+  </p>
+</div>
+
+// 时间戳
+<p className="text-xs text-muted-foreground">2 小时前</p>
+
+// 禁用按钮
+<Button disabled className="bg-muted text-muted-foreground">
+  不可用
+</Button>
+```
 
 <ColorPalette>
   <ColorItem
@@ -199,15 +357,30 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
-**使用场景：**
-- 占位符文字
-- 禁用状态
-- 辅助说明文字
-- 次要信息
+---
 
 ### Accent
 
-用于强调和高亮元素。
+强调色，用于需要吸引注意但不如主色重要的元素。
+
+**使用场景：**
+- 悬停状态背景
+- 高亮选中项
+- 通知徽章背景
+- 需要微妙强调的区域
+
+**代码示例：**
+```tsx
+// 列表项悬停效果
+<li className="hover:bg-accent hover:text-accent-foreground p-2 rounded">
+  航班选项
+</li>
+
+// 通知徽章
+<div className="bg-accent text-accent-foreground px-2 py-1 rounded text-xs">
+  新功能
+</div>
+```
 
 <ColorPalette>
   <ColorItem
@@ -228,9 +401,30 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
+---
+
 ### Border, Input & Ring
 
-用于边框、输入框和焦点环。
+边框、输入框和焦点状态的颜色。
+
+**使用场景：**
+- `border`: 所有边框（卡片、分割线、表格）
+- `input`: 输入框边框
+- `ring`: 键盘焦点时的外轮廓
+
+**代码示例：**
+```tsx
+// 带边框的卡片
+<div className="border border-border rounded-lg p-4">
+  内容
+</div>
+
+// 输入框
+<input className="border border-input rounded px-3 py-2 focus:ring-2 focus:ring-ring" />
+
+// 分割线
+<hr className="border-border" />
+```
 
 <ColorPalette>
   <ColorItem
@@ -259,9 +453,31 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
+---
+
 ## 图表颜色
 
-用于数据可视化和图表的颜色系统，确保在不同主题下都具有良好的可读性。
+用于数据可视化、图表和统计数据展示。使用 `chart-1` 到 `chart-5` 来区分不同的数据系列。
+
+**使用场景：**
+- 折线图、柱状图的不同线条/柱子
+- 饼图的不同扇区
+- 数据对比
+- 仪表盘统计卡片
+
+**代码示例：**
+```tsx
+// 统计卡片
+<div className="border border-border rounded-lg p-4">
+  <div className="w-3 h-3 rounded-full bg-chart-1 inline-block mr-2" />
+  <span>已完成订单: 120</span>
+</div>
+
+<div className="border border-border rounded-lg p-4">
+  <div className="w-3 h-3 rounded-full bg-chart-2 inline-block mr-2" />
+  <span>进行中: 45</span>
+</div>
+```
 
 ### 浅色模式图表颜色
 
@@ -323,9 +539,34 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
+---
+
 ## 侧边栏颜色
 
-专门为侧边栏设计的颜色系统。
+侧边栏专用的颜色系统，与主内容区域有所区分。
+
+**使用场景：**
+- `sidebar`: 侧边栏背景
+- `sidebar-foreground`: 侧边栏普通文字
+- `sidebar-primary`: 侧边栏中的主要元素（当前页面）
+- `sidebar-accent`: 侧边栏悬停状态
+- `sidebar-border`: 侧边栏边框和分割线
+
+**代码示例：**
+```tsx
+// 侧边栏容器
+<aside className="bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
+  {/* 当前激活的导航项 */}
+  <a className="bg-sidebar-primary text-sidebar-primary-foreground">
+    首页
+  </a>
+  
+  {/* 普通导航项 */}
+  <a className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+    订单管理
+  </a>
+</aside>
+```
 
 <ColorPalette>
   <ColorItem
@@ -370,9 +611,11 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
   />
 </ColorPalette>
 
+---
+
 ## 使用指南
 
-### 在组件中使用颜色
+### 基本用法
 
 使用 Tailwind 的语义化 class 名称：
 
@@ -404,88 +647,47 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 
 ### 透明度修饰符
 
-可以使用 Tailwind 的透明度语法来调整颜色透明度：
+调整颜色的透明度，数字表示不透明度百分比：
 
 ```tsx
-<div className="bg-primary/10">10% 透明度</div>
-<div className="bg-primary/50">50% 透明度</div>
-<div className="bg-primary/90">90% 透明度</div>
+<div className="bg-primary/10">10% 不透明度</div>
+<div className="bg-primary/50">50% 不透明度</div>
+<div className="bg-primary/90">90% 不透明度</div>
+
+// 常用于悬停效果
+<button className="bg-primary hover:bg-primary/90">按钮</button>
 ```
 
-### 自定义颜色值
+---
 
-如需添加新的颜色，请在 `src/app/(frontend)/globals.css` 中修改 CSS 变量：
+## 快速参考
 
-1. 在 `:root` 中添加浅色模式的颜色值
-2. 在 `.dark` 中添加深色模式的颜色值
-3. 在 `@theme inline` 中添加对应的 Tailwind 映射
+### 按钮颜色选择
 
-示例：
+| 按钮类型 | 背景色 | 文字颜色 |
+|---------|--------|---------|
+| 主要操作 | `bg-primary` | `text-primary-foreground` |
+| 次要操作 | `bg-secondary` | `text-secondary-foreground` |
+| 危险操作 | `bg-destructive` | `text-destructive-foreground` |
+| 幽灵按钮 | `bg-transparent` | `text-foreground` |
+| 链接按钮 | 无背景 | `text-primary` |
 
-```css
-:root {
-  /* 添加新颜色 */
-  --success: oklch(0.6 0.15 150);
-  --success-foreground: oklch(1 0 0);
-}
+### 文字颜色选择
 
-.dark {
-  --success: oklch(0.7 0.18 150);
-  --success-foreground: oklch(0.1 0 0);
-}
+| 文字类型 | class |
+|---------|-------|
+| 正文 | `text-foreground` |
+| 辅助说明 | `text-muted-foreground` |
+| 重要信息 | `text-primary` |
+| 错误信息 | `text-destructive` |
+| 链接 | `text-primary hover:underline` |
 
-@theme inline {
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-}
-```
+### 背景颜色选择
 
-## 最佳实践
-
-### 1. 优先使用语义化颜色名称
-
-✅ **推荐：**
-```tsx
-<button className="bg-primary text-primary-foreground">提交</button>
-```
-
-❌ **不推荐：**
-```tsx
-<button className="bg-[oklch(0.205_0_0)] text-white">提交</button>
-```
-
-### 2. 确保无障碍性
-
-所有前景色和背景色的对比度应符合 WCAG AA 标准（至少 4.5:1）。本项目的颜色系统已经考虑了无障碍性要求。
-
-### 3. 深色模式测试
-
-所有颜色选择都应在浅色和深色模式下测试，确保在两种模式下都有良好的视觉效果。使用 Storybook 右上角的主题切换器进行测试。
-
-### 4. 保持一致性
-
-- 相同功能的元素使用相同的颜色
-- 破坏性操作统一使用 `destructive` 颜色
-- 辅助信息统一使用 `muted-foreground` 颜色
-
-### 5. 适度使用颜色
-
-- 避免在一个界面中使用过多颜色
-- 保持视觉层次清晰
-- 颜色应该引导用户注意力，而不是分散注意力
-
-## OKLCH 颜色空间的优势
-
-相比传统的 RGB 或 HSL 颜色空间，OKLCH 具有以下优势：
-
-1. **感知均匀性**：亮度变化在视觉上更加均匀
-2. **更宽的色域**：支持更多鲜艳的颜色
-3. **更好的可预测性**：调整色相时亮度保持一致
-4. **无障碍友好**：更容易创建符合对比度要求的颜色组合
-
-## 相关资源
-
-- [Tailwind CSS 颜色文档](https://tailwindcss.com/docs/customizing-colors)
-- [OKLCH 颜色空间](https://oklch.com/)
-- [WCAG 对比度指南](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)
-- [Radix UI Colors](https://www.radix-ui.com/colors) - 我们的颜色系统参考
+| 元素类型 | class |
+|---------|-------|
+| 页面主背景 | `bg-background` |
+| 卡片 | `bg-card` |
+| 次要区域 | `bg-secondary` |
+| 强调区域 | `bg-accent` |
+| 悬停效果 | `hover:bg-accent` |
