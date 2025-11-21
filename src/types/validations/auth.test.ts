@@ -4,15 +4,15 @@ import { emailSchema, phoneNumberSchema } from "@/types/validations/auth";
 
 describe("Auth Schemas", () => {
   describe("phoneNumberSchema", () => {
-    it("should validate international phone numbers", () => {
-      expect(phoneNumberSchema.safeParse("+8613800138000").success).toBe(true);
-      expect(phoneNumberSchema.safeParse("+14155552671").success).toBe(true);
-      expect(phoneNumberSchema.safeParse("+442071838750").success).toBe(true);
+    it("should validate chinese phone numbers", () => {
+      expect(phoneNumberSchema.safeParse("13812345678").success).toBe(true);
     });
 
     it("should reject invalid phone numbers", () => {
       expect(phoneNumberSchema.safeParse("123").success).toBe(false);
       expect(phoneNumberSchema.safeParse("abc").success).toBe(false);
+      expect(phoneNumberSchema.safeParse("1381234567").success).toBe(false);
+      expect(phoneNumberSchema.safeParse("138123456789").success).toBe(false);
     });
   });
 
