@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import type { SecurityStatus } from "@/components/security";
-import UpdatePhoneForm, {
+import {
   type PhoneFormMode,
-} from "@/components/security/update-phone-form";
+  type SecurityStatus,
+  UpdatePhoneForm,
+} from "@/components/security";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";

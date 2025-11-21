@@ -7,5 +7,11 @@
 
 export { default as ChangePasswordForm } from "./change-password-form";
 export { default as SecurityItem, type SecurityStatus } from "./security-item";
-export { default as UpdateEmailForm } from "./update-email-form";
-export { default as UpdatePhoneForm } from "./update-phone-form";
+export {
+  type EmailFormMode,
+  default as UpdateEmailForm,
+} from "./update-email-form";
+export {
+  type PhoneFormMode,
+  default as UpdatePhoneForm,
+} from "./update-phone-form";
