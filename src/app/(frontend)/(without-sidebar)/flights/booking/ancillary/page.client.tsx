@@ -2,7 +2,7 @@
 
 import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { AncillarySelection } from "@/components/flights/booking/ancillary-selection";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -33,21 +33,8 @@ export function BookingAncillaryPageClient({
 }: BookingAncillaryPageClientProps) {
   const router = useRouter();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-
-  // Use React 19's useActionState for form submission
-  const [state, formAction, isPending] = useActionState(
-    async (
-      _prevState: UpdateOrderAncillaryResult | null,
-      _formData: FormData
-    ): Promise<UpdateOrderAncillaryResult> => {
-      const result = await updateOrderAncillaryAction({
-        orderId: order.id,
-        ancillaryServiceCodes: selectedServices,
-      });
-      return result;
-    },
-    null
-  );
+  const [state, setState] = useState<UpdateOrderAncillaryResult | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   // Navigate to payment page on successful submission
   useEffect(() => {
@@ -94,7 +81,13 @@ export function BookingAncillaryPageClient({
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
-    formAction(new FormData());
+    startTransition(async () => {
+      const result = await updateOrderAncillaryAction({
+        orderId: order.id,
+        ancillaryServiceCodes: selectedServices,
+      });
+      setState(result);
+    });
   };
 
   return (

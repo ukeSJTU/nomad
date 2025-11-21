@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import {
-  updateUserInfoAction,
-  type UpdateUserInfoActionState,
-} from "@/lib/actions";
+import { updateUserInfoAction } from "@/lib/actions";
+import type { ActionResult } from "@/types/common";
 import type { UserInfo } from "@/types/dto";
 import {
   type UserInfoUpdateData,
@@ -49,12 +47,8 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
   const router = useRouter();
   const [isEditMode, setIsEditMode] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-
-  // Use useActionState for better form handling
-  const [state, formAction, isPending] = useActionState<
-    UpdateUserInfoActionState | null,
-    FormData
-  >(updateUserInfoAction, null);
+  const [state, setState] = useState<ActionResult<void> | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<UserInfoUpdateData>({
     resolver: zodResolver(userInfoUpdateSchema),
@@ -77,15 +71,10 @@ export function UserInfoForm({ userData }: UserInfoFormProps) {
   }, [state, router]);
 
   const handleSubmit = (data: UserInfoUpdateData) => {
-    // Convert data to FormData for useActionState
-    const formData = new FormData();
-    if (data.nickname !== undefined) formData.append("nickname", data.nickname);
-    if (data.name !== undefined) formData.append("name", data.name);
-    if (data.gender !== undefined) formData.append("gender", data.gender);
-    if (data.birthday !== undefined) formData.append("birthday", data.birthday);
-
-    // Submit via formAction
-    formAction(formData);
+    startTransition(async () => {
+      const result = await updateUserInfoAction(data);
+      setState(result);
+    });
   };
 
   const handleCancel = () => {

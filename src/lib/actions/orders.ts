@@ -12,11 +12,11 @@ import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/lib/schema/orders";
 import { cancelOrder } from "@/lib/services/orders";
 import type {
-  ActionResult,
   CreateOrderResult,
   DeleteOrderResult,
   UpdateOrderAncillaryResult,
 } from "@/types/actions/orders";
+import type { ActionResult } from "@/types/common";
 import {
   addCurrency,
   getCurrencyValue,

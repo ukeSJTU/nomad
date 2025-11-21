@@ -83,7 +83,7 @@ export default async function [ComponentName]() {
 
 - `useState`: [说明状态管理的内容]
 - `useEffect`: [说明副作用处理的逻辑]
-- `useFormState` / `useFormStatus`: [如涉及表单处理]
+- `useTransition`: [如涉及异步操作和加载状态]
 
 **状态管理:**
 
