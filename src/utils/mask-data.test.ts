@@ -41,12 +41,6 @@ describe("Data Masking Utilities", () => {
       expect(masked).toBe("138****5678");
     });
 
-    it("should mask a phone with country code prefix", () => {
-      const phone = "+86 13812345678";
-      const masked = maskPhoneNumber(phone);
-      expect(masked).toBe("138****5678");
-    });
-
     it("should handle short phone numbers", () => {
       const shortPhone = "1234567";
       expect(maskPhoneNumber(shortPhone)).toBe("1234567");
