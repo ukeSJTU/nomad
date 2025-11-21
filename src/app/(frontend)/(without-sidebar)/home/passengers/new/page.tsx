@@ -1,8 +1,9 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { NewPassengerClient } from "@/components/passengers/new-passenger-client";
 import { auth } from "@/lib/auth";
+
+import { NewPassengerClient } from "./page.client";
 
 export default async function NewPassengerPage() {
   // Check authentication

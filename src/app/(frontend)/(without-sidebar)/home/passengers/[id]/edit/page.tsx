@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
-import { EditPassengerClient } from "@/components/passengers/edit-passenger-client";
 import { getPassengerAction } from "@/lib/actions";
+
+import { EditPassengerClient } from "./page.client";
 
 export default async function EditPassengerPage({
   params,
