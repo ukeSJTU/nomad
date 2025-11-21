@@ -19,6 +19,44 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 - **蓝色（Primary）**: 专业、可信赖，用于主要内容和信息展示
 - **橙色（Secondary）**: 活力、行动感，用于操作按钮和重要交互
 
+---
+
+## 快速参考
+
+### 按钮颜色选择
+
+| 按钮类型 | 背景色 | 文字颜色 | 说明 |
+|---------|--------|---------|------|
+| 主要操作（CTA） | `bg-secondary` | `text-secondary-foreground` | 橙色，吸引点击 |
+| 次要操作 | `bg-background border border-input` | `text-foreground` | 白底描边 |
+| 危险操作 | `bg-destructive` | `text-destructive-foreground` | 红色 |
+| 幽灵按钮 | `bg-transparent hover:bg-accent` | `text-foreground` | 透明背景 |
+| 链接按钮 | 无背景 | `text-primary hover:underline` | 蓝色文字 |
+
+### 文字颜色选择
+
+| 文字类型 | class | 说明 |
+|---------|-------|------|
+| 正文 | `text-foreground` | 深灰色 |
+| 辅助说明 | `text-muted-foreground` | 中灰色 |
+| 重要信息 | `text-primary` | 蓝色 |
+| 价格/数字 | `text-primary font-bold` | 蓝色加粗 |
+| 错误信息 | `text-destructive` | 红色 |
+| 链接 | `text-primary hover:underline` | 蓝色 |
+
+### 背景颜色选择
+
+| 元素类型 | class | 说明 |
+|---------|-------|------|
+| 页面主背景 | `bg-background` | 微蓝灰 |
+| 卡片 | `bg-card` | 纯白 |
+| 操作按钮 | `bg-secondary` | 橙色 |
+| 信息标签 | `bg-primary/10 text-primary` | 浅蓝底+蓝字 |
+| 悬停效果 | `hover:bg-accent` | 浅蓝 |
+| 禁用状态 | `bg-muted` | 浅灰 |
+
+---
+
 ## 主题颜色
 
 支持浅色和深色主题，自动适应用户偏好设置。
@@ -693,39 +731,3 @@ import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
 // 常用于悬停效果
 <button className="bg-primary hover:bg-primary/90">按钮</button>
 ```
-
----
-
-## 快速参考
-
-### 按钮颜色选择
-
-| 按钮类型 | 背景色 | 文字颜色 | 说明 |
-|---------|--------|---------|------|
-| 主要操作（CTA） | `bg-secondary` | `text-secondary-foreground` | 橙色，吸引点击 |
-| 次要操作 | `bg-background border border-input` | `text-foreground` | 白底描边 |
-| 危险操作 | `bg-destructive` | `text-destructive-foreground` | 红色 |
-| 幽灵按钮 | `bg-transparent hover:bg-accent` | `text-foreground` | 透明背景 |
-| 链接按钮 | 无背景 | `text-primary hover:underline` | 蓝色文字 |
-
-### 文字颜色选择
-
-| 文字类型 | class | 说明 |
-|---------|-------|------|
-| 正文 | `text-foreground` | 深灰色 |
-| 辅助说明 | `text-muted-foreground` | 中灰色 |
-| 重要信息 | `text-primary` | 蓝色 |
-| 价格/数字 | `text-primary font-bold` | 蓝色加粗 |
-| 错误信息 | `text-destructive` | 红色 |
-| 链接 | `text-primary hover:underline` | 蓝色 |
-
-### 背景颜色选择
-
-| 元素类型 | class | 说明 |
-|---------|-------|------|
-| 页面主背景 | `bg-background` | 微蓝灰 |
-| 卡片 | `bg-card` | 纯白 |
-| 操作按钮 | `bg-secondary` | 橙色 |
-| 信息标签 | `bg-primary/10 text-primary` | 浅蓝底+蓝字 |
-| 悬停效果 | `hover:bg-accent` | 浅蓝 |
-| 禁用状态 | `bg-muted` | 浅灰 |
