@@ -73,9 +73,9 @@ export default async function SecurityPage() {
                   <h3 className="text-lg font-semibold mb-1">登录密码</h3>
                   <div className="text-sm text-muted-foreground space-y-1">
                     {securityStatus.hasPassword ? (
-                      <p className="text-green-600 font-medium">已设置 ✓</p>
+                      <p className="text-green-600 font-medium">已设置</p>
                     ) : (
-                      <p className="text-yellow-600 font-medium">未设置 ⚠️</p>
+                      <p className="text-yellow-600 font-medium">未设置</p>
                     )}
                     <p className="mt-2">
                       安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。
@@ -117,11 +117,11 @@ export default async function SecurityPage() {
                     securityStatus.phoneNumberVerified ? (
                       <>
                         <p className="text-green-600 font-medium">
-                          已绑定 ✓ {securityStatus.phoneNumber}
+                          已绑定{securityStatus.phoneNumber}
                         </p>
                       </>
                     ) : (
-                      <p className="text-yellow-600 font-medium">未绑定 ⚠️</p>
+                      <p className="text-yellow-600 font-medium">未绑定</p>
                     )}
                     <p className="mt-2">
                       绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。
@@ -164,11 +164,11 @@ export default async function SecurityPage() {
                     {securityStatus.emailVerified ? (
                       <>
                         <p className="text-green-600 font-medium">
-                          已绑定 ✓ {securityStatus.email}
+                          已绑定{securityStatus.email}
                         </p>
                       </>
                     ) : (
-                      <p className="text-yellow-600 font-medium">未绑定 ⚠️</p>
+                      <p className="text-yellow-600 font-medium">未绑定</p>
                     )}
                     <p className="mt-2">
                       绑定邮箱后，您即可使用邮箱登录账号或找回密码等。
