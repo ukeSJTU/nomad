@@ -2,6 +2,7 @@
 
 import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -42,9 +43,11 @@ import { getInitials } from "@/utils/string";
  */
 export default function UserMenu() {
   const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     await authClient.signOut();
+    router.push("/");
   };
 
   if (isPending) {
