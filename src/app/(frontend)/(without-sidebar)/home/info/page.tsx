@@ -75,7 +75,7 @@ export default async function UserInfoPage() {
                       </span>
                       <span className="text-xs text-green-600">(已验证)</span>
                       <Link
-                        href="/home/info/email"
+                        href="/home/security/email"
                         className="text-sm text-blue-600 hover:underline"
                       >
                         修改
@@ -85,7 +85,7 @@ export default async function UserInfoPage() {
                     <>
                       <span className="text-sm text-gray-500">未填写</span>
                       <Link
-                        href="/home/info/email"
+                        href="/home/security/email"
                         className="text-sm text-blue-600 hover:underline"
                       >
                         验证
@@ -108,7 +108,7 @@ export default async function UserInfoPage() {
                       </span>
                       <span className="text-xs text-green-600">(已验证)</span>
                       <Link
-                        href="/home/info/phone"
+                        href="/home/security/phone"
                         className="text-sm text-blue-600 hover:underline"
                       >
                         修改
@@ -118,7 +118,7 @@ export default async function UserInfoPage() {
                     <>
                       <span className="text-sm text-gray-500">未填写</span>
                       <Link
-                        href="/home/info/phone"
+                        href="/home/security/phone"
                         className="text-sm text-blue-600 hover:underline"
                       >
                         验证
