@@ -9,13 +9,13 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { user } from "@/lib/schema";
 import { orders, payments } from "@/lib/schema/orders";
+import type { ProcessPaymentResult } from "@/types/actions/payments";
 import {
   getCurrencyValue,
   parseCurrency,
   subtractCurrency,
   toDatabaseValue,
-} from "@/lib/utils/currency";
-import type { ProcessPaymentResult } from "@/types/actions/payments";
+} from "@/utils/currency";
 
 /**
  * Validation schema for process payment request

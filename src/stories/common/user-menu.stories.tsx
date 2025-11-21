@@ -11,7 +11,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-import { getInitials } from "@/lib/utils/string";
+import { getInitials } from "@/utils/string";
 
 // Mock component for Storybook that accepts controlled props
 interface UserMenuProps {

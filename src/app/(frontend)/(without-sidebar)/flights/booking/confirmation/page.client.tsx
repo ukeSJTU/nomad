@@ -13,7 +13,7 @@ import {
   formatCurrencyWithoutSymbol,
   getCurrencyValue,
   parseCurrency,
-} from "@/lib/utils/currency";
+} from "@/utils/currency";
 
 import type { OrderConfirmationDetails } from "./queries";
 

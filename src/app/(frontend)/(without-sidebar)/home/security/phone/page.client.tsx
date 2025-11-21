@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { updatePhoneNumberAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
-import { getTurnstileSiteKey } from "@/lib/turnstile";
+import { getTurnstileSiteKey } from "@/services/turnstile";
 
 const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 

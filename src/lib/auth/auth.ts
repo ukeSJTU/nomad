@@ -5,12 +5,12 @@ import { nextCookies } from "better-auth/next-js";
 import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@/lib/db";
-import { sendEmailOtp } from "@/lib/email";
-import { sendSmsOtp } from "@/lib/sms";
+import { sendEmailOtp } from "@/services/email";
+import { sendSmsOtp } from "@/services/sms";
 import {
   getTurnstileSecretKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
-} from "@/lib/turnstile";
+} from "@/services/turnstile";
 import logger from "@/utils/logger";
 
 import { isProduction } from "./utils";

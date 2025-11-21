@@ -11,7 +11,7 @@ import {
   type QuickDatePrice,
 } from "@/lib/actions/quick-date-prices";
 import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/utils/currency";
+import { formatCurrency } from "@/utils/currency";
 import { formatDateWithWeekday } from "@/utils/date";
 
 interface QuickDateSelectorProps {

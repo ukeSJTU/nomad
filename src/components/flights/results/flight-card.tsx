@@ -20,7 +20,7 @@ export interface SeatClassOption {
   /** Price (number, in CNY) */
   price: number;
 }
-import { formatCurrency } from "@/lib/utils/currency";
+import { formatCurrency } from "@/utils/currency";
 
 export interface FlightCardProps {
   /** Airline logo URL */

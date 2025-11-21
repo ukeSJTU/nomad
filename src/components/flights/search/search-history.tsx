@@ -11,7 +11,7 @@ import {
   compareCurrency,
   formatCurrencyWithoutSymbol,
   parseCurrency,
-} from "@/lib/utils/currency";
+} from "@/utils/currency";
 import { getWeekdayLabel } from "@/utils/date";
 
 interface FlightSearchHistoryCardProps {

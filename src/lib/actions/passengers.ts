@@ -10,7 +10,7 @@ import {
   type PassengerInput,
   updatePassenger,
 } from "@/lib/services";
-import { getAuthenticatedUserId } from "@/lib/utils/auth-helpers";
+import { getAuthenticatedUserId } from "@/utils/auth-helpers";
 
 /**
  * Server Actions for Passenger Management (Thin Controller Layer)

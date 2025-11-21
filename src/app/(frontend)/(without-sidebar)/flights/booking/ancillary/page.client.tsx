@@ -14,13 +14,13 @@ import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
 } from "@/lib/schema/ancillary";
+import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
 import {
   addCurrency,
   formatCurrency,
   getCurrencyValue,
   parseCurrency,
-} from "@/lib/utils/currency";
-import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
+} from "@/utils/currency";
 
 import type { OrderWithDetails } from "./queries";
 

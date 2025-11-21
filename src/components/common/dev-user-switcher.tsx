@@ -36,7 +36,7 @@ import {
   switchUserAction,
 } from "@/lib/actions/dev-tools";
 import { authClient } from "@/lib/auth/client";
-import { getInitials } from "@/lib/utils/string";
+import { getInitials } from "@/utils/string";
 
 type User = Extract<DevUserListResult, { success: true }>["users"][number];
 

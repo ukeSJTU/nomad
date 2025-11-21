@@ -4,11 +4,7 @@ import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { airports, cities, flights, flightSeatClasses } from "@/lib/schema";
-import {
-  addCurrency,
-  getCurrencyValue,
-  parseCurrency,
-} from "@/lib/utils/currency";
+import { addCurrency, getCurrencyValue, parseCurrency } from "@/utils/currency";
 import {
   calculateQuickSelectDateRange,
   getBookingDateRange,

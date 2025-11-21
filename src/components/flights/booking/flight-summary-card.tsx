@@ -9,7 +9,7 @@ import {
   getCurrencyValue,
   multiplyCurrency,
   parseCurrency,
-} from "@/lib/utils/currency";
+} from "@/utils/currency";
 import { formatDateWithWeekday } from "@/utils/date";
 
 type FlightSummaryCardProps = {

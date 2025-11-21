@@ -6,11 +6,11 @@ vi.mock("@/lib/db", () => ({
 }));
 
 // Mock other dependencies that might be imported
-vi.mock("@/lib/sms", () => ({
+vi.mock("@/services/sms", () => ({
   sendSmsOtp: vi.fn(),
 }));
 
-vi.mock("@/lib/email", () => ({
+vi.mock("@/services/email", () => ({
   sendEmailOtp: vi.fn(),
 }));
 

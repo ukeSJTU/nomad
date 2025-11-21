@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { processPaymentAction } from "@/lib/actions/payments";
 import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
-import { formatCurrency } from "@/lib/utils/currency";
+import { formatCurrency } from "@/utils/currency";
 
 import type { OrderWithDetails } from "./queries";
 
