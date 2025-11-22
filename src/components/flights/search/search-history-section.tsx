@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { clearSearchHistory } from "@/lib/actions";
+import { clearSearchHistoryAction } from "@/lib/actions";
 import type { SearchHistoryRecord } from "@/types/dto";
 
 import { FlightSearchHistoryCard } from "./search-history";
@@ -24,7 +24,7 @@ export function FlightSearchHistorySection({
   const handleClearHistory = async () => {
     setIsClearing(true);
     try {
-      const result = await clearSearchHistory();
+      const result = await clearSearchHistoryAction();
 
       if (result.success) {
         toast.success(result.message);

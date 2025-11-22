@@ -1,129 +1,102 @@
 "use server";
 
-import { and, eq, sql } from "drizzle-orm";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { cities, flightSearchHistory } from "@/lib/schema";
+import { clearFlightSearchHistory, recordFlightSearch } from "@/lib/services";
+import type { RecordFlightSearchData } from "@/types/validations";
 import logger from "@/utils/logger";
 
-interface RecordSearchHistoryParams {
-  departureCityIata: string;
-  arrivalCityIata: string;
-  departureDate: string; // YYYY-MM-DD format
-  returnDate?: string; // YYYY-MM-DD format (optional for one-way)
-  tripType: "one-way" | "round-trip";
-  seatClass?: "any" | "economy" | "business" | "first";
-  lowestPrice?: number; // Optional: lowest price found in search results
-}
+/**
+ * Server Actions for Flight Search History Management (Thin Controller Layer)
+ *
+ * These actions serve as thin controllers that:
+ * 1. Handle authentication (Next.js specific)
+ * 2. Call service layer for business logic
+ * 3. Format responses
+ *
+ * All business logic is in the service layer (src/lib/services/flight-search-history.ts)
+ * which can be tested independently without mocking Next.js runtime.
+ */
 
 /**
- * Record user's flight search history
+ * Server action to record user's flight search history
  *
- * Business Logic:
- * - Only records for logged-in users
- * - If same search exists (same route + dates), increment search_count and update last_searched_at
- * - If new search, create new record
- * - Silently fails for unauthenticated users (returns without error)
+ * This is a thin controller that:
+ * 1. Verifies authentication (silently returns for unauthenticated users)
+ * 2. Calls service layer
+ * 3. Returns void (silently succeeds or fails)
  *
- * @param params - Search parameters to record
+ * Note: This action intentionally does not throw errors or return error responses,
+ * as recording search history should never break the user's search flow.
+ *
+ * @param data - Search parameters to record
  */
-export async function recordSearchHistory(
-  params: RecordSearchHistoryParams
+export async function recordSearchHistoryAction(
+  data: RecordFlightSearchData
 ): Promise<void> {
-  logger.debug(`Recording search history for: ${JSON.stringify(params)}`);
+  logger.debug(`Recording search history action: ${JSON.stringify(data)}`);
+
   try {
-    // Check if user is logged in
+    // 1. Verify authentication
     const headersList = await headers();
     const session = await auth.api.getSession({ headers: headersList });
 
     if (!session?.user?.id) {
       // User not logged in - silently return without recording
-      logger.debug("Search history not recorded as user is not logged in.");
+      logger.debug("Search history not recorded as user is not logged in");
       return;
     }
 
-    const userId = session.user.id;
-
-    // Fetch city details for both departure and arrival cities
-    const [departureCity, arrivalCity] = await Promise.all([
-      db.query.cities.findFirst({
-        where: and(
-          eq(cities.iataCode, params.departureCityIata.toUpperCase()),
-          eq(cities.isDeleted, false)
-        ),
-      }),
-      db.query.cities.findFirst({
-        where: and(
-          eq(cities.iataCode, params.arrivalCityIata.toUpperCase()),
-          eq(cities.isDeleted, false)
-        ),
-      }),
-    ]);
-
-    if (!departureCity || !arrivalCity) {
-      console.error("Invalid city IATA codes provided for search history");
-      return;
-    }
-
-    // Normalize seat class
-    const seatClass = params.seatClass?.toLowerCase() as
-      | "any"
-      | "economy"
-      | "business"
-      | "first"
-      | undefined;
-
-    // Check if this exact search already exists (not deleted)
-    const existingSearch = await db.query.flightSearchHistory.findFirst({
-      where: and(
-        eq(flightSearchHistory.userId, userId),
-        eq(flightSearchHistory.departureCityId, departureCity.id),
-        eq(flightSearchHistory.arrivalCityId, arrivalCity.id),
-        eq(flightSearchHistory.departureDate, params.departureDate),
-        params.returnDate
-          ? eq(flightSearchHistory.returnDate, params.returnDate)
-          : sql`${flightSearchHistory.returnDate} IS NULL`,
-        eq(flightSearchHistory.isDeleted, false)
-      ),
-    });
-
-    if (existingSearch) {
-      // Update existing search: increment count, update timestamp, and optionally update price
-      await db
-        .update(flightSearchHistory)
-        .set({
-          searchCount: sql`${flightSearchHistory.searchCount} + 1`,
-          lastSearchedAt: new Date(),
-          ...(params.lowestPrice !== undefined && {
-            currentLowestPrice: params.lowestPrice.toString(),
-          }),
-          updatedAt: new Date(),
-        })
-        .where(eq(flightSearchHistory.id, existingSearch.id));
-    } else {
-      // Create new search history record
-      await db.insert(flightSearchHistory).values({
-        userId,
-        departureCityId: departureCity.id,
-        arrivalCityId: arrivalCity.id,
-        departureCityIata: departureCity.iataCode,
-        departureCityName: departureCity.name,
-        arrivalCityIata: arrivalCity.iataCode,
-        arrivalCityName: arrivalCity.name,
-        tripType: params.tripType,
-        departureDate: params.departureDate,
-        returnDate: params.returnDate || null,
-        seatClass: seatClass || "any", // Default to "any" to match database schema default
-        lowestPriceAtSearch: params.lowestPrice?.toString() || null,
-        currentLowestPrice: params.lowestPrice?.toString() || null,
-        searchCount: 1,
-        lastSearchedAt: new Date(),
-      });
-    }
+    // 2. Call service layer
+    await recordFlightSearch(session.user.id, data);
   } catch (error) {
-    // Log error but don't throw - recording history should not break the search flow
-    console.error("Failed to record search history:", error);
+    // Silently fail - recording history should not break the search flow
+    logger.error({ err: error }, "Record search history action error");
+  }
+}
+
+/**
+ * Server action to clear all search history for the current user
+ *
+ * This is a thin controller that:
+ * 1. Verifies authentication
+ * 2. Calls service layer
+ * 3. Returns formatted response
+ *
+ * @returns Result object with success status and message
+ */
+export async function clearSearchHistoryAction(): Promise<{
+  success: boolean;
+  message: string;
+}> {
+  logger.debug("Clearing search history action");
+
+  try {
+    // 1. Verify authentication
+    const headersList = await headers();
+    const session = await auth.api.getSession({ headers: headersList });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        message: "用户未登录",
+      };
+    }
+
+    // 2. Call service layer
+    const result = await clearFlightSearchHistory(session.user.id);
+
+    // 3. Return result
+    return {
+      success: result.success,
+      message: result.message || result.error || "未知错误",
+    };
+  } catch (error) {
+    logger.error({ err: error }, "Clear search history action error");
+    return {
+      success: false,
+      message: "清空搜索历史失败，请稍后重试",
+    };
   }
 }
