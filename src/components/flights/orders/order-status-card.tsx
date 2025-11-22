@@ -11,8 +11,11 @@ import { OrderStatusCardData } from "@/types/dto/orders";
 export type OrderStatusCardProps = {
   data: OrderStatusCardData;
   onGoToPayment?: () => void;
+  onCancelOrder?: () => void;
   onResendConfirmation?: () => void;
+  onRequestRefund?: () => void;
   isLoading?: boolean;
+  canRefund?: boolean;
 };
 
 /**
@@ -38,7 +41,9 @@ export function OrderStatusCard({
   data,
   onGoToPayment,
   onResendConfirmation,
+  onRequestRefund,
   isLoading = false,
+  canRefund = true,
 }: OrderStatusCardProps) {
   const [timeLeft, setTimeLeft] = useState(0);
 
@@ -148,20 +153,31 @@ export function OrderStatusCard({
             </div>
           </div>
 
-          {/* Action Button - Only for PENDING_PAYMENT and CONFIRMED */}
+          {/* Action Buttons - Status-specific */}
           {data.status === "PENDING_PAYMENT" && !isPaymentExpired && (
             <Button onClick={onGoToPayment} disabled={isLoading}>
               去付款
             </Button>
           )}
           {data.status === "CONFIRMED" && (
-            <Button
-              variant="outline"
-              onClick={onResendConfirmation}
-              disabled={isLoading}
-            >
-              重发确认信息
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={onResendConfirmation}
+                disabled={isLoading}
+              >
+                重发确认信息
+              </Button>
+              {canRefund && onRequestRefund && (
+                <Button
+                  variant="destructive"
+                  onClick={onRequestRefund}
+                  disabled={isLoading}
+                >
+                  申请退款
+                </Button>
+              )}
+            </div>
           )}
         </div>
 

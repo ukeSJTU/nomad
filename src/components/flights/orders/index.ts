@@ -16,4 +16,6 @@ export type { OrderStatusCardProps } from "./order-status-card";
 export { OrderStatusCard } from "./order-status-card";
 export type { OrderSuccessDialogProps } from "./order-success-dialog";
 export { OrderSuccessDialog } from "./order-success-dialog";
+export type { RefundOrderDialogProps } from "./refund-order-dialog";
+export { RefundOrderDialog } from "./refund-order-dialog";
 export * from "./utils";

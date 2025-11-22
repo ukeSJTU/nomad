@@ -10,7 +10,7 @@ import { db } from "@/lib/db";
 import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/lib/schema/orders";
-import { cancelOrder } from "@/lib/services/orders";
+import { cancelOrder, refundOrder } from "@/lib/services/orders";
 import type {
   CreateOrderResult,
   DeleteOrderResult,
@@ -393,7 +393,7 @@ export async function cancelOrderAction(
     if (!result.success) {
       return {
         success: false as const,
-        error: result.error,
+        error: result.error || "Failed to cancel order",
       };
     }
 
@@ -406,6 +406,62 @@ export async function cancelOrderAction(
     return {
       success: false as const,
       error: "Failed to cancel order. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server action to refund an order (user-initiated)
+ *
+ * This action:
+ * 1. Validates user authentication
+ * 2. Delegates to the service layer for business logic
+ *
+ * Business Rules (enforced in service layer):
+ * - Only CONFIRMED orders can be refunded
+ * - Flight must not have departed yet
+ * - Refund amount is returned to user balance
+ * - Seats are released immediately
+ *
+ * @param orderId - Order UUID
+ * @returns ActionResult with success/error
+ */
+export async function refundOrderAction(
+  orderId: string
+): Promise<ActionResult<void>> {
+  try {
+    // 1. Check authentication
+    const headersList = await headers();
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false as const,
+        error: "Authentication required. Please log in first.",
+      };
+    }
+
+    // 2. Delegate to service layer
+    const result = await refundOrder(orderId, session.user.id);
+
+    if (!result.success) {
+      return {
+        success: false as const,
+        error: result.error || "Failed to refund order",
+      };
+    }
+
+    return {
+      success: true as const,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error("Error in refundOrderAction:", error);
+    return {
+      success: false as const,
+      error: "Failed to refund order. Please try again.",
     };
   }
 }
