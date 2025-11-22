@@ -167,7 +167,12 @@ export function useDateSelector({
       ) {
         return true;
       }
-      if (tripType === "round-trip" && departureDate && date < departureDate) {
+      if (
+        tripType === "round-trip" &&
+        activeField === "return" &&
+        departureDate &&
+        date < departureDate
+      ) {
         return true;
       }
       return false;

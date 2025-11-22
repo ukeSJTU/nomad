@@ -254,7 +254,7 @@ describe("useDateSelector", () => {
       expect(result.current.getDisabledDates(validDate)).toBe(false);
     });
 
-    it("disables dates before departure in round-trip mode", () => {
+    it("disables dates before departure in round-trip mode when editing return date", () => {
       const departureDate = new Date("2025-11-20");
 
       const { result } = renderHook(() =>
@@ -264,6 +264,11 @@ describe("useDateSelector", () => {
           departureDate,
         })
       );
+
+      // Set activeField to return
+      act(() => {
+        result.current.handleReturnClick();
+      });
 
       const beforeDeparture = new Date("2025-11-18");
       expect(result.current.getDisabledDates(beforeDeparture)).toBe(true);
