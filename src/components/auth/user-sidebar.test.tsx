@@ -62,7 +62,7 @@ describe("UserSidebar", () => {
       render(<UserSidebar />);
 
       const ordersButton = screen.getByRole("link", { name: "订单" });
-      expect(ordersButton).toHaveClass("justify-start", "pl-4");
+      expect(ordersButton).toHaveClass("justify-start", "px-4");
     });
 
     it("highlights menu item when on sub-path", () => {

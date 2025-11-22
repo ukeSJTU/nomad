@@ -96,17 +96,17 @@ export default function UserSidebar() {
       return (
         <Collapsible
           key={item.title}
-          className="simple/collapsible"
+          className="group/collapsible"
           defaultOpen={isOpen}
         >
           <div>
             <CollapsibleTrigger asChild>
               <Button
                 variant="ghost"
-                className="w-full justify-between font-medium"
+                className="w-full justify-between font-medium px-4!"
               >
                 <span>{item.title}</span>
-                <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent>
@@ -129,7 +129,7 @@ export default function UserSidebar() {
         <Button
           key={item.title}
           variant="ghost"
-          className="w-full justify-start pl-4"
+          className="w-full justify-start px-4"
           onClick={() => handleUnimplementedClick(item.title)}
         >
           <span>{item.title}</span>
@@ -143,7 +143,7 @@ export default function UserSidebar() {
         <Button
           key={item.title}
           variant={isActive ? "default" : "ghost"}
-          className="w-full justify-start pl-4"
+          className="w-full justify-start px-4"
           asChild
         >
           <Link href={item.href}>
