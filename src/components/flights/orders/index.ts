@@ -6,8 +6,6 @@ export type { CancelOrderDialogProps } from "./cancel-order-dialog";
 export { CancelOrderDialog } from "./cancel-order-dialog";
 export type { OrderContactInfoProps } from "./order-contact-info";
 export { OrderContactInfo } from "./order-contact-info";
-export type { OrderErrorDialogProps } from "./order-error-dialog";
-export { OrderErrorDialog } from "./order-error-dialog";
 export type { OrderFlightInfoProps } from "./order-flight-info";
 export { OrderFlightInfo } from "./order-flight-info";
 export type { OrderPassengerInfoProps } from "./order-passenger-info";
