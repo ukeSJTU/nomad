@@ -1,18 +1,6 @@
 import { Separator } from "@/components/ui/separator";
+import type { PassengerDetailData } from "@/types/dto/passengers";
 import { formatDateString } from "@/utils/date";
-
-export interface PassengerDetailData {
-  name: string;
-  nationality: string;
-  gender: "male" | "female" | "other";
-  dateOfBirth: Date | string;
-  placeOfBirth?: string;
-  phone?: string;
-  email?: string;
-  documentType: "id_card" | "passport" | "other";
-  documentNumber: string;
-  documentExpiryDate?: Date | string | null;
-}
 
 interface PassengerDetailViewProps {
   passenger: PassengerDetailData;
@@ -86,7 +74,7 @@ export default function PassengerDetailView({
           <div className="grid grid-cols-[120px_1fr] items-start gap-4">
             <label className="pt-1 text-sm text-muted-foreground">出生地</label>
             <div className="text-sm text-foreground">
-              {passenger.placeOfBirth || "未设置"}
+              {passenger.placeOfBirth ?? "未设置"}
             </div>
           </div>
 
@@ -96,7 +84,7 @@ export default function PassengerDetailView({
               手机号码
             </label>
             <div className="text-sm text-foreground">
-              {passenger.phone || "未设置"}
+              {passenger.phone ?? "未设置"}
             </div>
           </div>
 
@@ -104,7 +92,7 @@ export default function PassengerDetailView({
           <div className="grid grid-cols-[120px_1fr] items-start gap-4">
             <label className="pt-1 text-sm text-muted-foreground">Email</label>
             <div className="text-sm text-foreground">
-              {passenger.email || "未设置"}
+              {passenger.email ?? "未设置"}
             </div>
           </div>
         </div>

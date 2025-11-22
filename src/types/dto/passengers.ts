@@ -38,3 +38,20 @@ export interface PassengerListItem {
   documentNumber: string;
   phone: string | null;
 }
+
+/**
+ * Passenger detail data for detail view
+ * Contains masked sensitive information for display purposes
+ */
+export interface PassengerDetailData {
+  name: string;
+  nationality: string;
+  gender: "male" | "female" | "other";
+  dateOfBirth: string;
+  placeOfBirth: string | null;
+  phone: string | null;
+  email: string | null;
+  documentType: "id_card" | "passport" | "other";
+  documentNumber: string;
+  documentExpiryDate: string | null;
+}
