@@ -16,7 +16,7 @@ import {
   type SearchFormData,
 } from "@/components/flights/search";
 import { SEAT_CLASS_TYPE_MAP } from "@/constants/flights";
-import { useFlightSearchState } from "@/hooks/useFlightSearchState";
+import { useFlightSearchState } from "@/hooks/use-flight-search-state";
 import type {
   CityData,
   FlightSearchResult,
