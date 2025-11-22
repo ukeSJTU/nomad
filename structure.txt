@@ -1,0 +1,80 @@
+src/app/(frontend)
+├── (with-sidebar)
+│   ├── flights
+│   │   ├── layout.tsx
+│   │   ├── more
+│   │   │   └── page.tsx
+│   │   ├── page.client.tsx
+│   │   ├── page.tsx
+│   │   ├── refund
+│   │   │   └── page.tsx
+│   │   ├── search
+│   │   │   ├── page.client.tsx
+│   │   │   └── page.tsx
+│   │   ├── seat
+│   │   │   └── page.tsx
+│   │   ├── special
+│   │   │   └── page.tsx
+│   │   └── status
+│   │       └── page.tsx
+│   ├── layout.tsx
+│   ├── orders
+│   │   └── [orderId]
+│   │       ├── page.client.tsx
+│   │       └── page.tsx
+│   └── sidebar-wrapper.tsx
+├── (without-sidebar)
+│   ├── auth
+│   │   ├── sign-in
+│   │   │   └── page.tsx
+│   │   └── sign-up
+│   │       └── page.tsx
+│   ├── flights
+│   │   └── booking
+│   │       ├── ancillary
+│   │       │   ├── page.client.tsx
+│   │       │   ├── page.tsx
+│   │       │   └── queries.ts
+│   │       ├── confirmation
+│   │       │   ├── page.client.tsx
+│   │       │   ├── page.tsx
+│   │       │   └── queries.ts
+│   │       ├── layout.tsx
+│   │       ├── passengers
+│   │       │   ├── page.client.tsx
+│   │       │   ├── page.tsx
+│   │       │   └── queries.ts
+│   │       └── payment
+│   │           ├── page.client.tsx
+│   │           ├── page.tsx
+│   │           └── queries.ts
+│   ├── home
+│   │   ├── accounts
+│   │   │   └── page.tsx
+│   │   ├── info
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── orders
+│   │   │   ├── page.client.tsx
+│   │   │   └── page.tsx
+│   │   ├── passengers
+│   │   │   ├── [id]
+│   │   │   │   ├── edit
+│   │   │   │   │   ├── page.client.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── new
+│   │   │   │   ├── page.client.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── page.client.tsx
+│   │   │   └── page.tsx
+│   │   └── security
+│   │       ├── email
+│   │       │   ├── page.client.tsx
+│   │       │   └── page.tsx
+│   │       ├── password
+│   │       │   ├── page.client.tsx
+│   │       │   └── page.tsx
+│   │       └── phone
+│   │           ├── page.client.tsx
+│   │           └── page.tsx
