@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/utils/currency";
 
 export interface SeatClassOption {
   /** Seat class ID */
@@ -20,7 +21,6 @@ export interface SeatClassOption {
   /** Price (number, in CNY) */
   price: number;
 }
-import { formatCurrency } from "@/utils/currency";
 
 export interface FlightCardProps {
   /** Airline logo URL */
@@ -167,7 +167,7 @@ export function FlightCard({
               <div className="text-2xl font-bold text-foreground leading-none">
                 {arrivalTime}
                 {daysOffset && daysOffset > 0 && (
-                  <span className="text-sm text-secondary ml-1.5 font-medium">
+                  <span className="text-sm text-primary ml-1.5 font-medium">
                     +{daysOffset}
                   </span>
                 )}
@@ -194,7 +194,7 @@ export function FlightCard({
             {isMultiSeatClass ? (
               <Button
                 onClick={() => setIsExpanded(!isExpanded)}
-                variant="outline"
+                variant="secondary"
                 className="px-6 shrink-0"
               >
                 {isExpanded ? (
@@ -210,7 +210,8 @@ export function FlightCard({
             ) : (
               <Button
                 onClick={onButtonClick}
-                className="bg-secondary hover:bg-secondary/90 text-white px-6 shrink-0"
+                variant="secondary"
+                className="px-6 shrink-0"
               >
                 {buttonText}
               </Button>
@@ -240,7 +241,8 @@ export function FlightCard({
                   </div>
                   <Button
                     onClick={() => onSeatClassClick?.(seatClass)}
-                    className="bg-secondary hover:bg-secondary/90 text-white px-6"
+                    variant="secondary"
+                    className="px-6"
                     size="sm"
                   >
                     {buttonText}
