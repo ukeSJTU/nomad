@@ -34,6 +34,7 @@ import {
   type PassengerFormData,
   passengerFormSchema,
 } from "@/types/validations/passengers";
+import { dateToLocalDateString } from "@/utils/date";
 
 interface PassengerFormProps {
   onSubmit: (data: PassengerFormData) => void;
@@ -180,7 +181,7 @@ export default function PassengerForm({
                         )}
                       >
                         {field.value
-                          ? field.value.toISOString().split("T")[0]
+                          ? dateToLocalDateString(field.value)
                           : "yyyy-MM-dd"}
                       </Button>
                     </FormControl>
@@ -324,7 +325,7 @@ export default function PassengerForm({
                           )}
                         >
                           {field.value
-                            ? field.value.toISOString().split("T")[0]
+                            ? dateToLocalDateString(field.value)
                             : "长期有效"}
                         </Button>
                       </FormControl>

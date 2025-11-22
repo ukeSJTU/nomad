@@ -11,6 +11,7 @@ import {
   updatePassenger,
 } from "@/lib/services";
 import { getAuthenticatedUserId } from "@/utils/auth-helpers";
+import { dateToLocalDateString } from "@/utils/date";
 
 /**
  * Server Actions for Passenger Management (Thin Controller Layer)
@@ -55,7 +56,7 @@ export async function createPassengerAction(formData: unknown) {
       nationality: data.nationality,
       gender: data.gender,
       dateOfBirth: data.dateOfBirth
-        ? data.dateOfBirth.toISOString().split("T")[0]
+        ? dateToLocalDateString(data.dateOfBirth)
         : null,
       placeOfBirth: data.placeOfBirth,
       phone: data.phone,
@@ -63,7 +64,7 @@ export async function createPassengerAction(formData: unknown) {
       documentType: data.documentType,
       documentNumber: data.documentNumber,
       documentExpiryDate: data.documentExpiryDate
-        ? data.documentExpiryDate.toISOString().split("T")[0]
+        ? dateToLocalDateString(data.documentExpiryDate)
         : null,
     };
 
@@ -113,7 +114,7 @@ export async function updatePassengerAction(id: string, formData: unknown) {
       nationality: data.nationality,
       gender: data.gender,
       dateOfBirth: data.dateOfBirth
-        ? data.dateOfBirth.toISOString().split("T")[0]
+        ? dateToLocalDateString(data.dateOfBirth)
         : null,
       placeOfBirth: data.placeOfBirth,
       phone: data.phone,
@@ -121,7 +122,7 @@ export async function updatePassengerAction(id: string, formData: unknown) {
       documentType: data.documentType,
       documentNumber: data.documentNumber,
       documentExpiryDate: data.documentExpiryDate
-        ? data.documentExpiryDate.toISOString().split("T")[0]
+        ? dateToLocalDateString(data.documentExpiryDate)
         : null,
     };
 

@@ -30,7 +30,11 @@ import type {
   RoundTripFlightSearchResult,
 } from "@/lib/queries";
 import type { CityData } from "@/lib/queries/cities";
-import { formatDateWithWeekday, formatTime } from "@/utils/date";
+import {
+  dateToLocalDateString,
+  formatDateWithWeekday,
+  formatTime,
+} from "@/utils/date";
 import {
   calculateDaysOffset,
   calculateFlightDuration,
@@ -142,9 +146,9 @@ export function FlightSearchPageClient({
     params.set("tripType", data.tripType);
     params.set("from", data.departureCity!.iataCode);
     params.set("to", data.arrivalCity!.iataCode);
-    params.set("departDate", data.departureDate!.toISOString().split("T")[0]);
+    params.set("departDate", dateToLocalDateString(data.departureDate!));
     if (data.returnDate && data.tripType === "round-trip") {
-      params.set("returnDate", data.returnDate.toISOString().split("T")[0]);
+      params.set("returnDate", dateToLocalDateString(data.returnDate));
     }
     params.set("class", data.seatClass);
 
@@ -197,10 +201,12 @@ export function FlightSearchPageClient({
           <QuickDateSelector
             from={parsedParams.departureCity.iataCode}
             to={parsedParams.arrivalCity.iataCode}
-            departureDate={
-              parsedParams.departureDate.toISOString().split("T")[0]
+            departureDate={dateToLocalDateString(parsedParams.departureDate)}
+            returnDate={
+              parsedParams.returnDate
+                ? dateToLocalDateString(parsedParams.returnDate)
+                : undefined
             }
-            returnDate={parsedParams.returnDate?.toISOString().split("T")[0]}
             tripType={parsedParams.tripType}
             classType={
               parsedParams.seatClass === "any"

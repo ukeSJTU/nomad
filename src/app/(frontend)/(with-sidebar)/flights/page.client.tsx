@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import type { CityData } from "@/lib/queries/cities";
 import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
+import { dateToLocalDateString } from "@/utils/date";
 
 interface FlightsPageClientProps {
   cities: CityData[];
@@ -35,10 +36,10 @@ export function FlightsPageClient({
       params.set("to", data.arrivalCity.iataCode);
     }
     if (data.departureDate) {
-      params.set("departDate", data.departureDate.toISOString().split("T")[0]);
+      params.set("departDate", dateToLocalDateString(data.departureDate));
     }
     if (data.returnDate && data.tripType === "round-trip") {
-      params.set("returnDate", data.returnDate.toISOString().split("T")[0]);
+      params.set("returnDate", dateToLocalDateString(data.returnDate));
     }
     params.set("class", data.seatClass);
 

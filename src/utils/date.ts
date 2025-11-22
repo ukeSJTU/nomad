@@ -74,6 +74,48 @@ export function formatTime(date: Date): string {
 }
 
 /**
+ * Convert a Date object to local date string (YYYY-MM-DD) without timezone conversion
+ *
+ * This function extracts the local year, month, and day from a Date object
+ * and formats it as YYYY-MM-DD, avoiding timezone conversion issues.
+ *
+ * @param date - The date to convert
+ * @returns Date string in YYYY-MM-DD format using local date components
+ *
+ * @example
+ * ```ts
+ * const date = new Date(2025, 10, 22); // Nov 22, 2025 in local time
+ * dateToLocalDateString(date); // "2025-11-22" (no timezone conversion)
+ * ```
+ */
+export function dateToLocalDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Convert a local date string (YYYY-MM-DD) to a Date object at local midnight
+ *
+ * This function creates a Date object representing midnight in the local timezone
+ * for the given date string, avoiding timezone conversion issues.
+ *
+ * @param dateString - Date string in YYYY-MM-DD format
+ * @returns Date object at local midnight for the given date
+ *
+ * @example
+ * ```ts
+ * const date = localDateStringToDate("2025-11-22");
+ * // Returns Date object for Nov 22, 2025 00:00:00 in local timezone
+ * ```
+ */
+export function localDateStringToDate(dateString: string): Date {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/**
  * Format date to YYYY-MM-DD string
  *
  * @param date - The date to format (can be Date, string, or null/undefined)
@@ -93,7 +135,7 @@ export function formatDateString(
 ): string {
   if (!date) return fallback;
   if (typeof date === "string") return date;
-  return date.toISOString().split("T")[0];
+  return dateToLocalDateString(date);
 }
 
 /**

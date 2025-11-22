@@ -12,7 +12,7 @@ import {
 } from "@/lib/actions/quick-date-prices";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/currency";
-import { formatDateWithWeekday } from "@/utils/date";
+import { dateToLocalDateString, formatDateWithWeekday } from "@/utils/date";
 
 interface QuickDateSelectorProps {
   from: string; // Departure city IATA code
@@ -90,13 +90,13 @@ export function QuickDateSelector({
   const handlePrevWeek = () => {
     const currentDate = new Date(currentCenterDate);
     currentDate.setDate(currentDate.getDate() - 7);
-    setCurrentCenterDate(currentDate.toISOString().split("T")[0]);
+    setCurrentCenterDate(dateToLocalDateString(currentDate));
   };
 
   const handleNextWeek = () => {
     const currentDate = new Date(currentCenterDate);
     currentDate.setDate(currentDate.getDate() + 7);
-    setCurrentCenterDate(currentDate.toISOString().split("T")[0]);
+    setCurrentCenterDate(dateToLocalDateString(currentDate));
   };
 
   // Check if we can navigate (based on booking window)
