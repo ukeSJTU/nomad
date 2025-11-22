@@ -1,8 +1,6 @@
 import { headers } from "next/headers";
 
-import { LinkButton } from "@/components/auth/link-button";
-import SocialAccountCard from "@/components/auth/social-account-card";
-import { UnlinkButton } from "@/components/auth/unlink-button";
+import { LinkButton, SocialAccountCard, UnlinkButton } from "@/components/auth";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/utils/auth-helpers";
 
