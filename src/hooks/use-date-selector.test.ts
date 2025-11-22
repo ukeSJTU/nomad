@@ -268,6 +268,30 @@ describe("useDateSelector", () => {
       const beforeDeparture = new Date("2025-11-18");
       expect(result.current.getDisabledDates(beforeDeparture)).toBe(true);
     });
+
+    it("allows selecting earlier departure date in round-trip mode when editing departure", () => {
+      const departureDate = new Date("2025-11-25");
+      const returnDate = new Date("2025-11-29");
+
+      const { result } = renderHook(() =>
+        useDateSelector({
+          ...defaultProps,
+          tripType: "round-trip",
+          departureDate,
+          returnDate,
+        })
+      );
+
+      // User wants to change from 11-25 ~ 11-29 to 11-24 ~ 11-27
+      // Click on departure field to edit it
+      act(() => {
+        result.current.handleDepartureClick();
+      });
+
+      // Check if 11-24 is available (it should be, since we're editing departure)
+      const earlierDate = new Date("2025-11-24");
+      expect(result.current.getDisabledDates(earlierDate)).toBe(false);
+    });
   });
 
   describe("setCalendarOpen", () => {
