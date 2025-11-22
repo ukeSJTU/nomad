@@ -36,3 +36,6 @@ export {
   clearFlightSearchHistory,
   recordFlightSearch,
 } from "./flight-search-history";
+
+// Export flight search services
+export { searchFlightsWithHistory } from "./flight-search";

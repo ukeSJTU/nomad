@@ -11,6 +11,7 @@
  */
 
 export * from "./cities";
+export * from "./flight";
 export { type SearchHistoryRecord } from "./flight-search-history";
 export * from "./orders";
 export {

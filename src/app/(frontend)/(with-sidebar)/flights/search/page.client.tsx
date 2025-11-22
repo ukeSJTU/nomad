@@ -1,74 +1,54 @@
 "use client";
 
-import { Clock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import {
-  FlightCard,
   FlightCardSkeleton,
   FlightFilterSort,
 } from "@/components/flights/results";
 import {
+  FlightListOneWay,
+  FlightListRoundTrip,
+  FlightSearchHeader,
   QuickDateSelector,
   SearchForm,
   type SearchFormData,
 } from "@/components/flights/search";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { SEAT_CLASS_TYPE_MAP } from "@/constants/flights";
+import { useFlightSearchState } from "@/hooks/useFlightSearchState";
 import type {
+  CityData,
   FlightSearchResult,
   RoundTripFlightSearchResult,
-} from "@/lib/queries";
-import type { CityData } from "@/types/dto";
-import {
-  dateToLocalDateString,
-  formatDateWithWeekday,
-  formatTime,
-} from "@/utils/date";
-import {
-  calculateDaysOffset,
-  calculateFlightDuration,
-  formatAirportDisplay,
-  formatDuration,
-  formatFlightTime,
-} from "@/utils/flight";
+} from "@/types/dto";
+import type { SeatClass, TripType } from "@/types/validations";
+import { dateToLocalDateString } from "@/utils/date";
+import { buildFlightSearchUrl } from "@/utils/flight-search-params";
 
 interface FlightSearchPageClientProps {
   cities: CityData[];
   flights?: FlightSearchResult[] | RoundTripFlightSearchResult;
-  tripType?: "one-way" | "round-trip";
+  tripType?: TripType;
 }
 
 export function FlightSearchPageClient({
   cities,
   flights,
-  tripType: _initialTripType,
 }: FlightSearchPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
-  const [filteredFlights, setFilteredFlights] = useState<FlightSearchResult[]>(
-    []
-  );
-  const [activeRoundTripTab, setActiveRoundTripTab] = useState<
-    "outbound" | "return"
-  >("outbound");
 
-  // Store selected outbound flight seat class ID for round-trip
-  const [selectedOutboundSeatClassId, setSelectedOutboundSeatClassId] =
-    useState<string | null>(null);
+  const {
+    lastUpdateTime,
+    filteredFlights,
+    activeRoundTripTab,
+    selectedOutboundSeatClassId,
+    setFilteredFlights,
+    updateLastUpdateTime,
+    setActiveRoundTripTab,
+    selectOutboundFlight,
+  } = useFlightSearchState();
 
   // Parse and validate URL parameters
   const parsedParams = useMemo(() => {
@@ -93,36 +73,29 @@ export function FlightSearchPageClient({
     }
 
     return {
-      tripType: tripType as "one-way" | "round-trip",
+      tripType: tripType as TripType,
       departureCity,
       arrivalCity,
       departureDate: new Date(departDate),
       returnDate: returnDate ? new Date(returnDate) : undefined,
-      seatClass,
+      seatClass: seatClass as SeatClass,
     };
   }, [searchParams, cities]);
 
   // Calculate initial seat class filter based on URL parameter
-  // According to Issue #134 linking rules:
-  // - "any" -> no seat classes selected (empty array)
-  // - "economy" -> only ECONOMY selected
-  // - "business" -> only BUSINESS selected
-  // - "first" -> only FIRST selected
-  // Must be called before any conditional returns to follow React Hooks rules
   const initialSeatClassFilter = useMemo(() => {
     if (!parsedParams) {
       return [];
     }
-    const seatClass = parsedParams.seatClass;
+
+    const { seatClass } = parsedParams;
+
     if (seatClass === "any") {
       return [];
     }
-    const classTypeMap: Record<string, "ECONOMY" | "BUSINESS" | "FIRST"> = {
-      economy: "ECONOMY",
-      business: "BUSINESS",
-      first: "FIRST",
-    };
-    const classType = classTypeMap[seatClass];
+
+    const classType =
+      SEAT_CLASS_TYPE_MAP[seatClass as keyof typeof SEAT_CLASS_TYPE_MAP];
     return classType ? [classType] : [];
   }, [parsedParams]);
 
@@ -133,28 +106,36 @@ export function FlightSearchPageClient({
     }
   }, [parsedParams, router]);
 
+  // Update last refresh time when search params change
   useEffect(() => {
-    // Update last refresh time when search params change
     if (parsedParams) {
-      setLastUpdateTime(new Date());
+      updateLastUpdateTime();
     }
-  }, [searchParams, parsedParams]);
+  }, [searchParams, parsedParams, updateLastUpdateTime]);
+
+  // Determine which flights to show for filtering
+  const flightsForFilter = useMemo(() => {
+    if (!flights) return [];
+
+    if (Array.isArray(flights)) {
+      return flights;
+    }
+
+    return activeRoundTripTab === "outbound"
+      ? flights.outbound
+      : flights.inbound;
+  }, [flights, activeRoundTripTab]);
+
+  // Check if we have any flights to display
+  const hasFlights = flights
+    ? Array.isArray(flights)
+      ? flights.length > 0
+      : flights.outbound.length > 0 || flights.inbound.length > 0
+    : false;
 
   // Handle form changes (auto-search)
   const handleFormChange = (data: SearchFormData) => {
-    // The SearchForm component already validates required fields before calling onChange
-    // So we can safely build the URL here
-    const params = new URLSearchParams();
-    params.set("tripType", data.tripType);
-    params.set("from", data.departureCity!.iataCode);
-    params.set("to", data.arrivalCity!.iataCode);
-    params.set("departDate", dateToLocalDateString(data.departureDate!));
-    if (data.returnDate && data.tripType === "round-trip") {
-      params.set("returnDate", dateToLocalDateString(data.returnDate));
-    }
-    params.set("class", data.seatClass);
-
-    const newUrl = `/flights/search?${params.toString()}`;
+    const newUrl = buildFlightSearchUrl(data);
     const currentUrl = `/flights/search?${searchParams.toString()}`;
 
     // Only navigate if the URL actually changed
@@ -180,7 +161,7 @@ export function FlightSearchPageClient({
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
-      {/* 1. Search Form (filled with URL params, no search button) */}
+      {/* Search Form */}
       <div className="pb-6">
         <SearchForm
           showSearchButton={false}
@@ -197,160 +178,48 @@ export function FlightSearchPageClient({
         />
       </div>
 
-      {/* 2. Quick Date Selector */}
-      {parsedParams && (
-        <div className="items-center pb-2 w-full">
-          <QuickDateSelector
-            from={parsedParams.departureCity.iataCode}
-            to={parsedParams.arrivalCity.iataCode}
-            departureDate={dateToLocalDateString(parsedParams.departureDate)}
-            returnDate={
-              parsedParams.returnDate
-                ? dateToLocalDateString(parsedParams.returnDate)
-                : undefined
-            }
-            tripType={parsedParams.tripType}
-            classType={
-              parsedParams.seatClass === "any"
-                ? undefined
-                : (parsedParams.seatClass.toUpperCase() as
-                    | "ECONOMY"
-                    | "BUSINESS"
-                    | "FIRST")
-            }
-          />
-        </div>
-      )}
-
-      {/* 3. Search Info + Last Update Time */}
-      <div className="mb-6 flex items-center justify-between">
-        {/* Left: Trip Info */}
-        {tripType === "one-way" ? (
-          // One-way trip: Enhanced text display with hierarchy
-          <div className="flex items-baseline gap-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              单程
-            </span>
-            <span className="text-lg font-semibold text-foreground">
-              {departureCity.name}
-            </span>
-            <span className="text-base text-muted-foreground">→</span>
-            <span className="text-lg font-semibold text-foreground">
-              {arrivalCity.name}
-            </span>
-            <Separator orientation="vertical" className="h-5" />
-            <span className="text-sm font-medium text-muted-foreground">
-              {formatDateWithWeekday(departureDate)}
-            </span>
-          </div>
-        ) : (
-          // Round-trip: Tabs for outbound and return with enhanced styling
-          <Tabs
-            value={activeRoundTripTab}
-            onValueChange={value =>
-              setActiveRoundTripTab(value as "outbound" | "return")
-            }
-            className="w-auto"
-          >
-            <TabsList className="h-auto">
-              <TabsTrigger
-                value="outbound"
-                className="flex-col items-start py-2 px-3"
-              >
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                    1
-                  </span>
-                  <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    选择去程
-                  </span>
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-sm font-semibold">
-                    {departureCity.name}
-                  </span>
-                  <span className="text-xs opacity-60">→</span>
-                  <span className="text-sm font-semibold">
-                    {arrivalCity.name}
-                  </span>
-                  <span className="text-xs font-medium opacity-70 ml-1">
-                    {formatDateWithWeekday(departureDate)}
-                  </span>
-                </div>
-              </TabsTrigger>
-              <TabsTrigger
-                value="return"
-                className="flex-col items-start py-2 px-3"
-              >
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                    2
-                  </span>
-                  <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    选择返程
-                  </span>
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-sm font-semibold">
-                    {arrivalCity.name}
-                  </span>
-                  <span className="text-xs opacity-60">→</span>
-                  <span className="text-sm font-semibold">
-                    {departureCity.name}
-                  </span>
-                  <span className="text-xs font-medium opacity-70 ml-1">
-                    {returnDate && formatDateWithWeekday(returnDate)}
-                  </span>
-                </div>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        )}
-
-        {/* Right: Last Update Time with Tooltip */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground cursor-help hover:text-foreground transition-colors">
-              <Clock className="h-4 w-4" />
-              <div className="flex flex-col items-end">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  最近更新
-                </span>
-                <span className="text-sm font-mono font-semibold">
-                  {formatTime(lastUpdateTime)}
-                </span>
-              </div>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>机票价格变动频繁，搜索结果有效期15min。</p>
-          </TooltipContent>
-        </Tooltip>
+      {/* Quick Date Selector */}
+      <div className="items-center pb-2 w-full">
+        <QuickDateSelector
+          from={departureCity.iataCode}
+          to={arrivalCity.iataCode}
+          departureDate={dateToLocalDateString(departureDate)}
+          returnDate={
+            returnDate ? dateToLocalDateString(returnDate) : undefined
+          }
+          tripType={tripType}
+          classType={
+            seatClass === "any"
+              ? undefined
+              : SEAT_CLASS_TYPE_MAP[
+                  seatClass as keyof typeof SEAT_CLASS_TYPE_MAP
+                ]
+          }
+        />
       </div>
 
-      {/* 4. Search Toolbar (Filtering and Sorting) - Sticky */}
-      {flights &&
-        (Array.isArray(flights)
-          ? flights.length > 0 && (
-              <FlightFilterSort
-                flights={flights}
-                onFilteredFlightsChange={setFilteredFlights}
-                initialSeatClasses={initialSeatClassFilter}
-              />
-            )
-          : (flights.outbound.length > 0 || flights.inbound.length > 0) && (
-              <FlightFilterSort
-                flights={
-                  activeRoundTripTab === "outbound"
-                    ? flights.outbound
-                    : flights.inbound
-                }
-                onFilteredFlightsChange={setFilteredFlights}
-                initialSeatClasses={initialSeatClassFilter}
-              />
-            ))}
+      {/* Search Header (Trip Info + Last Update Time) */}
+      <FlightSearchHeader
+        tripType={tripType}
+        departureCity={departureCity}
+        arrivalCity={arrivalCity}
+        departureDate={departureDate}
+        returnDate={returnDate}
+        lastUpdateTime={lastUpdateTime}
+        activeTab={activeRoundTripTab}
+        onTabChange={setActiveRoundTripTab}
+      />
 
-      {/* 5. Search Results Cards */}
+      {/* Flight Filter and Sort Toolbar */}
+      {hasFlights && (
+        <FlightFilterSort
+          flights={flightsForFilter}
+          onFilteredFlightsChange={setFilteredFlights}
+          initialSeatClasses={initialSeatClassFilter}
+        />
+      )}
+
+      {/* Flight Search Results */}
       <div className="space-y-4">
         {!flights ? (
           // Loading state
@@ -361,177 +230,16 @@ export function FlightSearchPageClient({
           </>
         ) : Array.isArray(flights) ? (
           // One-way flights
-          filteredFlights.length > 0 ? (
-            filteredFlights.map(flight => {
-              const durationMinutes = calculateFlightDuration(
-                flight.departure.datetime,
-                flight.arrival.datetime
-              );
-              const daysOffset = calculateDaysOffset(
-                flight.departure.datetime,
-                flight.arrival.datetime
-              );
-
-              return (
-                <FlightCard
-                  key={flight.id}
-                  airlineLogo={flight.airline.logoUrl || undefined}
-                  airlineName={flight.airline.name}
-                  flightNumber={flight.flightNumber}
-                  aircraftType={flight.aircraftType || "N/A"}
-                  departureTime={formatFlightTime(flight.departure.datetime)}
-                  departureAirport={formatAirportDisplay(
-                    flight.departure.airport.name,
-                    flight.departure.terminal
-                  )}
-                  arrivalTime={formatFlightTime(flight.arrival.datetime)}
-                  arrivalAirport={formatAirportDisplay(
-                    flight.arrival.airport.name,
-                    flight.arrival.terminal
-                  )}
-                  daysOffset={daysOffset > 0 ? daysOffset : undefined}
-                  duration={formatDuration(durationMinutes)}
-                  seatClasses={flight.seatClasses.map(sc => ({
-                    id: sc.id,
-                    classType: sc.classType,
-                    totalSeats: sc.totalSeats,
-                    availableSeats: sc.availableSeats,
-                    price: parseFloat(sc.price),
-                  }))}
-                  lowestPrice={flight.lowestPrice}
-                  buttonText="订票"
-                  onButtonClick={
-                    seatClass === "any"
-                      ? undefined // When "any" is selected, card should be expandable, no direct booking
-                      : () => {
-                          // For specific seat class, find the matching seat class
-                          const selectedSeatClass = flight.seatClasses.find(
-                            sc => sc.classType === seatClass.toUpperCase()
-                          );
-
-                          if (selectedSeatClass) {
-                            // Navigate to passengers page with flight seat class ID
-                            router.push(
-                              `/flights/booking/passengers?seatClassId=${selectedSeatClass.id}`
-                            );
-                          }
-                        }
-                  }
-                  onSeatClassClick={seatClassOption => {
-                    // When user clicks on a specific seat class in expanded view
-                    router.push(
-                      `/flights/booking/passengers?seatClassId=${seatClassOption.id}`
-                    );
-                  }}
-                />
-              );
-            })
-          ) : (
-            // No results for one-way
-            <Card className="mt-8">
-              <CardHeader>
-                <CardTitle>未找到航班</CardTitle>
-                <CardDescription>
-                  抱歉,没有找到符合您搜索条件的航班。请尝试调整搜索条件。
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          )
-        ) : // Round-trip flights - use filtered flights based on active tab
-        filteredFlights.length > 0 ? (
-          filteredFlights.map(flight => {
-            const durationMinutes = calculateFlightDuration(
-              flight.departure.datetime,
-              flight.arrival.datetime
-            );
-            const daysOffset = calculateDaysOffset(
-              flight.departure.datetime,
-              flight.arrival.datetime
-            );
-
-            return (
-              <FlightCard
-                key={flight.id}
-                airlineLogo={flight.airline.logoUrl || undefined}
-                airlineName={flight.airline.name}
-                flightNumber={flight.flightNumber}
-                aircraftType={flight.aircraftType || "N/A"}
-                departureTime={formatFlightTime(flight.departure.datetime)}
-                departureAirport={formatAirportDisplay(
-                  flight.departure.airport.name,
-                  flight.departure.terminal
-                )}
-                arrivalTime={formatFlightTime(flight.arrival.datetime)}
-                arrivalAirport={formatAirportDisplay(
-                  flight.arrival.airport.name,
-                  flight.arrival.terminal
-                )}
-                daysOffset={daysOffset > 0 ? daysOffset : undefined}
-                duration={formatDuration(durationMinutes)}
-                seatClasses={flight.seatClasses.map(sc => ({
-                  id: sc.id,
-                  classType: sc.classType,
-                  totalSeats: sc.totalSeats,
-                  availableSeats: sc.availableSeats,
-                  price: parseFloat(sc.price),
-                }))}
-                lowestPrice={flight.lowestPrice}
-                buttonText={
-                  activeRoundTripTab === "outbound" ? "选择去程" : "选择返程"
-                }
-                onButtonClick={
-                  seatClass === "any"
-                    ? undefined // When "any" is selected, card should be expandable, no direct booking
-                    : () => {
-                        // Find the seat class matching the selected class type
-                        const selectedSeatClass = flight.seatClasses.find(
-                          sc => sc.classType === seatClass.toUpperCase()
-                        );
-
-                        if (!selectedSeatClass) return;
-
-                        if (activeRoundTripTab === "outbound") {
-                          // Store outbound selection and switch to return tab
-                          setSelectedOutboundSeatClassId(selectedSeatClass.id);
-                          setActiveRoundTripTab("return");
-                        } else {
-                          // Both flights selected, navigate to booking with both IDs
-                          if (selectedOutboundSeatClassId) {
-                            router.push(
-                              `/flights/booking/passengers?outboundSeatClassId=${selectedOutboundSeatClassId}&inboundSeatClassId=${selectedSeatClass.id}`
-                            );
-                          }
-                        }
-                      }
-                }
-                onSeatClassClick={seatClassOption => {
-                  // When user clicks on a specific seat class in expanded view
-                  if (activeRoundTripTab === "outbound") {
-                    // Store outbound selection and switch to return tab
-                    setSelectedOutboundSeatClassId(seatClassOption.id);
-                    setActiveRoundTripTab("return");
-                  } else {
-                    // Both flights selected, navigate to booking with both IDs
-                    if (selectedOutboundSeatClassId) {
-                      router.push(
-                        `/flights/booking/passengers?outboundSeatClassId=${selectedOutboundSeatClassId}&inboundSeatClassId=${seatClassOption.id}`
-                      );
-                    }
-                  }
-                }}
-              />
-            );
-          })
+          <FlightListOneWay flights={filteredFlights} seatClass={seatClass} />
         ) : (
-          // No results for round-trip
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>未找到航班</CardTitle>
-              <CardDescription>
-                抱歉,没有找到符合您搜索条件的航班。请尝试调整搜索条件。
-              </CardDescription>
-            </CardHeader>
-          </Card>
+          // Round-trip flights
+          <FlightListRoundTrip
+            flights={filteredFlights}
+            activeTab={activeRoundTripTab}
+            seatClass={seatClass}
+            selectedOutboundSeatClassId={selectedOutboundSeatClassId}
+            onOutboundSelect={selectOutboundFlight}
+          />
         )}
       </div>
     </div>

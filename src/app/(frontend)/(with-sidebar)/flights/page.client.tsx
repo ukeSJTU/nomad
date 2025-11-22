@@ -8,7 +8,7 @@ import {
   type SearchFormData,
 } from "@/components/flights/search";
 import type { CityData, SearchHistoryRecord } from "@/types/dto";
-import { dateToLocalDateString } from "@/utils/date";
+import { buildFlightSearchUrl } from "@/utils/flight-search-params";
 
 interface FlightsPageClientProps {
   cities: CityData[];
@@ -22,25 +22,11 @@ export function FlightsPageClient({
   const router = useRouter();
 
   const handleSearch = (data: SearchFormData) => {
-    // Build search parameters
-    const params = new URLSearchParams();
-    params.set("tripType", data.tripType);
-    if (data.departureCity) {
-      params.set("from", data.departureCity.iataCode);
-    }
-    if (data.arrivalCity) {
-      params.set("to", data.arrivalCity.iataCode);
-    }
-    if (data.departureDate) {
-      params.set("departDate", dateToLocalDateString(data.departureDate));
-    }
-    if (data.returnDate && data.tripType === "round-trip") {
-      params.set("returnDate", dateToLocalDateString(data.returnDate));
-    }
-    params.set("class", data.seatClass);
+    // Build search URL using shared utility
+    const searchUrl = buildFlightSearchUrl(data);
 
     // Navigate to search results page
-    router.push(`/flights/search?${params.toString()}`);
+    router.push(searchUrl);
   };
 
   return (
