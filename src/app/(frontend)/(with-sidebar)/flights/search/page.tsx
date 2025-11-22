@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { z } from "zod";
 
-import { recordSearchHistory } from "@/lib/actions/flight-search-history";
+import { recordSearchHistoryAction } from "@/lib/actions/flight-search-history";
 import {
   FlightSearchResult,
   RoundTripFlightSearchResult,
@@ -68,7 +68,7 @@ export default async function FlightSearchPage({
       });
 
       // Record search history (fire-and-forget, non-blocking)
-      recordSearchHistory({
+      recordSearchHistoryAction({
         departureCityIata: params.from,
         arrivalCityIata: params.to,
         departureDate: params.departDate,
@@ -100,7 +100,7 @@ export default async function FlightSearchPage({
       });
 
       // Record search history (fire-and-forget, non-blocking)
-      recordSearchHistory({
+      recordSearchHistoryAction({
         departureCityIata: params.from,
         arrivalCityIata: params.to,
         departureDate: params.departDate,
@@ -131,7 +131,7 @@ export default async function FlightSearchPage({
       });
 
       // Record search history (fire-and-forget, non-blocking)
-      recordSearchHistory({
+      recordSearchHistoryAction({
         departureCityIata: params.from,
         arrivalCityIata: params.to,
         departureDate: params.departDate,

@@ -4,14 +4,16 @@ import { Clock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { FlightCard } from "@/components/flights/results/flight-card";
-import { FlightCardSkeleton } from "@/components/flights/results/flight-card-skeleton";
-import { FlightFilterSort } from "@/components/flights/results/flight-filter-sort";
-import { QuickDateSelector } from "@/components/flights/search/quick-date-selector";
 import {
+  FlightCard,
+  FlightCardSkeleton,
+  FlightFilterSort,
+} from "@/components/flights/results";
+import {
+  QuickDateSelector,
   SearchForm,
   type SearchFormData,
-} from "@/components/flights/search/search-form";
+} from "@/components/flights/search";
 import {
   Card,
   CardDescription,
@@ -29,7 +31,7 @@ import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,
 } from "@/lib/queries";
-import type { CityData } from "@/lib/queries/cities";
+import type { CityData } from "@/types/dto";
 import {
   dateToLocalDateString,
   formatDateWithWeekday,
