@@ -1,6 +1,55 @@
 import { Resend } from "resend";
 
-import { OtpEmailTemplate } from "@/components/emails";
+import { OrderConfirmationEmail, OtpEmailTemplate } from "@/components/emails";
+
+/**
+ * Order email data interface
+ * Defines the structure of data needed to send order confirmation emails
+ */
+export interface OrderEmailData {
+  orderNumber: string;
+  userEmail: string;
+  userName?: string;
+
+  // Flight information
+  outboundFlight: {
+    flightNumber: string;
+    departureAirport: string;
+    arrivalAirport: string;
+    departureTime: string; // ISO string
+    arrivalTime: string;
+    seatClass: string;
+  };
+
+  inboundFlight?: {
+    flightNumber: string;
+    departureAirport: string;
+    arrivalAirport: string;
+    departureTime: string;
+    arrivalTime: string;
+    seatClass: string;
+  };
+
+  // Passenger list
+  passengers: Array<{
+    name: string;
+    documentType: string;
+    documentNumber: string;
+  }>;
+
+  // Pricing information
+  pricing: {
+    baseAmount: number;
+    ancillaryAmount: number;
+    totalAmount: number;
+  };
+
+  // Contact information
+  contact: {
+    phone?: string;
+    email?: string;
+  };
+}
 
 /**
  * Resend Email Client for sending verification emails
@@ -88,6 +137,67 @@ export class ResendEmailClient {
       return false;
     }
   }
+
+  /**
+   * Send order confirmation email
+   * @param orderData Order data
+   * @returns Promise<boolean> Whether sending was successful
+   */
+  public async sendOrderConfirmationEmail(
+    orderData: OrderEmailData
+  ): Promise<boolean> {
+    try {
+      const fromEmail =
+        process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+
+      console.log(
+        `Sending order confirmation email to ${orderData.userEmail} for order ${orderData.orderNumber}`
+      );
+
+      if (!process.env.RESEND_API_KEY) {
+        throw new Error("Missing required email configuration: RESEND_API_KEY");
+      }
+
+      // Send email using Resend
+      const { data, error } = await this.client.emails.send({
+        from: fromEmail,
+        to: orderData.userEmail,
+        subject: `订单确认 - ${orderData.orderNumber}`,
+        react: (
+          <OrderConfirmationEmail
+            orderNumber={orderData.orderNumber}
+            userName={orderData.userName}
+            outboundFlight={orderData.outboundFlight}
+            inboundFlight={orderData.inboundFlight}
+            passengers={orderData.passengers}
+            baseAmount={orderData.pricing.baseAmount}
+            ancillaryAmount={orderData.pricing.ancillaryAmount}
+            totalAmount={orderData.pricing.totalAmount}
+            contactEmail={orderData.contact.email}
+            contactPhone={orderData.contact.phone}
+          />
+        ),
+      });
+
+      if (error) {
+        console.error("Order confirmation email sending failed:", error);
+        return false;
+      }
+
+      console.log(
+        `Order confirmation email sent successfully to ${orderData.userEmail}, Email ID: ${data?.id}`
+      );
+      return true;
+    } catch (error: unknown) {
+      console.error("Error sending order confirmation email:", error);
+
+      if (error instanceof Error && error.message) {
+        console.error("Error message:", error.message);
+      }
+
+      return false;
+    }
+  }
 }
 
 /**
@@ -102,4 +212,16 @@ export async function sendEmailOtp(
 ): Promise<boolean> {
   const client = ResendEmailClient.getInstance();
   return await client.sendVerificationEmail(email, code);
+}
+
+/**
+ * Convenient function for sending order confirmation email
+ * @param orderData Order data
+ * @returns Promise<boolean> Whether sending was successful
+ */
+export async function sendOrderConfirmationEmail(
+  orderData: OrderEmailData
+): Promise<boolean> {
+  const client = ResendEmailClient.getInstance();
+  return await client.sendOrderConfirmationEmail(orderData);
 }
