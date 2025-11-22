@@ -15,7 +15,7 @@ describe("EmailVerificationForm", () => {
     await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
-      expect(screen.getByText("请输入邮箱地址")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("请输入邮箱地址")).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });

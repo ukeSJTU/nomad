@@ -4,6 +4,23 @@ import { describe, expect, it, vi } from "vitest";
 
 import UnifiedLoginForm from "./unified-login";
 
+// Mock the Turnstile captcha hook
+vi.mock("@/hooks/use-turnstile-captcha", () => ({
+  useTurnstileCaptcha: () => ({
+    turnstileRef: { current: null },
+    siteKey: "test-site-key",
+    isVerifying: false,
+    prepareCaptchaRequest: vi.fn().mockResolvedValue({
+      token: "test-token",
+      fetchOptions: {
+        headers: {
+          "X-Captcha-Token": "test-token",
+        },
+      },
+    }),
+  }),
+}));
+
 /**
  * UnifiedLoginForm Component Tests
  *
@@ -442,13 +459,20 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
         ).not.toBeInTheDocument();
       });
 
-      // Should call submit with correct data
+      // Should call submit with correct data and fetchOptions
       await waitFor(() => {
-        expect(onOtpSubmit).toHaveBeenCalledWith({
-          account: "test@example.com",
-          otp: "123456",
-          agreedToTerms: true,
-        });
+        expect(onOtpSubmit).toHaveBeenCalledWith(
+          {
+            account: "test@example.com",
+            otp: "123456",
+            agreedToTerms: true,
+          },
+          {
+            headers: {
+              "X-Captcha-Token": "test-token",
+            },
+          }
+        );
       });
     });
   });
@@ -1034,7 +1058,7 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       // Fill valid phone number
       const accountInput =
         screen.getByPlaceholderText("国内手机号/用户名/邮箱");
-      await user.type(accountInput, "+8613800138000");
+      await user.type(accountInput, "13800138000");
 
       // Fill password
       const passwordInput = screen.getByPlaceholderText("登录密码");
@@ -1056,7 +1080,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       });
 
       // Should call submit
-      expect(onPasswordSubmit).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(onPasswordSubmit).toHaveBeenCalled();
+      });
     });
 
     it("should show error for invalid OTP format (less than 6 digits)", async () => {
@@ -1121,7 +1147,7 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
 
       // Should show OTP format error (the actual validation message for non-numeric)
       await waitFor(() => {
-        expect(screen.getByText("验证码只能包含数字")).toBeInTheDocument();
+        expect(screen.getByText("验证码必须是6位数字")).toBeInTheDocument();
       });
     });
   });

@@ -471,7 +471,7 @@ describe("OrderCard Component", () => {
       // Check if Card has hover transition classes
       const card = container.querySelector('[class*="transition"]');
       expect(card).toBeInTheDocument();
-      expect(card?.className).toContain("hover:border-blue-500");
+      expect(card?.className).toContain("hover:border-primary");
     });
   });
 });

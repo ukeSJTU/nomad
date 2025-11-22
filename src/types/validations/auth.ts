@@ -3,7 +3,8 @@ import { z } from "zod";
 export const phoneNumberSchema = z
   .string()
   .regex(/^1[3-9]\d{9}$/, "手机号格式不正确，请重新输入");
-export const emailSchema = z.email();
+
+export const emailSchema = z.email({ error: "邮箱格式不正确" });
 
 // Base password validation rules (without the empty check)
 const passwordBaseSchema = z

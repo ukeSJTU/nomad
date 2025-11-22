@@ -75,11 +75,11 @@ export const HappyPath: Story = {
 
     // 1. Enter a password that meets the requirements
     const passwordInput = canvas.getByPlaceholderText("请输入密码");
-    await userEvent.type(passwordInput, "zxcftzuio!@#", { delay: 50 });
+    await userEvent.type(passwordInput, "zXc1ftzuio!@#", { delay: 50 });
 
     // 2. Enter the same confirm password
     const confirmPasswordInput = canvas.getByPlaceholderText("请再次输入密码");
-    await userEvent.type(confirmPasswordInput, "zxcftzuio!@#", {
+    await userEvent.type(confirmPasswordInput, "zXc1ftzuio!@#", {
       delay: 50,
     });
 
@@ -87,9 +87,9 @@ export const HappyPath: Story = {
     await expect(canvas.getByText("强")).toBeInTheDocument();
 
     // 4. Verify that the password requirements are met (green checkmarks)
-    await expect(canvas.getByText("8-20位字符")).toHaveClass("text-green-600");
+    await expect(canvas.getByText("8-20位字符")).toHaveClass("text-chart-5");
     await expect(canvas.getByText("包含至少一个小写字母")).toHaveClass(
-      "text-green-600"
+      "text-chart-5"
     );
 
     // 5. Click the submit button
