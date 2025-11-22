@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import type { FlightSearchResult } from "@/lib/queries";
+import type { FlightSearchResult } from "@/types/dto";
 
 export type SortOption =
   | "price-asc"
