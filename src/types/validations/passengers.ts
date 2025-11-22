@@ -11,17 +11,12 @@ import { emailSchema, phoneNumberSchema } from "@/types/validations/auth";
 
 /**
  * Document number validation pattern
- * - Allows digits only, except last character can be 'X' or 'x'
  * - Length: 1-50 characters
  */
 export const documentNumberSchema = z
   .string()
   .min(1, "请输入证件号码")
-  .max(50, "证件号码不能超过50个字符")
-  .refine(
-    val => /^[0-9]+[0-9Xx]?$/.test(val) || /^[0-9]+$/.test(val),
-    "证件号码格式不正确"
-  );
+  .max(50, "证件号码不能超过50个字符");
 
 /**
  * Schema for creating a new passenger
