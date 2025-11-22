@@ -20,33 +20,41 @@ export default function Header() {
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container flex h-16 items-center justify-between gap-4 px-4">
-        {/* Left section: Favicon/Logo */}
-        <Link href="/" className="flex items-center gap-2">
+      <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center gap-4 px-4">
+        {/* Left section: Favicon/Logo - fixed to left */}
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
             src="/logo.png"
             alt="Nomad Logo"
-            width={64}
-            height={64}
-            className="rounded-lg"
+            width={48}
+            height={48}
+            className="rounded-lg md:h-16 md:w-16"
           />
-          <span className="hidden font-semibold sm:inline-block">Nomad</span>
+          <span className="hidden font-semibold lg:inline-block">Nomad</span>
         </Link>
 
-        {/* Center section: Search bar */}
-        <SearchBar />
+        {/* Center section: Search bar - centered with max-width */}
+        <div className="hidden md:flex md:flex-1 md:justify-center">
+          <div className="w-full max-w-md lg:max-w-lg">
+            <SearchBar />
+          </div>
+        </div>
 
-        {/* Right section: Auth, Orders, Contact, Theme */}
-        <div className="flex items-center gap-3">
+        {/* Right section: Auth, Orders, Contact, Theme - fixed to right */}
+        <div className="flex shrink-0 items-center gap-2 md:gap-3">
           {/* Auth Section */}
           <UserMenu />
 
-          <Separator orientation="vertical" className="h-6!" />
+          <Separator orientation="vertical" className="hidden h-6! lg:block" />
 
-          {/* My Orders */}
+          {/* My Orders - hidden on mobile and tablet */}
           <HoverCard openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
-              <Button variant="ghost" size="sm" className="cursor-pointer">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden cursor-pointer lg:flex"
+              >
                 我的订单
               </Button>
             </HoverCardTrigger>
@@ -89,12 +97,12 @@ export default function Header() {
             </HoverCardContent>
           </HoverCard>
 
-          <Separator orientation="vertical" className="h-6!" />
+          <Separator orientation="vertical" className="hidden h-6! lg:block" />
 
-          {/* Contact Service */}
+          {/* Contact Service - hidden on mobile and tablet */}
           <HoverCard openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="hidden lg:flex">
                 联系客服
               </Button>
             </HoverCardTrigger>
@@ -122,7 +130,7 @@ export default function Header() {
             </HoverCardContent>
           </HoverCard>
 
-          <Separator orientation="vertical" className="h-6!" />
+          <Separator orientation="vertical" className="hidden h-6! md:block" />
 
           {/* Theme Toggle */}
           <Button
@@ -130,6 +138,7 @@ export default function Header() {
             size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             aria-label="Toggle theme"
+            className="shrink-0"
           >
             <Sun className="size-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute size-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
