@@ -166,9 +166,9 @@ export function SearchForm({
   };
 
   return (
-    <div className="w-full space-y-6 justify-center items-center">
+    <div className="w-full space-y-8 justify-center items-center">
       {/* Upper section */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
         {/* Trip Type Selection */}
         <div className="space-y-2">
           <RadioGroup
@@ -176,7 +176,7 @@ export function SearchForm({
             onValueChange={value =>
               handleTripTypeChange(value as "one-way" | "round-trip")
             }
-            className="flex gap-4"
+            className="flex gap-6"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem
@@ -184,7 +184,10 @@ export function SearchForm({
                 id="one-way"
                 className="scale-125"
               />
-              <Label htmlFor="one-way" className="font-normal cursor-pointer">
+              <Label
+                htmlFor="one-way"
+                className="text-base font-normal cursor-pointer"
+              >
                 单程
               </Label>
             </div>
@@ -196,7 +199,7 @@ export function SearchForm({
               />
               <Label
                 htmlFor="round-trip"
-                className="font-normal cursor-pointer"
+                className="text-base font-normal cursor-pointer"
               >
                 往返
               </Label>
@@ -207,7 +210,7 @@ export function SearchForm({
         {/* Seat Class */}
         <div className="space-y-2">
           <Select value={seatClass} onValueChange={setSeatClass}>
-            <SelectTrigger id="seat-class">
+            <SelectTrigger id="seat-class" className="h-11 text-base">
               <SelectValue placeholder="选择舱位等级" />
             </SelectTrigger>
             <SelectContent>
@@ -221,7 +224,7 @@ export function SearchForm({
       </div>
 
       {/* Lower section */}
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col lg:flex-row items-stretch gap-6">
         {/* Cities */}
         <div className="space-y-2 flex-1">
           <CityInput
@@ -250,13 +253,13 @@ export function SearchForm({
 
       {/* Search Button */}
       {showSearchButton && (
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2">
           <Button
             onClick={handleSearch}
-            className="text-base font-semibold rounded-full px-8"
+            className="text-lg font-semibold rounded-full px-12 h-14"
             size="lg"
           >
-            <Search className="mr-2 h-5 w-5" />
+            <Search className="mr-2 h-6 w-6" />
             搜索航班
           </Button>
         </div>

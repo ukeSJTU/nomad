@@ -44,12 +44,14 @@ export function FlightsPageClient({
   };
 
   return (
-    <>
-      {/* Search Form */}
-      <SearchForm showSearchButton onSearch={handleSearch} cities={cities} />
+    <div className="space-y-8">
+      {/* Search Form Card */}
+      <div className="bg-card rounded-b-xl shadow-sm border border-t-0 p-6 md:p-8">
+        <SearchForm showSearchButton onSearch={handleSearch} cities={cities} />
+      </div>
 
       {/* Search History Section */}
       <FlightSearchHistorySection searchHistory={searchHistory} />
-    </>
+    </div>
   );
 }

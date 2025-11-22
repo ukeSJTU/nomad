@@ -3,7 +3,6 @@
 import { Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import type { SearchHistoryRecord } from "@/lib/queries";
 
 import { FlightSearchHistoryCard } from "./search-history";
@@ -18,22 +17,20 @@ export function FlightSearchHistorySection({
   return (
     <>
       {/* Search History Section */}
-      <div className="flex items-center justify-between mt-8">
-        <div className="flex items-center gap-4">
-          <Label>你搜索过的机票</Label>
-          <Button
-            variant="link"
-            size="lg"
-            className="gap-2"
-            onClick={() => {
-              // TODO: Implement clear history logic
-              console.log("Clear search history");
-            }}
-          >
-            <Trash2 className="h-4 w-4" />
-            清空历史
-          </Button>
-        </div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold">你搜索过的机票</h2>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 text-muted-foreground hover:text-foreground"
+          onClick={() => {
+            // TODO: Implement clear history logic
+            console.log("Clear search history");
+          }}
+        >
+          <Trash2 className="h-4 w-4" />
+          清空历史
+        </Button>
       </div>
       {searchHistory.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
