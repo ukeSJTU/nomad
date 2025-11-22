@@ -131,7 +131,7 @@ export function OrderStatusCard({
 
   return (
     <Card>
-      <CardContent className="pt-6">
+      <CardContent>
         {/* Header: Status icon, title, and order number */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-4">
