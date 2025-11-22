@@ -1,9 +1,13 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import type { SearchHistoryRecord } from "@/lib/queries";
+import { clearSearchHistory } from "@/lib/actions";
+import type { SearchHistoryRecord } from "@/types/dto";
 
 import { FlightSearchHistoryCard } from "./search-history";
 
@@ -14,6 +18,27 @@ interface FlightSearchHistorySectionProps {
 export function FlightSearchHistorySection({
   searchHistory,
 }: FlightSearchHistorySectionProps) {
+  const router = useRouter();
+  const [isClearing, setIsClearing] = useState(false);
+
+  const handleClearHistory = async () => {
+    setIsClearing(true);
+    try {
+      const result = await clearSearchHistory();
+
+      if (result.success) {
+        toast.success(result.message);
+        router.refresh(); // Refresh to update the search history display
+      } else {
+        toast.error(result.message);
+      }
+    } catch (_error) {
+      toast.error("清空搜索历史失败，请稍后重试");
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
   return (
     <>
       {/* Search History Section */}
@@ -23,13 +48,11 @@ export function FlightSearchHistorySection({
           variant="ghost"
           size="sm"
           className="gap-2 text-muted-foreground hover:text-foreground"
-          onClick={() => {
-            // TODO: Implement clear history logic
-            console.log("Clear search history");
-          }}
+          onClick={handleClearHistory}
+          disabled={isClearing || searchHistory.length === 0}
         >
           <Trash2 className="h-4 w-4" />
-          清空历史
+          {isClearing ? "清空中..." : "清空历史"}
         </Button>
       </div>
       {searchHistory.length === 0 ? (

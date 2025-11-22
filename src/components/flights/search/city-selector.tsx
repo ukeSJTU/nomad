@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { CityData } from "@/lib/queries/cities";
+import type { CityData } from "@/types/dto";
 
 interface CitySelectorProps {
   onSelect: (city: CityData) => void;

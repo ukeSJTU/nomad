@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CityData } from "@/lib/queries/cities";
+import type { CityData } from "@/types/dto";
 
 import { CityInput } from "./city-selector";
 import { DateSelector } from "./date-selector";
@@ -253,14 +253,13 @@ export function SearchForm({
 
       {/* Search Button */}
       {showSearchButton && (
-        <div className="flex justify-center pt-2">
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 z-10">
           <Button
             onClick={handleSearch}
-            className="text-lg font-semibold rounded-full px-12 h-14"
+            className="text-lg font-semibold rounded-full px-12 h-14 bg-secondary"
             size="lg"
           >
-            <Search className="mr-2 h-6 w-6" />
-            搜索航班
+            <Search className="mr-2 h-6 w-6 stroke-[3px]" />搜 索
           </Button>
         </div>
       )}

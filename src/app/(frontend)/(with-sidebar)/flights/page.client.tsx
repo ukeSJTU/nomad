@@ -46,7 +46,7 @@ export function FlightsPageClient({
   return (
     <div className="space-y-8">
       {/* Search Form Card */}
-      <div className="bg-card rounded-b-xl shadow-sm border border-t-0 p-6 md:p-8">
+      <div className="bg-card rounded-b-xl shadow-sm border border-t-0 p-6 md:p-8 relative">
         <SearchForm showSearchButton onSearch={handleSearch} cities={cities} />
       </div>
 

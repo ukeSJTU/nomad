@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { FlightSearchHistoryCard } from "@/components/flights/search/search-history";
-import type { SearchHistoryRecord } from "@/lib/queries/flight-search-history";
+import type { SearchHistoryRecord } from "@/types/dto";
 
 const meta = {
   title: "Flights/Search/FlightSearchHistoryCard",

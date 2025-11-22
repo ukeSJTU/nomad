@@ -10,6 +10,8 @@
  * - Includes computed/derived fields for UI convenience
  */
 
+export * from "./cities";
+export { type SearchHistoryRecord } from "./flight-search-history";
 export * from "./orders";
 export {
   type Passenger as PassengerDTO,
