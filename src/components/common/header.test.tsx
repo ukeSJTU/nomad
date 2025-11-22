@@ -117,7 +117,7 @@ describe("Header Component", () => {
     const { container } = render(<Header />);
 
     // Header should have a container with flex layout
-    const headerContainer = container.querySelector(".container");
+    const headerContainer = container.querySelector("header > div");
     expect(headerContainer).toBeInTheDocument();
 
     // Check for logo link (left section)
