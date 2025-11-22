@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DeleteOrderDialog from "@/components/user/delete-order-dialog";
 import OrderCard from "@/components/user/order-card";
+import { resendOrderConfirmationAction } from "@/lib/actions/emails";
 import { deleteOrderAction } from "@/lib/actions/orders";
 import type { OrderListItem } from "@/types/dto/orders";
 
@@ -99,10 +100,23 @@ export default function OrdersPageClient({ orders }: OrdersPageClientProps) {
   };
 
   // Handle action button click (Resend confirmation or Go to payment)
-  const handleActionClick = (order: OrderListItem) => {
+  const handleActionClick = async (order: OrderListItem) => {
     if (order.status === "CONFIRMED") {
-      // TODO: Implement resend confirmation logic
-      toast.success("确认信息已重新发送");
+      // Resend order confirmation email
+      setIsLoading(true);
+      try {
+        const result = await resendOrderConfirmationAction(order.id);
+
+        if (result.success) {
+          toast.success("订单确认邮件已重新发送");
+        } else {
+          toast.error(result.error || "邮件发送失败，请稍后重试");
+        }
+      } catch (_error) {
+        toast.error("邮件发送失败，请重试");
+      } finally {
+        setIsLoading(false);
+      }
     } else if (order.status === "PENDING_PAYMENT") {
       // Navigate to payment page
       router.push(`/flights/booking/${order.id}/payment`);

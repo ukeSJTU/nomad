@@ -13,6 +13,8 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
+import { formatCurrency as formatCurrencyUtil } from "@/utils/currency";
+
 interface PassengerInfo {
   name: string;
   documentType: string;
@@ -34,9 +36,9 @@ interface OrderConfirmationEmailProps {
   outboundFlight: FlightInfo;
   inboundFlight?: FlightInfo;
   passengers: PassengerInfo[];
-  baseAmount: number;
-  ancillaryAmount: number;
-  totalAmount: number;
+  baseAmount: string; // Decimal string (e.g., "1500.00")
+  ancillaryAmount: string; // Decimal string (e.g., "200.00")
+  totalAmount: string; // Decimal string (e.g., "1700.00")
   contactEmail?: string;
   contactPhone?: string;
 }
@@ -63,10 +65,6 @@ export const OrderConfirmationEmail = ({
       minute: "2-digit",
       hour12: false,
     });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return `¥${amount.toFixed(2)}`;
   };
 
   return (
@@ -187,20 +185,22 @@ export const OrderConfirmationEmail = ({
               <Text style={sectionTitle}>费用明细</Text>
               <Row style={priceRow}>
                 <Text style={priceLabel}>基础票价</Text>
-                <Text style={priceValue}>{formatCurrency(baseAmount)}</Text>
+                <Text style={priceValue}>{formatCurrencyUtil(baseAmount)}</Text>
               </Row>
-              {ancillaryAmount > 0 && (
+              {parseFloat(ancillaryAmount) > 0 && (
                 <Row style={priceRow}>
                   <Text style={priceLabel}>附加服务</Text>
                   <Text style={priceValue}>
-                    {formatCurrency(ancillaryAmount)}
+                    {formatCurrencyUtil(ancillaryAmount)}
                   </Text>
                 </Row>
               )}
               <Hr style={priceDivider} />
               <Row style={priceRow}>
                 <Text style={totalLabel}>总计</Text>
-                <Text style={totalValue}>{formatCurrency(totalAmount)}</Text>
+                <Text style={totalValue}>
+                  {formatCurrencyUtil(totalAmount)}
+                </Text>
               </Row>
             </Section>
 

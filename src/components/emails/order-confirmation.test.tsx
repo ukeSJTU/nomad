@@ -22,9 +22,9 @@ describe("OrderConfirmationEmail", () => {
         documentNumber: "110101199001011234",
       },
     ],
-    baseAmount: 1800.0,
-    ancillaryAmount: 200.0,
-    totalAmount: 2000.0,
+    baseAmount: "1800.00",
+    ancillaryAmount: "200.00",
+    totalAmount: "2000.00",
     contactEmail: "zhangsan@example.com",
     contactPhone: "13800138000",
   };
@@ -138,7 +138,7 @@ describe("OrderConfirmationEmail", () => {
   describe("Pricing Information", () => {
     it("displays base amount correctly", async () => {
       const html = await render(<OrderConfirmationEmail {...mockOrderData} />);
-      expect(html).toContain("¥1800.00");
+      expect(html).toContain("¥1,800.00");
     });
 
     it("shows ancillary amount when greater than zero", async () => {
@@ -148,7 +148,7 @@ describe("OrderConfirmationEmail", () => {
     });
 
     it("hides ancillary amount when zero", async () => {
-      const noAncillaryData = { ...mockOrderData, ancillaryAmount: 0 };
+      const noAncillaryData = { ...mockOrderData, ancillaryAmount: "0.00" };
       const html = await render(
         <OrderConfirmationEmail {...noAncillaryData} />
       );
@@ -157,20 +157,20 @@ describe("OrderConfirmationEmail", () => {
 
     it("displays total amount correctly", async () => {
       const html = await render(<OrderConfirmationEmail {...mockOrderData} />);
-      expect(html).toContain("¥2000.00");
+      expect(html).toContain("¥2,000.00");
     });
 
-    it("formats decimal amounts correctly", async () => {
+    it("formats decimal amounts correctly with thousands separator", async () => {
       const decimalData = {
         ...mockOrderData,
-        baseAmount: 1234.56,
-        ancillaryAmount: 98.76,
-        totalAmount: 1333.32,
+        baseAmount: "1234.56",
+        ancillaryAmount: "98.76",
+        totalAmount: "1333.32",
       };
       const html = await render(<OrderConfirmationEmail {...decimalData} />);
-      expect(html).toContain("¥1234.56");
+      expect(html).toContain("¥1,234.56");
       expect(html).toContain("¥98.76");
-      expect(html).toContain("¥1333.32");
+      expect(html).toContain("¥1,333.32");
     });
   });
 

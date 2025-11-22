@@ -7,8 +7,10 @@ import { z } from "zod";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getOrderDetailById } from "@/lib/queries/orders";
 import { user } from "@/lib/schema";
 import { orders, payments } from "@/lib/schema/orders";
+import { sendOrderConfirmationEmail } from "@/lib/services/email";
 import type { ProcessPaymentResult } from "@/types/actions/payments";
 import {
   getCurrencyValue,
@@ -16,6 +18,7 @@ import {
   subtractCurrency,
   toDatabaseValue,
 } from "@/utils/currency";
+import { transformOrderDetailToEmailData } from "@/utils/email-transformers";
 
 /**
  * Validation schema for process payment request
@@ -193,6 +196,52 @@ export async function processPaymentAction(
         remainingBalance: toDatabaseValue(newBalance),
       };
     });
+
+    // Send order confirmation email (async, non-blocking)
+    // If email fails, we don't fail the payment - just log the error
+    try {
+      console.log(
+        `[Payment] Sending order confirmation email for order ${paymentResult.orderNumber}`
+      );
+
+      // Fetch full order details for email
+      const orderDetail = await getOrderDetailById(
+        paymentResult.orderId,
+        session.user.id
+      );
+
+      if (orderDetail && session.user.email) {
+        // Transform to email data
+        const emailData = transformOrderDetailToEmailData(orderDetail, {
+          name: session.user.name ?? undefined,
+          email: session.user.email,
+        });
+
+        // Send email via service
+        const emailResult = await sendOrderConfirmationEmail(emailData);
+
+        if (emailResult.success) {
+          console.log(
+            `[Payment] Order confirmation email sent successfully for order ${paymentResult.orderNumber}`
+          );
+        } else {
+          console.error(
+            `[Payment] Failed to send order confirmation email for order ${paymentResult.orderNumber}:`,
+            emailResult.error
+          );
+        }
+      } else {
+        console.warn(
+          `[Payment] Cannot send email: missing order details or user email for order ${paymentResult.orderNumber}`
+        );
+      }
+    } catch (emailError) {
+      // Email failure should not affect payment success
+      console.error(
+        `[Payment] Error sending order confirmation email:`,
+        emailError
+      );
+    }
 
     return {
       success: true as const,
