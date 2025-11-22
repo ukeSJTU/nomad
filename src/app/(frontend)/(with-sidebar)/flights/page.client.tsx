@@ -7,7 +7,7 @@ import {
   SearchForm,
   type SearchFormData,
 } from "@/components/flights/search";
-import type { CityData, SearchHistoryRecord } from "@/lib/queries";
+import type { CityData, SearchHistoryRecord } from "@/types/dto";
 import { dateToLocalDateString } from "@/utils/date";
 
 interface FlightsPageClientProps {
