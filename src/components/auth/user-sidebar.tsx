@@ -22,7 +22,7 @@ type MenuItem = {
 };
 
 const menuItems: MenuItem[] = [
-  { title: "我的携程首页", href: "/home" },
+  { title: "我的携程首页", href: "#", implemented: false },
   { title: "订单", href: "/home/orders" },
   { title: "我的消息", href: "/home/messages", implemented: false },
   {
@@ -66,7 +66,16 @@ export default function UserSidebar() {
   // Check if parent item should be open or not
   const shouldBeOpen = (item: MenuItem): boolean => {
     if (!item.children) return false;
-    return item.children.some(child => child.href === pathname);
+    return item.children.some(
+      child => child.href && pathname.startsWith(child.href)
+    );
+  };
+
+  // Check if a menu item is active (supports sub-paths)
+  const isMenuItemActive = (href?: string): boolean => {
+    if (!href) return false;
+    // Exact match or starts with href followed by /
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   // Handle click for unimplemented features
@@ -111,7 +120,7 @@ export default function UserSidebar() {
     }
 
     // Leaf item without children
-    const isActive = pathname === item.href;
+    const isActive = isMenuItemActive(item.href);
     const isImplemented = item.implemented !== false;
 
     // If not implemented, use Button with onClick
