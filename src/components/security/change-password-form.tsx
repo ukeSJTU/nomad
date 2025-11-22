@@ -100,7 +100,7 @@ export default function ChangePasswordForm({
                   <button
                     type="button"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
                     {showCurrentPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -134,7 +134,7 @@ export default function ChangePasswordForm({
                   <button
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
                     {showNewPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -149,7 +149,7 @@ export default function ChangePasswordForm({
               {/* Password Requirements */}
               {newPassword && (
                 <div className="mt-3 space-y-2">
-                  <p className="text-sm text-gray-600">密码要求：</p>
+                  <p className="text-sm text-muted-foreground">密码要求：</p>
                   <div className="space-y-1">
                     {requirements.map((req, index) => (
                       <div
@@ -157,13 +157,13 @@ export default function ChangePasswordForm({
                         className="flex items-center gap-2 text-sm"
                       >
                         {req.met ? (
-                          <Check className="h-4 w-4 text-green-600" />
+                          <Check className="h-4 w-4 text-chart-5" />
                         ) : (
-                          <X className="h-4 w-4 text-gray-400" />
+                          <X className="h-4 w-4 text-muted-foreground" />
                         )}
                         <span
                           className={
-                            req.met ? "text-green-600" : "text-gray-500"
+                            req.met ? "text-chart-5" : "text-muted-foreground"
                           }
                         >
                           {req.label}
@@ -196,7 +196,7 @@ export default function ChangePasswordForm({
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="h-4 w-4" />

@@ -28,21 +28,21 @@ function getStatusConfig(status: SecurityStatus, value?: string) {
   switch (status) {
     case "verified":
       return {
-        icon: <CheckCircle className="size-5 text-green-600" />,
+        icon: <CheckCircle className="size-5 text-chart-5" />,
         text: `已绑定${value ? ` ${value}` : ""}`,
-        textClassName: "text-green-600 font-medium",
+        textClassName: "text-chart-5 font-medium",
       };
     case "unverified":
       return {
-        icon: <AlertCircle className="size-5 text-orange-600" />,
+        icon: <AlertCircle className="size-5 text-secondary" />,
         text: `已设置但未验证${value ? ` ${value}` : ""}`,
-        textClassName: "text-orange-600 font-medium",
+        textClassName: "text-secondary font-medium",
       };
     case "notSet":
       return {
-        icon: <XCircle className="size-5 text-gray-400" />,
+        icon: <XCircle className="size-5 text-muted-foreground" />,
         text: "未设置",
-        textClassName: "text-gray-500 font-medium",
+        textClassName: "text-muted-foreground font-medium",
       };
   }
 }

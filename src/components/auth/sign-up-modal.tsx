@@ -78,13 +78,13 @@ export function SignUpModal({
           <DialogTitle className="text-lg font-bold text-left">
             Nomad用户注册协议和隐私政策
           </DialogTitle>
-          <X className="text-gray-300" />
+          <X className="text-muted-foreground" />
         </DialogHeader>
 
         <Separator />
 
         <div className="flex-1 overflow-hidden overflow-y-auto">
-          <DialogDescription className="text-sm text-gray-700 mb-4 leading-relaxed">
+          <DialogDescription className="text-sm text-foreground mb-4 leading-relaxed">
             亲爱的用户，在您注册为Nomad用户的过程中，您需要完成我们的注册流程并通过点击同意的形式在线签署以下协议，请您务必仔细阅读、充分理解协议中的条款内容后再点击同意，
             <span className="font-bold">尤其是加粗字体</span>。
           </DialogDescription>
@@ -95,19 +95,19 @@ export function SignUpModal({
                 href="/terms"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline mx-1"
+                className="text-primary hover:text-primary/90 underline mx-1"
               >
                 服务协议
               </Link>
             </h3>
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-background rounded-lg p-4">
               <div className="grid grid-cols-2 gap-x-8 gap-y-2">
                 {serviceTerms.map(term => (
                   <div key={term.id} className="flex items-start">
-                    <span className="text-sm text-gray-700 mr-2">
+                    <span className="text-sm text-foreground mr-2">
                       {term.id}.
                     </span>
-                    <span className="text-sm text-gray-700 flex-1">
+                    <span className="text-sm text-foreground flex-1">
                       {term.text}
                     </span>
                   </div>
@@ -122,22 +122,22 @@ export function SignUpModal({
                 href="/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline mx-1"
+                className="text-primary hover:text-primary/90 underline mx-1"
               >
                 隐私政策
               </Link>
             </h3>
-            <p className="text-sm text-gray-700 mb-2 leading-relaxed">
+            <p className="text-sm text-foreground mb-2 leading-relaxed">
               隐私政策明确了我们产品与/或服务所收集、使用及共享个人信息的类型和方式及用途；明确了用户查询、更正和删除个人信息的方式，具体提纲如下：
             </p>
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-background rounded-lg p-4">
               <div className="grid grid-cols-2 gap-x-8 gap-y-2">
                 {privacyTerms.map(term => (
                   <div key={term.id} className="flex items-start">
-                    <span className="text-sm text-gray-700 mr-2">
+                    <span className="text-sm text-foreground mr-2">
                       {term.id}.
                     </span>
-                    <span className="text-sm text-gray-700 flex-1">
+                    <span className="text-sm text-foreground flex-1">
                       {term.text}
                     </span>
                   </div>
@@ -146,7 +146,7 @@ export function SignUpModal({
             </div>
           </div>
 
-          <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+          <div className="space-y-3 text-sm text-foreground leading-relaxed">
             <p>
               <span className="font-bold">【审慎阅读】</span>
               您在申请注册流程中点击同意前，请您务必审慎阅读、充分理解协议中相关条款内容，
@@ -160,7 +160,7 @@ export function SignUpModal({
               如果您不同意上述协议或其中任何条款约定，请您停止注册。如果您按照注册流程提示填写信息、阅读并点击同意上述协议且完成全部注册流程后，即表示您已充分阅读、理解并接受协议的全部内容。如果您对以上内容有疑问，请联系：
               <a
                 href="mailto:privacy@nomad.com"
-                className="text-blue-600 hover:text-blue-800 underline"
+                className="text-primary hover:text-primary/90 underline"
               >
                 privacy@nomad.com
               </a>
@@ -183,7 +183,7 @@ export function SignUpModal({
           </Button>
           <Button
             onClick={onAgree}
-            className="min-w-24 px-8 bg-orange-500 hover:bg-orange-600 text-white"
+            className="min-w-24 px-8 bg-secondary hover:bg-secondary/90 text-white"
           >
             同意并继续
           </Button>

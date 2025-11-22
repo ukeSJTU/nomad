@@ -86,41 +86,41 @@ export function OrderStatusCard({
         return {
           title: "待支付",
           icon: Clock,
-          titleColor: "text-orange-600",
-          bgColor: "bg-orange-50",
-          iconColor: "text-orange-600",
+          titleColor: "text-secondary",
+          bgColor: "bg-secondary/10",
+          iconColor: "text-secondary",
         };
       case "CONFIRMED":
         return {
           title: "已确认",
           icon: CheckCircle,
-          titleColor: "text-green-600",
-          bgColor: "bg-green-50",
-          iconColor: "text-green-600",
+          titleColor: "text-chart-5",
+          bgColor: "bg-chart-5/10",
+          iconColor: "text-chart-5",
         };
       case "CANCELLED":
         return {
           title: "已取消",
           icon: XCircle,
-          titleColor: "text-gray-600",
-          bgColor: "bg-gray-50",
-          iconColor: "text-gray-600",
+          titleColor: "text-muted-foreground",
+          bgColor: "bg-muted",
+          iconColor: "text-muted-foreground",
         };
       case "REFUNDED":
         return {
           title: "已退款",
           icon: CheckCircle,
-          titleColor: "text-blue-600",
-          bgColor: "bg-blue-50",
-          iconColor: "text-blue-600",
+          titleColor: "text-primary",
+          bgColor: "bg-primary/10",
+          iconColor: "text-primary",
         };
       default:
         return {
           title: data.status,
           icon: AlertCircle,
-          titleColor: "text-gray-600",
-          bgColor: "bg-gray-50",
-          iconColor: "text-gray-600",
+          titleColor: "text-muted-foreground",
+          bgColor: "bg-muted",
+          iconColor: "text-muted-foreground",
         };
     }
   };
@@ -171,13 +171,15 @@ export function OrderStatusCard({
           {data.status === "PENDING_PAYMENT" && (
             <Alert
               className={
-                isPaymentExpired ? "border-red-200" : "border-orange-200"
+                isPaymentExpired
+                  ? "border-destructive/30"
+                  : "border-secondary/30"
               }
             >
               <Clock className="h-4 w-4" />
               <AlertDescription>
                 {isPaymentExpired ? (
-                  <span className="text-red-600 font-medium">
+                  <span className="text-destructive font-medium">
                     支付时间已过期，订单将自动取消
                   </span>
                 ) : (
@@ -187,7 +189,7 @@ export function OrderStatusCard({
                     </span>
                     <span
                       className={`font-mono text-lg font-bold ml-4 ${
-                        timeLeft <= 60 ? "text-red-500" : "text-orange-500"
+                        timeLeft <= 60 ? "text-destructive" : "text-secondary"
                       }`}
                     >
                       {formatCountdown(timeLeft)}
@@ -200,9 +202,9 @@ export function OrderStatusCard({
 
           {/* CONFIRMED: Success message */}
           {data.status === "CONFIRMED" && (
-            <Alert className="border-green-200 bg-green-50/50">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
+            <Alert className="border-chart-5/30 bg-chart-5/10">
+              <CheckCircle className="h-4 w-4 text-chart-5" />
+              <AlertDescription className="text-chart-5">
                 订单预订成功，确认信息已发送至您的邮箱
               </AlertDescription>
             </Alert>
@@ -210,12 +212,12 @@ export function OrderStatusCard({
 
           {/* CANCELLED: Cancellation reason */}
           {data.status === "CANCELLED" && (
-            <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-4">
+            <div className="rounded-lg border border-border bg-muted p-4">
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-foreground">
                   取消原因：
                 </span>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-muted-foreground">
                   {data.cancellationReason || "用户主动取消"}
                 </span>
               </div>
@@ -224,9 +226,9 @@ export function OrderStatusCard({
 
           {/* REFUNDED: Refund completion message */}
           {data.status === "REFUNDED" && (
-            <Alert className="border-blue-200 bg-blue-50/50">
-              <CheckCircle className="h-4 w-4 text-blue-600" />
-              <AlertDescription className="text-blue-800">
+            <Alert className="border-primary/30 bg-primary/10">
+              <CheckCircle className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-primary">
                 退款已完成，预计 1-7 个工作日到账，请注意查收
               </AlertDescription>
             </Alert>

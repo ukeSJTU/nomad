@@ -54,7 +54,7 @@ function QuickPassengerSelect({
         // Please note that we must use label instead of div here to prevent radix ui bug
         <Label
           key={passenger.id}
-          className="flex items-center gap-2 px-4 py-2 border rounded-md hover:bg-gray-50 cursor-pointer transition-colors"
+          className="flex items-center gap-2 px-4 py-2 border border-input rounded-md hover:bg-accent cursor-pointer transition-colors"
         >
           <Checkbox
             checked={selectedPassengerIds.includes(passenger.id)}
@@ -98,25 +98,25 @@ function PassengerInfoForm({
   const displayName = data.name;
 
   return (
-    <div className="relative bg-white border border-gray-200 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="relative bg-card border border-border rounded-md p-6 shadow hover:shadow-md transition-shadow">
       <div className="flex gap-6">
         {/* Left side: Number with divider */}
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-12 h-12 rounded-md bg-linear-to-br from-blue-50 to-blue-100 text-blue-600 font-bold text-2xl">
+          <div className="flex items-center justify-center w-12 h-12 rounded-md bg-primary/10 text-primary font-bold text-2xl">
             {passengerNumber}
           </div>
           {/* Vertical divider */}
-          <div className="w-px bg-gray-200 self-stretch"></div>
+          <div className="w-px bg-border self-stretch"></div>
         </div>
 
         {/* Right side: Form content */}
         <div className="flex-1 space-y-5">
           {/* Header with delete button */}
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-foreground">
               乘机人 {passengerNumber}
               {displayName && (
-                <span className="ml-2 text-sm font-normal text-gray-500">
+                <span className="ml-2 text-sm font-normal text-muted-foreground">
                   ({displayName})
                 </span>
               )}
@@ -126,7 +126,7 @@ function PassengerInfoForm({
                 variant="ghost"
                 size="sm"
                 onClick={onRemove}
-                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md -mr-2"
+                className="text-primary hover:text-primary/90 hover:bg-accent rounded-md -mr-2"
               >
                 <X className="h-4 w-4" />
                 删除
@@ -137,14 +137,14 @@ function PassengerInfoForm({
           {/* Passenger Name */}
           <div>
             <Label htmlFor={`name-${passengerNumber}`}>
-              姓名 <span className="text-red-500">*</span>
+              姓名 <span className="text-destructive">*</span>
             </Label>
             <Input
               id={`name-${passengerNumber}`}
               value={data.name}
               onChange={e => onChange("name", e.target.value)}
               placeholder="请输入姓名"
-              className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
+              className="h-12 border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base"
             />
           </div>
 
@@ -157,7 +157,7 @@ function PassengerInfoForm({
               >
                 <SelectTrigger
                   id={`document-type-${passengerNumber}`}
-                  className="h-12 w-[120px] border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base font-medium"
+                  className="h-12 w-[120px] border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base font-medium"
                 >
                   <SelectValue placeholder="身份证" />
                 </SelectTrigger>
@@ -175,7 +175,7 @@ function PassengerInfoForm({
                 value={data.documentNumber}
                 onChange={e => onChange("documentNumber", e.target.value)}
                 placeholder="登机证件号码"
-                className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
+                className="h-12 border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base"
               />
             </div>
           </div>
@@ -184,7 +184,7 @@ function PassengerInfoForm({
           <div className="grid grid-cols-[auto_1fr] gap-4 items-center">
             <div>
               <Select defaultValue="86">
-                <SelectTrigger className="h-12 w-[120px] border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base font-medium">
+                <SelectTrigger className="h-12 w-[120px] border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base font-medium">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -203,7 +203,7 @@ function PassengerInfoForm({
                 value={data.phone}
                 onChange={e => onChange("phone", e.target.value)}
                 placeholder="乘机人手机号码（选填）"
-                className="h-12 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-0 text-base placeholder:text-gray-400"
+                className="h-12 border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base"
               />
             </div>
           </div>
@@ -213,11 +213,11 @@ function PassengerInfoForm({
             <div className="flex items-center space-x-3">
               <Checkbox
                 id={`frequent-flyer-${passengerNumber}`}
-                className="rounded border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 w-5 h-5"
+                className="rounded border-input data-[state=checked]:bg-primary data-[state=checked]:border-primary w-5 h-5"
               />
               <Label
                 htmlFor={`frequent-flyer-${passengerNumber}`}
-                className="text-sm text-gray-600 font-normal leading-none cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm text-muted-foreground font-normal leading-none cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 常旅客卡
               </Label>
@@ -286,7 +286,7 @@ export function PassengerFormCard({
         {/* Add Passenger Button */}
         <Button
           variant="outline"
-          className="w-full text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-700"
+          className="w-full text-primary border-primary hover:bg-accent hover:text-primary"
           onClick={onAddPassenger}
         >
           <Plus className="h-4 w-4 mr-2" />

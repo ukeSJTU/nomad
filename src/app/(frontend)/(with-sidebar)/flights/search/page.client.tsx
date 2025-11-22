@@ -249,11 +249,11 @@ export function FlightSearchPageClient({
                 value="outbound"
                 className="flex-col items-start py-2 px-3"
               >
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                     1
                   </span>
-                  <span className="text-[10px] font-medium uppercase tracking-wide opacity-70">
+                  <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     选择去程
                   </span>
                 </div>
@@ -274,11 +274,11 @@ export function FlightSearchPageClient({
                 value="return"
                 className="flex-col items-start py-2 px-3"
               >
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                     2
                   </span>
-                  <span className="text-[10px] font-medium uppercase tracking-wide opacity-70">
+                  <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     选择返程
                   </span>
                 </div>
@@ -305,7 +305,7 @@ export function FlightSearchPageClient({
             <div className="flex items-center gap-2 text-sm text-muted-foreground cursor-help hover:text-foreground transition-colors">
               <Clock className="h-4 w-4" />
               <div className="flex flex-col items-end">
-                <span className="text-[10px] uppercase tracking-wide opacity-60">
+                <span className="text-xs uppercase tracking-wide text-muted-foreground">
                   最近更新
                 </span>
                 <span className="text-sm font-mono font-semibold">

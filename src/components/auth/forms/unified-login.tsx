@@ -46,7 +46,7 @@ function ErrorDisplay({ message }: { message?: string }) {
   if (!message) return null;
 
   return (
-    <div className="flex items-center gap-2 rounded-md bg-orange-50 border border-orange-200 px-3 py-2.5 text-sm text-orange-800">
+    <div className="flex items-center gap-2 rounded-md bg-secondary/10 border border-secondary/30 px-3 py-2.5 text-sm text-secondary">
       <AlertCircle className="h-4 w-4 shrink-0" />
       <span>{message}</span>
     </div>
@@ -76,7 +76,7 @@ function TermsCheckbox({
               checked={checked}
               onCheckedChange={onChange}
               disabled={disabled}
-              className="rounded-full data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+              className="rounded-full data-[state=checked]:bg-primary data-[state=checked]:border-primary"
             />
           </TooltipTrigger>
           {error && (
@@ -86,13 +86,13 @@ function TermsCheckbox({
           )}
         </Tooltip>
       </FormControl>
-      <FormLabel className="text-xs text-gray-600 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+      <FormLabel className="text-xs text-muted-foreground font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
         阅读并同意Nomad的{" "}
-        <Link href="/terms" className="text-blue-600 hover:text-blue-700">
+        <Link href="/terms" className="text-primary hover:text-primary/90">
           服务协议
         </Link>{" "}
         及{" "}
-        <Link href="/privacy" className="text-blue-600 hover:text-blue-700">
+        <Link href="/privacy" className="text-primary hover:text-primary/90">
           个人信息保护政策
         </Link>
       </FormLabel>
@@ -178,7 +178,7 @@ function PasswordLoginForm({
       >
         {/* Title */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-foreground mb-2">
             账号密码登录
           </h1>
         </div>
@@ -219,7 +219,7 @@ function PasswordLoginForm({
                   />
                   <Link
                     href="/auth/forgot-password"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:text-blue-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-primary hover:text-primary/90"
                   >
                     忘记密码
                   </Link>
@@ -235,7 +235,7 @@ function PasswordLoginForm({
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-medium"
+          className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
           disabled={isLoading}
         >
           登 录
@@ -266,14 +266,14 @@ function PasswordLoginForm({
             variant="link"
             onClick={onSwitchToOtp}
             disabled={isLoading}
-            className="text-blue-600 hover:text-blue-700 p-0 h-auto"
+            className="text-primary hover:text-primary/90 p-0 h-auto"
           >
             验证码登录
           </Button>
 
           <Link
             href="/auth/sign-up"
-            className="text-blue-600 hover:text-blue-700"
+            className="text-primary hover:text-primary/90"
           >
             免费注册
           </Link>
@@ -429,7 +429,9 @@ function OtpLoginForm({
       >
         {/* Title */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">验证码登录</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            验证码登录
+          </h1>
         </div>
 
         {/* Account Input */}
@@ -493,7 +495,7 @@ function OtpLoginForm({
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-medium"
+          className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
           disabled={isLoading}
         >
           登 录
@@ -524,7 +526,7 @@ function OtpLoginForm({
             variant="link"
             onClick={onSwitchToPassword}
             disabled={isLoading}
-            className="text-blue-600 hover:text-blue-700 p-0 h-auto"
+            className="text-primary hover:text-primary/90 p-0 h-auto"
           >
             账号登录
           </Button>
@@ -584,7 +586,7 @@ export default function UnifiedLoginForm({
           className={className}
         />
         <div className="flex items-center justify-start">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black hover:bg-gray-800 transition-colors cursor-pointer">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer">
             <Github className="h-5 w-5 text-white" />
           </div>
         </div>

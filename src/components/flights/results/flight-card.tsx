@@ -167,7 +167,7 @@ export function FlightCard({
               <div className="text-2xl font-bold text-foreground leading-none">
                 {arrivalTime}
                 {daysOffset && daysOffset > 0 && (
-                  <span className="text-sm text-orange-500 ml-1.5 font-medium">
+                  <span className="text-sm text-secondary ml-1.5 font-medium">
                     +{daysOffset}
                   </span>
                 )}
@@ -182,7 +182,7 @@ export function FlightCard({
           <div className="flex items-center gap-4 ml-auto">
             {/* Price */}
             <div className="flex flex-col items-end">
-              <div className="text-2xl font-bold text-orange-500 leading-none">
+              <div className="text-2xl font-bold text-secondary leading-none">
                 {formatCurrency(displayPrice)}
                 {isMultiSeatClass && (
                   <span className="text-sm text-muted-foreground ml-1">起</span>
@@ -210,7 +210,7 @@ export function FlightCard({
             ) : (
               <Button
                 onClick={onButtonClick}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 shrink-0"
+                className="bg-secondary hover:bg-secondary/90 text-white px-6 shrink-0"
               >
                 {buttonText}
               </Button>
@@ -235,12 +235,12 @@ export function FlightCard({
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="text-xl font-bold text-orange-500">
+                  <div className="text-xl font-bold text-secondary">
                     {formatCurrency(seatClass.price)}
                   </div>
                   <Button
                     onClick={() => onSeatClassClick?.(seatClass)}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-6"
+                    className="bg-secondary hover:bg-secondary/90 text-white px-6"
                     size="sm"
                   >
                     {buttonText}

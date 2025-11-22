@@ -107,8 +107,8 @@ export default function PasswordSetupForm({
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         {/* Display masked phone number or email if provided */}
         {maskedIdentifier && (
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-            <p className="text-sm text-gray-700">
+          <div className="p-3 bg-primary/10 border border-primary/20 rounded-md">
+            <p className="text-sm text-foreground">
               <span className="font-medium">注册账号：</span>
               <span className="font-mono">{maskedIdentifier}</span>
             </p>
@@ -122,7 +122,7 @@ export default function PasswordSetupForm({
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-foreground">
                   设置密码 {/* Set Password */}
                 </FormLabel>
                 <div className="relative">
@@ -136,7 +136,7 @@ export default function PasswordSetupForm({
                   </FormControl>
                   <button
                     type="button"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 transition-colors"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-accent transition-colors"
                     onClick={e => {
                       e.preventDefault();
                       setShowPassword(!showPassword);
@@ -144,9 +144,9 @@ export default function PasswordSetupForm({
                     aria-label={showPassword ? "隐藏密码" : "显示密码"}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-600" />
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-600" />
+                      <Eye className="h-4 w-4 text-muted-foreground" />
                     )}
                   </button>
                 </div>
@@ -161,7 +161,7 @@ export default function PasswordSetupForm({
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-foreground">
                   确认密码 {/* Confirm Password */}
                 </FormLabel>
                 <div className="relative">
@@ -175,7 +175,7 @@ export default function PasswordSetupForm({
                   </FormControl>
                   <button
                     type="button"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 transition-colors"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-accent transition-colors"
                     onClick={e => {
                       e.preventDefault();
                       setShowConfirmPassword(!showConfirmPassword);
@@ -183,9 +183,9 @@ export default function PasswordSetupForm({
                     aria-label={showConfirmPassword ? "隐藏密码" : "显示密码"}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-600" />
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-600" />
+                      <Eye className="h-4 w-4 text-muted-foreground" />
                     )}
                   </button>
                 </div>
@@ -196,7 +196,7 @@ export default function PasswordSetupForm({
 
           {/* Password Requirements with Real-time Validation */}
           <div className="text-sm space-y-2">
-            <p className="text-gray-700 font-medium">
+            <p className="text-foreground font-medium">
               密码要求：{/* Password Requirements */}
             </p>
             <ul className="space-y-2">
@@ -204,21 +204,21 @@ export default function PasswordSetupForm({
                 <li key={index} className="flex items-center gap-2 text-xs">
                   {requirement.optional ? (
                     requirement.met ? (
-                      <Check className="h-4 w-4 text-green-500" />
+                      <Check className="h-4 w-4 text-chart-5" />
                     ) : null
                   ) : requirement.met ? (
-                    <Check className="h-4 w-4 text-green-500" />
+                    <Check className="h-4 w-4 text-chart-5" />
                   ) : (
-                    <X className="h-4 w-4 text-gray-400" />
+                    <X className="h-4 w-4 text-muted-foreground" />
                   )}
                   {/* Change text color based on requirement status */}
                   <span
                     className={
                       requirement.met
-                        ? "text-green-600"
+                        ? "text-chart-5"
                         : requirement.optional
-                          ? "text-gray-500"
-                          : "text-gray-600"
+                          ? "text-muted-foreground"
+                          : "text-foreground"
                     }
                   >
                     {requirement.label}
@@ -227,30 +227,30 @@ export default function PasswordSetupForm({
               ))}
             </ul>
             <div className="mt-4">
-              <p className="text-gray-700 font-medium">密码强度：</p>
+              <p className="text-foreground font-medium">密码强度：</p>
               <div className="flex items-center gap-2 mt-2">
-                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <div className="flex-1 bg-muted rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all duration-300 ${
                       strengthScore === 0
-                        ? "bg-red-500 w-0"
+                        ? "bg-destructive w-0"
                         : strengthScore === 1
-                          ? "bg-red-500 w-1/4"
+                          ? "bg-destructive w-1/4"
                           : strengthScore === 2
-                            ? "bg-yellow-500 w-2/4"
+                            ? "bg-secondary w-2/4"
                             : strengthScore === 3
-                              ? "bg-yellow-500 w-3/4"
-                              : "bg-green-500 w-full"
+                              ? "bg-secondary w-3/4"
+                              : "bg-chart-5 w-full"
                     }`}
                   ></div>
                 </div>
                 <span
                   className={`text-xs font-medium ${
                     strengthScore <= 1
-                      ? "text-red-600"
+                      ? "text-destructive"
                       : strengthScore === 2
-                        ? "text-yellow-600"
-                        : "text-green-600"
+                        ? "text-secondary"
+                        : "text-chart-5"
                   }`}
                 >
                   {strengthScore <= 1
@@ -267,7 +267,7 @@ export default function PasswordSetupForm({
         {/* Submit Button with Loading State */}
         <Button
           type="submit"
-          className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-medium"
+          className="w-full h-12 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium"
           disabled={isLoading}
         >
           {isLoading ? "设置中..." : submitButtonText}
@@ -275,7 +275,7 @@ export default function PasswordSetupForm({
 
         {showHelpLink && (
           <div className="text-center mt-4">
-            <a href="#" className="text-sm text-blue-600 hover:underline">
+            <a href="#" className="text-sm text-primary hover:underline">
               注册遇到问题？
             </a>
           </div>

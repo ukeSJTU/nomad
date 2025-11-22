@@ -80,7 +80,7 @@ export default function PassengerForm({
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         {/* Passenger Information Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold border-l-4 border-blue-600 pl-3">
+          <h3 className="text-lg font-semibold border-l-4 border-primary pl-3">
             旅客信息
           </h3>
 
@@ -93,7 +93,7 @@ export default function PassengerForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  <span className="text-red-500">*</span> 姓名
+                  <span className="text-destructive">*</span> 姓名
                 </FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="请输入姓名（中文或英文）" />
@@ -113,7 +113,8 @@ export default function PassengerForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  国籍 <span className="text-gray-500">(国家/地区)</span>
+                  国籍{" "}
+                  <span className="text-muted-foreground">(国家/地区)</span>
                 </FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="中文/英文" />
@@ -254,7 +255,7 @@ export default function PassengerForm({
 
         {/* Document Information Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold border-l-4 border-blue-600 pl-3">
+          <h3 className="text-lg font-semibold border-l-4 border-primary pl-3">
             证件信息
           </h3>
 
@@ -266,7 +267,7 @@ export default function PassengerForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    <span className="text-red-500">*</span> 证件类型
+                    <span className="text-destructive">*</span> 证件类型
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -295,7 +296,7 @@ export default function PassengerForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    <span className="text-red-500">*</span> 证件号码
+                    <span className="text-destructive">*</span> 证件号码
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="请输入证件号码" />
@@ -354,7 +355,7 @@ export default function PassengerForm({
         <div className="flex justify-center gap-4 pt-4">
           <Button
             type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+            className="bg-secondary hover:bg-secondary/90 text-white px-8"
             disabled={isLoading}
           >
             {isLoading ? "保存中..." : "保存"}

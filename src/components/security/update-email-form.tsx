@@ -111,15 +111,15 @@ export default function UpdateEmailForm({
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         {/* Description */}
         {config.description && (
-          <div className="rounded-lg bg-blue-50 p-4">
-            <p className="text-sm text-blue-800">{config.description}</p>
+          <div className="rounded-lg bg-primary/10 p-4">
+            <p className="text-sm text-primary">{config.description}</p>
           </div>
         )}
 
         {/* Current Email Display */}
         {config.currentLabel && currentEmail && (
-          <div className="rounded-lg bg-gray-50 p-4">
-            <p className="text-sm text-gray-600">
+          <div className="rounded-lg bg-muted p-4">
+            <p className="text-sm text-muted-foreground">
               {config.currentLabel}：
               <span className="font-medium">{currentEmail}</span>
             </p>
@@ -134,7 +134,7 @@ export default function UpdateEmailForm({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium text-gray-700">
+                  <FormLabel className="text-sm font-medium text-foreground">
                     {config.emailLabel}
                   </FormLabel>
                   <FormControl>
@@ -167,7 +167,7 @@ export default function UpdateEmailForm({
             name="otp"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium text-foreground">
                   邮箱验证码
                 </FormLabel>
                 <FormControl>
@@ -191,7 +191,7 @@ export default function UpdateEmailForm({
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-medium"
+          className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
           disabled={isLoading}
         >
           {isLoading ? "验证中..." : config.submitText}

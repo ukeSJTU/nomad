@@ -47,37 +47,41 @@ export default async function UserInfoPage() {
           {/* Account Security Section */}
           <div className="space-y-6 bg-white p-6 rounded-lg border">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">账号安全</h2>
+              <h2 className="text-xl font-semibold text-foreground">
+                账号安全
+              </h2>
             </div>
 
             <Separator />
 
             <div className="space-y-4">
               {/* Email */}
-              <div className="grid grid-cols-[150px_1fr] items-start gap-4">
-                <label className="pt-1 text-sm font-medium text-gray-600">
+              <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+                <label className="pt-1 text-sm font-medium text-muted-foreground w-36">
                   邮箱
                 </label>
                 <div className="flex items-center gap-2">
                   {userData.email && userData.emailVerified ? (
                     <>
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-foreground">
                         {userData.email}
                       </span>
-                      <span className="text-xs text-green-600">(已验证)</span>
+                      <span className="text-xs text-chart-5">(已验证)</span>
                       <Link
                         href="/home/security/email"
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm text-primary hover:underline"
                       >
                         修改
                       </Link>
                     </>
                   ) : (
                     <>
-                      <span className="text-sm text-gray-500">未填写</span>
+                      <span className="text-sm text-muted-foreground">
+                        未填写
+                      </span>
                       <Link
                         href="/home/security/email"
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm text-primary hover:underline"
                       >
                         验证
                       </Link>
@@ -87,30 +91,32 @@ export default async function UserInfoPage() {
               </div>
 
               {/* Phone Number */}
-              <div className="grid grid-cols-[150px_1fr] items-start gap-4">
-                <label className="pt-1 text-sm font-medium text-gray-600">
+              <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+                <label className="pt-1 text-sm font-medium text-muted-foreground w-36">
                   手机号
                 </label>
                 <div className="flex items-center gap-2">
                   {userData.phoneNumber && userData.phoneNumberVerified ? (
                     <>
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-foreground">
                         {userData.phoneNumber}
                       </span>
-                      <span className="text-xs text-green-600">(已验证)</span>
+                      <span className="text-xs text-chart-5">(已验证)</span>
                       <Link
                         href="/home/security/phone"
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm text-primary hover:underline"
                       >
                         修改
                       </Link>
                     </>
                   ) : (
                     <>
-                      <span className="text-sm text-gray-500">未填写</span>
+                      <span className="text-sm text-muted-foreground">
+                        未填写
+                      </span>
                       <Link
                         href="/home/security/phone"
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm text-primary hover:underline"
                       >
                         验证
                       </Link>

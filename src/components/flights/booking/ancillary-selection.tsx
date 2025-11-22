@@ -77,7 +77,7 @@ export function AncillarySelection({
           )}
         </div>
         <div className="text-right">
-          <div className="text-lg font-bold text-orange-500">
+          <div className="text-lg font-bold text-secondary">
             {formatCurrency(service.price)}
           </div>
         </div>

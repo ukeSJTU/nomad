@@ -67,7 +67,7 @@ function FlightSegment({ flight, type = "outbound" }: FlightSegmentProps) {
       </div>
 
       {/* Airline Info */}
-      <div className="flex items-center gap-2 text-sm text-gray-600">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
         {flight.flight.airline.logoUrl && (
           <img
             src={flight.flight.airline.logoUrl}
@@ -75,7 +75,7 @@ function FlightSegment({ flight, type = "outbound" }: FlightSegmentProps) {
             className="h-5 w-5 object-contain"
           />
         )}
-        <span className="text-red-500">{flight.flight.airline.name}</span>
+        <span className="text-destructive">{flight.flight.airline.name}</span>
         <span>{flight.flight.flightNumber}</span>
         <span>空客{flight.flight.aircraftType || "330"}</span>
         <span>{seatClassText}</span>
@@ -86,9 +86,9 @@ function FlightSegment({ flight, type = "outbound" }: FlightSegmentProps) {
         <div className="text-2xl font-semibold">
           {formatFlightTime(departure)}
         </div>
-        <div className="flex items-center text-xs text-gray-400 gap-1">
+        <div className="flex items-center text-xs text-muted-foreground gap-1">
           <Clock className="h-3 w-3 inline" />{" "}
-          <span className="font-medium text-gray-500">
+          <span className="font-medium text-muted-foreground">
             {hours}h{minutes}m
           </span>
         </div>
@@ -102,8 +102,8 @@ function FlightSegment({ flight, type = "outbound" }: FlightSegmentProps) {
         <div className="text-sm font-bold text-right">
           {flight.flight.departure.airport.name}
         </div>
-        <div className="w-32 border-t border-gray-300 relative">
-          <Plane className="h-6 w-6 text-gray-400 absolute -top-3 left-1/2 -translate-x-1/2 bg-white rotate-45" />
+        <div className="w-32 border-t border-border relative">
+          <Plane className="h-6 w-6 text-muted-foreground absolute -top-3 left-1/2 -translate-x-1/2 bg-card rotate-45" />
         </div>
         <div className="text-sm font-bold text-left">
           {flight.flight.arrival.airport.name}
@@ -157,13 +157,13 @@ export function FlightSummaryCard({
         {/* Price Summary */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">去程票价</span>
+            <span className="text-muted-foreground">去程票价</span>
             <span className="font-medium">{formatCurrency(outboundPrice)}</span>
           </div>
 
           {inboundFlight && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">返程票价</span>
+              <span className="text-muted-foreground">返程票价</span>
               <span className="font-medium">
                 {formatCurrency(inboundPrice)}
               </span>
@@ -171,7 +171,7 @@ export function FlightSummaryCard({
           )}
 
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">乘客人数</span>
+            <span className="text-muted-foreground">乘客人数</span>
             <span className="font-medium">{passengerCount}</span>
           </div>
 
@@ -179,7 +179,7 @@ export function FlightSummaryCard({
 
           <div className="flex justify-between text-base font-semibold">
             <span>总计</span>
-            <span className="text-blue-600">{formatCurrency(totalPrice)}</span>
+            <span className="text-primary">{formatCurrency(totalPrice)}</span>
           </div>
         </div>
       </CardContent>

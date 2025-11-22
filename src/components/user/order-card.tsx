@@ -50,7 +50,7 @@ export default function OrderCard({
             e.stopPropagation();
             onActionClick?.();
           }}
-          className="w-full text-blue-500"
+          className="w-full text-primary"
         >
           重发确认信息
         </Button>
@@ -66,7 +66,7 @@ export default function OrderCard({
             e.stopPropagation();
             onActionClick?.();
           }}
-          className="w-full text-blue-500"
+          className="w-full text-primary"
         >
           去付款
         </Button>
@@ -76,9 +76,9 @@ export default function OrderCard({
   };
 
   return (
-    <Card className="w-full transition-all hover:border-blue-500 hover:shadow-md">
+    <Card className="w-full transition-all hover:border-primary hover:shadow-md">
       {/* 顶部：订单号、日期、状态 */}
-      <CardHeader className="bg-gray-50/50">
+      <CardHeader className="bg-muted/50">
         <div className="flex items-center gap-2">
           <Checkbox
             id={`order-${order.id}`}
@@ -86,22 +86,22 @@ export default function OrderCard({
             onCheckedChange={onCheckChange}
           />
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-600">订单号:</span>
+            <span className="text-muted-foreground">订单号:</span>
             <Link
               href={`/orders/${order.id}`}
-              className="font-medium text-blue-600 hover:underline"
+              className="font-medium text-primary hover:underline"
               onClick={e => e.stopPropagation()}
             >
               {order.orderNumber}
             </Link>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>预订日期:</span>
             <span>{format(new Date(order.createdAt), "yyyy-MM-dd")}</span>
           </div>
           <Button
             variant="link"
-            className="text-blue-600 text-sm h-auto p-0"
+            className="text-primary text-sm h-auto p-0"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
@@ -125,7 +125,7 @@ export default function OrderCard({
                   {order.outboundFlight.departureCityName} —{" "}
                   {order.outboundFlight.arrivalCityName}
                 </h3>
-                <div className="text-sm text-gray-600 space-y-1">
+                <div className="text-sm text-muted-foreground space-y-1">
                   <div>
                     出发日期:{" "}
                     {format(
@@ -150,7 +150,7 @@ export default function OrderCard({
                     {order.inboundFlight.departureCityName} —{" "}
                     {order.inboundFlight.arrivalCityName}
                   </h3>
-                  <div className="text-sm text-gray-600 space-y-1">
+                  <div className="text-sm text-muted-foreground space-y-1">
                     <div>
                       出发日期:{" "}
                       {format(
@@ -173,10 +173,10 @@ export default function OrderCard({
             {/* Right side: order status and price */}
             <div className="flex flex-col items-end gap-2 justify-betweem h-full">
               <div className="flex flex-col items-end gap-1">
-                <span className="text-blue-500 font-semibold">
+                <span className="text-primary font-semibold">
                   {getOrderStatusLabel(order.status)}
                 </span>
-                <div className="text-lg font-semibold text-gray-900">
+                <div className="text-lg font-semibold text-foreground">
                   ¥{order.totalAmount}
                 </div>
               </div>
