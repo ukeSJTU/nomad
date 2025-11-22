@@ -6,7 +6,7 @@
  */
 
 export { CityInput } from "./city-selector";
-export { DateSelector } from "./date-selector";
+export { DateSelector, type DateSelectorProps } from "./date-selector";
 export { FlightListOneWay } from "./FlightListOneWay";
 export { FlightListRoundTrip } from "./FlightListRoundTrip";
 export { FlightSearchError } from "./FlightSearchError";

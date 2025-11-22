@@ -6,7 +6,7 @@
  * search date selection.
  */
 
-import { addDays, max, min, startOfDay } from "date-fns";
+import { addDays, differenceInDays, max, min, startOfDay } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 /**
@@ -168,6 +168,65 @@ export function getBookingDateRange(timezone: string): {
   const maxDate = addDays(minDate, 365);
 
   return { minDate, maxDate };
+}
+
+/**
+ * Get relative date label (今天, 明天, 后天, etc.)
+ *
+ * @param date - The date to check
+ * @param referenceDate - The reference date (typically today)
+ * @returns Relative label or empty string if more than 2 days away
+ *
+ * @example
+ * ```ts
+ * const today = new Date('2025-11-15');
+ * getRelativeDateLabel(today, today); // "今天"
+ * getRelativeDateLabel(addDays(today, 1), today); // "明天"
+ * getRelativeDateLabel(addDays(today, 2), today); // "后天"
+ * getRelativeDateLabel(addDays(today, 3), today); // ""
+ * ```
+ */
+export function getRelativeDateLabel(date: Date, referenceDate: Date): string {
+  const daysDiff = differenceInDays(
+    startOfDay(date),
+    startOfDay(referenceDate)
+  );
+
+  switch (daysDiff) {
+    case 0:
+      return "今天";
+    case 1:
+      return "明天";
+    case 2:
+      return "后天";
+    default:
+      return "";
+  }
+}
+
+/**
+ * Calculate trip duration (inclusive of both start and end dates)
+ *
+ * @param departureDate - Trip start date
+ * @param returnDate - Trip end date
+ * @returns Number of days (0 if either date is null)
+ *
+ * @example
+ * ```ts
+ * const dep = new Date('2025-11-15');
+ * const ret = new Date('2025-11-17');
+ * calculateTripDuration(dep, ret); // 3
+ * calculateTripDuration(null, ret); // 0
+ * ```
+ */
+export function calculateTripDuration(
+  departureDate: Date | null,
+  returnDate: Date | null
+): number {
+  if (!departureDate || !returnDate) {
+    return 0;
+  }
+  return differenceInDays(returnDate, departureDate) + 1;
 }
 
 /**
