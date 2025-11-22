@@ -5,11 +5,11 @@ import { z } from "zod";
 import { recordSearchHistoryAction } from "@/lib/actions/flight-search-history";
 import {
   FlightSearchResult,
+  getAllCities,
   RoundTripFlightSearchResult,
   searchOneWayFlights,
   searchRoundTripFlights,
 } from "@/lib/queries";
-import { getAllCities } from "@/lib/queries/cities";
 
 import { FlightSearchPageClient } from "./page.client";
 
