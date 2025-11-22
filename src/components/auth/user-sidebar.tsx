@@ -87,7 +87,7 @@ export default function UserSidebar() {
       return (
         <Collapsible
           key={item.title}
-          className="group/collapsible"
+          className="simple/collapsible"
           defaultOpen={isOpen}
         >
           <div>
@@ -101,7 +101,7 @@ export default function UserSidebar() {
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="ml-4 space-y-1 mt-1">
+              <div className="ml-2 space-y-1 mt-1">
                 {item.children!.map(child => renderMenuItem(child))}
               </div>
             </CollapsibleContent>
@@ -120,7 +120,7 @@ export default function UserSidebar() {
         <Button
           key={item.title}
           variant="ghost"
-          className="w-full justify-start font-medium"
+          className="w-full justify-start pl-4"
           onClick={() => handleUnimplementedClick(item.title)}
         >
           <span>{item.title}</span>
@@ -134,7 +134,7 @@ export default function UserSidebar() {
         <Button
           key={item.title}
           variant={isActive ? "default" : "ghost"}
-          className="w-full justify-start font-medium"
+          className="w-full justify-start pl-4"
           asChild
         >
           <Link href={item.href}>

@@ -32,7 +32,7 @@ export default async function UserInfoPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="mx-auto pt-2 pb-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
