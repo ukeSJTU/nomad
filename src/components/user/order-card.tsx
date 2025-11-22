@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import { OrderListItem } from "@/types/dto/orders";
 
 export interface OrderCardProps {
@@ -145,28 +146,32 @@ export default function OrderCard({
 
               {/* Inbound flight */}
               {order.inboundFlight && (
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">
-                    {order.inboundFlight.departureCityName} —{" "}
-                    {order.inboundFlight.arrivalCityName}
-                  </h3>
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    <div>
-                      出发日期:{" "}
-                      {format(
-                        new Date(order.inboundFlight.departureDatetime),
-                        "yyyy-MM-dd HH:mm"
-                      )}{" "}
-                      至{" "}
-                      {format(
-                        new Date(order.inboundFlight.arrivalDatetime),
-                        "HH:mm"
-                      )}{" "}
-                      {order.inboundFlight.flightNumber}
+                <>
+                  <Separator />
+
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-semibold">
+                      {order.inboundFlight.departureCityName} —{" "}
+                      {order.inboundFlight.arrivalCityName}
+                    </h3>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <div>
+                        出发日期:{" "}
+                        {format(
+                          new Date(order.inboundFlight.departureDatetime),
+                          "yyyy-MM-dd HH:mm"
+                        )}{" "}
+                        至{" "}
+                        {format(
+                          new Date(order.inboundFlight.arrivalDatetime),
+                          "HH:mm"
+                        )}{" "}
+                        {order.inboundFlight.flightNumber}
+                      </div>
+                      <div>出行人：{order.passengerNames.join("、")}</div>
                     </div>
-                    <div>出行人：{order.passengerNames.join("、")}</div>
                   </div>
-                </div>
+                </>
               )}
             </div>
 
