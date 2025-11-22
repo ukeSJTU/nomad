@@ -75,18 +75,18 @@ function FlightInfo({
             {label}
           </Badge>
         )}
-        <span className="font-medium text-base">
+        <span className="font-medium text-sm md:text-base">
           {formatFlightDate(flight.departureDatetime)}
         </span>
       </div>
 
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-col md:flex-row md:justify-between gap-4 md:gap-0">
         {/* Flight Timeline */}
         <div className="flex flex-col flex-1 gap-0">
           {/* Top Part: Departure */}
-          <div className="flex flex-row items-center gap-3">
+          <div className="flex flex-row items-center gap-2 md:gap-3">
             {/* Left: Departure Time */}
-            <div className="text-base font-medium min-w-[50px] text-right">
+            <div className="text-sm md:text-base font-medium min-w-[45px] md:min-w-[50px] text-right">
               {formatTime(flight.departureDatetime)}
             </div>
 
@@ -95,7 +95,7 @@ function FlightInfo({
 
             {/* Right: Departure Airport */}
             <div className="flex-1">
-              <div className="font-medium text-base">
+              <div className="font-medium text-sm md:text-base">
                 {flight.departureCityName} {flight.departureAirportName}
                 {flight.departureTerminal && (
                   <span className="ml-0.5">{flight.departureTerminal}</span>
@@ -105,9 +105,9 @@ function FlightInfo({
           </div>
 
           {/* Middle Part: Duration & Timeline */}
-          <div className="flex flex-row items-stretch gap-3">
+          <div className="flex flex-row items-stretch gap-2 md:gap-3">
             {/* Left: Duration */}
-            <div className="min-w-[50px] text-right flex items-center justify-end">
+            <div className="min-w-[45px] md:min-w-[50px] text-right flex items-center justify-end">
               <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded">
                 {duration}
               </span>
@@ -115,7 +115,7 @@ function FlightInfo({
 
             {/* Middle: Vertical Line */}
             <div className="flex flex-col items-center shrink-0">
-              <div className="w-px flex-1 bg-gray-300 min-h-[60px]" />
+              <div className="w-px flex-1 bg-gray-300 min-h-[50px] md:min-h-[60px]" />
             </div>
 
             {/* Right: Empty */}
@@ -123,9 +123,9 @@ function FlightInfo({
           </div>
 
           {/* Bottom Part: Arrival */}
-          <div className="flex flex-row items-center gap-3">
+          <div className="flex flex-row items-center gap-2 md:gap-3">
             {/* Left: Arrival Time */}
-            <div className="text-base font-medium min-w-[50px] text-right">
+            <div className="text-sm md:text-base font-medium min-w-[45px] md:min-w-[50px] text-right">
               {formatTime(flight.arrivalDatetime)}
             </div>
 
@@ -134,7 +134,7 @@ function FlightInfo({
 
             {/* Right: Arrival Airport */}
             <div className="flex-1">
-              <div className="font-medium text-base">
+              <div className="font-medium text-sm md:text-base">
                 {flight.arrivalCityName} {flight.arrivalAirportName}
                 {flight.arrivalTerminal && (
                   <span className="ml-0.5">{flight.arrivalTerminal}</span>
@@ -145,8 +145,8 @@ function FlightInfo({
         </div>
 
         {/* Airplane Info */}
-        <div className="flex flex-col items-end justify-start gap-3">
-          <div className="flex flex-row gap-2">
+        <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start gap-2 md:gap-3 text-sm md:text-base text-muted-foreground md:text-foreground">
+          <div className="flex flex-row gap-2 items-center">
             {/* Airline Logo */}
             {flight.airlineLogoUrl && (
               <div className="relative w-5 h-5">

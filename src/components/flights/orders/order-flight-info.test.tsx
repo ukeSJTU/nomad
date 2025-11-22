@@ -43,11 +43,8 @@ describe("OrderFlightInfo Component", () => {
       expect(screen.getByText("北京")).toBeInTheDocument();
       expect(screen.getByText("上海")).toBeInTheDocument();
 
-      // Check flight number
-      expect(screen.getByText("MU5186")).toBeInTheDocument();
-
-      // Check airline name
-      expect(screen.getByText("东方航空")).toBeInTheDocument();
+      // Check flight number and airline name (rendered together with space)
+      expect(screen.getByText(/东方航空\s+MU5186/)).toBeInTheDocument();
 
       // Check airports
       expect(screen.getByText(/大兴机场/)).toBeInTheDocument();
@@ -73,9 +70,9 @@ describe("OrderFlightInfo Component", () => {
         />
       );
 
-      // Check both flight numbers
-      expect(screen.getByText("MU5186")).toBeInTheDocument();
-      expect(screen.getByText("MU8230")).toBeInTheDocument();
+      // Check both flight numbers (rendered with airline names)
+      expect(screen.getByText(/东方航空\s+MU5186/)).toBeInTheDocument();
+      expect(screen.getByText(/东方航空\s+MU8230/)).toBeInTheDocument();
 
       // Check labels for round-trip
       expect(screen.getByText("去程")).toBeInTheDocument();
@@ -88,7 +85,8 @@ describe("OrderFlightInfo Component", () => {
         <OrderFlightInfo outboundFlight={outboundFlight} inboundFlight={null} />
       );
 
-      expect(screen.getByText("T1")).toBeInTheDocument();
+      const terminals = screen.getAllByText("T1");
+      expect(terminals.length).toBeGreaterThan(0);
     });
 
     it("should not display terminal when not provided", () => {
