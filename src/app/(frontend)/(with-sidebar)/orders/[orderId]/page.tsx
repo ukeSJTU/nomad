@@ -45,7 +45,7 @@ export default async function OrderDetailsPage({
   return (
     <div className="flex flex-col gap-0">
       <BreadCrumbNav />
-      <OrderDetailsPageClient order={order} />;
+      <OrderDetailsPageClient order={order} />
     </div>
   );
 }
