@@ -29,6 +29,7 @@ interface UpdatePhoneFormProps {
   onSubmit: (data: UpdatePhoneData) => void;
   onSendOtp: (phoneNumber: string) => void;
   isLoading?: boolean;
+  isVerifying?: boolean;
   countdown?: number;
 }
 
@@ -73,6 +74,7 @@ export default function UpdatePhoneForm({
   onSubmit,
   onSendOtp,
   isLoading = false,
+  isVerifying = false,
   countdown = 0,
 }: UpdatePhoneFormProps) {
   const config = getModeConfig(mode);
@@ -183,6 +185,7 @@ export default function UpdatePhoneForm({
                     onSendOtp={handleSendOtp}
                     countdown={countdown}
                     isLoading={isLoading}
+                    isVerifying={isVerifying}
                     placeholder="6位数字"
                     maxLength={6}
                     disabled={mode !== "verify" && !phoneNumber}

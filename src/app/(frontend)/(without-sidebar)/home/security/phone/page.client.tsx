@@ -15,9 +15,6 @@ import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { updatePhoneNumberAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
-import { getTurnstileSiteKey } from "@/services/turnstile";
-
-const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 
 /**
  * Props for the PhonePageClient component
@@ -46,9 +43,12 @@ export default function PhonePageClient({
 }: PhonePageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const { countdown, start: startCountdown } = useOtpCountdown();
   const {
+    siteKey,
     turnstileRef,
+    isVerifying,
     setError: setCaptchaError,
     prepareCaptchaRequest,
   } = useTurnstileCaptcha();
@@ -68,18 +68,23 @@ export default function PhonePageClient({
    * Handle sending OTP to the new phone number
    */
   const handleSendOtp = async (phoneNumber: string) => {
-    const captchaRequest = await prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Add +86 prefix for China mainland phone numbers
-    const fullPhoneNumber = `+86${phoneNumber}`;
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
+      // Add +86 prefix for China mainland phone numbers
+      const fullPhoneNumber = `+86${phoneNumber}`;
+
       const { error } = await authClient.phoneNumber.sendOtp({
         phoneNumber: fullPhoneNumber,
         fetchOptions: captchaRequest.fetchOptions,
@@ -101,7 +106,6 @@ export default function PhonePageClient({
       console.error("发送验证码异常:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -111,18 +115,23 @@ export default function PhonePageClient({
    * Verify OTP and update phone number
    */
   const handleSubmit = async (data: { phoneNumber: string; otp: string }) => {
-    const captchaRequest = await prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Add +86 prefix for China mainland phone numbers
-    const fullPhoneNumber = `+86${data.phoneNumber}`;
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
+      // Add +86 prefix for China mainland phone numbers
+      const fullPhoneNumber = `+86${data.phoneNumber}`;
+
       // 1. Verify OTP using better-auth
       const { error: verifyError } = await authClient.phoneNumber.verify({
         phoneNumber: fullPhoneNumber,
@@ -158,7 +167,6 @@ export default function PhonePageClient({
       console.error("Update phone number error:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -187,22 +195,19 @@ export default function PhonePageClient({
           onSubmit={handleSubmit}
           onSendOtp={handleSendOtp}
           isLoading={isLoading}
+          isVerifying={isVerifying}
           countdown={countdown}
         />
-        <div className="mt-6 space-y-3">
-          <p className="text-sm text-gray-600 text-center">
-            {mode === "bind"
-              ? "绑定手机号前请完成人机验证"
-              : mode === "verify"
-                ? "验证手机号前请完成人机验证"
-                : "修改手机号前请完成人机验证"}
-            ，每次发送或提交验证码都会消耗一次令牌。
-          </p>
+
+        {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP or submit */}
+        <div className={showCaptcha ? "mt-6" : "hidden"}>
           <Turnstile
             ref={turnstileRef}
-            siteKey={TURNSTILE_SITE_KEY}
+            siteKey={siteKey}
             options={{
-              size: "invisible",
+              appearance: "always",
+              refreshExpired: "never",
+              size: "normal",
               execution: "execute",
               action: "update-phone",
             }}

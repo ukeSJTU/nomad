@@ -29,6 +29,7 @@ interface UpdateEmailFormProps {
   onSubmit: (data: UpdateEmailData) => void;
   onSendOtp: (email: string) => void;
   isLoading?: boolean;
+  isVerifying?: boolean;
   countdown?: number;
 }
 
@@ -73,6 +74,7 @@ export default function UpdateEmailForm({
   onSubmit,
   onSendOtp,
   isLoading = false,
+  isVerifying = false,
   countdown = 0,
 }: UpdateEmailFormProps) {
   const config = getModeConfig(mode);
@@ -177,6 +179,7 @@ export default function UpdateEmailForm({
                     onSendOtp={handleSendOtp}
                     countdown={countdown}
                     isLoading={isLoading}
+                    isVerifying={isVerifying}
                     placeholder="6位数字"
                     maxLength={6}
                     disabled={mode !== "verify" && !email}

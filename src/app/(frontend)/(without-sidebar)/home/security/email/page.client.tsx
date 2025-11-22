@@ -14,9 +14,6 @@ import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { updateEmailAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
-import { getTurnstileSiteKey } from "@/services/turnstile";
-
-const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 
 /**
  * Props for the EmailPageClient component
@@ -45,9 +42,12 @@ export default function EmailPageClient({
 }: EmailPageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const { countdown, start: startCountdown } = useOtpCountdown();
   const {
+    siteKey,
     turnstileRef,
+    isVerifying,
     setError: setCaptchaError,
     prepareCaptchaRequest,
   } = useTurnstileCaptcha();
@@ -67,15 +67,20 @@ export default function EmailPageClient({
    * Handle sending OTP to the new email address
    */
   const handleSendOtp = async (email: string) => {
-    const captchaRequest = await prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
       const { error } = await authClient.emailOtp.sendVerificationOtp({
         email,
         type: "email-verification",
@@ -98,7 +103,6 @@ export default function EmailPageClient({
       console.error("发送验证码异常:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -108,15 +112,20 @@ export default function EmailPageClient({
    * Verify OTP and update email
    */
   const handleSubmit = async (data: { email: string; otp: string }) => {
-    const captchaRequest = await prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
       // 1. Verify OTP using better-auth
       const { error: verifyError } = await authClient.emailOtp.verifyEmail({
         email: data.email,
@@ -152,7 +161,6 @@ export default function EmailPageClient({
       console.error("Update email error:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -181,22 +189,19 @@ export default function EmailPageClient({
           onSubmit={handleSubmit}
           onSendOtp={handleSendOtp}
           isLoading={isLoading}
+          isVerifying={isVerifying}
           countdown={countdown}
         />
-        <div className="mt-6 space-y-3">
-          <p className="text-sm text-gray-600 text-center">
-            {mode === "bind"
-              ? "绑定邮箱前请完成人机验证"
-              : mode === "verify"
-                ? "验证邮箱前请完成人机验证"
-                : "修改邮箱前请完成人机验证"}
-            ，每次发送或提交验证码都会消耗一次令牌。
-          </p>
+
+        {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP or submit */}
+        <div className={showCaptcha ? "mt-6" : "hidden"}>
           <Turnstile
             ref={turnstileRef}
-            siteKey={TURNSTILE_SITE_KEY}
+            siteKey={siteKey}
             options={{
-              size: "invisible",
+              appearance: "always",
+              refreshExpired: "never",
+              size: "normal",
               execution: "execute",
               action: "update-email",
             }}
