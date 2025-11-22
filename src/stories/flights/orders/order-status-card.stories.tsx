@@ -40,6 +40,7 @@ const createMockStatusData = (
  * - Orange theme (warning state)
  * - Real-time countdown timer
  * - "Go to Payment" action button
+ * - "Cancel Order" action button
  * - Alert message with payment deadline
  */
 export const PendingPayment: Story = {
@@ -52,6 +53,9 @@ export const PendingPayment: Story = {
     onGoToPayment: () => {
       console.log("Navigate to payment page");
     },
+    onCancelOrder: () => {
+      console.log("Cancel order");
+    },
     isLoading: false,
   },
 };
@@ -63,6 +67,7 @@ export const PendingPayment: Story = {
  * - Green theme (success state)
  * - Success confirmation message
  * - "Resend Confirmation" action button
+ * - "Request Refund" action button
  * - Email sent notification
  */
 export const Confirmed: Story = {
@@ -76,6 +81,10 @@ export const Confirmed: Story = {
     onResendConfirmation: () => {
       console.log("Resend confirmation email");
     },
+    onRequestRefund: () => {
+      console.log("Request refund");
+    },
+    canRefund: true,
     isLoading: false,
   },
 };
