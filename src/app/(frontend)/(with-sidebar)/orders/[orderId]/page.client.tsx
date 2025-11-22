@@ -2,18 +2,20 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import {
   CancelOrderDialog,
   OrderContactInfo,
-  OrderErrorDialog,
   OrderFlightInfo,
   OrderPassengerInfo,
   OrderPaymentDetails,
   OrderStatusCard,
   OrderSuccessDialog,
+  RefundOrderDialog,
 } from "@/components/flights/orders";
-import { cancelOrderAction } from "@/lib/actions/orders";
+import { resendOrderConfirmationAction } from "@/lib/actions/emails";
+import { cancelOrderAction, refundOrderAction } from "@/lib/actions/orders";
 import { OrderDetailFull } from "@/types/dto/orders";
 
 type OrderDetailsPageClientProps = {
@@ -37,14 +39,34 @@ export default function OrderDetailsPageClient({
 }: OrderDetailsPageClientProps) {
   const router = useRouter();
   const [isCancelling, setIsCancelling] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [isRefunding, setIsRefunding] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   // Handle cancel order confirmation
   const handleCancelOrderClick = () => {
     setShowCancelDialog(true);
+  };
+
+  // Handle resend confirmation email
+  const handleResendConfirmation = async () => {
+    setIsResending(true);
+
+    try {
+      const result = await resendOrderConfirmationAction(order.status.id);
+
+      if (result.success) {
+        toast.success("确认邮件已重新发送");
+      } else {
+        toast.error(result.error || "发送邮件失败，请重试");
+      }
+    } catch (_error) {
+      toast.error("发送邮件时发生错误，请重试");
+    } finally {
+      setIsResending(false);
+    }
   };
 
   // Handle actual cancel order
@@ -61,15 +83,42 @@ export default function OrderDetailsPageClient({
         router.refresh();
       } else {
         setShowCancelDialog(false);
-        setErrorMessage(result.error || "取消订单失败，请重试");
-        setShowErrorDialog(true);
+        toast.error(result.error || "取消订单失败，请重试");
       }
     } catch (_error) {
       setShowCancelDialog(false);
-      setErrorMessage("取消订单时发生错误，请重试");
-      setShowErrorDialog(true);
+      toast.error("取消订单时发生错误，请重试");
     } finally {
       setIsCancelling(false);
+    }
+  };
+
+  // Handle refund order confirmation
+  const handleRequestRefund = () => {
+    setShowRefundDialog(true);
+  };
+
+  // Handle actual refund order
+  const handleConfirmRefund = async () => {
+    setIsRefunding(true);
+
+    try {
+      const result = await refundOrderAction(order.status.id);
+
+      if (result.success) {
+        setShowRefundDialog(false);
+        toast.success("退款申请成功，款项将退回到您的账户余额");
+        // Refresh the page to show updated order status
+        router.refresh();
+      } else {
+        setShowRefundDialog(false);
+        toast.error(result.error || "退款失败，请重试");
+      }
+    } catch (_error) {
+      setShowRefundDialog(false);
+      toast.error("退款时发生错误，请重试");
+    } finally {
+      setIsRefunding(false);
     }
   };
 
@@ -78,14 +127,23 @@ export default function OrderDetailsPageClient({
     setShowSuccessDialog(false);
   };
 
-  // Handle error dialog confirm
-  const handleErrorConfirm = () => {
-    setShowErrorDialog(false);
-  };
-
   // Handle go to payment
   const handleGoToPayment = () => {
     router.push(`/flights/booking/payment?orderId=${order.status.id}`);
+  };
+
+  // Check if order can be refunded (flight hasn't departed)
+  const canRefund = () => {
+    if (order.status.status !== "CONFIRMED") return false;
+
+    const now = new Date();
+    const outboundDeparted =
+      new Date(order.outboundFlight.departureDatetime) <= now;
+    const inboundDeparted =
+      order.inboundFlight &&
+      new Date(order.inboundFlight.departureDatetime) <= now;
+
+    return !outboundDeparted && !inboundDeparted;
   };
 
   return (
@@ -98,7 +156,11 @@ export default function OrderDetailsPageClient({
             <OrderStatusCard
               data={order.status}
               onGoToPayment={handleGoToPayment}
-              onResendConfirmation={handleCancelOrderClick}
+              onCancelOrder={handleCancelOrderClick}
+              onResendConfirmation={handleResendConfirmation}
+              onRequestRefund={handleRequestRefund}
+              isLoading={isCancelling || isResending || isRefunding}
+              canRefund={canRefund()}
             />
 
             {/* Flight Information Card */}
@@ -129,19 +191,20 @@ export default function OrderDetailsPageClient({
         isLoading={isCancelling}
       />
 
+      {/* Refund Order Confirmation Dialog */}
+      <RefundOrderDialog
+        open={showRefundDialog}
+        onOpenChange={setShowRefundDialog}
+        onConfirm={handleConfirmRefund}
+        isLoading={isRefunding}
+        refundAmount={order.payment.totalAmount}
+      />
+
       {/* Success Dialog */}
       <OrderSuccessDialog
         open={showSuccessDialog}
         onOpenChange={setShowSuccessDialog}
         onConfirm={handleSuccessConfirm}
-      />
-
-      {/* Error Dialog */}
-      <OrderErrorDialog
-        open={showErrorDialog}
-        onOpenChange={setShowErrorDialog}
-        onConfirm={handleErrorConfirm}
-        errorMessage={errorMessage}
       />
     </>
   );

@@ -40,6 +40,7 @@ export type OrderStatusCardProps = {
 export function OrderStatusCard({
   data,
   onGoToPayment,
+  onCancelOrder,
   onResendConfirmation,
   onRequestRefund,
   isLoading = false,
@@ -155,9 +156,20 @@ export function OrderStatusCard({
 
           {/* Action Buttons - Status-specific */}
           {data.status === "PENDING_PAYMENT" && !isPaymentExpired && (
-            <Button onClick={onGoToPayment} disabled={isLoading}>
-              去付款
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={onGoToPayment} disabled={isLoading}>
+                去付款
+              </Button>
+              {onCancelOrder && (
+                <Button
+                  variant="outline"
+                  onClick={onCancelOrder}
+                  disabled={isLoading}
+                >
+                  取消订单
+                </Button>
+              )}
+            </div>
           )}
           {data.status === "CONFIRMED" && (
             <div className="flex gap-2">
