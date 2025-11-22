@@ -11,7 +11,6 @@ import {
   OrderPassengerInfo,
   OrderPaymentDetails,
   OrderStatusCard,
-  OrderSuccessDialog,
   RefundOrderDialog,
 } from "@/components/flights/orders";
 import { resendOrderConfirmationAction } from "@/lib/actions/emails";
@@ -43,7 +42,6 @@ export default function OrderDetailsPageClient({
   const [isRefunding, setIsRefunding] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRefundDialog, setShowRefundDialog] = useState(false);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   // Handle cancel order confirmation
   const handleCancelOrderClick = () => {
@@ -78,7 +76,7 @@ export default function OrderDetailsPageClient({
 
       if (result.success) {
         setShowCancelDialog(false);
-        setShowSuccessDialog(true);
+        toast.success("订单已成功取消");
         // Refresh the page to show updated order status
         router.refresh();
       } else {
@@ -120,11 +118,6 @@ export default function OrderDetailsPageClient({
     } finally {
       setIsRefunding(false);
     }
-  };
-
-  // Handle success dialog confirm
-  const handleSuccessConfirm = () => {
-    setShowSuccessDialog(false);
   };
 
   // Handle go to payment
@@ -198,13 +191,6 @@ export default function OrderDetailsPageClient({
         onConfirm={handleConfirmRefund}
         isLoading={isRefunding}
         refundAmount={order.payment.totalAmount}
-      />
-
-      {/* Success Dialog */}
-      <OrderSuccessDialog
-        open={showSuccessDialog}
-        onOpenChange={setShowSuccessDialog}
-        onConfirm={handleSuccessConfirm}
       />
     </>
   );
