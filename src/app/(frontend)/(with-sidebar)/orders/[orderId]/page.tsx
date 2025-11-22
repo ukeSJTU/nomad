@@ -1,42 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { BreadCrumbNav } from "@/components/common/bread-crumb-nav";
 import { getOrderDetailById } from "@/lib/queries/orders";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import OrderDetailsPageClient from "./page.client";
-
-function BreadCrumbNav() {
-  return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/home/info">我的携程</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/home/orders">机票订单</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>订单详情</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 /**
  * Order Details Page - Server Component
@@ -75,7 +43,7 @@ export default async function OrderDetailsPage({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-0">
       <BreadCrumbNav />
       <OrderDetailsPageClient order={order} />;
     </div>

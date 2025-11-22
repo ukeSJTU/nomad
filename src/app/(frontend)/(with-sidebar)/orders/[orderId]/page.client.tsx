@@ -90,7 +90,7 @@ export default function OrderDetailsPageClient({
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-4 py-4 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Side - Main Content */}
           <div className="lg:col-span-2 space-y-6">
