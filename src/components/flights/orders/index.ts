@@ -2,6 +2,8 @@
  * Order components exports
  */
 
+export type { CancelOrderDialogProps } from "./cancel-order-dialog";
+export { CancelOrderDialog } from "./cancel-order-dialog";
 export type { OrderContactInfoProps } from "./order-contact-info";
 export { OrderContactInfo } from "./order-contact-info";
 export type { OrderFlightInfoProps } from "./order-flight-info";
@@ -12,4 +14,6 @@ export type { OrderPaymentDetailsProps } from "./order-payment-details";
 export { OrderPaymentDetails } from "./order-payment-details";
 export type { OrderStatusCardProps } from "./order-status-card";
 export { OrderStatusCard } from "./order-status-card";
+export type { RefundOrderDialogProps } from "./refund-order-dialog";
+export { RefundOrderDialog } from "./refund-order-dialog";
 export * from "./utils";

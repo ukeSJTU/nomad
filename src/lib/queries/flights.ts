@@ -12,9 +12,14 @@ import {
   flights,
   flightSeatClasses,
 } from "@/lib/schema";
+import type {
+  FlightSearchResult,
+  RoundTripFlightSearchResult,
+} from "@/types/dto";
 
-// Validation schemas
-const seatClassEnum = z.enum(["ECONOMY", "BUSINESS", "FIRST"]);
+const seatClassEnum = z.enum(["ECONOMY", "BUSINESS", "FIRST"], {
+  message: "Seat class must be ECONOMY, BUSINESS, or FIRST",
+});
 
 const searchFlightsParamsSchema = z.object({
   from: z
@@ -30,67 +35,6 @@ const searchFlightsParamsSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
   classType: seatClassEnum.optional(),
 });
-
-// TypeScript types for return values
-export type SeatClass = {
-  id: string;
-  classType: "ECONOMY" | "BUSINESS" | "FIRST";
-  totalSeats: number;
-  availableSeats: number;
-  price: string;
-};
-
-export type FlightSearchResult = {
-  id: string;
-  flightNumber: string;
-  airline: {
-    id: string;
-    iataCode: string;
-    name: string;
-    logoUrl: string | null;
-  };
-  departure: {
-    airport: {
-      id: string;
-      iataCode: string;
-      name: string;
-    };
-    city: {
-      id: string;
-      iataCode: string;
-      name: string;
-      timezone: string;
-    };
-    terminal: string | null;
-    datetime: string;
-  };
-  arrival: {
-    airport: {
-      id: string;
-      iataCode: string;
-      name: string;
-    };
-    city: {
-      id: string;
-      iataCode: string;
-      name: string;
-      timezone: string;
-    };
-    terminal: string | null;
-    datetime: string;
-  };
-  aircraftType: string | null;
-  seatClasses: SeatClass[];
-  // New fields for "any seat class" search feature
-  lowestPrice: number; // Lowest price across all seat classes (numeric type for easy sorting)
-  lowestPriceClassType: "ECONOMY" | "BUSINESS" | "FIRST"; // Seat class type with the lowest price
-};
-
-export type RoundTripFlightSearchResult = {
-  outbound: FlightSearchResult[];
-  inbound: FlightSearchResult[];
-};
-
 /**
  * Core function to search flights based on departure/arrival cities and date
  *

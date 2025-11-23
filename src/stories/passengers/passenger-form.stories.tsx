@@ -53,7 +53,6 @@ export const WithInitialData: Story = {
           name: "张三",
           nationality: "中国大陆",
           gender: "male",
-          phoneCountryCode: "+86",
           phone: "13812345678",
           email: "zhangsan@example.com",
           documentType: "id_card",

@@ -2,6 +2,7 @@
 
 import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/client";
-import { getInitials } from "@/lib/utils/string";
+import { getInitials } from "@/utils/string";
 
 /**
  * UserMenu component displays user authentication status and navigation options.
@@ -42,9 +43,11 @@ import { getInitials } from "@/lib/utils/string";
  */
 export default function UserMenu() {
   const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     await authClient.signOut();
+    router.push("/");
   };
 
   if (isPending) {
@@ -59,10 +62,10 @@ export default function UserMenu() {
     return (
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" asChild>
-          <Link href="/auth/sign-in">Sign In</Link>
+          <Link href="/auth/sign-in">登录</Link>
         </Button>
         <Button variant="secondary" size="sm" asChild>
-          <Link href="/auth/sign-up">Sign Up</Link>
+          <Link href="/auth/sign-up">注册</Link>
         </Button>
       </div>
     );
@@ -121,7 +124,7 @@ export default function UserMenu() {
             asChild
             className="justify-start gap-2"
           >
-            <Link href="/wallet">
+            <Link href="/home/wallets">
               <Wallet className="size-4" />
               我的钱包
             </Link>

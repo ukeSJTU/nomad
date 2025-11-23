@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 
 import UpdatePhoneForm from "@/components/security/update-phone-form";
@@ -17,14 +16,21 @@ export default meta;
 type Story = Omit<StoryObj<typeof meta>, "args">;
 
 /**
- * Default update phone form
- * Shows the form with current phone number and fields to enter new phone and OTP
+ * Bind mode - First-time phone number binding
+ * Shows form for users who haven't set up a phone number yet
+ *
+ * Test steps:
+ * 1. Enter phone number
+ * 2. Click send OTP button
+ * 3. Enter OTP code
+ * 4. Submit form
  */
-export const Default: Story = {
+export const BindMode: Story = {
   render: () => (
     <div className="w-[500px] p-6">
       <UpdatePhoneForm
-        currentPhoneNumber="138****5678"
+        currentPhoneNumber={null}
+        mode="bind"
         onSubmit={data => {
           console.log("Form submitted:", data);
         }}
@@ -34,53 +40,91 @@ export const Default: Story = {
       />
     </div>
   ),
-};
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
 
-/**
- * Form with countdown timer for OTP resend
- * Demonstrates the countdown state when OTP has been sent
- */
-export const WithCountdown: Story = {
-  render: () => {
-    const [countdown, setCountdown] = useState(60);
+    // 1. Enter phone number
+    const phoneInput = canvas.getByPlaceholderText("请输入手机号");
+    await userEvent.type(phoneInput, "13987654321", { delay: 50 });
 
-    return (
-      <div className="w-[500px] p-6">
-        <UpdatePhoneForm
-          currentPhoneNumber="138****5678"
-          onSubmit={data => {
-            console.log("Form submitted:", data);
-          }}
-          onSendOtp={phoneNumber => {
-            console.log("OTP sent to:", phoneNumber);
-            setCountdown(60);
-          }}
-          countdown={countdown}
-        />
-      </div>
-    );
+    // 2. Click send OTP button
+    const sendOtpButton = canvas.getByRole("button", { name: /发送验证码/i });
+    await userEvent.click(sendOtpButton);
+
+    // 3. Enter OTP code
+    const otpInput = canvas.getByPlaceholderText("6位数字");
+    await userEvent.type(otpInput, "123456", { delay: 50 });
+
+    // 4. Verify form is ready to submit
+    const submitButton = canvas.getByRole("button", { name: /确认绑定/i });
+    await expect(submitButton).toBeEnabled();
+
+    // 5. Submit form
+    await userEvent.click(submitButton);
   },
 };
 
 /**
- * Happy Path smoke test
- * Simulates a user successfully updating their phone number
+ * Verify mode - Verify existing unverified phone number
+ * Shows form for users who have set a phone number but haven't verified it
+ * Phone input is hidden, uses current phone number
+ *
+ * Test steps:
+ * 1. Click send OTP button
+ * 2. Enter OTP code
+ * 3. Submit form
+ */
+export const VerifyMode: Story = {
+  render: () => (
+    <div className="w-[500px] p-6">
+      <UpdatePhoneForm
+        currentPhoneNumber="+8613812345678"
+        mode="verify"
+        onSubmit={data => {
+          console.log("Form submitted:", data);
+        }}
+        onSendOtp={phoneNumber => {
+          console.log("OTP sent to:", phoneNumber);
+        }}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // 1. Click send OTP button
+    const sendOtpButton = canvas.getByRole("button", { name: /发送验证码/i });
+    await userEvent.click(sendOtpButton);
+
+    // 2. Enter OTP code
+    const otpInput = canvas.getByPlaceholderText("6位数字");
+    await userEvent.type(otpInput, "123456", { delay: 50 });
+
+    // 3. Verify form is ready to submit
+    const submitButton = canvas.getByRole("button", { name: /确认验证/i });
+    await expect(submitButton).toBeEnabled();
+
+    // 4. Submit form
+    await userEvent.click(submitButton);
+  },
+};
+
+/**
+ * Update mode - Change verified phone number
+ * Shows form for users changing their existing verified phone number
  *
  * Test steps:
  * 1. Enter new phone number
  * 2. Click send OTP button
  * 3. Enter OTP code
  * 4. Submit form
- *
- * Note: This is a basic smoke test for visual verification.
- * Detailed validation logic, error states, and edge cases
- * should be tested using RTL
  */
-export const HappyPath: Story = {
+export const UpdateMode: Story = {
   render: () => (
     <div className="w-[500px] p-6">
       <UpdatePhoneForm
-        currentPhoneNumber="138****5678"
+        currentPhoneNumber="+8613812345678"
+        mode="update"
         onSubmit={data => {
           console.log("Form submitted:", data);
         }}

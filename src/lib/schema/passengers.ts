@@ -4,7 +4,6 @@
 // Date of birth
 // Place of birth
 // Phone number
-// Fax number
 // Email
 // Document type, document number, expiry date are required
 
@@ -43,14 +42,12 @@ export const passengers = pgTable(
     placeOfBirth: varchar("place_of_birth", { length: 255 }),
     // Phone number
     phone: varchar({ length: 20 }),
-    // Fax number
-    fax: varchar({ length: 20 }),
     // Email
     email: varchar({ length: 255 }),
-    // Document type, document number, expiry date (required)
+    // Document type and document number are required, expiry date is optional
     documentType: documentTypeEnum().notNull(),
     documentNumber: varchar("document_number", { length: 50 }).notNull(),
-    documentExpiryDate: date("document_expiry_date").notNull(),
+    documentExpiryDate: date("document_expiry_date"),
     // Soft delete flag
     isDeleted: boolean("is_deleted").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),

@@ -22,13 +22,13 @@ type MenuItem = {
 };
 
 const menuItems: MenuItem[] = [
-  { title: "我的携程首页", href: "/home" },
+  { title: "我的携程首页", href: "#", implemented: false },
   { title: "订单", href: "/home/orders" },
   { title: "我的消息", href: "/home/messages", implemented: false },
   {
     title: "钱包",
     children: [
-      { title: "我的钱包", href: "/home/wallets", implemented: false },
+      { title: "我的钱包", href: "/home/wallets" },
       {
         title: "钱包安全设置",
         href: "/home/wallets/security",
@@ -66,7 +66,16 @@ export default function UserSidebar() {
   // Check if parent item should be open or not
   const shouldBeOpen = (item: MenuItem): boolean => {
     if (!item.children) return false;
-    return item.children.some(child => child.href === pathname);
+    return item.children.some(
+      child => child.href && pathname.startsWith(child.href)
+    );
+  };
+
+  // Check if a menu item is active (supports sub-paths)
+  const isMenuItemActive = (href?: string): boolean => {
+    if (!href) return false;
+    // Exact match or starts with href followed by /
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   // Handle click for unimplemented features
@@ -94,14 +103,14 @@ export default function UserSidebar() {
             <CollapsibleTrigger asChild>
               <Button
                 variant="ghost"
-                className="w-full justify-between font-medium"
+                className="w-full justify-between font-medium px-4!"
               >
                 <span>{item.title}</span>
-                <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="ml-4 space-y-1 mt-1">
+              <div className="ml-2 space-y-1 mt-1">
                 {item.children!.map(child => renderMenuItem(child))}
               </div>
             </CollapsibleContent>
@@ -111,7 +120,7 @@ export default function UserSidebar() {
     }
 
     // Leaf item without children
-    const isActive = pathname === item.href;
+    const isActive = isMenuItemActive(item.href);
     const isImplemented = item.implemented !== false;
 
     // If not implemented, use Button with onClick
@@ -120,7 +129,7 @@ export default function UserSidebar() {
         <Button
           key={item.title}
           variant="ghost"
-          className="w-full justify-start font-medium"
+          className="w-full justify-start px-4"
           onClick={() => handleUnimplementedClick(item.title)}
         >
           <span>{item.title}</span>
@@ -134,7 +143,7 @@ export default function UserSidebar() {
         <Button
           key={item.title}
           variant={isActive ? "default" : "ghost"}
-          className="w-full justify-start font-medium"
+          className="w-full justify-start px-4"
           asChild
         >
           <Link href={item.href}>

@@ -1,43 +1,33 @@
-import type { OrderDetailsWithAirports } from "@/app/(frontend)/(with-sidebar)/orders/[orderId]/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrderDetailFull } from "@/types/dto/orders";
 
 import { getIdentityTypeName } from "./utils";
 
 export type OrderPassengerInfoProps = {
-  passengers: OrderDetailsWithAirports["passengers"];
+  passengers: OrderDetailFull["passengers"];
 };
 
 /**
  * Order Passenger Information Card Component
  *
  * Displays information for all passengers in the order
+ *
+ * 携程对于待付款类型订单会在“出行人信息”后面显示“修改姓名”和“修改证件”两个按钮，我们不做实现
+ * 这里的所有证件号码都不打码
  */
 export function OrderPassengerInfo({ passengers }: OrderPassengerInfoProps) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>乘机人信息</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>出行人信息</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {passengers.map((passenger, idx) => (
-            <div
-              key={passenger.id}
-              className="flex items-start justify-between p-3 bg-gray-50 rounded-lg"
-            >
-              <div className="space-y-1">
-                <div className="font-medium">
-                  乘客 {idx + 1}: {passenger.name}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {getIdentityTypeName(passenger.identityType)}:{" "}
-                  {passenger.identityNumber}
-                </div>
-                {passenger.phone && (
-                  <div className="text-sm text-gray-600">
-                    手机号: {passenger.phone}
-                  </div>
-                )}
+            <div key={idx} className="space-y-2">
+              <div className="font-medium text-base">{passenger.name}</div>
+              <div className="text-sm text-gray-600">
+                {getIdentityTypeName(passenger.idType)}: {passenger.idNumber}
               </div>
             </div>
           ))}

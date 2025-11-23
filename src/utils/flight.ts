@@ -4,7 +4,7 @@
  * This module provides utility functions for flight data transformation and calculations
  */
 
-import type { FlightSearchResult } from "@/lib/queries";
+import type { FlightSearchResult } from "@/types/dto";
 
 /**
  * Calculate flight duration in minutes

@@ -11,7 +11,7 @@ import {
   changePasswordAction,
   setPasswordForOAuthUserAction,
 } from "@/lib/actions/auth";
-import { type PasswordSetupData } from "@/types/auth";
+import { type PasswordSetupData } from "@/types/validations/auth";
 
 /**
  * Props for the PasswordPageClient component
@@ -125,6 +125,8 @@ export default function PasswordPageClient({
             <PasswordSetupForm
               onSubmit={handleSetPassword}
               isLoading={isLoading}
+              submitButtonText="确认设置"
+              showHelpLink={false}
             />
           </div>
         )}

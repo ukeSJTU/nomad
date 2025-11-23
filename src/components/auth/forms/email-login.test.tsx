@@ -27,7 +27,7 @@ describe("EmailLoginForm", () => {
     await user.click(screen.getByRole("button", { name: "登录" }));
 
     await waitFor(() => {
-      expect(screen.getByText("请输入邮箱地址")).toBeInTheDocument();
+      expect(screen.getByText("邮箱格式不正确")).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -45,7 +45,7 @@ describe("EmailLoginForm", () => {
     await user.click(screen.getByRole("button", { name: "登录" }));
 
     await waitFor(() => {
-      expect(screen.getByText("请输入密码")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("请输入密码")).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });

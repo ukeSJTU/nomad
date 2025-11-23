@@ -17,9 +17,6 @@ describe("PassengerForm Component", () => {
     // Check for name field
     expect(screen.getByLabelText(/姓名/)).toBeInTheDocument();
 
-    // Check for "Set as Myself" checkbox
-    expect(screen.getByLabelText("设置为本人")).toBeInTheDocument();
-
     // Check for nationality field
     expect(screen.getByLabelText(/国籍/)).toBeInTheDocument();
 
@@ -58,21 +55,6 @@ describe("PassengerForm Component", () => {
     expect(nameInput).toHaveValue("张三");
   });
 
-  it("toggles 'Set as Myself' checkbox", async () => {
-    const user = userEvent.setup();
-
-    render(<PassengerForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
-
-    const checkbox = screen.getByRole("checkbox", { name: /设置为本人/i });
-    expect(checkbox).not.toBeChecked();
-
-    await user.click(checkbox);
-    expect(checkbox).toBeChecked();
-
-    await user.click(checkbox);
-    expect(checkbox).not.toBeChecked();
-  });
-
   it("loads initial data when provided", () => {
     const initialData = {
       name: "李四",
@@ -93,9 +75,6 @@ describe("PassengerForm Component", () => {
 
     const nameInput = screen.getByLabelText(/姓名/);
     expect(nameInput).toHaveValue("李四");
-
-    const checkbox = screen.getByRole("checkbox", { name: /设置为本人/i });
-    expect(checkbox).toBeChecked();
   });
 
   it("disables submit button when form is loading", () => {

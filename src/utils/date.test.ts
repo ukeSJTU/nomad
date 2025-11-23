@@ -3,12 +3,78 @@ import { describe, expect, it } from "vitest";
 
 import {
   calculateQuickSelectDateRange,
+  calculateTripDuration,
   formatDateString,
   formatDateWithWeekday,
   formatTime,
   getBookingDateRange,
+  getRelativeDateLabel,
   getWeekdayLabel,
 } from "./date";
+
+describe("getRelativeDateLabel", () => {
+  it("returns '今天' for the same day", () => {
+    const today = new Date("2025-11-15");
+    expect(getRelativeDateLabel(today, today)).toBe("今天");
+  });
+
+  it("returns '明天' for next day", () => {
+    const today = new Date("2025-11-15");
+    const tomorrow = addDays(today, 1);
+    expect(getRelativeDateLabel(tomorrow, today)).toBe("明天");
+  });
+
+  it("returns '后天' for day after tomorrow", () => {
+    const today = new Date("2025-11-15");
+    const dayAfter = addDays(today, 2);
+    expect(getRelativeDateLabel(dayAfter, today)).toBe("后天");
+  });
+
+  it("returns empty string for dates more than 2 days away", () => {
+    const today = new Date("2025-11-15");
+    const future = addDays(today, 3);
+    expect(getRelativeDateLabel(future, today)).toBe("");
+  });
+
+  it("returns empty string for past dates", () => {
+    const today = new Date("2025-11-15");
+    const past = addDays(today, -1);
+    expect(getRelativeDateLabel(past, today)).toBe("");
+  });
+});
+
+describe("calculateTripDuration", () => {
+  it("returns 0 when departureDate is null", () => {
+    const returnDate = new Date("2025-11-17");
+    expect(calculateTripDuration(null, returnDate)).toBe(0);
+  });
+
+  it("returns 0 when returnDate is null", () => {
+    const departureDate = new Date("2025-11-15");
+    expect(calculateTripDuration(departureDate, null)).toBe(0);
+  });
+
+  it("returns 0 when both dates are null", () => {
+    expect(calculateTripDuration(null, null)).toBe(0);
+  });
+
+  it("returns 1 for same day trip", () => {
+    const date = new Date("2025-11-15");
+    expect(calculateTripDuration(date, date)).toBe(1);
+  });
+
+  it("returns correct duration for multi-day trip", () => {
+    const departure = new Date("2025-11-15");
+    const returnDate = new Date("2025-11-17");
+    expect(calculateTripDuration(departure, returnDate)).toBe(3);
+  });
+
+  it("returns correct duration for longer trips", () => {
+    const departure = new Date("2025-11-15");
+    const returnDate = new Date("2025-11-25");
+    expect(calculateTripDuration(departure, returnDate)).toBe(11);
+  });
+});
 
 describe("getWeekdayLabel", () => {
   it("should return correct Chinese weekday for Sunday", () => {

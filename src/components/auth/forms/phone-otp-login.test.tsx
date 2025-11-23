@@ -29,7 +29,9 @@ describe("PhoneOtpLoginForm", () => {
     await user.click(screen.getByRole("button", { name: "登录" }));
 
     await waitFor(() => {
-      expect(screen.getByText("请输入手机号")).toBeInTheDocument();
+      expect(
+        screen.getByText("手机号格式不正确，请重新输入")
+      ).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -45,7 +47,9 @@ describe("PhoneOtpLoginForm", () => {
     await user.click(screen.getByRole("button", { name: "登录" }));
 
     await waitFor(() => {
-      expect(screen.getByText("手机号码至少11位")).toBeInTheDocument();
+      expect(
+        screen.getByText("手机号格式不正确，请重新输入")
+      ).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -124,7 +128,9 @@ describe("PhoneOtpLoginForm", () => {
     await user.click(screen.getByRole("button", { name: "发送验证码" }));
 
     await waitFor(() => {
-      expect(screen.getByText("手机号码至少11位")).toBeInTheDocument();
+      expect(
+        screen.getByText("手机号格式不正确，请重新输入")
+      ).toBeInTheDocument();
     });
     expect(onSendOtp).not.toHaveBeenCalled();
   });

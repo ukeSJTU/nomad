@@ -1,16 +1,12 @@
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { BreadCrumbNav } from "@/components/common/bread-crumb-nav";
+import { getOrderDetailById } from "@/lib/queries/orders";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import OrderDetailsPageClient from "./page.client";
-import { getOrderDetails } from "./queries";
 
-type PageProps = {
-  params: Promise<{
-    orderId: string;
-  }>;
-};
+export const dynamic = "force-dynamic";
 
 /**
  * Order Details Page - Server Component
@@ -26,31 +22,32 @@ type PageProps = {
  * - Requires authentication (handled by middleware)
  * - Only order owner can view the order
  */
-export default async function OrderDetailsPage({ params }: PageProps) {
-  // Get authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  // This is a fallback - middleware should handle this
-  if (!session?.user?.id) {
-    const resolvedParams = await params;
-    redirect(`/auth/sign-in?redirect=/orders/${resolvedParams.orderId}`);
-  }
-
+export default async function OrderDetailsPage({
+  params,
+}: {
+  params: Promise<{
+    orderId: string;
+  }>;
+}) {
   // Get orderId from params
   const resolvedParams = await params;
   const orderId = resolvedParams.orderId;
 
+  // Check authentication (redirects to sign-in with return URL if not authenticated)
+  const userId = await requireAuth(`/orders/${orderId}`);
+
   // Fetch order details
-  const order = await getOrderDetails(orderId, session.user.id);
+  const order = await getOrderDetailById(orderId, userId);
 
   // Return 404 if order not found or user doesn't have permission
   if (!order) {
     notFound();
   }
 
-  return <OrderDetailsPageClient order={order} />;
+  return (
+    <div className="flex flex-col gap-0">
+      <BreadCrumbNav />
+      <OrderDetailsPageClient order={order} />
+    </div>
+  );
 }

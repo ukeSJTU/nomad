@@ -1,10 +1,11 @@
-import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { getOrderConfirmation } from "@/lib/queries/booking";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import ConfirmationPageClient from "./page.client";
-import { getOrderConfirmation } from "./queries";
+
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   searchParams: Promise<{
@@ -15,26 +16,19 @@ type PageProps = {
 export default async function BookingConfirmationPage({
   searchParams,
 }: PageProps) {
-  // Get authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Get orderId from search params
   const params = await searchParams;
   const orderId = params.orderId;
 
   if (!orderId) {
-    redirect("/");
+    redirect("/error?type=missing_order_id");
   }
 
   // Fetch order confirmation details
-  const order = await getOrderConfirmation(orderId, session.user.id);
+  const order = await getOrderConfirmation(orderId, userId);
 
   if (!order) {
     notFound();
@@ -46,8 +40,8 @@ export default async function BookingConfirmationPage({
     if (order.status === "PENDING_PAYMENT") {
       redirect(`/flights/booking/payment?orderId=${orderId}`);
     }
-    // Redirect to home for cancelled or refunded orders
-    redirect("/");
+    // Redirect to error page for cancelled or refunded orders
+    redirect("/error?type=invalid_order_status");
   }
 
   return <ConfirmationPageClient order={order} />;

@@ -1,60 +1,82 @@
 "use client";
 
-import { format } from "date-fns";
-import { zhCN } from "date-fns/locale";
-import { Plane, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DeleteOrderDialog from "@/components/user/delete-order-dialog";
+import OrderCard from "@/components/user/order-card";
+import { resendOrderConfirmationAction } from "@/lib/actions/emails";
 import { deleteOrderAction } from "@/lib/actions/orders";
-import type { OrderListItem } from "@/types/actions/orders";
+import type { OrderListItem } from "@/types/dto/orders";
 
 interface OrdersPageClientProps {
-  allOrders: OrderListItem[];
-  upcomingOrders: OrderListItem[];
-  pendingPaymentOrders: OrderListItem[];
+  orders: OrderListItem[];
 }
 
 /**
  * Orders Page Client Component
  *
+ * @description
+ * Client-side component that handles order filtering, interactions, and state management.
+ * Uses the OrderCard component for consistent order display.
+ *
+ * @remarks
+ * Filtering Logic:
+ * - All Orders: Shows all orders regardless of status
+ * - Upcoming Trips: Confirmed orders with future departure dates
+ * - Pending Payment: Orders awaiting payment
+ *
  * Features:
- * - Tab navigation: All Orders, Upcoming Trips, Pending Payment
- * - Display order list with flight and passenger information
- * - Delete order functionality with confirmation dialog
- * - Navigate to order details and payment pages
+ * - Tab-based navigation with client-side filtering
+ * - Batch selection for bulk operations
+ * - Delete confirmation dialog
+ * - Navigation to order details and payment pages
  */
-export default function OrdersPageClient({
-  allOrders,
-  upcomingOrders,
-  pendingPaymentOrders,
-}: OrdersPageClientProps) {
+export default function OrdersPageClient({ orders }: OrdersPageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
+  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
 
-  // Handle delete order
+  // Filter orders by category using useMemo for performance
+  const { upcomingOrders, pendingPaymentOrders } = useMemo(() => {
+    const now = new Date();
+
+    return {
+      upcomingOrders: orders.filter(
+        order =>
+          order.status === "CONFIRMED" &&
+          new Date(order.outboundFlight.departureDatetime) >= now
+      ),
+      pendingPaymentOrders: orders.filter(
+        order => order.status === "PENDING_PAYMENT"
+      ),
+    };
+  }, [orders]);
+
+  // Handle order selection toggle
+  const handleCheckChange = (orderId: string, checked: boolean) => {
+    setSelectedOrders(prev => {
+      const newSet = new Set(prev);
+      if (checked) {
+        newSet.add(orderId);
+      } else {
+        newSet.delete(orderId);
+      }
+      return newSet;
+    });
+  };
+
+  // Handle delete order click
   const handleDeleteClick = (orderId: string) => {
     setOrderToDelete(orderId);
     setDeleteDialogOpen(true);
   };
 
+  // Confirm and execute order deletion
   const confirmDelete = async () => {
     if (!orderToDelete) return;
 
@@ -77,195 +99,71 @@ export default function OrdersPageClient({
     }
   };
 
-  // Navigate to order details
-  const handleViewDetails = (orderId: string) => {
-    router.push(`/orders/${orderId}`);
-  };
+  // Handle action button click (Resend confirmation or Go to payment)
+  const handleActionClick = async (order: OrderListItem) => {
+    if (order.status === "CONFIRMED") {
+      // Resend order confirmation email
+      setIsLoading(true);
+      try {
+        const result = await resendOrderConfirmationAction(order.id);
 
-  // Navigate to payment page
-  const handlePayment = (orderId: string) => {
-    router.push(`/flights/booking/${orderId}/payment`);
-  };
-
-  // Get status badge variant
-  const getStatusBadge = (status: OrderListItem["status"]) => {
-    switch (status) {
-      case "PENDING_PAYMENT":
-        return (
-          <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-            待支付
-          </Badge>
-        );
-      case "CONFIRMED":
-        return (
-          <Badge variant="outline" className="bg-green-50 text-green-700">
-            已确认
-          </Badge>
-        );
-      case "CANCELLED":
-        return (
-          <Badge variant="outline" className="bg-gray-50 text-gray-700">
-            已取消
-          </Badge>
-        );
-      case "REFUNDED":
-        return (
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
-            已退款
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+        if (result.success) {
+          toast.success("订单确认邮件已重新发送");
+        } else {
+          toast.error(result.error || "邮件发送失败，请稍后重试");
+        }
+      } catch (_error) {
+        toast.error("邮件发送失败，请重试");
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (order.status === "PENDING_PAYMENT") {
+      // Navigate to payment page
+      router.push(`/flights/booking/payment?orderId=${order.id}`);
     }
   };
 
-  // Check if order can be deleted
-  const canDeleteOrder = (status: OrderListItem["status"]) => {
-    return ["CONFIRMED", "CANCELLED", "REFUNDED"].includes(status);
-  };
-
-  // Render single order card
-  const renderOrderCard = (order: OrderListItem) => {
-    const outbound = order.outboundFlight;
-    const inbound = order.inboundFlight;
-
-    return (
-      <Card key={order.id} className="mb-4">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">订单号</p>
-                <p className="font-medium">{order.orderNumber}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">预订日期</p>
-                <p className="font-medium">
-                  {format(new Date(order.createdAt), "yyyy-MM-dd", {
-                    locale: zhCN,
-                  })}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {getStatusBadge(order.status)}
-              {canDeleteOrder(order.status) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDeleteClick(order.id)}
-                  disabled={isLoading}
-                >
-                  <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          {/* Outbound Flight */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Plane className="h-4 w-4" />
-              <span>{inbound ? "去程" : "单程"}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <p className="text-lg font-semibold">
-                  {outbound.departureCityName} → {outbound.arrivalCityName}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {format(
-                    new Date(outbound.departureDatetime),
-                    "yyyy-MM-dd HH:mm",
-                    { locale: zhCN }
-                  )}{" "}
-                  - {outbound.airlineName} {outbound.flightNumber}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  座位等级: {outbound.seatClassType}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Inbound Flight (if exists) */}
-          {inbound && (
-            <div className="space-y-2 border-t pt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Plane className="h-4 w-4 rotate-180" />
-                <span>返程</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-lg font-semibold">
-                    {inbound.departureCityName} → {inbound.arrivalCityName}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {format(
-                      new Date(inbound.departureDatetime),
-                      "yyyy-MM-dd HH:mm",
-                      { locale: zhCN }
-                    )}{" "}
-                    - {inbound.airlineName} {inbound.flightNumber}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    座位等级: {inbound.seatClassType}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Passengers */}
-          <div className="border-t pt-4">
-            <p className="text-sm text-muted-foreground mb-1">出行人</p>
-            <p className="text-sm">{order.passengerNames.join("、")}</p>
-          </div>
-
-          {/* Actions and Price */}
-          <div className="flex items-center justify-between border-t pt-4">
-            <div>
-              <p className="text-sm text-muted-foreground">订单金额</p>
-              <p className="text-xl font-bold text-primary">
-                ¥{Number(order.totalAmount).toFixed(2)}
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => handleViewDetails(order.id)}
-              >
-                查看详情
-              </Button>
-              {order.status === "PENDING_PAYMENT" && (
-                <Button onClick={() => handlePayment(order.id)}>去支付</Button>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  // Render empty state
+  // Render empty state message
   const renderEmptyState = (message: string) => (
     <div className="text-center py-12">
       <p className="text-muted-foreground">{message}</p>
     </div>
   );
 
+  // Render order list using OrderCard component
+  const renderOrderList = (orderList: OrderListItem[]) => {
+    if (orderList.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="space-y-4">
+        {orderList.map(order => (
+          <OrderCard
+            key={order.id}
+            order={order}
+            isChecked={selectedOrders.has(order.id)}
+            onCheckChange={checked => handleCheckChange(order.id, checked)}
+            onDelete={() => handleDeleteClick(order.id)}
+            onActionClick={() => handleActionClick(order)}
+          />
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
+      {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">我的订单</h1>
         <p className="text-muted-foreground">查看和管理您的机票订单</p>
       </div>
 
+      {/* Tabs for filtering orders */}
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="all">全部订单 ({allOrders.length})</TabsTrigger>
+          <TabsTrigger value="all">全部订单 ({orders.length})</TabsTrigger>
           <TabsTrigger value="upcoming">
             未出行 ({upcomingOrders.length})
           </TabsTrigger>
@@ -274,42 +172,35 @@ export default function OrdersPageClient({
           </TabsTrigger>
         </TabsList>
 
+        {/* All Orders Tab */}
         <TabsContent value="all" className="mt-6">
-          {allOrders.length > 0
-            ? allOrders.map(renderOrderCard)
+          {orders.length > 0
+            ? renderOrderList(orders)
             : renderEmptyState("暂时没有订单")}
         </TabsContent>
 
+        {/* Upcoming Orders Tab */}
         <TabsContent value="upcoming" className="mt-6">
           {upcomingOrders.length > 0
-            ? upcomingOrders.map(renderOrderCard)
+            ? renderOrderList(upcomingOrders)
             : renderEmptyState("暂时没有未出行的订单")}
         </TabsContent>
 
+        {/* Pending Payment Tab */}
         <TabsContent value="pending" className="mt-6">
           {pendingPaymentOrders.length > 0
-            ? pendingPaymentOrders.map(renderOrderCard)
+            ? renderOrderList(pendingPaymentOrders)
             : renderEmptyState("暂时没有待支付的订单")}
         </TabsContent>
       </Tabs>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>确认删除</AlertDialogTitle>
-            <AlertDialogDescription>
-              您确定要删除这个订单吗？删除后将无法恢复。
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isLoading}>取消</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} disabled={isLoading}>
-              {isLoading ? "删除中..." : "确认删除"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteOrderDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={confirmDelete}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

@@ -1,11 +1,12 @@
-import { headers } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import type { SecurityStatus } from "@/components/security";
 import { getUserSecurityStatus } from "@/lib/queries/user";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import EmailPageClient from "./page.client";
+
+export const dynamic = "force-dynamic";
 
 /**
  * Email Management Page (Server Component)
@@ -18,24 +19,26 @@ import EmailPageClient from "./page.client";
  * - Delegates to client component for form handling
  */
 export default async function EmailPage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch user security status to get current email
-  const securityStatus = await getUserSecurityStatus(session.user.id);
+  const securityStatus = await getUserSecurityStatus(userId);
 
-  // Handle case where user data is not found (should not happen for authenticated users)
-  if (!securityStatus) {
-    redirect("/auth/sign-in");
-  }
+  // Helper function to determine security status
+  const getSecurityStatus = (
+    hasValue: boolean,
+    isVerified: boolean
+  ): SecurityStatus => {
+    if (!hasValue) return "notSet";
+    if (hasValue && !isVerified) return "unverified";
+    return "verified";
+  };
+
+  const emailStatus: SecurityStatus = getSecurityStatus(
+    !!securityStatus.email,
+    securityStatus.emailVerified
+  );
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -54,7 +57,10 @@ export default async function EmailPage() {
         </div>
 
         {/* Client Component for Form Handling */}
-        <EmailPageClient currentEmail={securityStatus.email} />
+        <EmailPageClient
+          currentEmail={securityStatus.email}
+          currentStatus={emailStatus}
+        />
       </div>
     </div>
   );

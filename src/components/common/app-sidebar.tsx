@@ -1,21 +1,21 @@
 "use client";
 
 import {
-  Bed,
+  Album,
   Building2,
-  Bus,
-  Car,
-  Compass,
+  BusFront,
+  CarTaxiFront,
   CreditCard,
+  Earth,
+  Flag,
   Frame,
   Gift,
-  Globe,
+  Hotel,
   Info,
   LucideIcon,
   Map,
   Menu,
   Plane,
-  ShoppingCart,
   Sparkles,
   Ticket,
   Train,
@@ -40,7 +40,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
@@ -72,7 +71,7 @@ export const data: SidebarData = {
     {
       title: "酒店",
       url: "#",
-      icon: Bed,
+      icon: Hotel,
       items: [
         { title: "国内酒店", url: "#" },
         { title: "海外酒店", url: "#" },
@@ -103,7 +102,7 @@ export const data: SidebarData = {
     {
       title: "旅游",
       url: "#",
-      icon: Globe,
+      icon: Flag,
       items: [
         { title: "国内游", url: "#" },
         { title: "出境游", url: "#" },
@@ -122,7 +121,7 @@ export const data: SidebarData = {
     {
       title: "汽车·船票",
       url: "#",
-      icon: Bus,
+      icon: BusFront,
       items: [
         { title: "汽车票", url: "#" },
         { title: "船票", url: "#" },
@@ -131,7 +130,7 @@ export const data: SidebarData = {
     {
       title: "用车",
       url: "#",
-      icon: Car,
+      icon: CarTaxiFront,
       items: [
         { title: "国内租车", url: "#" },
         { title: "境外租车", url: "#" },
@@ -163,7 +162,7 @@ export const data: SidebarData = {
     {
       title: "全球购",
       url: "#",
-      icon: ShoppingCart,
+      icon: Earth,
     },
     {
       title: "礼品卡",
@@ -186,7 +185,7 @@ export const data: SidebarData = {
     {
       title: "攻略·景点",
       url: "#",
-      icon: Compass,
+      icon: Album,
     },
     {
       title: "旅游地图",
@@ -260,13 +259,13 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     <SidebarMenuButton
       onClick={() => handleClick(item.url, item.title)}
       className={cn(
-        "h-9 cursor-pointer px-2",
+        "h-9 cursor-pointer px-4 transition-all duration-200 ease-in-out justify-start items-center",
         isActive &&
           "bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-full"
       )}
     >
-      <Icon className="size-4" />
-      <span className="text-sm">{item.title}</span>
+      <Icon className="size-4 shrink-0" />
+      <span className="truncate">{item.title}</span>
     </SidebarMenuButton>
   );
 
@@ -280,7 +279,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     return (
       <div className="space-y-0">
         <SidebarMenuItem>{menuButton}</SidebarMenuItem>
-        <div className="ml-2 space-y-0">
+        <div className="space-y-0">
           {item.items?.map(subItem => {
             const isSubActive = isUrlActive(subItem.url);
             return (
@@ -336,28 +335,41 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" className="w-48" {...props}>
-      <SidebarHeader className="gap-2 p-2 flex items-center justify-center">
+    <Sidebar
+      collapsible="icon"
+      className="w-44 transition-all duration-300 ease-in-out"
+      {...props}
+    >
+      <SidebarHeader className="gap-2 p-2 flex items-center justify-start">
         {/* Toggle sidebar button */}
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              aria-label="Toggle Sidebar"
-              className="px-3 py-3 size-8 justify-center rounded-md [&>svg]:size-7"
-              onClick={() => toggleSidebar()}
-            >
-              <Menu strokeWidth={1.5} className="text-black" />
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarMenuButton
+          aria-label="Toggle Sidebar"
+          className="px-2 py-2 size-9 justify-center items-center rounded-md [&>svg]:size-6 transition-all duration-200 hover:bg-accent"
+          onClick={() => toggleSidebar()}
+        >
+          <Menu strokeWidth={1.5} className="text-black" />
+        </SidebarMenuButton>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:items-center">
         {/* Travel Group */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1">
               {data.travel.map(item => (
+                <SidebarMenuItemWithHover key={item.title} item={item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <Separator className="mx-2" />
+
+        {/* Extras Group */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1">
+              {data.extras.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
             </SidebarMenu>
@@ -369,7 +381,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* Business Group */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1">
               {data.business.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -382,29 +394,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* Finance Group */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1">
               {data.finance.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        <Separator className="mx-2" />
-
-        {/* Extras Group */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.extras.map(item => (
-                <SidebarMenuItemWithHover key={item.title} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
-
-      <SidebarRail />
     </Sidebar>
   );
 }

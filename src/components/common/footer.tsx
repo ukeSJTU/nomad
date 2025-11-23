@@ -1,12 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 print:hidden">
-      <div className="container px-4 py-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+    <footer className="border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 print:hidden">
+      <div className="container px-4 py-8 mx-auto">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -72,6 +73,21 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
+          </div>
+
+          {/* QR Code */}
+          <div>
+            <h3 className="font-semibold mb-4">关注我们</h3>
+            <div className="flex flex-col items-start gap-2">
+              <Image
+                src="/qr-code.png"
+                alt="Nomad QR Code"
+                width={120}
+                height={120}
+                className="rounded-lg border"
+              />
+              <p className="text-xs text-muted-foreground">扫码关注</p>
+            </div>
           </div>
         </div>
 

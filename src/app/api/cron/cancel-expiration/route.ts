@@ -2,7 +2,7 @@ import { cancelExpiredOrders } from "@/lib/services/orders";
 import {
   createUnauthorizedResponse,
   verifyCronSecret,
-} from "@/lib/utils/cron-auth";
+} from "@/utils/cron-auth";
 
 /**
  * Cron Job: Cancel Expired Orders

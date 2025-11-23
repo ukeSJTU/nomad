@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
+import OtpInput from "@/components/auth/forms/otp-input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,41 +14,75 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  type UpdateEmailData,
+  updateEmailSchema,
+} from "@/types/validations/auth";
 
-/**
- * Schema for email update form
- * Simplified version without agreedToTerms checkbox
- */
-const updateEmailSchema = z.object({
-  email: z.string().min(1, "请输入邮箱地址").email("邮箱格式不正确"),
-  otp: z
-    .string()
-    .min(6, "验证码必须是6位数字")
-    .max(6, "验证码必须是6位数字")
-    .regex(/^[0-9]{6}$/, "验证码只能包含数字"),
-});
-
-type UpdateEmailData = z.infer<typeof updateEmailSchema>;
+export type EmailFormMode = "bind" | "verify" | "update";
 
 interface UpdateEmailFormProps {
-  currentEmail: string;
+  /** Current email address (empty for bind mode) */
+  currentEmail?: string;
+  /** Form mode: bind (first time), verify (existing unverified), update (change verified) */
+  mode: EmailFormMode;
   onSubmit: (data: UpdateEmailData) => void;
   onSendOtp: (email: string) => void;
   isLoading?: boolean;
+  isVerifying?: boolean;
   countdown?: number;
 }
 
+/**
+ * Get mode-specific configuration for UI labels and descriptions
+ */
+function getModeConfig(mode: EmailFormMode) {
+  switch (mode) {
+    case "bind":
+      return {
+        title: "绑定邮箱",
+        currentLabel: null,
+        emailLabel: "邮箱地址",
+        emailPlaceholder: "请输入邮箱地址",
+        submitText: "确认绑定",
+        description: "首次绑定邮箱，验证后可用于登录和找回密码",
+      };
+    case "verify":
+      return {
+        title: "验证邮箱",
+        currentLabel: "待验证的邮箱",
+        emailLabel: null, // Don't show email input, use current email
+        emailPlaceholder: null,
+        submitText: "确认验证",
+        description: "您的邮箱尚未验证，请输入验证码完成验证",
+      };
+    case "update":
+      return {
+        title: "修改邮箱",
+        currentLabel: "当前邮箱",
+        emailLabel: "新邮箱地址",
+        emailPlaceholder: "请输入新邮箱地址",
+        submitText: "确认修改",
+        description: "修改邮箱后，新邮箱将用于登录和接收通知",
+      };
+  }
+}
+
 export default function UpdateEmailForm({
-  currentEmail,
+  currentEmail = "",
+  mode,
   onSubmit,
   onSendOtp,
   isLoading = false,
+  isVerifying = false,
   countdown = 0,
 }: UpdateEmailFormProps) {
+  const config = getModeConfig(mode);
+
   const form = useForm<UpdateEmailData>({
     resolver: zodResolver(updateEmailSchema),
     defaultValues: {
-      email: "",
+      email: mode === "verify" ? currentEmail : "",
       otp: "",
     },
   });
@@ -61,93 +95,109 @@ export default function UpdateEmailForm({
   };
 
   const handleSendOtp = async () => {
-    // Validate email before sending OTP
-    const isValid = await form.trigger("email");
-    if (isValid) {
-      onSendOtp(form.getValues("email"));
+    // For verify mode, use current email
+    const targetEmail =
+      mode === "verify" ? currentEmail : form.getValues("email");
+
+    // Validate email before sending OTP (skip for verify mode since email is fixed)
+    if (mode !== "verify") {
+      const isValid = await form.trigger("email");
+      if (!isValid) return;
     }
+
+    onSendOtp(targetEmail);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        {/* Description */}
+        {config.description && (
+          <div className="rounded-lg bg-primary/10 p-4">
+            <p className="text-sm text-primary">{config.description}</p>
+          </div>
+        )}
+
         {/* Current Email Display */}
-        <div className="rounded-lg bg-gray-50 p-4">
-          <p className="text-sm text-gray-600">
-            当前邮箱：<span className="font-medium">{currentEmail}</span>
-          </p>
-        </div>
+        {config.currentLabel && currentEmail && (
+          <div className="rounded-lg bg-muted p-4">
+            <p className="text-sm text-muted-foreground">
+              {config.currentLabel}：
+              <span className="font-medium">{currentEmail}</span>
+            </p>
+          </div>
+        )}
 
         <div className="space-y-4">
-          {/* Email Field */}
+          {/* Email Field (hidden for verify mode) */}
+          {config.emailLabel && (
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium text-foreground">
+                    {config.emailLabel}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder={config.emailPlaceholder || ""}
+                      className="h-12"
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          {/* Hidden email field for verify mode */}
+          {mode === "verify" && (
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => <input {...field} type="hidden" />}
+            />
+          )}
+
+          {/* OTP Field */}
           <FormField
             control={form.control}
-            name="email"
+            name="otp"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  新邮箱地址
+                <FormLabel className="text-sm font-medium text-foreground">
+                  邮箱验证码
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="email"
-                    placeholder="请输入新邮箱地址"
-                    className="h-12"
-                    disabled={isLoading}
+                  <OtpInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    onSendOtp={handleSendOtp}
+                    countdown={countdown}
+                    isLoading={isLoading}
+                    isVerifying={isVerifying}
+                    placeholder="6位数字"
+                    maxLength={6}
+                    disabled={mode !== "verify" && !email}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          {/* OTP Field */}
-          <div>
-            <FormLabel className="text-sm font-medium text-gray-700 mb-3 block">
-              邮箱验证码
-            </FormLabel>
-            <div className="flex gap-2">
-              <FormField
-                control={form.control}
-                name="otp"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="6位数字"
-                        className="h-12"
-                        maxLength={6}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Send OTP Button */}
-              <Button
-                type="button"
-                variant="outline"
-                className="h-12 px-4 text-blue-600 border-blue-600 hover:bg-blue-50"
-                onClick={handleSendOtp}
-                disabled={countdown > 0 || isLoading || !email}
-              >
-                {countdown > 0 ? `${countdown}s` : "发送验证码"}
-              </Button>
-            </div>
-          </div>
         </div>
 
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-medium"
+          className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
           disabled={isLoading}
         >
-          {isLoading ? "验证中..." : "确认修改"}
+          {isLoading ? "验证中..." : config.submitText}
         </Button>
       </form>
     </Form>

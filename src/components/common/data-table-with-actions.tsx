@@ -108,7 +108,7 @@ export interface DataTableWithActionsProps<T> {
 // Main Component
 // ============================================================================
 
-export function DataTableWithActions<T extends Record<string, unknown>>({
+export function DataTableWithActions<T extends object>({
   data,
   columns,
   keyExtractor,
@@ -198,7 +198,11 @@ export function DataTableWithActions<T extends Record<string, unknown>>({
 
   // Render cell value
   const renderCellValue = (column: ColumnDefinition<T>, row: T) => {
-    const value = row[column.key as keyof T];
+    // Type-safe value extraction
+    const value =
+      typeof column.key === "string" && column.key in row
+        ? (row as Record<string, unknown>)[column.key]
+        : undefined;
 
     // Priority: cell > render > default
     if (column.cell) {

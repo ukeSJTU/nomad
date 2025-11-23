@@ -3,11 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -32,36 +30,11 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-
-// Passenger form schema
-const passengerFormSchema = z.object({
-  name: z.string().min(1, "请输入姓名").max(100, "姓名不能超过100个字符"),
-  setAsMyself: z.boolean(),
-  nationality: z.string().min(1, "请选择国籍"),
-  gender: z.enum(["male", "female", "other"], {
-    message: "请选择性别",
-  }),
-  dateOfBirth: z.date({ message: "请选择出生日期" }),
-  placeOfBirth: z.string().optional(),
-  phoneCountryCode: z.string(),
-  phone: z.string().optional(),
-  faxAreaCode: z.string().optional(),
-  faxPhone: z.string().optional(),
-  faxExtension: z.string().optional(),
-  email: z
-    .union([
-      z.string().email({ message: "请输入有效的邮箱地址" }),
-      z.literal(""),
-    ])
-    .optional(),
-  documentType: z.enum(["id_card", "passport", "other"], {
-    message: "请选择证件类型",
-  }),
-  documentNumber: z.string().min(1, "请输入证件号码"),
-  documentExpiryDate: z.date({ message: "请选择证件有效期" }).optional(),
-});
-
-type PassengerFormData = z.infer<typeof passengerFormSchema>;
+import {
+  type PassengerFormData,
+  passengerFormSchema,
+} from "@/types/validations/passengers";
+import { dateToLocalDateString } from "@/utils/date";
 
 interface PassengerFormProps {
   onSubmit: (data: PassengerFormData) => void;
@@ -86,21 +59,16 @@ export default function PassengerForm({
   const form = useForm<PassengerFormData>({
     resolver: zodResolver(passengerFormSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      setAsMyself: initialData?.setAsMyself ?? false,
-      nationality: initialData?.nationality || "中国大陆",
-      gender: initialData?.gender || "other",
-      dateOfBirth: initialData?.dateOfBirth || undefined,
-      placeOfBirth: initialData?.placeOfBirth || "",
-      phoneCountryCode: initialData?.phoneCountryCode || "+86",
-      phone: initialData?.phone || "",
-      faxAreaCode: initialData?.faxAreaCode || "",
-      faxPhone: initialData?.faxPhone || "",
-      faxExtension: initialData?.faxExtension || "",
-      email: initialData?.email || "",
-      documentType: initialData?.documentType || "id_card",
-      documentNumber: initialData?.documentNumber || "",
-      documentExpiryDate: initialData?.documentExpiryDate || undefined,
+      name: initialData?.name ?? "",
+      nationality: initialData?.nationality ?? "",
+      gender: initialData?.gender,
+      dateOfBirth: initialData?.dateOfBirth,
+      placeOfBirth: initialData?.placeOfBirth ?? "",
+      phone: initialData?.phone ?? "",
+      email: initialData?.email ?? "",
+      documentType: initialData?.documentType ?? "id_card",
+      documentNumber: initialData?.documentNumber ?? "",
+      documentExpiryDate: initialData?.documentExpiryDate,
     },
   });
 
@@ -113,7 +81,7 @@ export default function PassengerForm({
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         {/* Passenger Information Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold border-l-4 border-blue-600 pl-3">
+          <h3 className="text-lg font-semibold border-l-4 border-primary pl-3">
             旅客信息
           </h3>
 
@@ -126,7 +94,7 @@ export default function PassengerForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  <span className="text-red-500">*</span> 姓名
+                  <span className="text-destructive">*</span> 姓名
                 </FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="请输入姓名（中文或英文）" />
@@ -139,25 +107,6 @@ export default function PassengerForm({
             )}
           />
 
-          {/* Set as Myself Checkbox */}
-          <FormField
-            control={form.control}
-            name="setAsMyself"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel className="text-sm font-normal">
-                  设置为本人
-                </FormLabel>
-              </FormItem>
-            )}
-          />
-
           {/* Nationality */}
           <FormField
             control={form.control}
@@ -165,7 +114,8 @@ export default function PassengerForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  国籍 <span className="text-gray-500">(国家/地区)</span>
+                  国籍{" "}
+                  <span className="text-muted-foreground">(国家/地区)</span>
                 </FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="中文/英文" />
@@ -231,7 +181,7 @@ export default function PassengerForm({
                         )}
                       >
                         {field.value
-                          ? field.value.toISOString().split("T")[0]
+                          ? dateToLocalDateString(field.value)
                           : "yyyy-MM-dd"}
                       </Button>
                     </FormControl>
@@ -272,78 +222,19 @@ export default function PassengerForm({
           />
 
           {/* Phone Number */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>手机号码</FormLabel>
-                  <div className="flex gap-2">
-                    <div className="flex items-center justify-center w-16 px-3 border border-input rounded-md bg-muted text-sm">
-                      +86
-                    </div>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="tel"
-                        placeholder="请输入手机号"
-                        maxLength={11}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex items-end">
-              <span className="text-sm text-gray-500">或 非大陆手机</span>
-            </div>
-          </div>
-
-          {/* Fax Number */}
-          <div className="grid grid-cols-3 gap-2">
-            <FormField
-              control={form.control}
-              name="faxAreaCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>传真号码</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="区号" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="faxPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="invisible">Phone</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="电话" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="faxExtension"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="invisible">Extension</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="分机" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>手机号码</FormLabel>
+                <FormControl>
+                  <Input {...field} type="tel" placeholder="请输入手机号" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           {/* Email */}
           <FormField
@@ -365,7 +256,7 @@ export default function PassengerForm({
 
         {/* Document Information Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold border-l-4 border-blue-600 pl-3">
+          <h3 className="text-lg font-semibold border-l-4 border-primary pl-3">
             证件信息
           </h3>
 
@@ -377,7 +268,7 @@ export default function PassengerForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    <span className="text-red-500">*</span> 证件类型
+                    <span className="text-destructive">*</span> 证件类型
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -406,7 +297,7 @@ export default function PassengerForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    <span className="text-red-500">*</span> 证件号码
+                    <span className="text-destructive">*</span> 证件号码
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="请输入证件号码" />
@@ -434,8 +325,8 @@ export default function PassengerForm({
                           )}
                         >
                           {field.value
-                            ? field.value.toISOString().split("T")[0]
-                            : "yyyy-MM-dd"}
+                            ? dateToLocalDateString(field.value)
+                            : "长期有效"}
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
@@ -447,7 +338,6 @@ export default function PassengerForm({
                         onSelect={date => {
                           field.onChange(date);
                           setExpiryOpen(false);
-                          setDobOpen(false);
                         }}
                         disabled={date => date < new Date()}
                         captionLayout={dobCaptionLayout}
@@ -460,17 +350,13 @@ export default function PassengerForm({
               )}
             />
           </div>
-
-          <div className="text-sm text-blue-600 cursor-pointer hover:underline">
-            设为长期有效
-          </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex justify-center gap-4 pt-4">
           <Button
             type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+            className="bg-secondary hover:bg-secondary/90 text-white px-8"
             disabled={isLoading}
           >
             {isLoading ? "保存中..." : "保存"}
