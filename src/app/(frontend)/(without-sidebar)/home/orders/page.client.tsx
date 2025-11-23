@@ -119,7 +119,7 @@ export default function OrdersPageClient({ orders }: OrdersPageClientProps) {
       }
     } else if (order.status === "PENDING_PAYMENT") {
       // Navigate to payment page
-      router.push(`/flights/booking/${order.id}/payment`);
+      router.push(`/flights/booking/payment?orderId=${order.id}`);
     }
   };
 
