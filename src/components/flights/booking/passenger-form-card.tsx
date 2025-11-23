@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { shouldShowDeleteButton } from "@/hooks/use-passenger-forms";
-import type { SavedPassengerDTO } from "@/types/dto/booking";
+import type { SavedPassengerDTO } from "@/types/dto";
 
 export interface PassengerFormData {
   name: string;
@@ -49,12 +49,12 @@ function QuickPassengerSelect({
   const hasMore = savedPassengers.length > 5;
 
   return (
-    <div className="flex flex-wrap gap-3 items-center">
+    <div className="flex flex-wrap gap-2.5 items-center">
       {displayedPassengers.map(passenger => (
         // Please note that we must use label instead of div here to prevent radix ui bug
         <Label
           key={passenger.id}
-          className="flex items-center gap-2 px-4 py-2 border border-input rounded-md hover:bg-accent cursor-pointer transition-colors"
+          className="group flex items-center gap-2.5 px-4 py-2.5 border border-input/60 rounded-lg hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm cursor-pointer transition-all duration-200"
         >
           <Checkbox
             checked={selectedPassengerIds.includes(passenger.id)}
@@ -63,13 +63,21 @@ function QuickPassengerSelect({
               onTogglePassenger(passenger.id);
             }}
             onClick={e => e.stopPropagation()}
+            className="transition-all"
           />
-          <span className="text-sm">{passenger.name}</span>
+          <span className="text-sm font-medium group-hover:text-primary transition-colors">
+            {passenger.name}
+          </span>
         </Label>
       ))}
       {hasMore && (
-        <Button variant="outline" className="px-4 py-2">
-          更多常用乘机人 ∨
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-10 px-4 border-dashed hover:border-solid hover:border-primary/50 hover:bg-primary/5"
+        >
+          更多常用乘机人
+          <span className="ml-1.5 text-xs">∨</span>
         </Button>
       )}
     </div>
@@ -98,25 +106,25 @@ function PassengerInfoForm({
   const displayName = data.name;
 
   return (
-    <div className="relative bg-card border border-border rounded-md p-6 shadow hover:shadow-md transition-shadow">
+    <div className="group relative bg-linear-to-br from-card via-card to-card/95 border border-border/60 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300">
       <div className="flex gap-6">
         {/* Left side: Number with divider */}
-        <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-12 h-12 rounded-md bg-primary/10 text-primary font-bold text-2xl">
+        <div className="flex items-start gap-5">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-primary/15 to-primary/5 text-primary font-bold text-xl shadow-sm ring-1 ring-primary/10 group-hover:ring-primary/20 transition-all">
             {passengerNumber}
           </div>
           {/* Vertical divider */}
-          <div className="w-px bg-border self-stretch"></div>
+          <div className="w-px bg-linear-to-b from-transparent via-border to-transparent self-stretch"></div>
         </div>
 
         {/* Right side: Form content */}
         <div className="flex-1 space-y-5">
           {/* Header with delete button */}
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-lg font-semibold text-foreground">
+          <div className="flex items-center justify-between gap-2 pb-1">
+            <h3 className="text-lg font-semibold text-foreground tracking-tight">
               乘机人 {passengerNumber}
               {displayName && (
-                <span className="ml-2 text-sm font-normal text-muted-foreground">
+                <span className="ml-2.5 text-sm font-normal text-muted-foreground/80">
                   ({displayName})
                 </span>
               )}
@@ -126,17 +134,20 @@ function PassengerInfoForm({
                 variant="ghost"
                 size="sm"
                 onClick={onRemove}
-                className="text-primary hover:text-primary/90 hover:bg-accent rounded-md -mr-2"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg -mr-2 transition-colors"
               >
                 <X className="h-4 w-4" />
-                删除
+                <span className="ml-1">删除</span>
               </Button>
             )}
           </div>
 
           {/* Passenger Name */}
-          <div>
-            <Label htmlFor={`name-${passengerNumber}`}>
+          <div className="space-y-2">
+            <Label
+              htmlFor={`name-${passengerNumber}`}
+              className="text-sm font-medium"
+            >
               姓名 <span className="text-destructive">*</span>
             </Label>
             <Input
@@ -144,80 +155,91 @@ function PassengerInfoForm({
               value={data.name}
               onChange={e => onChange("name", e.target.value)}
               placeholder="请输入姓名"
-              className="h-12 border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base"
+              className="h-11 border border-input/60 rounded-lg focus:ring-2 focus:ring-ring/50 focus:border-primary focus:outline-none text-base transition-all"
             />
           </div>
 
           {/* Document Type and Number */}
-          <div className="grid grid-cols-[auto_1fr] gap-4 items-center">
-            <div>
-              <Select
-                value={data.documentType}
-                onValueChange={value => onChange("documentType", value)}
-              >
-                <SelectTrigger
-                  id={`document-type-${passengerNumber}`}
-                  className="h-12 w-[120px] border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base font-medium"
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">证件信息</Label>
+            <div className="grid grid-cols-[auto_1fr] gap-3 items-center">
+              <div>
+                <Select
+                  value={data.documentType}
+                  onValueChange={value => onChange("documentType", value)}
                 >
-                  <SelectValue placeholder="身份证" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="id_card">身份证</SelectItem>
-                  <SelectItem value="passport">护照</SelectItem>
-                  <SelectItem value="other">其他</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                  <SelectTrigger
+                    id={`document-type-${passengerNumber}`}
+                    className="h-11 w-[130px] border border-input/60 rounded-lg focus:ring-2 focus:ring-ring/50 focus:border-primary focus:outline-none text-base font-medium transition-all"
+                  >
+                    <SelectValue placeholder="身份证" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="id_card">身份证</SelectItem>
+                    <SelectItem value="passport">护照</SelectItem>
+                    <SelectItem value="other">其他</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <Input
-                id={`document-number-${passengerNumber}`}
-                value={data.documentNumber}
-                onChange={e => onChange("documentNumber", e.target.value)}
-                placeholder="登机证件号码"
-                className="h-12 border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base"
-              />
+              <div>
+                <Input
+                  id={`document-number-${passengerNumber}`}
+                  value={data.documentNumber}
+                  onChange={e => onChange("documentNumber", e.target.value)}
+                  placeholder="登机证件号码"
+                  className="h-11 border border-input/60 rounded-lg focus:ring-2 focus:ring-ring/50 focus:border-primary focus:outline-none text-base transition-all"
+                />
+              </div>
             </div>
           </div>
 
           {/* Phone Number with Country Code */}
-          <div className="grid grid-cols-[auto_1fr] gap-4 items-center">
-            <div>
-              <Select defaultValue="86">
-                <SelectTrigger className="h-12 w-[120px] border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base font-medium">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="86">中国 86</SelectItem>
-                  <SelectItem value="1">美国 1</SelectItem>
-                  <SelectItem value="44">英国 44</SelectItem>
-                  <SelectItem value="81">日本 81</SelectItem>
-                  <SelectItem value="82">韩国 82</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">
+              联系电话{" "}
+              <span className="text-muted-foreground font-normal">
+                （选填）
+              </span>
+            </Label>
+            <div className="grid grid-cols-[auto_1fr] gap-3 items-center">
+              <div>
+                <Select defaultValue="86">
+                  <SelectTrigger className="h-11 w-[130px] border border-input/60 rounded-lg focus:ring-2 focus:ring-ring/50 focus:border-primary focus:outline-none text-base font-medium transition-all">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="86">中国 86</SelectItem>
+                    <SelectItem value="1">美国 1</SelectItem>
+                    <SelectItem value="44">英国 44</SelectItem>
+                    <SelectItem value="81">日本 81</SelectItem>
+                    <SelectItem value="82">韩国 82</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <Input
-                id={`phone-${passengerNumber}`}
-                value={data.phone}
-                onChange={e => onChange("phone", e.target.value)}
-                placeholder="乘机人手机号码（选填）"
-                className="h-12 border border-input rounded-md focus:ring-2 focus:ring-ring focus:outline-none text-base"
-              />
+              <div>
+                <Input
+                  id={`phone-${passengerNumber}`}
+                  value={data.phone}
+                  onChange={e => onChange("phone", e.target.value)}
+                  placeholder="乘机人手机号码"
+                  className="h-11 border border-input/60 rounded-lg focus:ring-2 focus:ring-ring/50 focus:border-primary focus:outline-none text-base transition-all"
+                />
+              </div>
             </div>
           </div>
 
           {/* Frequent Flyer Checkbox */}
-          <div className="pt-3">
-            <div className="flex items-center space-x-3">
+          <div className="pt-2 pb-1">
+            <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/50 transition-colors -mx-1">
               <Checkbox
                 id={`frequent-flyer-${passengerNumber}`}
-                className="rounded border-input data-[state=checked]:bg-primary data-[state=checked]:border-primary w-5 h-5"
+                className="rounded border-input/60 data-[state=checked]:bg-primary data-[state=checked]:border-primary w-5 h-5 transition-all"
               />
               <Label
                 htmlFor={`frequent-flyer-${passengerNumber}`}
-                className="text-sm text-muted-foreground font-normal leading-none cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm text-muted-foreground font-medium leading-none cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 常旅客卡
               </Label>
@@ -257,17 +279,23 @@ export function PassengerFormCard({
   onAddPassenger,
 }: PassengerFormCardProps) {
   return (
-    <Card>
+    <Card className="border-border/60 shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">乘机人</CardTitle>
+        <CardTitle className="text-xl font-semibold tracking-tight">
+          <span className="bg-linear-to-r from-foreground to-foreground/80 bg-clip-text">
+            乘机人信息
+          </span>
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Quick Passenger Selection */}
-        <QuickPassengerSelect
-          savedPassengers={savedPassengers}
-          selectedPassengerIds={selectedPassengerIds}
-          onTogglePassenger={onToggleSavedPassenger}
-        />
+        {savedPassengers.length > 0 && (
+          <QuickPassengerSelect
+            savedPassengers={savedPassengers}
+            selectedPassengerIds={selectedPassengerIds}
+            onTogglePassenger={onToggleSavedPassenger}
+          />
+        )}
 
         {/* All Passenger Information Forms */}
         <div className="space-y-4">
@@ -286,7 +314,8 @@ export function PassengerFormCard({
         {/* Add Passenger Button */}
         <Button
           variant="outline"
-          className="w-full text-primary border-primary hover:bg-accent hover:text-primary"
+          size="lg"
+          className="w-full h-12 text-primary border-primary/60 border-dashed hover:border-solid hover:bg-primary/5 hover:text-primary font-medium rounded-xl shadow-sm hover:shadow transition-all"
           onClick={onAddPassenger}
         >
           <Plus className="h-4 w-4 mr-2" />
