@@ -269,6 +269,8 @@ git push origin feat/your-feature-name
 
 ### 测试要求
 
+在开始测试前，请先按要求完成 `.env.test` 中的 `BETTER_AUTH_SECRET`。
+
 在提交 PR 前，请确保：
 
 ```bash
