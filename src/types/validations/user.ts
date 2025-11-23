@@ -74,3 +74,30 @@ export const userInfoUpdateSchema = z.object({
  * This type is automatically generated and should not be manually modified
  */
 export type UserInfoUpdateData = z.infer<typeof userInfoUpdateSchema>;
+
+// ============================================================================
+// Wallet/Balance Management Schemas
+// ============================================================================
+
+/**
+ * Recharge balance schema
+ *
+ * Used when users recharge their account balance.
+ * Amount must be between 1 and 10000 (inclusive).
+ *
+ * @property amount - Recharge amount in CNY (1-10000)
+ */
+export const rechargeBalanceSchema = z.object({
+  amount: z
+    .number({
+      message: "充值金额必须是数字",
+    })
+    .min(1, "充值金额最少为 1 元")
+    .max(10000, "充值金额最多为 10000 元")
+    .positive({ message: "充值金额必须是正数" }),
+});
+
+/**
+ * Inferred TypeScript type from rechargeBalanceSchema
+ */
+export type RechargeBalanceData = z.infer<typeof rechargeBalanceSchema>;

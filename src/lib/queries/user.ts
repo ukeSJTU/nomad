@@ -83,3 +83,22 @@ export async function getUserSecurityStatus(
     phoneNumberVerified: userData.phoneNumberVerified ?? false,
   };
 }
+
+/**
+ * Get user balance
+ *
+ * This function fetches the user's current balance from the database.
+ *
+ * @param userId - The ID of the user to fetch
+ * @returns User balance as a string (e.g., "10000.00"), or "0.00" if user not found
+ */
+export async function getUserBalance(userId: string): Promise<string> {
+  const [userData] = await db
+    .select({
+      balance: user.balance,
+    })
+    .from(user)
+    .where(eq(user.id, userId));
+
+  return userData?.balance ?? "0.00";
+}
