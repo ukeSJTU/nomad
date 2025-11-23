@@ -1,13 +1,25 @@
+/**
+ * Booking confirmation page queries
+ *
+ * Queries for order confirmation details with payment information
+ * used in the booking confirmation page
+ */
+
 import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
 import { db } from "@/lib/db";
-import { airlines } from "@/lib/schema/airlines";
-import { airports } from "@/lib/schema/airports";
-import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
-import { flights } from "@/lib/schema/flights";
-import { orderPassengers, orders, payments } from "@/lib/schema/orders";
+import {
+  airlines,
+  airports,
+  flights,
+  flightSeatClasses,
+  orderPassengers,
+  orders,
+  payments,
+} from "@/lib/schema";
+import type { ConfirmationPageOrderDTO } from "@/types/dto";
 
 /**
  * Zod schema for validating ancillaryDetails from database
@@ -16,103 +28,13 @@ import { orderPassengers, orders, payments } from "@/lib/schema/orders";
 const ancillaryDetailsSchema = z.array(z.string()).nullable();
 
 /**
- * Order confirmation details with payment information
- */
-export type OrderConfirmationDetails = {
-  id: string;
-  orderNumber: string;
-  userId: string;
-  status: "PENDING_PAYMENT" | "CONFIRMED" | "CANCELLED" | "REFUNDED";
-  passengerCount: number;
-  contactPhone: string | null;
-  contactEmail: string | null;
-  baseAmount: string;
-  ancillaryAmount: string;
-  totalAmount: string;
-  ancillaryDetails: string[] | null;
-  createdAt: Date;
-  passengers: Array<{
-    id: string;
-    name: string;
-    identityType: "passport" | "id_card" | "other";
-    identityNumber: string;
-  }>;
-  outboundFlight: {
-    id: string;
-    flightNumber: string;
-    departureDatetime: Date;
-    arrivalDatetime: Date;
-    departureTerminal: string | null;
-    arrivalTerminal: string | null;
-    aircraftType: string | null;
-    airline: {
-      id: string;
-      name: string;
-      iataCode: string;
-      logoUrl: string | null;
-    };
-    departureAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-    };
-    arrivalAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-    };
-    seatClass: {
-      id: string;
-      classType: "economy" | "business" | "first";
-    };
-  };
-  inboundFlight: {
-    id: string;
-    flightNumber: string;
-    departureDatetime: Date;
-    arrivalDatetime: Date;
-    departureTerminal: string | null;
-    arrivalTerminal: string | null;
-    aircraftType: string | null;
-    airline: {
-      id: string;
-      name: string;
-      iataCode: string;
-      logoUrl: string | null;
-    };
-    departureAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-    };
-    arrivalAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-    };
-    seatClass: {
-      id: string;
-      classType: "economy" | "business" | "first";
-    };
-  } | null;
-  payment: {
-    id: string;
-    amount: string;
-    method: string;
-    status: "PENDING" | "SUCCESS" | "FAILED";
-    transactionId: string | null;
-    createdAt: Date;
-  } | null;
-};
-
-/**
  * Get order confirmation details by order ID
  * Includes full order information, flights, passengers, and payment details
  */
 export async function getOrderConfirmation(
   orderId: string,
   userId: string
-): Promise<OrderConfirmationDetails | null> {
+): Promise<ConfirmationPageOrderDTO | null> {
   // Create aliases for airports table to join multiple times
   const outboundDepartureAirport = alias(
     airports,

@@ -1,3 +1,10 @@
+/**
+ * Booking passengers page queries
+ *
+ * Queries for flight seat class details and saved passengers
+ * used in the passenger information collection page
+ */
+
 import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
@@ -8,60 +15,9 @@ import {
   cities,
   flights,
   flightSeatClasses,
+  passengers,
 } from "@/lib/schema";
-import { passengers } from "@/lib/schema/passengers";
-
-/**
- * Flight seat class details with full flight information
- */
-export type FlightSeatClassDetails = {
-  id: string;
-  classType: "ECONOMY" | "BUSINESS" | "FIRST";
-  price: string;
-  availableSeats: number;
-  totalSeats: number;
-  flight: {
-    id: string;
-    flightNumber: string;
-    aircraftType: string | null;
-    airline: {
-      id: string;
-      name: string;
-      iataCode: string;
-      logoUrl: string | null;
-    };
-    departure: {
-      datetime: string;
-      terminal: string | null;
-      airport: {
-        id: string;
-        iataCode: string;
-        name: string;
-      };
-      city: {
-        id: string;
-        iataCode: string;
-        name: string;
-        timezone: string;
-      };
-    };
-    arrival: {
-      datetime: string;
-      terminal: string | null;
-      airport: {
-        id: string;
-        iataCode: string;
-        name: string;
-      };
-      city: {
-        id: string;
-        iataCode: string;
-        name: string;
-        timezone: string;
-      };
-    };
-  };
-};
+import type { PassengerPageFlightDTO, SavedPassengerDTO } from "@/types/dto";
 
 /**
  * Get flight seat class details by ID
@@ -69,7 +25,7 @@ export type FlightSeatClassDetails = {
  */
 export async function getFlightSeatClassById(
   seatClassId: string
-): Promise<FlightSeatClassDetails | null> {
+): Promise<PassengerPageFlightDTO | null> {
   // Create aliases for departure and arrival airports
   const departureAirportsTable = alias(airports, "departure_airport");
   const arrivalAirportsTable = alias(airports, "arrival_airport");
@@ -173,27 +129,16 @@ export async function getFlightSeatClassById(
  */
 export async function getFlightSeatClassesByIds(
   seatClassIds: string[]
-): Promise<FlightSeatClassDetails[]> {
+): Promise<PassengerPageFlightDTO[]> {
   const results = await Promise.all(
     seatClassIds.map(id => getFlightSeatClassById(id))
   );
 
   // Filter out null results
   return results.filter(
-    (result): result is FlightSeatClassDetails => result !== null
+    (result): result is PassengerPageFlightDTO => result !== null
   );
 }
-
-/**
- * Saved passenger information for quick selection
- */
-export type SavedPassenger = {
-  id: string;
-  name: string; // Direct from DB
-  documentType: "passport" | "id_card" | "other";
-  documentNumber: string;
-  phone: string | null;
-};
 
 /**
  * Get user's saved passengers (frequent travelers)
@@ -201,7 +146,7 @@ export type SavedPassenger = {
  */
 export async function getSavedPassengers(
   userId: string
-): Promise<SavedPassenger[]> {
+): Promise<SavedPassengerDTO[]> {
   const result = await db
     .select({
       id: passengers.id,

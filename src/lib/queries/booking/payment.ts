@@ -1,14 +1,25 @@
+/**
+ * Booking payment page queries
+ *
+ * Queries for order payment details and user balance
+ * used in the payment processing page
+ */
+
 import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
 import { db } from "@/lib/db";
-import { user } from "@/lib/schema";
-import { airlines } from "@/lib/schema/airlines";
-import { airports } from "@/lib/schema/airports";
-import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
-import { flights } from "@/lib/schema/flights";
-import { orderPassengers, orders } from "@/lib/schema/orders";
+import {
+  airlines,
+  airports,
+  flights,
+  flightSeatClasses,
+  orderPassengers,
+  orders,
+  user,
+} from "@/lib/schema";
+import type { PaymentPageOrderDTO } from "@/types/dto";
 
 /**
  * Zod schema for validating ancillaryDetails from database
@@ -17,121 +28,12 @@ import { orderPassengers, orders } from "@/lib/schema/orders";
 const ancillaryDetailsSchema = z.array(z.string()).nullable();
 
 /**
- * Order with full details for payment page
- */
-export type OrderWithDetails = {
-  id: string;
-  orderNumber: string;
-  userId: string;
-  outboundFlightSeatClassId: string;
-  inboundFlightSeatClassId: string | null;
-  status: "PENDING_PAYMENT" | "CONFIRMED" | "CANCELLED" | "REFUNDED";
-  paymentDeadline: Date;
-  passengerCount: number;
-  contactPhone: string | null;
-  contactEmail: string | null;
-  pricePerTicket: string;
-  baseAmount: string;
-  ancillaryAmount: string;
-  totalAmount: string;
-  ancillaryDetails: string[] | null;
-  deletedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-  passengers: Array<{
-    id: string;
-    orderId: string;
-    name: string;
-    identityType: "passport" | "id_card" | "other";
-    identityNumber: string;
-    phone: string | null;
-    createdAt: Date;
-  }>;
-  outboundFlight: {
-    id: string;
-    flightNumber: string;
-    airlineId: string;
-    departureAirportId: string;
-    arrivalAirportId: string;
-    departureDatetime: Date;
-    arrivalDatetime: Date;
-    departureTerminal: string | null;
-    arrivalTerminal: string | null;
-    aircraftType: string | null;
-    airline: {
-      id: string;
-      name: string;
-      iataCode: string;
-      logoUrl: string | null;
-    };
-    departureAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-      cityId: string;
-    };
-    arrivalAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-      cityId: string;
-    };
-    seatClass: {
-      id: string;
-      flightId: string;
-      classType: "ECONOMY" | "BUSINESS" | "FIRST";
-      price: string;
-      availableSeats: number;
-      totalSeats: number;
-    };
-  };
-  inboundFlight: {
-    id: string;
-    flightNumber: string;
-    airlineId: string;
-    departureAirportId: string;
-    arrivalAirportId: string;
-    departureDatetime: Date;
-    arrivalDatetime: Date;
-    departureTerminal: string | null;
-    arrivalTerminal: string | null;
-    aircraftType: string | null;
-    airline: {
-      id: string;
-      name: string;
-      iataCode: string;
-      logoUrl: string | null;
-    };
-    departureAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-      cityId: string;
-    };
-    arrivalAirport: {
-      id: string;
-      name: string;
-      iataCode: string;
-      cityId: string;
-    };
-    seatClass: {
-      id: string;
-      flightId: string;
-      classType: "ECONOMY" | "BUSINESS" | "FIRST";
-      price: string;
-      availableSeats: number;
-      totalSeats: number;
-    };
-  } | null;
-};
-
-/**
  * Get order by ID with all related data for payment page
  */
 export async function getOrderForPayment(
   orderId: string,
   userId: string
-): Promise<OrderWithDetails | null> {
+): Promise<PaymentPageOrderDTO | null> {
   // Create aliases for airports table to join multiple times
   const outboundDepartureAirport = alias(
     airports,
@@ -337,7 +239,7 @@ export async function getOrderForPayment(
 }
 
 /**
- * Get user balance
+ * Get user balance for payment
  */
 export async function getUserBalance(userId: string): Promise<string> {
   const [userData] = await db
