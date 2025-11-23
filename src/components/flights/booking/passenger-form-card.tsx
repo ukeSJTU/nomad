@@ -161,7 +161,9 @@ function PassengerInfoForm({
 
           {/* Document Type and Number */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">证件信息</Label>
+            <Label className="text-sm font-medium">
+              证件信息 <span className="text-destructive">*</span>
+            </Label>
             <div className="grid grid-cols-[auto_1fr] gap-3 items-center">
               <div>
                 <Select
