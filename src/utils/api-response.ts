@@ -8,7 +8,7 @@ import type {
   PaginationMeta,
   ResponseMeta,
   SuccessResponse,
-} from "@/types/api/response";
+} from "@/types/api";
 
 /**
  * API Response Utility Class
