@@ -290,9 +290,9 @@ OrderConfirmationEmail.PreviewProps = {
       documentNumber: "E12345678",
     },
   ],
-  baseAmount: 1800.0,
-  ancillaryAmount: 200.0,
-  totalAmount: 2000.0,
+  baseAmount: "1800.0",
+  ancillaryAmount: "200.0",
+  totalAmount: "2000.0",
   contactEmail: "zhangsan@example.com",
   contactPhone: "13800138000",
 } as OrderConfirmationEmailProps;
