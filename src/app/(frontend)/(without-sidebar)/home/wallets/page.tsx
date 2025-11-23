@@ -12,7 +12,7 @@ export default async function WalletPage() {
   const session = await auth.api.getSession({ headers: headersList });
 
   if (!session?.user?.id) {
-    redirect("/auth/signin");
+    redirect("/error?type=unauthorized");
   }
 
   // Fetch user balance

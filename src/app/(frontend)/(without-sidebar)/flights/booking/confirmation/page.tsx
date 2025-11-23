@@ -22,7 +22,7 @@ export default async function BookingConfirmationPage({
   const orderId = params.orderId;
 
   if (!orderId) {
-    redirect("/");
+    redirect("/error?type=missing_order_id");
   }
 
   // Fetch order confirmation details
@@ -38,8 +38,8 @@ export default async function BookingConfirmationPage({
     if (order.status === "PENDING_PAYMENT") {
       redirect(`/flights/booking/payment?orderId=${orderId}`);
     }
-    // Redirect to home for cancelled or refunded orders
-    redirect("/");
+    // Redirect to error page for cancelled or refunded orders
+    redirect("/error?type=invalid_order_status");
   }
 
   return <ConfirmationPageClient order={order} />;

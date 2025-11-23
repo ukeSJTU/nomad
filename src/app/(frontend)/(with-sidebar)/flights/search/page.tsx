@@ -33,7 +33,7 @@ export default async function FlightSearchPage({
 
   // Validate required parameters
   if (!params.from || !params.to || !params.departDate) {
-    redirect("/flights");
+    redirect("/error?type=invalid_search_params");
   }
 
   // Validate and parse trip type
@@ -57,7 +57,7 @@ export default async function FlightSearchPage({
 
   // Validate return date for round-trip
   if (tripType === "round-trip" && !params.returnDate) {
-    redirect("/flights");
+    redirect("/error?type=invalid_search_params");
   }
 
   // Parallel data fetching with error handling

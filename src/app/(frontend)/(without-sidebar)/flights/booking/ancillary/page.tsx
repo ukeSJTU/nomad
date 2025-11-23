@@ -18,7 +18,7 @@ export default async function BookingAncillaryPage({
 
   // Redirect if no order ID provided
   if (!params.orderId) {
-    redirect("/flights");
+    redirect("/error?type=missing_order_id");
   }
 
   // Check authentication (redirects to sign-in if not authenticated)
@@ -29,7 +29,7 @@ export default async function BookingAncillaryPage({
 
   // If order not found or doesn't belong to user, redirect
   if (!order) {
-    redirect("/flights");
+    redirect("/error?type=order_not_found");
   }
 
   return <BookingAncillaryPageClient order={order} />;

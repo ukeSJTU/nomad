@@ -23,7 +23,7 @@ export default async function BookingPassengersPage({
 
   // Redirect if no flight seat class IDs provided
   if (!params.seatClassId && !params.outboundSeatClassId) {
-    redirect("/flights");
+    redirect("/error?type=missing_seat_class");
   }
 
   // Check authentication (redirects to sign-in if not authenticated)
@@ -46,9 +46,9 @@ export default async function BookingPassengersPage({
   const outboundFlight = outboundFlightData;
   const inboundFlight = inboundFlightData;
 
-  // If flight data not found, redirect back to search
+  // If flight data not found, redirect to error page
   if (!outboundFlight) {
-    redirect("/flights");
+    redirect("/error?type=flight_not_found");
   }
 
   return (

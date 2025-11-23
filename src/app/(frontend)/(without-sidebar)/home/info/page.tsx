@@ -28,7 +28,7 @@ export default async function UserInfoPage() {
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!userData) {
-    redirect("/auth/sign-in");
+    redirect("/error?type=session_expired");
   }
 
   return (

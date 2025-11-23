@@ -28,7 +28,7 @@ export default async function PhonePage() {
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!securityStatus) {
-    redirect("/auth/sign-in");
+    redirect("/error?type=session_expired");
   }
 
   // Helper function to determine security status
