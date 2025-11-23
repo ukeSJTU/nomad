@@ -1,9 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 
+import { getOrderForPayment, getUserBalance } from "@/lib/queries/booking";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import PaymentPageClient from "./page.client";
-import { getOrderForPayment, getUserBalance } from "./queries";
 
 type PageProps = {
   searchParams: Promise<{

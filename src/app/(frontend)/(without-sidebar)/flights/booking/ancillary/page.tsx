@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 
+import { getOrderForAncillary } from "@/lib/queries/booking";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingAncillaryPageClient } from "./page.client";
-import { getOrderById } from "./queries";
 
 interface BookingAncillaryPageProps {
   searchParams: Promise<{
@@ -25,7 +25,7 @@ export default async function BookingAncillaryPage({
   const userId = await requireAuth();
 
   // Fetch order details
-  const order = await getOrderById(params.orderId, userId);
+  const order = await getOrderForAncillary(params.orderId, userId);
 
   // If order not found or doesn't belong to user, redirect
   if (!order) {

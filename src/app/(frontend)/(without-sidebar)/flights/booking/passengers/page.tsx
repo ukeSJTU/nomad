@@ -1,9 +1,12 @@
 import { redirect } from "next/navigation";
 
+import {
+  getFlightSeatClassById,
+  getSavedPassengers,
+} from "@/lib/queries/booking";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingPassengersPageClient } from "./page.client";
-import { getFlightSeatClassById, getSavedPassengers } from "./queries";
 
 interface BookingPassengersPageProps {
   searchParams: Promise<{

@@ -4,7 +4,7 @@ import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
-import { AncillarySelection } from "@/components/flights/booking/ancillary-selection";
+import { AncillarySelection } from "@/components/flights/booking";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,8 +13,9 @@ import { updateOrderAncillaryAction } from "@/lib/actions/orders";
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
-} from "@/lib/schema/ancillary";
+} from "@/lib/schema";
 import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
+import type { AncillaryPageOrderDTO } from "@/types/dto";
 import {
   addCurrency,
   formatCurrency,
@@ -22,10 +23,8 @@ import {
   parseCurrency,
 } from "@/utils/currency";
 
-import type { OrderWithDetails } from "./queries";
-
 interface BookingAncillaryPageClientProps {
-  order: OrderWithDetails;
+  order: AncillaryPageOrderDTO;
 }
 
 export function BookingAncillaryPageClient({

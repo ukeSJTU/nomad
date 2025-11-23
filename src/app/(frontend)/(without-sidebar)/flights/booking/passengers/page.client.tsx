@@ -7,25 +7,27 @@ import {
   type ContactInfo,
   ContactInfoCard,
   type ContactInfoValidationErrors,
+  FlightSummaryCard,
+  PassengerFormCard,
   validateContactInfo,
-} from "@/components/flights/booking/contact-info-card";
-import { FlightSummaryCard } from "@/components/flights/booking/flight-summary-card";
-import { PassengerFormCard } from "@/components/flights/booking/passenger-form-card";
+} from "@/components/flights/booking";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { usePassengerForms } from "@/hooks/use-passenger-forms";
 import { createOrderAction } from "@/lib/actions/orders";
 import type { CreateOrderResult } from "@/types/actions/orders";
-
-import type { FlightSeatClassDetails, SavedPassenger } from "./queries";
+import type {
+  PassengerPageFlightDTO,
+  SavedPassengerDTO,
+} from "@/types/dto/booking";
 
 interface BookingPassengersPageClientProps {
   seatClassId?: string;
   outboundSeatClassId?: string;
   inboundSeatClassId?: string;
-  savedPassengers: SavedPassenger[];
-  outboundFlight: FlightSeatClassDetails;
-  inboundFlight: FlightSeatClassDetails | null;
+  savedPassengers: SavedPassengerDTO[];
+  outboundFlight: PassengerPageFlightDTO;
+  inboundFlight: PassengerPageFlightDTO | null;
 }
 
 export function BookingPassengersPageClient({

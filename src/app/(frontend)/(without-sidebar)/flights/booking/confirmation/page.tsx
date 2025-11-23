@@ -1,9 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 
+import { getOrderConfirmation } from "@/lib/queries/booking";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import ConfirmationPageClient from "./page.client";
-import { getOrderConfirmation } from "./queries";
 
 type PageProps = {
   searchParams: Promise<{
