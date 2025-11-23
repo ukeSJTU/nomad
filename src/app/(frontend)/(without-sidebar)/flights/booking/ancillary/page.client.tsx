@@ -18,7 +18,7 @@ import {
   getAncillaryServicesByCategory,
 } from "@/lib/schema";
 import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
-import type { AncillaryPageOrderDTO } from "@/types/dto";
+import type { AncillaryPageOrder } from "@/types/dto";
 import {
   addCurrency,
   formatCurrency,
@@ -27,7 +27,7 @@ import {
 } from "@/utils/currency";
 
 interface BookingAncillaryPageClientProps {
-  order: AncillaryPageOrderDTO;
+  order: AncillaryPageOrder;
 }
 
 export function BookingAncillaryPageClient({

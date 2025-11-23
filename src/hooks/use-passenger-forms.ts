@@ -1,14 +1,7 @@
 import { useMemo, useState } from "react";
 
 import type { PassengerFormData } from "@/components/flights/booking/passenger-form-card";
-
-export interface SavedPassenger {
-  id: string;
-  name: string;
-  documentType: "passport" | "id_card" | "other";
-  documentNumber: string;
-  phone: string | null;
-}
+import type { SavedPassenger } from "@/types/dto";
 
 const EMPTY_PASSENGER_FORM: PassengerFormData = {
   name: "",

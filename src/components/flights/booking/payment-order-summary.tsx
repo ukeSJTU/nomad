@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
-import { OrderForPayment } from "@/types/dto/booking";
+import { PaymentPageOrder } from "@/types/dto/booking";
 
 interface PaymentOrderSummaryProps {
-  order: OrderForPayment;
+  order: PaymentPageOrder;
 }
 
 // Format flight datetime

@@ -51,7 +51,7 @@ export interface BookingCityInfo {
  * Saved passenger for quick selection in passenger form
  * Reuses DocumentType from database layer
  */
-export interface SavedPassengerDTO {
+export interface SavedPassenger {
   id: string;
   name: string;
   documentType: DocumentType;
@@ -63,7 +63,7 @@ export interface SavedPassengerDTO {
  * Passenger info within an order (extends OrderPassenger from database)
  * Used in payment and confirmation pages
  */
-export type BookingOrderPassengerDTO = Omit<OrderPassenger, "identityType"> & {
+export type BookingOrderPassenger = Omit<OrderPassenger, "identityType"> & {
   identityType: DocumentType; // Renamed from database's identityType to match DocumentType
 };
 
@@ -71,7 +71,7 @@ export type BookingOrderPassengerDTO = Omit<OrderPassenger, "identityType"> & {
  * Flight seat class with complete flight details for passenger page
  * Includes nested airport and city information for display
  */
-export interface PassengerPageFlightDTO {
+export interface PassengerPageFlight {
   id: string;
   classType: FlightSeatClass["classType"];
   price: string;
@@ -101,7 +101,7 @@ export interface PassengerPageFlightDTO {
  * Complete flight details for payment page
  * Includes all flight, airline, airport, and seat class information
  */
-export interface PaymentPageFlightDTO {
+export interface PaymentPageFlight {
   id: string;
   flightNumber: string;
   airlineId: string;
@@ -129,7 +129,7 @@ export interface PaymentPageFlightDTO {
  * Simplified flight details for confirmation page
  * Minimal flight info needed for display
  */
-export interface ConfirmationPageFlightDTO {
+export interface ConfirmationPageFlight {
   id: string;
   flightNumber: string;
   departureDatetime: Date;
@@ -157,7 +157,7 @@ export interface ConfirmationPageFlightDTO {
 /**
  * Order with full details for ancillary services page
  */
-export interface AncillaryPageOrderDTO {
+export interface AncillaryPageOrder {
   id: string;
   orderNumber: string;
   userId: string;
@@ -176,7 +176,7 @@ export interface AncillaryPageOrderDTO {
   deletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
-  passengers: BookingOrderPassengerDTO[];
+  passengers: BookingOrderPassenger[];
   outboundFlight: {
     id: string;
     flightNumber: string;
@@ -214,7 +214,7 @@ export interface AncillaryPageOrderDTO {
  * Order with full details for payment page
  * Includes complete flight and passenger information
  */
-export interface PaymentPageOrderDTO {
+export interface PaymentPageOrder {
   id: string;
   orderNumber: string;
   userId: string;
@@ -233,16 +233,16 @@ export interface PaymentPageOrderDTO {
   deletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
-  passengers: BookingOrderPassengerDTO[];
-  outboundFlight: PaymentPageFlightDTO;
-  inboundFlight: PaymentPageFlightDTO | null;
+  passengers: BookingOrderPassenger[];
+  outboundFlight: PaymentPageFlight;
+  inboundFlight: PaymentPageFlight | null;
 }
 
 /**
  * Order confirmation details with payment information
  * Shown after successful payment on confirmation page
  */
-export interface ConfirmationPageOrderDTO {
+export interface ConfirmationPageOrder {
   id: string;
   orderNumber: string;
   userId: string;
@@ -261,8 +261,8 @@ export interface ConfirmationPageOrderDTO {
     identityType: DocumentType;
     identityNumber: string;
   }>;
-  outboundFlight: ConfirmationPageFlightDTO;
-  inboundFlight: ConfirmationPageFlightDTO | null;
+  outboundFlight: ConfirmationPageFlight;
+  inboundFlight: ConfirmationPageFlight | null;
   payment: {
     id: string;
     amount: string;
@@ -272,24 +272,6 @@ export interface ConfirmationPageOrderDTO {
     createdAt: Date;
   } | null;
 }
-
-// Legacy type aliases for backward compatibility
-// These maintain the original names used in queries while transitioning to new naming
-
-/** @deprecated Use PassengerPageFlightDTO instead */
-export type FlightSeatClassDetails = PassengerPageFlightDTO;
-
-/** @deprecated Use SavedPassengerDTO instead */
-export type SavedPassenger = SavedPassengerDTO;
-
-/** @deprecated Use AncillaryPageOrderDTO instead */
-export type OrderForAncillary = AncillaryPageOrderDTO;
-
-/** @deprecated Use PaymentPageOrderDTO instead */
-export type OrderForPayment = PaymentPageOrderDTO;
-
-/** @deprecated Use ConfirmationPageOrderDTO instead */
-export type OrderConfirmation = ConfirmationPageOrderDTO;
 
 // Re-export database types commonly used in booking flow
 export type { DocumentType, OrderStatus } from "@/types/database";

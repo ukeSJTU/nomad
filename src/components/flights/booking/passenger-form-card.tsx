@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { shouldShowDeleteButton } from "@/hooks/use-passenger-forms";
-import type { SavedPassengerDTO } from "@/types/dto";
+import type { SavedPassenger } from "@/types/dto";
 
 export interface PassengerFormData {
   name: string;
@@ -26,7 +26,7 @@ export interface PassengerFormData {
 }
 
 interface QuickPassengerSelectProps {
-  savedPassengers: SavedPassengerDTO[];
+  savedPassengers: SavedPassenger[];
   selectedPassengerIds: string[];
   onTogglePassenger: (passengerId: string) => void;
 }
@@ -255,7 +255,7 @@ function PassengerInfoForm({
 
 interface PassengerFormCardProps {
   passengers: PassengerFormData[];
-  savedPassengers: SavedPassengerDTO[];
+  savedPassengers: SavedPassenger[];
   selectedPassengerIds: string[];
   onChange: (
     index: number,

@@ -16,7 +16,7 @@ import {
   orderPassengers,
   orders,
 } from "@/lib/schema";
-import type { AncillaryPageOrderDTO } from "@/types/dto";
+import type { AncillaryPageOrder } from "@/types/dto";
 
 /**
  * Zod schema for validating ancillaryDetails from database
@@ -30,7 +30,7 @@ const ancillaryDetailsSchema = z.array(z.string()).nullable();
 export async function getOrderForAncillary(
   orderId: string,
   userId: string
-): Promise<AncillaryPageOrderDTO | null> {
+): Promise<AncillaryPageOrder | null> {
   const [order] = await db
     .select({
       order: orders,

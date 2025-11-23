@@ -2,7 +2,7 @@ import { Clock, Plane } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { PassengerPageFlightDTO } from "@/types/dto";
+import type { PassengerPageFlight } from "@/types/dto";
 import {
   addCurrency,
   formatCurrency,
@@ -13,13 +13,13 @@ import {
 import { formatDateWithWeekday } from "@/utils/date";
 
 type FlightSummaryCardProps = {
-  outboundFlight: PassengerPageFlightDTO | null;
-  inboundFlight?: PassengerPageFlightDTO | null;
+  outboundFlight: PassengerPageFlight | null;
+  inboundFlight?: PassengerPageFlight | null;
   passengerCount?: number;
 };
 
 type FlightSegmentProps = {
-  flight: PassengerPageFlightDTO;
+  flight: PassengerPageFlight;
   type?: "outbound" | "inbound";
 };
 

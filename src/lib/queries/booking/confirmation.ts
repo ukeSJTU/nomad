@@ -19,7 +19,7 @@ import {
   orders,
   payments,
 } from "@/lib/schema";
-import type { ConfirmationPageOrderDTO } from "@/types/dto";
+import type { ConfirmationPageOrder } from "@/types/dto";
 
 /**
  * Zod schema for validating ancillaryDetails from database
@@ -34,7 +34,7 @@ const ancillaryDetailsSchema = z.array(z.string()).nullable();
 export async function getOrderConfirmation(
   orderId: string,
   userId: string
-): Promise<ConfirmationPageOrderDTO | null> {
+): Promise<ConfirmationPageOrder | null> {
   // Create aliases for airports table to join multiple times
   const outboundDepartureAirport = alias(
     airports,

@@ -12,11 +12,11 @@ import {
 } from "@/components/flights/booking";
 import { Button } from "@/components/ui/button";
 import { processPaymentAction } from "@/lib/actions/payments";
-import { PaymentPageOrderDTO } from "@/types/dto";
+import { PaymentPageOrder } from "@/types/dto";
 import { formatCurrency } from "@/utils/currency";
 
 type PaymentPageClientProps = {
-  order: PaymentPageOrderDTO;
+  order: PaymentPageOrder;
   userBalance: string;
 };
 

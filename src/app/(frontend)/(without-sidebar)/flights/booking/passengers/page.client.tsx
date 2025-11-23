@@ -16,15 +16,15 @@ import { Button } from "@/components/ui/button";
 import { usePassengerForms } from "@/hooks/use-passenger-forms";
 import { createOrderAction } from "@/lib/actions";
 import type { CreateOrderResult } from "@/types/actions";
-import type { PassengerPageFlightDTO, SavedPassengerDTO } from "@/types/dto";
+import type { PassengerPageFlight, SavedPassenger } from "@/types/dto";
 
 interface BookingPassengersPageClientProps {
   seatClassId?: string;
   outboundSeatClassId?: string;
   inboundSeatClassId?: string;
-  savedPassengers: SavedPassengerDTO[];
-  outboundFlight: PassengerPageFlightDTO;
-  inboundFlight: PassengerPageFlightDTO | null;
+  savedPassengers: SavedPassenger[];
+  outboundFlight: PassengerPageFlight;
+  inboundFlight: PassengerPageFlight | null;
 }
 
 export function BookingPassengersPageClient({

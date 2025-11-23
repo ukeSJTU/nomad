@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { PassengerPageFlightDTO } from "@/types/dto";
+import type { PassengerPageFlight } from "@/types/dto";
 
 import { FlightSummaryCard } from "./flight-summary-card";
 
 // Mock flight data
-const mockOutboundFlight: PassengerPageFlightDTO = {
+const mockOutboundFlight: PassengerPageFlight = {
   id: "flight-1",
   price: "500.00",
   classType: "ECONOMY",
@@ -57,7 +57,7 @@ const mockOutboundFlight: PassengerPageFlightDTO = {
   },
 };
 
-const mockInboundFlight: PassengerPageFlightDTO = {
+const mockInboundFlight: PassengerPageFlight = {
   id: "flight-2",
   price: "550.00",
   classType: "BUSINESS",
@@ -350,7 +350,7 @@ describe("FlightSummaryCard Component", () => {
 
   describe("Edge Cases", () => {
     it("handles missing aircraft type", () => {
-      const flightWithoutAircraft: PassengerPageFlightDTO = {
+      const flightWithoutAircraft: PassengerPageFlight = {
         ...mockOutboundFlight,
         flight: {
           ...mockOutboundFlight.flight,
@@ -365,7 +365,7 @@ describe("FlightSummaryCard Component", () => {
     });
 
     it("handles missing airline logo", () => {
-      const flightWithoutLogo: PassengerPageFlightDTO = {
+      const flightWithoutLogo: PassengerPageFlight = {
         ...mockOutboundFlight,
         flight: {
           ...mockOutboundFlight.flight,
@@ -387,7 +387,7 @@ describe("FlightSummaryCard Component", () => {
     });
 
     it("handles first class seat type", () => {
-      const firstClassFlight: PassengerPageFlightDTO = {
+      const firstClassFlight: PassengerPageFlight = {
         ...mockOutboundFlight,
         classType: "FIRST",
       };
@@ -398,7 +398,7 @@ describe("FlightSummaryCard Component", () => {
     });
 
     it("handles zero price", () => {
-      const freeFlight: PassengerPageFlightDTO = {
+      const freeFlight: PassengerPageFlight = {
         ...mockOutboundFlight,
         price: "0.00",
       };

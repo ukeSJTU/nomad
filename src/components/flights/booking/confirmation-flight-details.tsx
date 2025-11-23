@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 
 import { Separator } from "@/components/ui/separator";
-import { ConfirmationPageFlightDTO } from "@/types/dto/booking";
+import { ConfirmationPageFlight } from "@/types/dto/booking";
 
 // Seat class type mapping
 const SEAT_CLASS_MAP = {
@@ -12,8 +12,8 @@ const SEAT_CLASS_MAP = {
 } as const;
 
 interface ConfirmationFlightDetailsProps {
-  outboundFlight: ConfirmationPageFlightDTO;
-  inboundFlight: ConfirmationPageFlightDTO | null;
+  outboundFlight: ConfirmationPageFlight;
+  inboundFlight: ConfirmationPageFlight | null;
 }
 
 export function ConfirmationFlightDetails({

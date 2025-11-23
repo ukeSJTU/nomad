@@ -17,7 +17,7 @@ import {
   flightSeatClasses,
   passengers,
 } from "@/lib/schema";
-import type { PassengerPageFlightDTO, SavedPassengerDTO } from "@/types/dto";
+import type { PassengerPageFlight, SavedPassenger } from "@/types/dto";
 
 /**
  * Get flight seat class details by ID
@@ -25,7 +25,7 @@ import type { PassengerPageFlightDTO, SavedPassengerDTO } from "@/types/dto";
  */
 export async function getFlightSeatClassById(
   seatClassId: string
-): Promise<PassengerPageFlightDTO | null> {
+): Promise<PassengerPageFlight | null> {
   // Create aliases for departure and arrival airports
   const departureAirportsTable = alias(airports, "departure_airport");
   const arrivalAirportsTable = alias(airports, "arrival_airport");
@@ -129,14 +129,14 @@ export async function getFlightSeatClassById(
  */
 export async function getFlightSeatClassesByIds(
   seatClassIds: string[]
-): Promise<PassengerPageFlightDTO[]> {
+): Promise<PassengerPageFlight[]> {
   const results = await Promise.all(
     seatClassIds.map(id => getFlightSeatClassById(id))
   );
 
   // Filter out null results
   return results.filter(
-    (result): result is PassengerPageFlightDTO => result !== null
+    (result): result is PassengerPageFlight => result !== null
   );
 }
 
@@ -146,7 +146,7 @@ export async function getFlightSeatClassesByIds(
  */
 export async function getSavedPassengers(
   userId: string
-): Promise<SavedPassengerDTO[]> {
+): Promise<SavedPassenger[]> {
   const result = await db
     .select({
       id: passengers.id,
