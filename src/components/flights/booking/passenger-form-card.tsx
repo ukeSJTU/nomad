@@ -2,7 +2,6 @@
 
 import { Plus, X } from "lucide-react";
 
-import type { SavedPassenger } from "@/app/(frontend)/(without-sidebar)/flights/booking/passengers/queries";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { shouldShowDeleteButton } from "@/hooks/use-passenger-forms";
+import type { SavedPassengerDTO } from "@/types/dto/booking";
 
 export interface PassengerFormData {
   name: string;
@@ -26,7 +26,7 @@ export interface PassengerFormData {
 }
 
 interface QuickPassengerSelectProps {
-  savedPassengers: SavedPassenger[];
+  savedPassengers: SavedPassengerDTO[];
   selectedPassengerIds: string[];
   onTogglePassenger: (passengerId: string) => void;
 }
@@ -231,7 +231,7 @@ function PassengerInfoForm({
 
 interface PassengerFormCardProps {
   passengers: PassengerFormData[];
-  savedPassengers: SavedPassenger[];
+  savedPassengers: SavedPassengerDTO[];
   selectedPassengerIds: string[];
   onChange: (
     index: number,

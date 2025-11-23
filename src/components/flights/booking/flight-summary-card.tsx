@@ -1,8 +1,8 @@
 import { Clock, Plane } from "lucide-react";
 
-import type { FlightSeatClassDetails } from "@/app/(frontend)/(without-sidebar)/flights/booking/passengers/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import type { PassengerPageFlightDTO } from "@/types/dto/booking";
 import {
   addCurrency,
   formatCurrency,
@@ -13,13 +13,13 @@ import {
 import { formatDateWithWeekday } from "@/utils/date";
 
 type FlightSummaryCardProps = {
-  outboundFlight: FlightSeatClassDetails | null;
-  inboundFlight?: FlightSeatClassDetails | null;
+  outboundFlight: PassengerPageFlightDTO | null;
+  inboundFlight?: PassengerPageFlightDTO | null;
   passengerCount?: number;
 };
 
 type FlightSegmentProps = {
-  flight: FlightSeatClassDetails;
+  flight: PassengerPageFlightDTO;
   type?: "outbound" | "inbound";
 };
 
