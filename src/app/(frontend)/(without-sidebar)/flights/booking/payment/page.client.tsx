@@ -12,11 +12,11 @@ import {
 } from "@/components/flights/booking";
 import { Button } from "@/components/ui/button";
 import { processPaymentAction } from "@/lib/actions/payments";
-import { OrderForPayment } from "@/types/dto/booking";
+import { PaymentPageOrderDTO } from "@/types/dto";
 import { formatCurrency } from "@/utils/currency";
 
 type PaymentPageClientProps = {
-  order: OrderForPayment;
+  order: PaymentPageOrderDTO;
   userBalance: string;
 };
 
@@ -58,10 +58,6 @@ export default function PaymentPageClient({
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Main Content */}
       <div className="lg:col-span-2 space-y-6">
-        <PaymentCountdownTimer
-          paymentDeadline={order.paymentDeadline}
-          onTimeLeftChange={setTimeLeft}
-        />
         <PaymentOrderSummary order={order} />
         <PaymentMethodSelector
           paymentMethod={paymentMethod}
@@ -94,7 +90,11 @@ export default function PaymentPageClient({
       </div>
 
       {/* Right Sidebar - Price Summary */}
-      <div className="lg:col-span-1">
+      <div className="lg:col-span-1 flex flex-col space-y-2">
+        <PaymentCountdownTimer
+          paymentDeadline={order.paymentDeadline}
+          onTimeLeftChange={setTimeLeft}
+        />
         <PaymentPriceBreakdown
           orderNumber={order.orderNumber}
           baseAmount={order.baseAmount}

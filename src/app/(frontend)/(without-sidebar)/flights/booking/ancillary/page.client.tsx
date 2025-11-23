@@ -4,7 +4,10 @@ import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
-import { AncillarySelection } from "@/components/flights/booking";
+import {
+  AncillarySelection,
+  PaymentCountdownTimer,
+} from "@/components/flights/booking";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +37,7 @@ export function BookingAncillaryPageClient({
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [state, setState] = useState<UpdateOrderAncillaryResult | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [_timeLeft, setTimeLeft] = useState(0);
 
   // Navigate to payment page on successful submission
   useEffect(() => {
@@ -124,7 +128,11 @@ export function BookingAncillaryPageClient({
       </div>
 
       {/* Right Sidebar - Order Summary */}
-      <div className="lg:col-span-1">
+      <div className="lg:col-span-1 flex flex-col space-y-2">
+        <PaymentCountdownTimer
+          paymentDeadline={order.paymentDeadline}
+          onTimeLeftChange={setTimeLeft}
+        />
         <Card className="sticky top-4">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
