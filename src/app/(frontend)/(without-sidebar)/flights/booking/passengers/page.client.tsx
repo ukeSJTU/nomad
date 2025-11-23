@@ -14,12 +14,9 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { usePassengerForms } from "@/hooks/use-passenger-forms";
-import { createOrderAction } from "@/lib/actions/orders";
-import type { CreateOrderResult } from "@/types/actions/orders";
-import type {
-  PassengerPageFlightDTO,
-  SavedPassengerDTO,
-} from "@/types/dto/booking";
+import { createOrderAction } from "@/lib/actions";
+import type { CreateOrderResult } from "@/types/actions";
+import type { PassengerPageFlightDTO, SavedPassengerDTO } from "@/types/dto";
 
 interface BookingPassengersPageClientProps {
   seatClassId?: string;
@@ -82,7 +79,7 @@ export function BookingPassengersPageClient({
 
       // If there are validation errors, don't proceed
       if (Object.keys(errors).length > 0) {
-        setState({ success: false, error: "Please check contact information" });
+        setState({ success: false, error: "请检查联系人信息" });
         return;
       }
 
@@ -94,7 +91,7 @@ export function BookingPassengersPageClient({
       if (hasEmptyFields) {
         setState({
           success: false,
-          error: "Please fill in all required passenger information",
+          error: "请填写所有乘客信息",
         });
         return;
       }
@@ -112,9 +109,9 @@ export function BookingPassengersPageClient({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
       {/* Main Content - Left Side */}
-      <div className="lg:col-span-2">
+      <div className="lg:col-span-3">
         <div className="space-y-6">
           {/* Passenger Information Section */}
           <PassengerFormCard
@@ -151,7 +148,7 @@ export function BookingPassengersPageClient({
       </div>
 
       {/* Right Sidebar - Flight Summary */}
-      <div className="lg:col-span-1">
+      <div className="lg:col-span-2">
         <FlightSummaryCard
           outboundFlight={outboundFlight}
           inboundFlight={inboundFlight}
