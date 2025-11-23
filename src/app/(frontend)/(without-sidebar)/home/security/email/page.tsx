@@ -6,6 +6,8 @@ import { requireAuth } from "@/utils/auth-helpers";
 
 import EmailPageClient from "./page.client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Email Management Page (Server Component)
  *

@@ -6,6 +6,7 @@ import { getUserSecurityStatus } from "@/lib/queries";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import PhonePageClient from "./page.client";
+export const dynamic = "force-dynamic";
 
 /**
  * Phone Number Management Page (Server Component)

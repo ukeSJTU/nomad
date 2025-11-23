@@ -7,6 +7,8 @@ import { getAllCities, getRecentSearchHistory } from "@/lib/queries";
 import FlightsLoading from "./loading";
 import { FlightsPageClient } from "./page.client";
 
+export const dynamic = "force-dynamic";
+
 export default async function FlightsPage() {
   // Fetch city data on the server
   const cities = await getAllCities();

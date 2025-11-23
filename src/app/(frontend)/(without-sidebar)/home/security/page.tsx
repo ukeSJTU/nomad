@@ -2,6 +2,8 @@ import { SecurityItem, type SecurityStatus } from "@/components/security";
 import { getUserSecurityStatus } from "@/lib/queries";
 import { requireAuth } from "@/utils/auth-helpers";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Security items configuration
  * Contains text content for each security setting item

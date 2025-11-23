@@ -7,6 +7,7 @@ import {
 import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingPassengersPageClient } from "./page.client";
+export const dynamic = "force-dynamic";
 
 interface BookingPassengersPageProps {
   searchParams: Promise<{

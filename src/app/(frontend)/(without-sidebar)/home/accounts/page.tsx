@@ -4,6 +4,8 @@ import { LinkButton, SocialAccountCard, UnlinkButton } from "@/components/auth";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/utils/auth-helpers";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Social provider configuration
  */

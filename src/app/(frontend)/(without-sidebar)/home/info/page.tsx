@@ -6,6 +6,8 @@ import { UserInfoForm } from "@/components/user";
 import { getUserInfo } from "@/lib/queries";
 import { requireAuth } from "@/utils/auth-helpers";
 
+export const dynamic = "force-dynamic";
+
 /**
  * User Information Page (Server Component)
  *

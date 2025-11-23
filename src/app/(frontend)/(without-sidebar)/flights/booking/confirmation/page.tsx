@@ -5,6 +5,8 @@ import { requireAuth } from "@/utils/auth-helpers";
 
 import ConfirmationPageClient from "./page.client";
 
+export const dynamic = "force-dynamic";
+
 type PageProps = {
   searchParams: Promise<{
     orderId?: string;

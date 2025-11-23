@@ -5,6 +5,8 @@ import { requireAuth } from "@/utils/auth-helpers";
 
 import PasswordPageClient from "./page.client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Password Management Page (Server Component)
  *

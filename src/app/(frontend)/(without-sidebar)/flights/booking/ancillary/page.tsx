@@ -5,6 +5,8 @@ import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingAncillaryPageClient } from "./page.client";
 
+export const dynamic = "force-dynamic";
+
 interface BookingAncillaryPageProps {
   searchParams: Promise<{
     orderId?: string;

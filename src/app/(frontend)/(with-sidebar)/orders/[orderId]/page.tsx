@@ -6,6 +6,8 @@ import { requireAuth } from "@/utils/auth-helpers";
 
 import OrderDetailsPageClient from "./page.client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Order Details Page - Server Component
  *
