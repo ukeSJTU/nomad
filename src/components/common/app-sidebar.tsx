@@ -1,21 +1,21 @@
 "use client";
 
 import {
-  Bed,
+  Album,
   Building2,
-  Bus,
-  Car,
-  Compass,
+  BusFront,
+  CarTaxiFront,
   CreditCard,
+  Earth,
+  Flag,
   Frame,
   Gift,
-  Globe,
+  Hotel,
   Info,
   LucideIcon,
   Map,
   Menu,
   Plane,
-  ShoppingCart,
   Sparkles,
   Ticket,
   Train,
@@ -72,7 +72,7 @@ export const data: SidebarData = {
     {
       title: "酒店",
       url: "#",
-      icon: Bed,
+      icon: Hotel,
       items: [
         { title: "国内酒店", url: "#" },
         { title: "海外酒店", url: "#" },
@@ -103,7 +103,7 @@ export const data: SidebarData = {
     {
       title: "旅游",
       url: "#",
-      icon: Globe,
+      icon: Flag,
       items: [
         { title: "国内游", url: "#" },
         { title: "出境游", url: "#" },
@@ -122,7 +122,7 @@ export const data: SidebarData = {
     {
       title: "汽车·船票",
       url: "#",
-      icon: Bus,
+      icon: BusFront,
       items: [
         { title: "汽车票", url: "#" },
         { title: "船票", url: "#" },
@@ -131,7 +131,7 @@ export const data: SidebarData = {
     {
       title: "用车",
       url: "#",
-      icon: Car,
+      icon: CarTaxiFront,
       items: [
         { title: "国内租车", url: "#" },
         { title: "境外租车", url: "#" },
@@ -163,7 +163,7 @@ export const data: SidebarData = {
     {
       title: "全球购",
       url: "#",
-      icon: ShoppingCart,
+      icon: Earth,
     },
     {
       title: "礼品卡",
@@ -186,7 +186,7 @@ export const data: SidebarData = {
     {
       title: "攻略·景点",
       url: "#",
-      icon: Compass,
+      icon: Album,
     },
     {
       title: "旅游地图",
@@ -212,7 +212,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
       if (url === "#") return false;
 
       try {
-        const urlObj = new URL(url, "http://localhost");
+        const urlObj = new URL(url, window.location.origin);
         const urlPath = urlObj.pathname;
         const urlParams = urlObj.searchParams;
 
@@ -368,6 +368,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         <Separator className="mx-auto w-[calc(100%-1rem)]" />
 
+        {/* Extras Group */}
+        <SidebarGroup className="px-1">
+          <SidebarGroupContent>
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
+              {data.extras.map(item => (
+                <SidebarMenuItemWithHover key={item.title} item={item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <Separator className="mx-auto w-[calc(100%-1rem)]" />
+
         {/* Business Group */}
         <SidebarGroup className="px-1">
           <SidebarGroupContent>
@@ -386,19 +399,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
               {data.finance.map(item => (
-                <SidebarMenuItemWithHover key={item.title} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <Separator className="mx-auto w-[calc(100%-1rem)]" />
-
-        {/* Extras Group */}
-        <SidebarGroup className="px-1">
-          <SidebarGroupContent>
-            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
-              {data.extras.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
             </SidebarMenu>

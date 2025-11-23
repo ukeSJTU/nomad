@@ -78,7 +78,7 @@ describe("AppSidebar Component", () => {
 
       expect(screen.getByText("企业商旅")).toBeInTheDocument();
       expect(screen.getByText("老友会")).toBeInTheDocument();
-      expect(screen.getByText("关于携程")).toBeInTheDocument();
+      expect(screen.getByText("关于Nomad")).toBeInTheDocument();
     });
 
     it("should display all finance menu items", () => {
@@ -117,7 +117,9 @@ describe("AppSidebar Component", () => {
     it("should have a toggle sidebar button", () => {
       renderAppSidebar();
 
-      const toggleButton = screen.getByLabelText("Toggle Sidebar");
+      const toggleButton = screen
+        .getAllByLabelText("Toggle Sidebar")
+        .find(el => el.getAttribute("data-slot") === "sidebar-menu-button")!;
       expect(toggleButton).toBeInTheDocument();
     });
 
@@ -125,7 +127,9 @@ describe("AppSidebar Component", () => {
       const user = userEvent.setup();
       renderAppSidebar();
 
-      const toggleButton = screen.getByLabelText("Toggle Sidebar");
+      const toggleButton = screen
+        .getAllByLabelText("Toggle Sidebar")
+        .find(el => el.getAttribute("data-slot") === "sidebar-menu-button")!;
 
       // Just verify the button can be clicked without errors
       await user.click(toggleButton);
@@ -309,8 +313,9 @@ describe("AppSidebar Component", () => {
     it("should render all menu icons", () => {
       renderAppSidebar();
 
-      // Each menu item should have an icon (svg)
-      const menuButtons = screen.getAllByRole("button").slice(1); // Exclude toggle button
+      const menuButtons = screen
+        .getAllByRole("button")
+        .filter(b => b.getAttribute("data-slot") === "sidebar-menu-button");
       menuButtons.forEach(button => {
         const svg = button.querySelector("svg");
         expect(svg).toBeInTheDocument();
