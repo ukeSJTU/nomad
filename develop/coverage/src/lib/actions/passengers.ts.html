@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/135</span>
+                <span class='fraction'>0/136</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/135</span>
+                <span class='fraction'>0/136</span>
             </div>
         
             
@@ -314,7 +314,8 @@
 <a name='L249'></a><a href='#L249'>249</a>
 <a name='L250'></a><a href='#L250'>250</a>
 <a name='L251'></a><a href='#L251'>251</a>
-<a name='L252'></a><a href='#L252'>252</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -326,6 +327,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -577,7 +579,8 @@
   type PassengerInput,
   updatePassenger,
 } from "@/lib/services";
-<span class="cstat-no" title="statement not covered" >import { getAuthenticatedUserId } from "@/lib/utils/auth-helpers";</span>
+<span class="cstat-no" title="statement not covered" >import { getAuthenticatedUserId } from "@/utils/auth-helpers";</span>
+<span class="cstat-no" title="statement not covered" >import { dateToLocalDateString } from "@/utils/date";</span>
 &nbsp;
 /**
  * Server Actions for Passenger Management (Thin Controller Layer)
@@ -621,17 +624,17 @@
 <span class="cstat-no" title="statement not covered" >      name: data.name,</span>
 <span class="cstat-no" title="statement not covered" >      nationality: data.nationality,</span>
 <span class="cstat-no" title="statement not covered" >      gender: data.gender,</span>
-<span class="cstat-no" title="statement not covered" >      dateOfBirth: data.dateOfBirth,</span>
+<span class="cstat-no" title="statement not covered" >      dateOfBirth: data.dateOfBirth</span>
+<span class="cstat-no" title="statement not covered" >        ? dateToLocalDateString(data.dateOfBirth)</span>
+<span class="cstat-no" title="statement not covered" >        : null,</span>
 <span class="cstat-no" title="statement not covered" >      placeOfBirth: data.placeOfBirth,</span>
 <span class="cstat-no" title="statement not covered" >      phone: data.phone,</span>
-<span class="cstat-no" title="statement not covered" >      fax:</span>
-<span class="cstat-no" title="statement not covered" >        data.faxAreaCode &amp;&amp; data.faxPhone</span>
-<span class="cstat-no" title="statement not covered" >          ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`</span>
-<span class="cstat-no" title="statement not covered" >          : undefined,</span>
 <span class="cstat-no" title="statement not covered" >      email: data.email,</span>
 <span class="cstat-no" title="statement not covered" >      documentType: data.documentType,</span>
 <span class="cstat-no" title="statement not covered" >      documentNumber: data.documentNumber,</span>
-<span class="cstat-no" title="statement not covered" >      documentExpiryDate: data.documentExpiryDate,</span>
+<span class="cstat-no" title="statement not covered" >      documentExpiryDate: data.documentExpiryDate</span>
+<span class="cstat-no" title="statement not covered" >        ? dateToLocalDateString(data.documentExpiryDate)</span>
+<span class="cstat-no" title="statement not covered" >        : null,</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
 &nbsp;
     // 3. Call service layer
@@ -679,17 +682,17 @@
 <span class="cstat-no" title="statement not covered" >      name: data.name,</span>
 <span class="cstat-no" title="statement not covered" >      nationality: data.nationality,</span>
 <span class="cstat-no" title="statement not covered" >      gender: data.gender,</span>
-<span class="cstat-no" title="statement not covered" >      dateOfBirth: data.dateOfBirth,</span>
+<span class="cstat-no" title="statement not covered" >      dateOfBirth: data.dateOfBirth</span>
+<span class="cstat-no" title="statement not covered" >        ? dateToLocalDateString(data.dateOfBirth)</span>
+<span class="cstat-no" title="statement not covered" >        : null,</span>
 <span class="cstat-no" title="statement not covered" >      placeOfBirth: data.placeOfBirth,</span>
 <span class="cstat-no" title="statement not covered" >      phone: data.phone,</span>
-<span class="cstat-no" title="statement not covered" >      fax:</span>
-<span class="cstat-no" title="statement not covered" >        data.faxAreaCode &amp;&amp; data.faxPhone</span>
-<span class="cstat-no" title="statement not covered" >          ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`</span>
-<span class="cstat-no" title="statement not covered" >          : undefined,</span>
 <span class="cstat-no" title="statement not covered" >      email: data.email,</span>
 <span class="cstat-no" title="statement not covered" >      documentType: data.documentType,</span>
 <span class="cstat-no" title="statement not covered" >      documentNumber: data.documentNumber,</span>
-<span class="cstat-no" title="statement not covered" >      documentExpiryDate: data.documentExpiryDate,</span>
+<span class="cstat-no" title="statement not covered" >      documentExpiryDate: data.documentExpiryDate</span>
+<span class="cstat-no" title="statement not covered" >        ? dateToLocalDateString(data.documentExpiryDate)</span>
+<span class="cstat-no" title="statement not covered" >        : null,</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
 &nbsp;
     // 3. Call service layer
@@ -823,7 +826,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T18:01:50.502Z
+                at 2025-11-23T08:38:29.505Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

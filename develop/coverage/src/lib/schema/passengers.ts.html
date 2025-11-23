@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">76.31% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>39/39</span>
+                <span class='fraction'>29/38</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">76.31% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>39/39</span>
+                <span class='fraction'>29/38</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -133,11 +133,7 @@
 <a name='L68'></a><a href='#L68'>68</a>
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
-<a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -185,8 +181,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -199,15 +193,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Passenger name (required)
 // Nationality
@@ -215,7 +209,6 @@
 // Date of birth
 // Place of birth
 // Phone number
-// Fax number
 // Email
 // Document type, document number, expiry date are required
 &nbsp;
@@ -254,14 +247,12 @@ export const passengers = pgTable(
     placeOfBirth: varchar("place_of_birth", { length: 255 }),
     // Phone number
     phone: varchar({ length: 20 }),
-    // Fax number
-    fax: varchar({ length: 20 }),
     // Email
     email: varchar({ length: 255 }),
-    // Document type, document number, expiry date (required)
+    // Document type and document number are required, expiry date is optional
     documentType: documentTypeEnum().notNull(),
     documentNumber: varchar("document_number", { length: 50 }).notNull(),
-    documentExpiryDate: date("document_expiry_date").notNull(),
+    documentExpiryDate: date("document_expiry_date"),
     // Soft delete flag
     isDeleted: boolean("is_deleted").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -272,15 +263,15 @@ export const passengers = pgTable(
   },
   table =&gt; [
     // Indexes
-    index("idx_passengers_user_id").on(table.userId),
-    index("idx_passengers_is_deleted").on(table.isDeleted),
-    index("idx_passengers_email").on(table.email),
-    index("idx_passengers_phone").on(table.phone),
-    index("idx_passengers_document").on(
-      table.documentType,
-      table.documentNumber
-    ),
-  ]
+<span class="cstat-no" title="statement not covered" >    index("idx_passengers_user_id").on(table.userId),</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_passengers_is_deleted").on(table.isDeleted),</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_passengers_email").on(table.email),</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_passengers_phone").on(table.phone),</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_passengers_document").on(</span>
+<span class="cstat-no" title="statement not covered" >      table.documentType,</span>
+<span class="cstat-no" title="statement not covered" >      table.documentNumber</span>
+<span class="cstat-no" title="statement not covered" >    ),</span>
+<span class="cstat-no" title="statement not covered" >  ]</span>
 );
 &nbsp;</pre></td></tr></table></pre>
 
@@ -289,7 +280,7 @@ export const passengers = pgTable(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T18:01:50.502Z
+                at 2025-11-23T08:38:29.505Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
