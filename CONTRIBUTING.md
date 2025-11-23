@@ -269,6 +269,8 @@ git push origin feat/your-feature-name
 
 ### 测试要求
 
+如果你想要修改环境变量，请新建一个`.env.test.local`并进行覆盖
+
 在提交 PR 前，请确保：
 
 ```bash
