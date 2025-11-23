@@ -17,7 +17,6 @@ import {
   flightSeatClasses,
   orderPassengers,
   orders,
-  user,
 } from "@/lib/schema";
 import type { PaymentPageOrder } from "@/types/dto";
 
@@ -236,18 +235,4 @@ export async function getOrderForPayment(
     },
     inboundFlight: inboundFlightData,
   };
-}
-
-/**
- * Get user balance for payment
- */
-export async function getUserBalance(userId: string): Promise<string> {
-  const [userData] = await db
-    .select({
-      balance: user.balance,
-    })
-    .from(user)
-    .where(eq(user.id, userId));
-
-  return userData?.balance ?? "0.00";
 }

@@ -16,4 +16,4 @@ export {
   getFlightSeatClassesByIds,
   getSavedPassengers,
 } from "./passengers";
-export { getOrderForPayment, getUserBalance } from "./payment";
+export { getOrderForPayment } from "./payment";
