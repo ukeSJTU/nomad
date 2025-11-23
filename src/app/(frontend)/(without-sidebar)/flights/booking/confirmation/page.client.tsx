@@ -76,7 +76,7 @@ export default function ConfirmationPageClient({
           </Button>
           <Button
             size="lg"
-            onClick={() => router.push("/orders")}
+            onClick={() => router.push(`/orders/${order.id}`)}
             className="gap-2"
           >
             <FileText className="h-4 w-4" />
