@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">52.94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/51</span>
+                <span class='fraction'>27/51</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">52.94% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>51/51</span>
+                <span class='fraction'>27/51</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -242,29 +242,29 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -273,11 +273,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { relations, sql } from "drizzle-orm";
 import {
@@ -350,29 +350,29 @@ export const flightSeatClasses = pgTable(
   },
   table =&gt; [
     // Index Design
-    index("idx_seat_classes_flight_id").on(table.flightId), // Query seat classes by flight
-    index("idx_seat_classes_class_type").on(table.classType), // Filter by cabin class
-    index("idx_seat_classes_is_deleted").on(table.isDeleted), // Soft delete filter
+<span class="cstat-no" title="statement not covered" >    index("idx_seat_classes_flight_id").on(table.flightId), // Query seat classes by flight</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_seat_classes_class_type").on(table.classType), // Filter by cabin class</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_seat_classes_is_deleted").on(table.isDeleted), // Soft delete filter</span>
 &nbsp;
     // Unique Constraint: One flight can only have one record per class type
-    unique("uk_seat_classes_flight_class").on(table.flightId, table.classType),
+<span class="cstat-no" title="statement not covered" >    unique("uk_seat_classes_flight_class").on(table.flightId, table.classType),</span>
 &nbsp;
     // Constraints
-    check(
-      "seat_classes_class_type_valid",
-      sql`${table.classType} IN ('ECONOMY', 'BUSINESS', 'FIRST')`
-    ), // Class type must be one of the allowed values
-    check(
-      "seat_classes_available_seats_non_negative",
-      sql`${table.availableSeats} &gt;= 0`
-    ), // Available seats cannot be negative
-    check(
-      "seat_classes_available_seats_not_exceed_total",
-      sql`${table.availableSeats} &lt;= ${table.totalSeats}`
-    ), // Available seats cannot exceed total seats
-    check("seat_classes_total_seats_positive", sql`${table.totalSeats} &gt; 0`), // Total seats must be positive
-    check("seat_classes_price_positive", sql`${table.price} &gt; 0`), // Price must be positive
-  ]
+<span class="cstat-no" title="statement not covered" >    check(</span>
+<span class="cstat-no" title="statement not covered" >      "seat_classes_class_type_valid",</span>
+<span class="cstat-no" title="statement not covered" >      sql`${table.classType} IN ('ECONOMY', 'BUSINESS', 'FIRST')`</span>
+<span class="cstat-no" title="statement not covered" >    ), // Class type must be one of the allowed values</span>
+<span class="cstat-no" title="statement not covered" >    check(</span>
+<span class="cstat-no" title="statement not covered" >      "seat_classes_available_seats_non_negative",</span>
+<span class="cstat-no" title="statement not covered" >      sql`${table.availableSeats} &gt;= 0`</span>
+<span class="cstat-no" title="statement not covered" >    ), // Available seats cannot be negative</span>
+<span class="cstat-no" title="statement not covered" >    check(</span>
+<span class="cstat-no" title="statement not covered" >      "seat_classes_available_seats_not_exceed_total",</span>
+<span class="cstat-no" title="statement not covered" >      sql`${table.availableSeats} &lt;= ${table.totalSeats}`</span>
+<span class="cstat-no" title="statement not covered" >    ), // Available seats cannot exceed total seats</span>
+<span class="cstat-no" title="statement not covered" >    check("seat_classes_total_seats_positive", sql`${table.totalSeats} &gt; 0`), // Total seats must be positive</span>
+<span class="cstat-no" title="statement not covered" >    check("seat_classes_price_positive", sql`${table.price} &gt; 0`), // Price must be positive</span>
+<span class="cstat-no" title="statement not covered" >  ]</span>
 );
 &nbsp;
 /**
@@ -381,11 +381,11 @@ export const flightSeatClasses = pgTable(
 export const flightSeatClassesRelations = relations(
   flightSeatClasses,
   ({ one }) =&gt; ({
-    flight: one(flights, {
-      fields: [flightSeatClasses.flightId],
-      references: [flights.id],
-    }),
-  })
+<span class="cstat-no" title="statement not covered" >    flight: one(flights, {</span>
+<span class="cstat-no" title="statement not covered" >      fields: [flightSeatClasses.flightId],</span>
+<span class="cstat-no" title="statement not covered" >      references: [flights.id],</span>
+<span class="cstat-no" title="statement not covered" >    }),</span>
+<span class="cstat-no" title="statement not covered" >  })</span>
 );
 &nbsp;</pre></td></tr></table></pre>
 
@@ -394,7 +394,7 @@ export const flightSeatClassesRelations = relations(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-23T02:33:55.608Z
+                at 2025-11-23T11:20:50.940Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
