@@ -40,6 +40,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
@@ -152,8 +153,8 @@ export const data: SidebarData = {
       icon: Frame,
     },
     {
-      title: "关于携程",
-      url: "#",
+      title: "关于Nomad",
+      url: "/docs",
       icon: Info,
     },
   ],
@@ -259,13 +260,14 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     <SidebarMenuButton
       onClick={() => handleClick(item.url, item.title)}
       className={cn(
-        "h-9 cursor-pointer px-4 transition-all duration-200 ease-in-out justify-start items-center",
+        "h-9 cursor-pointer px-2 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:[&>span:last-child]:hidden [&>svg]:size-6",
+        "group-data-[collapsible=icon]:[&>svg]:-translate-x-[0.5px]",
         isActive &&
           "bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-full"
       )}
     >
-      <Icon className="size-4 shrink-0" />
-      <span className="truncate">{item.title}</span>
+      <Icon className="size-4" strokeWidth={1.5} />
+      <span className="text-sm">{item.title}</span>
     </SidebarMenuButton>
   );
 
@@ -279,7 +281,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     return (
       <div className="space-y-0">
         <SidebarMenuItem>{menuButton}</SidebarMenuItem>
-        <div className="space-y-0">
+        <div className="ml-2 space-y-0">
           {item.items?.map(subItem => {
             const isSubActive = isUrlActive(subItem.url);
             return (
@@ -288,7 +290,7 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
                 variant="ghost"
                 onClick={() => handleClick(subItem.url, subItem.title)}
                 className={cn(
-                  "w-full text-left px-3 py-2 text-sm rounded-md transition-colors",
+                  "w-full text-left px-3 py-2 text-sm rounded-md transition-colors justify-start",
                   isSubActive
                     ? "text-blue-500 font-medium"
                     : "text-muted-foreground hover:text-foreground"
@@ -335,27 +337,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Sidebar
-      collapsible="icon"
-      className="w-44 transition-all duration-300 ease-in-out"
-      {...props}
-    >
-      <SidebarHeader className="gap-2 p-2 flex items-center justify-start">
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="gap-2 p-2 pl-3 flex items-center justify-start">
         {/* Toggle sidebar button */}
-        <SidebarMenuButton
-          aria-label="Toggle Sidebar"
-          className="px-2 py-2 size-9 justify-center items-center rounded-md [&>svg]:size-6 transition-all duration-200 hover:bg-accent"
-          onClick={() => toggleSidebar()}
-        >
-          <Menu strokeWidth={1.5} className="text-black" />
-        </SidebarMenuButton>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              aria-label="Toggle Sidebar"
+              className="size-9 grid place-items-center rounded-md group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:ml-[8.5px] [&>svg]:size-6 [&>svg]:-translate-y-[3px] [&>svg]:translate-x-[-1px] 
+              group-data-[collapsible=icon]:[&>svg]:translate-x-0 group-data-[collapsible=icon]:[&>svg]:translate-y-0 transition-transform duration-200 ease-linear"
+              onClick={() => toggleSidebar()}
+            >
+              <Menu strokeWidth={1.25} className="text-black" />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:items-center">
+      <SidebarContent className="px-2">
         {/* Travel Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1">
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
               {data.travel.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -363,12 +366,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-2" />
+        <Separator className="mx-auto w-[calc(100%-1rem)]" />
 
         {/* Extras Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1">
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
               {data.extras.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -376,12 +379,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-2" />
+        <Separator className="mx-auto w-[calc(100%-1rem)]" />
 
         {/* Business Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1">
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
               {data.business.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -389,12 +392,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-2" />
+        <Separator className="mx-auto w-[calc(100%-1rem)]" />
 
         {/* Finance Group */}
-        <SidebarGroup>
+        <SidebarGroup className="px-1">
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1">
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
               {data.finance.map(item => (
                 <SidebarMenuItemWithHover key={item.title} item={item} />
               ))}
@@ -402,6 +405,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarRail />
     </Sidebar>
   );
 }
