@@ -54,16 +54,20 @@ export function PaymentCountdownTimer({
 
   return (
     <Alert>
-      <Clock className="h-4 w-4" />
-      <AlertDescription className="flex items-center justify-between">
-        <span>请在规定时间内完成支付，超时订单将自动取消</span>
-        <span
-          className={`font-mono text-lg font-bold ${
-            timeLeft <= 60 ? "text-red-500" : "text-orange-500"
-          }`}
-        >
-          {formatTime(timeLeft)}
-        </span>
+      <AlertDescription>
+        <div className="flex items-center justify-between gap-4">
+          <Clock className="h-4 w-4" />
+          <span className="text-sm leading-relaxed">
+            请在最晚支付时间前完成支付，超时订单将自动取消
+          </span>
+          <span
+            className={`font-mono text-lg font-semibold shrink-0 ${
+              timeLeft <= 60 ? "text-destructive" : "text-secondary"
+            }`}
+          >
+            {formatTime(timeLeft)}
+          </span>
+        </div>
       </AlertDescription>
     </Alert>
   );
