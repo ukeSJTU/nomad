@@ -28,7 +28,7 @@ const menuItems: MenuItem[] = [
   {
     title: "钱包",
     children: [
-      { title: "我的钱包", href: "/home/wallets", implemented: false },
+      { title: "我的钱包", href: "/home/wallets" },
       {
         title: "钱包安全设置",
         href: "/home/wallets/security",

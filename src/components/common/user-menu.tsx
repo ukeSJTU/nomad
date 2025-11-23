@@ -124,7 +124,7 @@ export default function UserMenu() {
             asChild
             className="justify-start gap-2"
           >
-            <Link href="/wallet">
+            <Link href="/home/wallets">
               <Wallet className="size-4" />
               我的钱包
             </Link>
