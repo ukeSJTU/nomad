@@ -2,30 +2,34 @@
 
 import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
-import { AncillarySelection } from "@/components/flights/ancillary-selection";
+import {
+  AncillarySelection,
+  PaymentCountdownTimer,
+} from "@/components/flights/booking";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { updateOrderAncillaryAction } from "@/lib/actions/orders";
+import {
+  updateOrderAncillaryAction,
+  type UpdateOrderAncillaryResult,
+} from "@/lib/actions/orders";
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
-} from "@/lib/schema/ancillary";
+} from "@/lib/schema";
+import type { AncillaryPageOrder } from "@/types/dto";
 import {
   addCurrency,
   formatCurrency,
   getCurrencyValue,
   parseCurrency,
-} from "@/lib/utils/currency";
-import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
-
-import type { OrderWithDetails } from "./queries";
+} from "@/utils/currency";
 
 interface BookingAncillaryPageClientProps {
-  order: OrderWithDetails;
+  order: AncillaryPageOrder;
 }
 
 export function BookingAncillaryPageClient({
@@ -33,21 +37,9 @@ export function BookingAncillaryPageClient({
 }: BookingAncillaryPageClientProps) {
   const router = useRouter();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-
-  // Use React 19's useActionState for form submission
-  const [state, formAction, isPending] = useActionState(
-    async (
-      _prevState: UpdateOrderAncillaryResult | null,
-      _formData: FormData
-    ): Promise<UpdateOrderAncillaryResult> => {
-      const result = await updateOrderAncillaryAction({
-        orderId: order.id,
-        ancillaryServiceCodes: selectedServices,
-      });
-      return result;
-    },
-    null
-  );
+  const [state, setState] = useState<UpdateOrderAncillaryResult | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [_timeLeft, setTimeLeft] = useState(0);
 
   // Navigate to payment page on successful submission
   useEffect(() => {
@@ -94,7 +86,13 @@ export function BookingAncillaryPageClient({
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
-    formAction(new FormData());
+    startTransition(async () => {
+      const result = await updateOrderAncillaryAction({
+        orderId: order.id,
+        ancillaryServiceCodes: selectedServices,
+      });
+      setState(result);
+    });
   };
 
   return (
@@ -132,7 +130,11 @@ export function BookingAncillaryPageClient({
       </div>
 
       {/* Right Sidebar - Order Summary */}
-      <div className="lg:col-span-1">
+      <div className="lg:col-span-1 flex flex-col space-y-2">
+        <PaymentCountdownTimer
+          paymentDeadline={order.paymentDeadline}
+          onTimeLeftChange={setTimeLeft}
+        />
         <Card className="sticky top-4">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">

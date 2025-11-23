@@ -507,9 +507,9 @@ export async function deletePassengerAction(id: string) {
 
 ### 错误处理
 
-**推荐方式：使用 useActionState Hook**
+**推荐方式：使用 useState 和 useTransition**
 
-Next.js 推荐使用 `useActionState` hook 来处理 Server Actions 的错误和加载状态。
+使用 `useState` 管理状态，`useTransition` 处理加载状态。
 
 #### Server Action 定义
 
@@ -517,37 +517,36 @@ Next.js 推荐使用 `useActionState` hook 来处理 Server Actions 的错误和
 "use server";
 
 import { z } from "zod";
+import type { ActionResult } from "@/types/common";
 
 const updatePassengerSchema = z.object({
   chineseName: z.string().min(1).max(100).optional(),
   documentNumber: z.string().min(1).max(50),
 });
 
-// Server Action 返回状态对象
+// Server Action 返回 ActionResult
 export async function updatePassengerAction(
-  prevState: { message: string } | null,
-  formData: FormData
-) {
+  data: unknown
+): Promise<ActionResult<void>> {
   try {
     // 1. 验证身份
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user?.id) {
-      return { message: "Authentication required" };
+      return { success: false, error: "Authentication required" };
     }
 
     // 2. 验证数据
-    const rawData = {
-      chineseName: formData.get("chineseName"),
-      documentNumber: formData.get("documentNumber"),
-    };
-
-    const result = updatePassengerSchema.safeParse(rawData);
+    const result = updatePassengerSchema.safeParse(data);
     if (!result.success) {
-      return { message: "Validation failed: " + result.error.message };
+      return {
+        success: false,
+        error: "Validation failed",
+        fieldErrors: result.error.flatten().fieldErrors,
+      };
     }
 
     // 3. 验证权限
-    const id = formData.get("id") as string;
+    const id = (data as any).id;
     const passenger = await db.select()
       .from(passengers)
       .where(
@@ -558,7 +557,7 @@ export async function updatePassengerAction(
       );
 
     if (!passenger) {
-      return { message: "Passenger not found" };
+      return { success: false, error: "Passenger not found" };
     }
 
     // 4. 执行操作
@@ -566,11 +565,11 @@ export async function updatePassengerAction(
       .set(result.data)
       .where(eq(passengers.id, id));
 
-    return { message: "Passenger updated successfully" };
+    return { success: true, data: undefined };
   } catch (error) {
     // 5. 捕获未预期的错误
     console.error("Update passenger error:", error);
-    return { message: "An unexpected error occurred" };
+    return { success: false, error: "An unexpected error occurred" };
   }
 }
 ```
@@ -580,41 +579,58 @@ export async function updatePassengerAction(
 ```tsx title="src/components/passengers/update-passenger-form.tsx"
 "use client";
 
-import { useActionState } from "react";
+import { useState, useTransition } from "react";
 import { updatePassengerAction } from "@/lib/actions/passengers";
+import type { ActionResult } from "@/types/common";
 
 export function UpdatePassengerForm({ passengerId }: { passengerId: string }) {
-  const [state, formAction, pending] = useActionState(
-    updatePassengerAction,
-    null // 初始状态
-  );
+  const [state, setState] = useState<ActionResult<void> | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [formData, setFormData] = useState({
+    chineseName: "",
+    documentNumber: "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    startTransition(async () => {
+      const result = await updatePassengerAction({
+        id: passengerId,
+        ...formData,
+      });
+      setState(result);
+    });
+  };
 
   return (
-    <form action={formAction}>
-      <input type="hidden" name="id" value={passengerId} />
-
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
         name="chineseName"
         placeholder="中文姓名"
-        disabled={pending} // 提交时禁用
+        value={formData.chineseName}
+        onChange={(e) => setFormData({ ...formData, chineseName: e.target.value })}
+        disabled={isPending}
       />
 
       <input
         type="text"
         name="documentNumber"
         placeholder="证件号码"
-        disabled={pending}
+        value={formData.documentNumber}
+        onChange={(e) => setFormData({ ...formData, documentNumber: e.target.value })}
+        disabled={isPending}
       />
 
-      <button type="submit" disabled={pending}>
-        {pending ? "提交中..." : "提交"}
+      <button type="submit" disabled={isPending}>
+        {isPending ? "提交中..." : "提交"}
       </button>
 
-      {state?.message && (
-        <p className={state.message.includes("success") ? "text-green-600" : "text-red-600"}>
-          {state.message}
-        </p>
+      {state && !state.success && (
+        <p className="text-red-600">{state.error}</p>
+      )}
+      {state && state.success && (
+        <p className="text-green-600">更新成功</p>
       )}
     </form>
   );

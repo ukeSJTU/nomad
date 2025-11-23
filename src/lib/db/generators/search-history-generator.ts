@@ -8,7 +8,7 @@
 import { faker } from "@faker-js/faker";
 import type { InferInsertModel } from "drizzle-orm";
 
-import { SeatClass, TripType } from "@/lib/schema/enums";
+import { SearchSeatClass, TripType } from "@/lib/schema/enums";
 import { flightSearchHistory } from "@/lib/schema/flight-search-history";
 
 type SearchHistoryInsert = InferInsertModel<typeof flightSearchHistory>;
@@ -72,12 +72,12 @@ export function generateSearchHistory(
       const seatClassRoll = faker.number.float({ min: 0, max: 1 });
       const seatClass =
         seatClassRoll < 0.7
-          ? SeatClass.ANY
+          ? SearchSeatClass.ANY
           : seatClassRoll < 0.9
-            ? SeatClass.ECONOMY
+            ? SearchSeatClass.ECONOMY
             : seatClassRoll < 0.98
-              ? SeatClass.BUSINESS
-              : SeatClass.FIRST;
+              ? SearchSeatClass.BUSINESS
+              : SearchSeatClass.FIRST;
 
       // Price tracking (optional, 60% of searches have price data)
       const hasPriceData = faker.datatype.boolean({ probability: 0.6 });

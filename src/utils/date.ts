@@ -6,7 +6,7 @@
  * search date selection.
  */
 
-import { addDays, max, min, startOfDay } from "date-fns";
+import { addDays, differenceInDays, max, min, startOfDay } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 /**
@@ -74,6 +74,48 @@ export function formatTime(date: Date): string {
 }
 
 /**
+ * Convert a Date object to local date string (YYYY-MM-DD) without timezone conversion
+ *
+ * This function extracts the local year, month, and day from a Date object
+ * and formats it as YYYY-MM-DD, avoiding timezone conversion issues.
+ *
+ * @param date - The date to convert
+ * @returns Date string in YYYY-MM-DD format using local date components
+ *
+ * @example
+ * ```ts
+ * const date = new Date(2025, 10, 22); // Nov 22, 2025 in local time
+ * dateToLocalDateString(date); // "2025-11-22" (no timezone conversion)
+ * ```
+ */
+export function dateToLocalDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Convert a local date string (YYYY-MM-DD) to a Date object at local midnight
+ *
+ * This function creates a Date object representing midnight in the local timezone
+ * for the given date string, avoiding timezone conversion issues.
+ *
+ * @param dateString - Date string in YYYY-MM-DD format
+ * @returns Date object at local midnight for the given date
+ *
+ * @example
+ * ```ts
+ * const date = localDateStringToDate("2025-11-22");
+ * // Returns Date object for Nov 22, 2025 00:00:00 in local timezone
+ * ```
+ */
+export function localDateStringToDate(dateString: string): Date {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/**
  * Format date to YYYY-MM-DD string
  *
  * @param date - The date to format (can be Date, string, or null/undefined)
@@ -93,7 +135,7 @@ export function formatDateString(
 ): string {
   if (!date) return fallback;
   if (typeof date === "string") return date;
-  return date.toISOString().split("T")[0];
+  return dateToLocalDateString(date);
 }
 
 /**
@@ -126,6 +168,65 @@ export function getBookingDateRange(timezone: string): {
   const maxDate = addDays(minDate, 365);
 
   return { minDate, maxDate };
+}
+
+/**
+ * Get relative date label (今天, 明天, 后天, etc.)
+ *
+ * @param date - The date to check
+ * @param referenceDate - The reference date (typically today)
+ * @returns Relative label or empty string if more than 2 days away
+ *
+ * @example
+ * ```ts
+ * const today = new Date('2025-11-15');
+ * getRelativeDateLabel(today, today); // "今天"
+ * getRelativeDateLabel(addDays(today, 1), today); // "明天"
+ * getRelativeDateLabel(addDays(today, 2), today); // "后天"
+ * getRelativeDateLabel(addDays(today, 3), today); // ""
+ * ```
+ */
+export function getRelativeDateLabel(date: Date, referenceDate: Date): string {
+  const daysDiff = differenceInDays(
+    startOfDay(date),
+    startOfDay(referenceDate)
+  );
+
+  switch (daysDiff) {
+    case 0:
+      return "今天";
+    case 1:
+      return "明天";
+    case 2:
+      return "后天";
+    default:
+      return "";
+  }
+}
+
+/**
+ * Calculate trip duration (inclusive of both start and end dates)
+ *
+ * @param departureDate - Trip start date
+ * @param returnDate - Trip end date
+ * @returns Number of days (0 if either date is null)
+ *
+ * @example
+ * ```ts
+ * const dep = new Date('2025-11-15');
+ * const ret = new Date('2025-11-17');
+ * calculateTripDuration(dep, ret); // 3
+ * calculateTripDuration(null, ret); // 0
+ * ```
+ */
+export function calculateTripDuration(
+  departureDate: Date | null,
+  returnDate: Date | null
+): number {
+  if (!departureDate || !returnDate) {
+    return 0;
+  }
+  return differenceInDays(returnDate, departureDate) + 1;
 }
 
 /**

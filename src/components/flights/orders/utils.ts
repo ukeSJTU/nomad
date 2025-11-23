@@ -2,10 +2,6 @@
  * Utility functions for order components
  */
 
-import { CheckCircle2, Clock, XCircle } from "lucide-react";
-
-import type { OrderDetailsWithAirports } from "@/app/(frontend)/(with-sidebar)/orders/[orderId]/queries";
-
 /**
  * Format time in seconds to MM:SS format
  */
@@ -39,15 +35,13 @@ export function formatFlightDate(datetime: Date): string {
 /**
  * Get seat class display name
  */
-export function getSeatClassName(
-  classType: "ECONOMY" | "BUSINESS" | "FIRST"
-): string {
-  const classNames = {
+export function getSeatClassName(classType: string): string {
+  const classNames: Record<string, string> = {
     ECONOMY: "经济舱",
     BUSINESS: "商务舱",
     FIRST: "头等舱",
   };
-  return classNames[classType];
+  return classNames[classType] || classType;
 }
 
 /**
@@ -62,52 +56,4 @@ export function getIdentityTypeName(
     other: "其他",
   };
   return typeNames[identityType];
-}
-
-/**
- * Order status configuration
- */
-export type OrderStatusConfig = {
-  text: string;
-  icon: typeof Clock;
-  color: string;
-  bgColor: string;
-};
-
-/**
- * Get order status display configuration
- */
-export function getOrderStatusDisplay(
-  status: OrderDetailsWithAirports["status"]
-): OrderStatusConfig {
-  const statusConfig: Record<
-    OrderDetailsWithAirports["status"],
-    OrderStatusConfig
-  > = {
-    PENDING_PAYMENT: {
-      text: "待支付",
-      icon: Clock,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-    },
-    CONFIRMED: {
-      text: "已确认",
-      icon: CheckCircle2,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-    },
-    CANCELLED: {
-      text: "已取消",
-      icon: XCircle,
-      color: "text-gray-600",
-      bgColor: "bg-gray-50",
-    },
-    REFUNDED: {
-      text: "已退款",
-      icon: CheckCircle2,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-    },
-  };
-  return statusConfig[status];
 }

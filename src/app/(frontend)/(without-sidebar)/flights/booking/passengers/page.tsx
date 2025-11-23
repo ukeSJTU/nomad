@@ -1,10 +1,13 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import {
+  getFlightSeatClassById,
+  getSavedPassengers,
+} from "@/lib/queries/booking";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingPassengersPageClient } from "./page.client";
-import { getFlightSeatClassById, getSavedPassengers } from "./queries";
+export const dynamic = "force-dynamic";
 
 interface BookingPassengersPageProps {
   searchParams: Promise<{
@@ -21,19 +24,11 @@ export default async function BookingPassengersPage({
 
   // Redirect if no flight seat class IDs provided
   if (!params.seatClassId && !params.outboundSeatClassId) {
-    redirect("/flights");
+    redirect("/error?type=missing_seat_class");
   }
 
-  // Get user session
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch flight details and saved passengers in parallel
   const [outboundFlightData, inboundFlightData, savedPassengers] =
@@ -46,15 +41,15 @@ export default async function BookingPassengersPage({
       params.inboundSeatClassId
         ? getFlightSeatClassById(params.inboundSeatClassId)
         : null,
-      getSavedPassengers(session.user.id),
+      getSavedPassengers(userId),
     ]);
 
   const outboundFlight = outboundFlightData;
   const inboundFlight = inboundFlightData;
 
-  // If flight data not found, redirect back to search
+  // If flight data not found, redirect to error page
   if (!outboundFlight) {
-    redirect("/flights");
+    redirect("/error?type=flight_not_found");
   }
 
   return (

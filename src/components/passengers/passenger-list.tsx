@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Passenger } from "@/types/api/passengers";
+import type { Passenger } from "@/types/dto/passengers";
 
 interface PassengerListProps {
   passengers: Passenger[];

@@ -8,6 +8,33 @@ vi.mock("next-themes", () => ({
   useTheme: () => ({ theme: "light", setTheme: vi.fn() }),
 }));
 
+// Mock Next.js navigation
+const mockPush = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+  usePathname: () => "/",
+}));
+
+// Mock Next.js Link component
+vi.mock("next/link", () => ({
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}));
+
 // Mock auth client
 const mockUseSession = vi.fn();
 vi.mock("@/lib/auth/client", () => ({
@@ -106,12 +133,8 @@ describe("UserMenu Component", () => {
 
       render(<UserMenu />);
 
-      expect(
-        screen.getByRole("link", { name: /sign in/i })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("link", { name: /sign up/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /登录/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /注册/i })).toBeInTheDocument();
     });
 
     it("should NOT display '尊敬的用户' text", () => {

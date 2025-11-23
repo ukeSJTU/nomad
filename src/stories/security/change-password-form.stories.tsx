@@ -95,14 +95,12 @@ export const HappyPath: Story = {
     });
 
     // 4. Verify password requirements are met (green checkmarks)
-    await expect(canvas.getByText("至少 8 个字符")).toHaveClass(
-      "text-green-600"
-    );
+    await expect(canvas.getByText("至少 8 个字符")).toHaveClass("text-chart-5");
     await expect(canvas.getByText("包含至少一个数字")).toHaveClass(
-      "text-green-600"
+      "text-chart-5"
     );
     await expect(canvas.getByText("包含至少一个字母")).toHaveClass(
-      "text-green-600"
+      "text-chart-5"
     );
 
     // 5. Verify form is ready to submit

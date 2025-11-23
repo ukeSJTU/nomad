@@ -10,7 +10,8 @@ import {
   type PassengerInput,
   updatePassenger,
 } from "@/lib/services";
-import { getAuthenticatedUserId } from "@/lib/utils/auth-helpers";
+import { getAuthenticatedUserId } from "@/utils/auth-helpers";
+import { dateToLocalDateString } from "@/utils/date";
 
 /**
  * Server Actions for Passenger Management (Thin Controller Layer)
@@ -54,17 +55,17 @@ export async function createPassengerAction(formData: unknown) {
       name: data.name,
       nationality: data.nationality,
       gender: data.gender,
-      dateOfBirth: data.dateOfBirth,
+      dateOfBirth: data.dateOfBirth
+        ? dateToLocalDateString(data.dateOfBirth)
+        : null,
       placeOfBirth: data.placeOfBirth,
       phone: data.phone,
-      fax:
-        data.faxAreaCode && data.faxPhone
-          ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`
-          : undefined,
       email: data.email,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      documentExpiryDate: data.documentExpiryDate,
+      documentExpiryDate: data.documentExpiryDate
+        ? dateToLocalDateString(data.documentExpiryDate)
+        : null,
     };
 
     // 3. Call service layer
@@ -112,17 +113,17 @@ export async function updatePassengerAction(id: string, formData: unknown) {
       name: data.name,
       nationality: data.nationality,
       gender: data.gender,
-      dateOfBirth: data.dateOfBirth,
+      dateOfBirth: data.dateOfBirth
+        ? dateToLocalDateString(data.dateOfBirth)
+        : null,
       placeOfBirth: data.placeOfBirth,
       phone: data.phone,
-      fax:
-        data.faxAreaCode && data.faxPhone
-          ? `${data.faxAreaCode}-${data.faxPhone}${data.faxExtension ? `-${data.faxExtension}` : ""}`
-          : undefined,
       email: data.email,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
-      documentExpiryDate: data.documentExpiryDate,
+      documentExpiryDate: data.documentExpiryDate
+        ? dateToLocalDateString(data.documentExpiryDate)
+        : null,
     };
 
     // 3. Call service layer

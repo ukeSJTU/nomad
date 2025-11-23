@@ -10,7 +10,7 @@ import {
   type RowAction,
 } from "@/components/common/data-table-with-actions";
 import { Input } from "@/components/ui/input";
-import type { Passenger } from "@/types/api/passengers";
+import type { Passenger } from "@/types/dto/passengers";
 
 interface PassengersDataTableProps {
   initialData: Passenger[];

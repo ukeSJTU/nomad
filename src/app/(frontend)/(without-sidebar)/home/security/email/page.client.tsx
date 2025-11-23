@@ -1,18 +1,19 @@
 "use client";
 
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-import TurnstileWidget from "@/components/auth/turnstile-widget";
-import UpdateEmailForm from "@/components/security/update-email-form";
+import type { SecurityStatus } from "@/components/security";
+import UpdateEmailForm, {
+  type EmailFormMode,
+} from "@/components/security/update-email-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { updateEmailAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
-import { getTurnstileSiteKey } from "@/lib/turnstile";
-
-const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 
 /**
  * Props for the EmailPageClient component
@@ -20,6 +21,8 @@ const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 interface EmailPageClientProps {
   /** Current email address (masked) */
   currentEmail: string;
+  /** Current security status */
+  currentStatus: SecurityStatus;
 }
 
 /**
@@ -35,36 +38,49 @@ interface EmailPageClientProps {
  */
 export default function EmailPageClient({
   currentEmail,
+  currentStatus,
 }: EmailPageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(0);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const { countdown, start: startCountdown } = useOtpCountdown();
   const {
-    captchaError,
-    setCaptchaError,
-    resetSignal,
-    handleSolved,
-    handleWidgetError,
-    handleWidgetExpire,
+    siteKey,
+    turnstileRef,
+    isVerifying,
+    setError: setCaptchaError,
     prepareCaptchaRequest,
   } = useTurnstileCaptcha();
   const isCaptchaValidationError = (error?: { message?: string }) =>
     typeof error?.message === "string" &&
     error.message.toLowerCase().includes("captcha");
 
+  // Determine form mode based on current status
+  const mode: EmailFormMode =
+    currentStatus === "notSet"
+      ? "bind"
+      : currentStatus === "unverified"
+        ? "verify"
+        : "update";
+
   /**
    * Handle sending OTP to the new email address
    */
   const handleSendOtp = async (email: string) => {
-    const captchaRequest = prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
       const { error } = await authClient.emailOtp.sendVerificationOtp({
         email,
         type: "email-verification",
@@ -81,13 +97,12 @@ export default function EmailPageClient({
         toast.error("发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送到新邮箱");
-        setCountdown(60); // Start 60-second countdown
+        startCountdown();
       }
     } catch (error) {
       console.error("发送验证码异常:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -97,15 +112,20 @@ export default function EmailPageClient({
    * Verify OTP and update email
    */
   const handleSubmit = async (data: { email: string; otp: string }) => {
-    const captchaRequest = prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
       // 1. Verify OTP using better-auth
       const { error: verifyError } = await authClient.emailOtp.verifyEmail({
         email: data.email,
@@ -141,48 +161,51 @@ export default function EmailPageClient({
       console.error("Update email error:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
 
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
+  // Dynamic title based on mode
+  const getTitle = () => {
+    switch (mode) {
+      case "bind":
+        return "绑定邮箱";
+      case "verify":
+        return "验证邮箱";
+      case "update":
+        return "修改邮箱";
     }
-  }, [countdown]);
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>修改邮箱</CardTitle>
+        <CardTitle>{getTitle()}</CardTitle>
       </CardHeader>
       <CardContent>
         <UpdateEmailForm
           currentEmail={currentEmail}
+          mode={mode}
           onSubmit={handleSubmit}
           onSendOtp={handleSendOtp}
           isLoading={isLoading}
+          isVerifying={isVerifying}
           countdown={countdown}
         />
-        <div className="mt-6 space-y-3">
-          <p className="text-sm text-gray-600 text-center">
-            修改邮箱前请完成人机验证，每次发送或提交验证码都会消耗一次令牌。
-          </p>
-          <TurnstileWidget
-            siteKey={TURNSTILE_SITE_KEY}
-            resetSignal={resetSignal}
-            onSuccess={handleSolved}
-            onExpire={handleWidgetExpire}
-            onError={handleWidgetError}
+
+        {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP or submit */}
+        <div className={showCaptcha ? "mt-6" : "hidden"}>
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={siteKey}
+            options={{
+              appearance: "always",
+              refreshExpired: "never",
+              size: "normal",
+              execution: "execute",
+              action: "update-email",
+            }}
           />
-          {captchaError && (
-            <p className="text-sm text-red-600 text-center">{captchaError}</p>
-          )}
         </div>
       </CardContent>
     </Card>

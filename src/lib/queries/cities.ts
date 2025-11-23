@@ -2,19 +2,7 @@ import { asc, eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { cities } from "@/lib/schema";
-
-/**
- * City data type for city selector
- */
-export interface CityData {
-  iataCode: string;
-  name: string;
-  timezone: string;
-  pinyinFirstLetter: string | null;
-  continent: string | null;
-  isPopular: boolean;
-  displayOrder: number;
-}
+import { CityData } from "@/types/dto";
 
 /**
  * Get all cities (for city selector)

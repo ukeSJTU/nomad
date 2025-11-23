@@ -1,12 +1,40 @@
-import { AlertCircle, CheckCircle } from "lucide-react";
-import { headers } from "next/headers";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
+import { SecurityItem, type SecurityStatus } from "@/components/security";
 import { getUserSecurityStatus } from "@/lib/queries";
+import { requireAuth } from "@/utils/auth-helpers";
+
+export const dynamic = "force-dynamic";
+
+/**
+ * Security items configuration
+ * Contains text content for each security setting item
+ */
+const SECURITY_ITEMS = {
+  password: {
+    title: "登录密码",
+    description:
+      "安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。",
+    setLabel: "修改",
+    notSetLabel: "设置登录密码",
+    href: "/home/security/password",
+  },
+  phone: {
+    title: "绑定手机",
+    description:
+      "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
+    setLabel: "修改",
+    verifyLabel: "验证",
+    notSetLabel: "设置绑定手机",
+    href: "/home/security/phone",
+  },
+  email: {
+    title: "绑定邮箱",
+    description: "绑定邮箱后，您即可使用邮箱登录账号或找回密码等。",
+    setLabel: "修改",
+    verifyLabel: "验证",
+    notSetLabel: "设置绑定邮箱",
+    href: "/home/security/email",
+  },
+} as const;
 
 /**
  * Account Security Page (Server Component)
@@ -19,28 +47,40 @@ import { getUserSecurityStatus } from "@/lib/queries";
  * Features:
  * - Authentication check with redirect to sign-in
  * - Server-side data fetching with data masking
- * - Status indicators (✓ for set, ⚠️ for not set)
+ * - Status indicators (CheckCircle for set, AlertCircle for not set)
  * - Action buttons for each security item
  */
 export default async function SecurityPage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch user security status
-  const securityStatus = await getUserSecurityStatus(session.user.id);
+  const securityStatus = await getUserSecurityStatus(userId);
 
-  // Handle case where user data is not found (should not happen for authenticated users)
-  if (!securityStatus) {
-    redirect("/auth/sign-in");
-  }
+  // Helper function to determine security status
+  const getSecurityStatus = (
+    hasValue: boolean,
+    isVerified: boolean
+  ): SecurityStatus => {
+    if (!hasValue) return "notSet";
+    if (hasValue && !isVerified) return "unverified";
+    return "verified";
+  };
+
+  // Derived status for each security item
+  const passwordStatus: SecurityStatus = securityStatus.hasPassword
+    ? "verified"
+    : "notSet";
+
+  const phoneStatus: SecurityStatus = getSecurityStatus(
+    !!securityStatus.phoneNumber,
+    securityStatus.phoneNumberVerified
+  );
+
+  const emailStatus: SecurityStatus = getSecurityStatus(
+    !!securityStatus.email,
+    securityStatus.emailVerified
+  );
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -56,137 +96,50 @@ export default async function SecurityPage() {
         {/* Security Items */}
         <div className="space-y-4">
           {/* Login Password */}
-          <Card className="p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-4 flex-1">
-                {/* Status Icon */}
-                <div className="mt-1">
-                  {securityStatus.hasPassword ? (
-                    <CheckCircle className="size-5 text-green-600" />
-                  ) : (
-                    <AlertCircle className="size-5 text-yellow-600" />
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-1">登录密码</h3>
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    {securityStatus.hasPassword ? (
-                      <p className="text-green-600 font-medium">已设置 ✓</p>
-                    ) : (
-                      <p className="text-yellow-600 font-medium">未设置 ⚠️</p>
-                    )}
-                    <p className="mt-2">
-                      安全性高的密码以便账号更安全。建议定期更换密码，且设置一个包含数字和字母的密码，并且长度超过8位以上的密码。
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <div className="shrink-0">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/home/security/password">
-                    {securityStatus.hasPassword ? "修改" : "设置登录密码"}
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </Card>
+          <SecurityItem
+            title={SECURITY_ITEMS.password.title}
+            description={SECURITY_ITEMS.password.description}
+            status={passwordStatus}
+            value={undefined}
+            actionHref={SECURITY_ITEMS.password.href}
+            actionLabel={
+              passwordStatus === "verified"
+                ? SECURITY_ITEMS.password.setLabel
+                : SECURITY_ITEMS.password.notSetLabel
+            }
+          />
 
           {/* Bound Phone */}
-          <Card className="p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-4 flex-1">
-                {/* Status Icon */}
-                <div className="mt-1">
-                  {securityStatus.phoneNumber &&
-                  securityStatus.phoneNumberVerified ? (
-                    <CheckCircle className="size-5 text-green-600" />
-                  ) : (
-                    <AlertCircle className="size-5 text-yellow-600" />
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-1">绑定手机</h3>
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    {securityStatus.phoneNumber &&
-                    securityStatus.phoneNumberVerified ? (
-                      <>
-                        <p className="text-green-600 font-medium">
-                          已绑定 ✓ {securityStatus.phoneNumber}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="text-yellow-600 font-medium">未绑定 ⚠️</p>
-                    )}
-                    <p className="mt-2">
-                      绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <div className="shrink-0">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/home/security/phone">
-                    {securityStatus.phoneNumber &&
-                    securityStatus.phoneNumberVerified
-                      ? "修改"
-                      : "设置绑定手机"}
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </Card>
+          <SecurityItem
+            title={SECURITY_ITEMS.phone.title}
+            description={SECURITY_ITEMS.phone.description}
+            status={phoneStatus}
+            value={securityStatus.phoneNumber || undefined}
+            actionHref={SECURITY_ITEMS.phone.href}
+            actionLabel={
+              phoneStatus === "verified"
+                ? SECURITY_ITEMS.phone.setLabel
+                : phoneStatus === "unverified"
+                  ? SECURITY_ITEMS.phone.verifyLabel
+                  : SECURITY_ITEMS.phone.notSetLabel
+            }
+          />
 
           {/* Bound Email */}
-          <Card className="p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-4 flex-1">
-                {/* Status Icon */}
-                <div className="mt-1">
-                  {securityStatus.emailVerified ? (
-                    <CheckCircle className="size-5 text-green-600" />
-                  ) : (
-                    <AlertCircle className="size-5 text-yellow-600" />
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-1">绑定邮箱</h3>
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    {securityStatus.emailVerified ? (
-                      <>
-                        <p className="text-green-600 font-medium">
-                          已绑定 ✓ {securityStatus.email}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="text-yellow-600 font-medium">未绑定 ⚠️</p>
-                    )}
-                    <p className="mt-2">
-                      绑定邮箱后，您即可使用邮箱登录账号或找回密码等。
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <div className="shrink-0">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/home/security/email">
-                    {securityStatus.emailVerified ? "修改" : "设置绑定邮箱"}
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </Card>
+          <SecurityItem
+            title={SECURITY_ITEMS.email.title}
+            description={SECURITY_ITEMS.email.description}
+            status={emailStatus}
+            value={securityStatus.email || undefined}
+            actionHref={SECURITY_ITEMS.email.href}
+            actionLabel={
+              emailStatus === "verified"
+                ? SECURITY_ITEMS.email.setLabel
+                : emailStatus === "unverified"
+                  ? SECURITY_ITEMS.email.verifyLabel
+                  : SECURITY_ITEMS.email.notSetLabel
+            }
+          />
         </div>
       </div>
     </div>

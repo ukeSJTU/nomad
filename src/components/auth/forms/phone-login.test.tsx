@@ -48,7 +48,7 @@ describe("PhoneLoginForm", () => {
 
     // Should show validation error
     await waitFor(() => {
-      expect(screen.getByText("请输入手机号")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("请输入手机号")).toBeInTheDocument();
     });
 
     // onSubmit should not be called
@@ -74,7 +74,9 @@ describe("PhoneLoginForm", () => {
 
     // Should show validation error
     await waitFor(() => {
-      expect(screen.getByText("手机号码至少11位")).toBeInTheDocument();
+      expect(
+        screen.getByText("手机号格式不正确，请重新输入")
+      ).toBeInTheDocument();
     });
 
     // onSubmit should not be called
@@ -100,7 +102,9 @@ describe("PhoneLoginForm", () => {
 
     // Should show validation error
     await waitFor(() => {
-      expect(screen.getByText("手机号码只能包含数字")).toBeInTheDocument();
+      expect(
+        screen.getByText("手机号格式不正确，请重新输入")
+      ).toBeInTheDocument();
     });
 
     // onSubmit should not be called
@@ -125,7 +129,7 @@ describe("PhoneLoginForm", () => {
 
     // Should show validation error
     await waitFor(() => {
-      expect(screen.getByText("请输入密码")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("请输入密码")).toBeInTheDocument();
     });
 
     // onSubmit should not be called

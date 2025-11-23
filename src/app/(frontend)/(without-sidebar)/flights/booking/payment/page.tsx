@@ -1,40 +1,33 @@
-import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { getOrderForPayment, getUserBalance } from "@/lib/queries";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import PaymentPageClient from "./page.client";
-import { getOrderForPayment, getUserBalance } from "./queries";
+export const dynamic = "force-dynamic";
 
-type PageProps = {
+export default async function BookingPaymentPage({
+  searchParams,
+}: {
   searchParams: Promise<{
     orderId?: string;
   }>;
-};
-
-export default async function BookingPaymentPage({ searchParams }: PageProps) {
-  // Get authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+}) {
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Get orderId from search params
   const params = await searchParams;
   const orderId = params.orderId;
 
   if (!orderId) {
-    redirect("/flights/booking/passengers");
+    redirect("/error?type=missing_order_id");
   }
 
   // Fetch order details and user balance in parallel
   const [order, userBalance] = await Promise.all([
-    getOrderForPayment(orderId, session.user.id),
-    getUserBalance(session.user.id),
+    getOrderForPayment(orderId, userId),
+    getUserBalance(userId),
   ]);
 
   if (!order) {
@@ -47,13 +40,13 @@ export default async function BookingPaymentPage({ searchParams }: PageProps) {
     if (order.status === "CONFIRMED") {
       redirect(`/flights/booking/confirmation?orderId=${orderId}`);
     }
-    // Redirect to home if cancelled or refunded
-    redirect("/");
+    // Redirect to error page if cancelled or refunded
+    redirect("/error?type=invalid_order_status");
   }
 
   // Check if payment deadline has passed
   if (new Date() > order.paymentDeadline) {
-    redirect("/");
+    redirect("/error?type=payment_deadline_passed");
   }
 
   return <PaymentPageClient order={order} userBalance={userBalance} />;

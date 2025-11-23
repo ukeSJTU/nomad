@@ -94,6 +94,7 @@ export const orders = pgTable(
 
     // Status and Timing
     status: orderStatusEnum().notNull().default("PENDING_PAYMENT"),
+    cancellationReason: varchar("cancellation_reason", { length: 255 }),
     paymentDeadline: timestamp("payment_deadline", {
       withTimezone: true,
     }).notNull(),

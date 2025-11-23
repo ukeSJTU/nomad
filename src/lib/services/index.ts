@@ -30,3 +30,12 @@ export {
 
 // Export user services
 export { updateUserInfo } from "./user";
+
+// Export flight search history services
+export {
+  clearFlightSearchHistory,
+  recordFlightSearch,
+} from "./flight-search-history";
+
+// Export flight search services
+export { searchFlightsWithHistory } from "./flight-search";

@@ -1,17 +1,13 @@
-import { ApiResponse } from "@/lib/utils/api-response";
+import { NextResponse } from "next/server";
+
 import {
   type HealthData,
   healthDataSchema,
-  healthResponseSchema, // eslint-disable-line @typescript-eslint/no-unused-vars
-} from "@/types/api/health";
+  type HealthResponse,
+} from "@/types/api";
+import { ApiResponse } from "@/utils/api-response";
 
-/**
- * Check health status of the server
- * @description Check health status of the server
- * @response healthResponseSchema
- * @openapi
- */
-export async function GET() {
+export async function GET(): Promise<NextResponse<HealthResponse>> {
   const healthData: HealthData = {
     status: "ok",
     timestamp: new Date().toISOString(),

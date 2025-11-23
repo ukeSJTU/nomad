@@ -1,11 +1,12 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Separator } from "@/components/ui/separator";
 import { UserInfoForm } from "@/components/user";
-import { auth } from "@/lib/auth";
 import { getUserInfo } from "@/lib/queries";
+import { requireAuth } from "@/utils/auth-helpers";
+
+export const dynamic = "force-dynamic";
 
 /**
  * User Information Page (Server Component)
@@ -21,27 +22,19 @@ import { getUserInfo } from "@/lib/queries";
  * - Update functionality via Server Actions
  */
 export default async function UserInfoPage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  const userId = await requireAuth();
 
   // Fetch user information (with masked sensitive data)
-  const userData = await getUserInfo(session.user.id);
+  const userData = await getUserInfo(userId);
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!userData) {
-    redirect("/auth/sign-in");
+    redirect("/error?type=session_expired");
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="mx-auto pt-2 pb-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
@@ -56,37 +49,41 @@ export default async function UserInfoPage() {
           {/* Account Security Section */}
           <div className="space-y-6 bg-white p-6 rounded-lg border">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">账号安全</h2>
+              <h2 className="text-xl font-semibold text-foreground">
+                账号安全
+              </h2>
             </div>
 
             <Separator />
 
             <div className="space-y-4">
               {/* Email */}
-              <div className="grid grid-cols-[150px_1fr] items-start gap-4">
-                <label className="pt-1 text-sm font-medium text-gray-600">
+              <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+                <label className="pt-1 text-sm font-medium text-muted-foreground w-36">
                   邮箱
                 </label>
                 <div className="flex items-center gap-2">
                   {userData.email && userData.emailVerified ? (
                     <>
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-foreground">
                         {userData.email}
                       </span>
-                      <span className="text-xs text-green-600">(已验证)</span>
+                      <span className="text-xs text-chart-5">(已验证)</span>
                       <Link
-                        href="/home/info/email"
-                        className="text-sm text-blue-600 hover:underline"
+                        href="/home/security/email"
+                        className="text-sm text-primary hover:underline"
                       >
                         修改
                       </Link>
                     </>
                   ) : (
                     <>
-                      <span className="text-sm text-gray-500">未填写</span>
+                      <span className="text-sm text-muted-foreground">
+                        未填写
+                      </span>
                       <Link
-                        href="/home/info/email"
-                        className="text-sm text-blue-600 hover:underline"
+                        href="/home/security/email"
+                        className="text-sm text-primary hover:underline"
                       >
                         验证
                       </Link>
@@ -96,30 +93,32 @@ export default async function UserInfoPage() {
               </div>
 
               {/* Phone Number */}
-              <div className="grid grid-cols-[150px_1fr] items-start gap-4">
-                <label className="pt-1 text-sm font-medium text-gray-600">
+              <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+                <label className="pt-1 text-sm font-medium text-muted-foreground w-36">
                   手机号
                 </label>
                 <div className="flex items-center gap-2">
                   {userData.phoneNumber && userData.phoneNumberVerified ? (
                     <>
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-foreground">
                         {userData.phoneNumber}
                       </span>
-                      <span className="text-xs text-green-600">(已验证)</span>
+                      <span className="text-xs text-chart-5">(已验证)</span>
                       <Link
-                        href="/home/info/phone"
-                        className="text-sm text-blue-600 hover:underline"
+                        href="/home/security/phone"
+                        className="text-sm text-primary hover:underline"
                       >
                         修改
                       </Link>
                     </>
                   ) : (
                     <>
-                      <span className="text-sm text-gray-500">未填写</span>
+                      <span className="text-sm text-muted-foreground">
+                        未填写
+                      </span>
                       <Link
-                        href="/home/info/phone"
-                        className="text-sm text-blue-600 hover:underline"
+                        href="/home/security/phone"
+                        className="text-sm text-primary hover:underline"
                       >
                         验证
                       </Link>

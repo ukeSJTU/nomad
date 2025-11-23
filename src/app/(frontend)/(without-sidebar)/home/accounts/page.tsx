@@ -1,10 +1,10 @@
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
-import { LinkButton } from "@/components/auth/link-button";
-import SocialAccountCard from "@/components/auth/social-account-card";
-import { UnlinkButton } from "@/components/auth/unlink-button";
+import { LinkButton, SocialAccountCard, UnlinkButton } from "@/components/auth";
 import { auth } from "@/lib/auth";
+import { requireAuth } from "@/utils/auth-helpers";
+
+export const dynamic = "force-dynamic";
 
 /**
  * Social provider configuration
@@ -37,17 +37,10 @@ const PROVIDERS: ProviderConfig[] = [
  */
 export default async function AccountsPage() {
   // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  await requireAuth();
 
   // Fetch user's linked accounts using better-auth server API
+  const headersList = await headers();
   const accounts = await auth.api.listUserAccounts({
     headers: headersList,
   });

@@ -1,91 +1,101 @@
-import type { OrderDetailsWithAirports } from "@/app/(frontend)/(with-sidebar)/orders/[orderId]/queries";
+import { format } from "date-fns";
+import { zhCN } from "date-fns/locale";
+import { ArrowRight } from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
-import { formatCurrency } from "@/lib/utils/currency";
+import { OrderDetailFull } from "@/types/dto/orders";
 
 export type OrderPaymentDetailsProps = {
-  order: OrderDetailsWithAirports;
+  paymentData: OrderDetailFull["payment"];
 };
 
 /**
  * Order Payment Details Card Component
  *
- * Displays order payment breakdown and metadata (sticky on desktop)
+ * Displays order payment breakdown and metadata
+ *
+ * 我们的系统不考虑机建和燃油费用
  */
-export function OrderPaymentDetails({ order }: OrderPaymentDetailsProps) {
-  // Get ancillary services details
-  const ancillaryServices = (order.ancillaryDetails || [])
-    .map(code => getAncillaryServiceByCode(code))
-    .filter((service): service is NonNullable<typeof service> => !!service);
+export function OrderPaymentDetails({ paymentData }: OrderPaymentDetailsProps) {
+  // Format date
+  const formattedDate = format(new Date(paymentData.createdAt), "MM-dd HH:mm", {
+    locale: zhCN,
+  });
 
   return (
-    <Card className="sticky top-4">
+    <Card>
       <CardHeader>
         <CardTitle>订单支付明细</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">订单号</span>
-            <span className="font-mono text-xs">{order.orderNumber}</span>
+        {/* Order Metadata */}
+        <div className="flex justify-between items-start pt-2">
+          <div>
+            <div className="text-lg font-semibold">下单金额</div>
+            <div className="text-sm mt-1">{formattedDate}</div>
           </div>
-
-          <Separator />
-
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">机票费用</span>
-            <span>{formatCurrency(order.baseAmount)}</span>
-          </div>
-
-          {parseFloat(order.ancillaryAmount) > 0 && (
-            <>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">增值服务费用</span>
-                <span>{formatCurrency(order.ancillaryAmount)}</span>
-              </div>
-
-              {/* Ancillary Services Details */}
-              {ancillaryServices.length > 0 && (
-                <div className="pl-4 space-y-1">
-                  {ancillaryServices.map(service => (
-                    <div
-                      key={service.code}
-                      className="flex justify-between text-xs text-gray-500"
-                    >
-                      <span>• {service.name}</span>
-                      <span>¥{service.price}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-
-          <Separator />
-
-          <div className="flex justify-between items-center pt-2">
-            <span className="font-medium">总金额</span>
-            <span className="text-2xl font-bold text-orange-600">
-              {formatCurrency(order.totalAmount)}
-            </span>
+          <div className="text-right text-xl font-semibold text-blue-500">
+            ¥{paymentData.totalAmount}
           </div>
         </div>
 
-        {/* Order Metadata */}
-        <Separator />
-        <div className="space-y-1 text-xs text-gray-500">
-          <div className="flex justify-between">
-            <span>创建时间</span>
-            <span>{new Date(order.createdAt).toLocaleString("zh-CN")}</span>
-          </div>
-          {order.status === "PENDING_PAYMENT" && (
-            <div className="flex justify-between">
-              <span>支付截止</span>
+        {/* Payment Breakdown */}
+        <div className="space-y-4 bg-gray-100 rounded-xl p-4">
+          {/* Outbound Flight */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <span>{paymentData.outboundFlight.depatureCityName}</span>
+              <ArrowRight className="h-4 w-4 text-gray-400" />
+              <span>{paymentData.outboundFlight.arrivalCityName}</span>
+            </div>
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>成人</span>
               <span>
-                {new Date(order.paymentDeadline).toLocaleString("zh-CN")}
+                ¥{paymentData.outboundFlight.unitPrice} ×{" "}
+                {paymentData.outboundFlight.passengerCount}人
               </span>
             </div>
+          </div>
+
+          {/* Inbound Flight (if exists) */}
+          {paymentData.inboundFlight && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <span>{paymentData.inboundFlight.depatureCityName}</span>
+                  <ArrowRight className="h-4 w-4 text-gray-400" />
+                  <span>{paymentData.inboundFlight.arrivalCityName}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>成人</span>
+                  <span>
+                    ¥{paymentData.inboundFlight.unitPrice} ×{" "}
+                    {paymentData.inboundFlight.passengerCount}人
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Ancillary Services */}
+          {paymentData.ancillaryServices.length > 0 && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                {paymentData.ancillaryServices.map((service, idx) => (
+                  <div key={idx} className="space-y-1">
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>{service.name}</span>
+                      <span>
+                        ¥{service.unitPrice} × {service.quantity}份
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </CardContent>

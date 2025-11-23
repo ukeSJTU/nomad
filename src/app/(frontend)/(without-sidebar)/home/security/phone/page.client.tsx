@@ -1,18 +1,20 @@
 "use client";
 
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-import TurnstileWidget from "@/components/auth/turnstile-widget";
-import UpdatePhoneForm from "@/components/security/update-phone-form";
+import {
+  type PhoneFormMode,
+  type SecurityStatus,
+  UpdatePhoneForm,
+} from "@/components/security";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { updatePhoneNumberAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
-import { getTurnstileSiteKey } from "@/lib/turnstile";
-
-const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 
 /**
  * Props for the PhonePageClient component
@@ -20,14 +22,16 @@ const TURNSTILE_SITE_KEY = getTurnstileSiteKey();
 interface PhonePageClientProps {
   /** Current phone number (masked) or null if not set */
   currentPhoneNumber: string | null;
+  /** Current security status */
+  currentStatus: SecurityStatus;
 }
 
 /**
  * Client component for phone number management
  *
  * Handles the OTP verification flow:
- * 1. User enters new phone number
- * 2. Send OTP to new phone number
+ * 1. User enters new phone number (or uses current for verify mode)
+ * 2. Send OTP to phone number
  * 3. User enters OTP
  * 4. Verify OTP using better-auth
  * 5. Update database using Server Action
@@ -35,39 +39,52 @@ interface PhonePageClientProps {
  */
 export default function PhonePageClient({
   currentPhoneNumber,
+  currentStatus,
 }: PhonePageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(0);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const { countdown, start: startCountdown } = useOtpCountdown();
   const {
-    captchaError,
-    setCaptchaError,
-    resetSignal,
-    handleSolved,
-    handleWidgetError,
-    handleWidgetExpire,
+    siteKey,
+    turnstileRef,
+    isVerifying,
+    setError: setCaptchaError,
     prepareCaptchaRequest,
   } = useTurnstileCaptcha();
   const isCaptchaValidationError = (error?: { message?: string }) =>
     typeof error?.message === "string" &&
     error.message.toLowerCase().includes("captcha");
 
+  // Determine form mode based on current status
+  const mode: PhoneFormMode =
+    currentStatus === "notSet"
+      ? "bind"
+      : currentStatus === "unverified"
+        ? "verify"
+        : "update";
+
   /**
    * Handle sending OTP to the new phone number
    */
   const handleSendOtp = async (phoneNumber: string) => {
-    const captchaRequest = prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Add +86 prefix for China mainland phone numbers
-    const fullPhoneNumber = `+86${phoneNumber}`;
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
+      // Add +86 prefix for China mainland phone numbers
+      const fullPhoneNumber = `+86${phoneNumber}`;
+
       const { error } = await authClient.phoneNumber.sendOtp({
         phoneNumber: fullPhoneNumber,
         fetchOptions: captchaRequest.fetchOptions,
@@ -83,13 +100,12 @@ export default function PhonePageClient({
         toast.error("发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送");
-        setCountdown(60); // Start 60-second countdown
+        startCountdown();
       }
     } catch (error) {
       console.error("发送验证码异常:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
@@ -99,18 +115,23 @@ export default function PhonePageClient({
    * Verify OTP and update phone number
    */
   const handleSubmit = async (data: { phoneNumber: string; otp: string }) => {
-    const captchaRequest = prepareCaptchaRequest();
-
-    if (!captchaRequest) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Add +86 prefix for China mainland phone numbers
-    const fullPhoneNumber = `+86${data.phoneNumber}`;
-
     try {
+      // Show Turnstile widget before triggering verification
+      setShowCaptcha(true);
+
+      // Trigger Turnstile verification
+      const captchaRequest = await prepareCaptchaRequest();
+
+      if (!captchaRequest) {
+        toast.error("人机验证失败，请重新完成验证");
+        return;
+      }
+
+      setIsLoading(true);
+
+      // Add +86 prefix for China mainland phone numbers
+      const fullPhoneNumber = `+86${data.phoneNumber}`;
+
       // 1. Verify OTP using better-auth
       const { error: verifyError } = await authClient.phoneNumber.verify({
         phoneNumber: fullPhoneNumber,
@@ -146,50 +167,51 @@ export default function PhonePageClient({
       console.error("Update phone number error:", error);
       toast.error("网络错误，请稍后重试");
     } finally {
-      captchaRequest.complete();
       setIsLoading(false);
     }
   };
 
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
+  // Dynamic title based on mode
+  const getTitle = () => {
+    switch (mode) {
+      case "bind":
+        return "绑定手机号";
+      case "verify":
+        return "验证手机号";
+      case "update":
+        return "修改手机号";
     }
-  }, [countdown]);
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          {currentPhoneNumber ? "修改手机号" : "绑定手机号"}
-        </CardTitle>
+        <CardTitle>{getTitle()}</CardTitle>
       </CardHeader>
       <CardContent>
         <UpdatePhoneForm
           currentPhoneNumber={currentPhoneNumber}
+          mode={mode}
           onSubmit={handleSubmit}
           onSendOtp={handleSendOtp}
           isLoading={isLoading}
+          isVerifying={isVerifying}
           countdown={countdown}
         />
-        <div className="mt-6 space-y-3">
-          <p className="text-sm text-gray-600 text-center">
-            绑定或修改手机号前，请先完成人机验证，每次发送或验证短信验证码都需要新的令牌。
-          </p>
-          <TurnstileWidget
-            siteKey={TURNSTILE_SITE_KEY}
-            resetSignal={resetSignal}
-            onSuccess={handleSolved}
-            onExpire={handleWidgetExpire}
-            onError={handleWidgetError}
+
+        {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP or submit */}
+        <div className={showCaptcha ? "mt-6" : "hidden"}>
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={siteKey}
+            options={{
+              appearance: "always",
+              refreshExpired: "never",
+              size: "normal",
+              execution: "execute",
+              action: "update-phone",
+            }}
           />
-          {captchaError && (
-            <p className="text-sm text-red-600 text-center">{captchaError}</p>
-          )}
         </div>
       </CardContent>
     </Card>

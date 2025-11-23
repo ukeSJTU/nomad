@@ -167,7 +167,7 @@ describe("PasswordSetupForm", () => {
     const onSubmit = vi.fn();
     render(<PasswordSetupForm onSubmit={onSubmit} isLoading={true} />);
 
-    expect(screen.getByRole("button", { name: "创建中..." })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "设置中..." })).toBeDisabled();
   });
 
   it("should show validation error for password longer than 20 characters", async () => {
@@ -236,18 +236,18 @@ describe("PasswordSetupForm", () => {
     const passwordInput = screen.getByPlaceholderText("请输入密码");
 
     // Initially, all required requirements should show X icon (gray)
-    expect(screen.getByText("8-20位字符")).toHaveClass("text-gray-600");
+    expect(screen.getByText("8-20位字符")).toHaveClass("text-foreground");
     expect(screen.getByText("包含至少一个大写字母")).toHaveClass(
-      "text-gray-600"
+      "text-foreground"
     );
     expect(screen.getByText("包含至少一个小写字母")).toHaveClass(
-      "text-gray-600"
+      "text-foreground"
     );
 
     // Type a password that meets length requirement
     await user.type(passwordInput, "password");
     await waitFor(() => {
-      expect(screen.getByText("8-20位字符")).toHaveClass("text-green-600");
+      expect(screen.getByText("8-20位字符")).toHaveClass("text-chart-5");
     });
 
     // Add uppercase letter
@@ -255,10 +255,10 @@ describe("PasswordSetupForm", () => {
     await user.type(passwordInput, "Password");
     await waitFor(() => {
       expect(screen.getByText("包含至少一个大写字母")).toHaveClass(
-        "text-green-600"
+        "text-chart-5"
       );
       expect(screen.getByText("包含至少一个小写字母")).toHaveClass(
-        "text-green-600"
+        "text-chart-5"
       );
     });
 
@@ -266,17 +266,15 @@ describe("PasswordSetupForm", () => {
     await user.clear(passwordInput);
     await user.type(passwordInput, "Password123");
     await waitFor(() => {
-      expect(screen.getByText("8-20位字符")).toHaveClass("text-green-600");
+      expect(screen.getByText("8-20位字符")).toHaveClass("text-chart-5");
       expect(screen.getByText("包含至少一个大写字母")).toHaveClass(
-        "text-green-600"
+        "text-chart-5"
       );
       expect(screen.getByText("包含至少一个小写字母")).toHaveClass(
-        "text-green-600"
+        "text-chart-5"
       );
       // Number requirement is optional, so it should show green when met
-      expect(screen.getByText(/包含至少一个数字/)).toHaveClass(
-        "text-green-600"
-      );
+      expect(screen.getByText(/包含至少一个数字/)).toHaveClass("text-chart-5");
     });
   });
 
@@ -320,9 +318,11 @@ describe("PasswordSetupForm", () => {
     render(<PasswordSetupForm onSubmit={onSubmit} />);
 
     // Optional requirements should have gray text when not met
-    expect(screen.getByText(/包含至少一个数字/)).toHaveClass("text-gray-500");
+    expect(screen.getByText(/包含至少一个数字/)).toHaveClass(
+      "text-muted-foreground"
+    );
     expect(screen.getByText(/包含至少一个特殊符号/)).toHaveClass(
-      "text-gray-500"
+      "text-muted-foreground"
     );
   });
 });

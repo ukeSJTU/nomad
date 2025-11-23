@@ -18,7 +18,9 @@ import { Input } from "@/components/ui/input";
 import {
   type PhoneVerificationData,
   phoneVerificationSchema,
-} from "@/types/auth";
+} from "@/types/validations/auth";
+
+import OtpInput from "./otp-input";
 
 interface PhoneVerificationFormProps {
   onSubmit: (data: PhoneVerificationData) => void;
@@ -92,42 +94,28 @@ export default function PhoneVerificationForm({
           />
 
           {/* OTP Section */}
-          <div>
-            <FormLabel className="text-sm font-medium text-gray-700 mb-3 block">
-              短信验证码
-            </FormLabel>
-            <div className="flex gap-2">
-              {/* OTP Input */}
-              <FormField
-                control={form.control}
-                name="otp"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="6位数字"
-                        className="h-12"
-                        maxLength={6}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Send OTP Button */}
-              <Button
-                type="button"
-                variant="outline"
-                className="h-12 px-4 text-blue-600 border-blue-600 hover:bg-blue-50"
-                onClick={handleSendOtp}
-                disabled={countdown > 0 || isLoading}
-              >
-                {countdown > 0 ? `${countdown}s` : "发送验证码"}
-              </Button>
-            </div>
-          </div>
+          <FormField
+            control={form.control}
+            name="otp"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-gray-700">
+                  短信验证码
+                </FormLabel>
+                <FormControl>
+                  <OtpInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    onSendOtp={handleSendOtp}
+                    countdown={countdown}
+                    isLoading={isLoading}
+                    placeholder="6位数字"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           {/* Terms Agreement Checkbox */}
           <FormField

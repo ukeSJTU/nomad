@@ -41,7 +41,7 @@ import {
   payments,
   user,
 } from "@/lib/schema";
-import { generateAirlineLogoForSeed } from "@/lib/utils/airline";
+import { generateAirlineLogoForSeed } from "@/utils/airline";
 
 import { REAL_AIRLINES } from "./fixtures/base/airlines";
 import { REAL_AIRPORTS } from "./fixtures/base/airports";

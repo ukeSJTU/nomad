@@ -2,36 +2,8 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { account, user } from "@/lib/schema";
+import type { UserInfo, UserSecurityStatus } from "@/types/dto";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
-
-/**
- * User info data structure for frontend display
- */
-export interface UserInfo {
-  id: string;
-  name: string;
-  nickname: string | null;
-  email: string;
-  emailVerified: boolean;
-  phoneNumber: string | null;
-  phoneNumberVerified: boolean;
-  gender: "male" | "female" | "other" | null;
-  birthday: string | null;
-  image: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-/**
- * User security status data structure for frontend display
- */
-export interface UserSecurityStatus {
-  hasPassword: boolean;
-  email: string;
-  emailVerified: boolean;
-  phoneNumber: string | null;
-  phoneNumberVerified: boolean;
-}
 
 /**
  * Get user information by user ID
@@ -42,12 +14,8 @@ export interface UserSecurityStatus {
  * @param userId - The ID of the user to fetch
  * @returns User info with masked sensitive data, or null if user not found
  */
-export async function getUserInfo(userId: string): Promise<UserInfo | null> {
+export async function getUserInfo(userId: string): Promise<UserInfo> {
   const [result] = await db.select().from(user).where(eq(user.id, userId));
-
-  if (!result) {
-    return null;
-  }
 
   // Apply data masking for sensitive fields
   const maskedEmail = maskEmail(result.email);
@@ -87,13 +55,9 @@ export async function getUserInfo(userId: string): Promise<UserInfo | null> {
  */
 export async function getUserSecurityStatus(
   userId: string
-): Promise<UserSecurityStatus | null> {
+): Promise<UserSecurityStatus> {
   // Fetch user data
   const [userData] = await db.select().from(user).where(eq(user.id, userId));
-
-  if (!userData) {
-    return null;
-  }
 
   // Check if user has a password by querying account table for credential provider
   const credentialAccounts = await db
@@ -118,4 +82,23 @@ export async function getUserSecurityStatus(
     phoneNumber: maskedPhone,
     phoneNumberVerified: userData.phoneNumberVerified ?? false,
   };
+}
+
+/**
+ * Get user balance
+ *
+ * This function fetches the user's current balance from the database.
+ *
+ * @param userId - The ID of the user to fetch
+ * @returns User balance as a string (e.g., "10000.00"), or "0.00" if user not found
+ */
+export async function getUserBalance(userId: string): Promise<string> {
+  const [userData] = await db
+    .select({
+      balance: user.balance,
+    })
+    .from(user)
+    .where(eq(user.id, userId));
+
+  return userData?.balance ?? "0.00";
 }

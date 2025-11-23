@@ -1,13 +1,15 @@
 import {
+  bigint,
   boolean,
   date,
+  integer,
   numeric,
   pgTable,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
 
-import { genderEnum } from "@/lib/schema/enums";
+import { genderEnum } from "./src/lib/schema/enums";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -23,7 +25,7 @@ export const user = pgTable("user", {
   phoneNumber: text("phone_number").unique(),
   phoneNumberVerified: boolean("phone_number_verified"),
   // User balance for payments (in CNY)
-  balance: numeric({ precision: 10, scale: 2 }).notNull().default("0.00"),
+  balance: numeric({ precision: 10, scale: 2 }).notNull().default("10000.00"),
   // User profile fields
   nickname: text("nickname"),
   gender: genderEnum("gender"),
@@ -75,4 +77,11 @@ export const verification = pgTable("verification", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+});
+
+export const rateLimit = pgTable("rate_limit", {
+  id: text("id").primaryKey(),
+  key: text("key"),
+  count: integer("count"),
+  lastRequest: bigint("last_request", { mode: "number" }),
 });

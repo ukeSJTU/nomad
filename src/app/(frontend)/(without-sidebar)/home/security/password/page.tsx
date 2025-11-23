@@ -1,11 +1,11 @@
-import { headers } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
 import { getUserSecurityStatus } from "@/lib/queries/user";
+import { requireAuth } from "@/utils/auth-helpers";
 
 import PasswordPageClient from "./page.client";
+
+export const dynamic = "force-dynamic";
 
 /**
  * Password Management Page (Server Component)
@@ -21,26 +21,13 @@ import PasswordPageClient from "./page.client";
  */
 export default async function PasswordPage() {
   // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  // Redirect to sign-in if not authenticated
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  const userId = await requireAuth();
 
   // Fetch user security status to determine if user has a password
-  const securityStatus = await getUserSecurityStatus(session.user.id);
-
-  // Handle case where user data is not found (should not happen for authenticated users)
-  if (!securityStatus) {
-    redirect("/auth/sign-in");
-  }
+  const securityStatus = await getUserSecurityStatus(userId);
 
   // Get user email for OAuth password setup (unmasked)
-  const userEmail = session.user.email;
+  const userEmail = securityStatus.email;
 
   return (
     <div className="container mx-auto py-8 px-4">

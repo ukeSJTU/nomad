@@ -43,13 +43,43 @@ export default function FlightsLayout({
       {/* Only show tabs for main flight pages, not for search results */}
       {currentTab && (
         <Tabs value={currentTab} onValueChange={handleTabChange}>
-          <TabsList className="w-full h-12 grid grid-cols-6">
-            <TabsTrigger value="domestic">国内、国际/中国港澳台</TabsTrigger>
-            <TabsTrigger value="special">特价机票</TabsTrigger>
-            <TabsTrigger value="status">航班动态</TabsTrigger>
-            <TabsTrigger value="seat">在线选座</TabsTrigger>
-            <TabsTrigger value="refund">退票改签</TabsTrigger>
-            <TabsTrigger value="more">更多服务</TabsTrigger>
+          <TabsList className="w-full h-12 grid grid-cols-6 rounded-t-lg rounded-b-none">
+            <TabsTrigger
+              value="domestic"
+              className="rounded-t-md rounded-b-none data-[state=active]:font-semibold data-[state=active]:text-foreground text-muted-foreground"
+            >
+              国内、国际/中国港澳台
+            </TabsTrigger>
+            <TabsTrigger
+              value="special"
+              className="rounded-t-md rounded-b-none data-[state=active]:font-semibold data-[state=active]:text-foreground text-muted-foreground"
+            >
+              特价机票
+            </TabsTrigger>
+            <TabsTrigger
+              value="status"
+              className="rounded-t-md rounded-b-none data-[state=active]:font-semibold data-[state=active]:text-foreground text-muted-foreground"
+            >
+              航班动态
+            </TabsTrigger>
+            <TabsTrigger
+              value="seat"
+              className="rounded-t-md rounded-b-none data-[state=active]:font-semibold data-[state=active]:text-foreground text-muted-foreground"
+            >
+              在线选座
+            </TabsTrigger>
+            <TabsTrigger
+              value="refund"
+              className="rounded-t-md rounded-b-none data-[state=active]:font-semibold data-[state=active]:text-foreground text-muted-foreground"
+            >
+              退票改签
+            </TabsTrigger>
+            <TabsTrigger
+              value="more"
+              className="rounded-t-md rounded-b-none data-[state=active]:font-semibold data-[state=active]:text-foreground text-muted-foreground"
+            >
+              更多服务
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       )}

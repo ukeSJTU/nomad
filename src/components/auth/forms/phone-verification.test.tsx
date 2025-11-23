@@ -31,7 +31,9 @@ describe("PhoneVerificationForm", () => {
     await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
-      expect(screen.getByText("请输入手机号")).toBeInTheDocument();
+      expect(
+        screen.getByText("手机号格式不正确，请重新输入")
+      ).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -47,7 +49,9 @@ describe("PhoneVerificationForm", () => {
     await user.click(screen.getByRole("button", { name: "下一步，设置密码" }));
 
     await waitFor(() => {
-      expect(screen.getByText("手机号码至少11位")).toBeInTheDocument();
+      expect(
+        screen.getByText("手机号格式不正确，请重新输入")
+      ).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -120,8 +124,10 @@ describe("PhoneVerificationForm", () => {
     const onSubmit = vi.fn();
     render(<PhoneVerificationForm onSubmit={onSubmit} countdown={60} />);
 
-    expect(screen.getByRole("button", { name: "60s" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "60s" })).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "60秒后重试" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "60秒后重试" })).toBeDisabled();
   });
 
   it("should disable form when isLoading is true", () => {

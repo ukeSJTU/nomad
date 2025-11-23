@@ -1,19 +1,12 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { requireAuth } from "@/utils/auth-helpers";
 
-import { NewPassengerClient } from "@/components/passengers/new-passenger-client";
-import { auth } from "@/lib/auth";
+import { NewPassengerClient } from "./page.client";
+
+export const dynamic = "force-dynamic";
 
 export default async function NewPassengerPage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-
-  if (!session?.user?.id) {
-    redirect("/auth/sign-in");
-  }
+  // Check authentication (redirects to sign-in if not authenticated)
+  await requireAuth();
 
   return <NewPassengerClient />;
 }

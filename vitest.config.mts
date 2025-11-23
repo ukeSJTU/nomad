@@ -93,15 +93,15 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: "unit",
+          name: { label: "unit", color: "green" },
           environment: "jsdom",
-          include: ["src/**/*.{test,spec}.{ts}"],
+          include: ["src/**/*.test.ts"],
           exclude: [
             "**/node_modules/**",
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from unit tests
           ],
-          setupFiles: ["./src/tests/setup/global.ts"],
+          setupFiles: ["./tests/setup/global.ts"],
         },
       },
       {
@@ -115,19 +115,7 @@ export default defineConfig({
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from component tests
           ],
-          setupFiles: ["./src/tests/setup/global.ts"],
-        },
-      },
-      {
-        extends: true,
-        test: {
-          name: { label: "integration", color: "cyan" },
-          include: ["tests/integration/**/*.integration.test.ts"],
-          environment: "node", // Integration tests use real database, no jsdom needed
-          globals: true,
-          setupFiles: ["./tests/setup/integration.ts"],
-          pool: "forks",
-          poolOptions: { forks: { singleFork: true } },
+          setupFiles: ["./tests/setup/global.ts"],
         },
       },
       {

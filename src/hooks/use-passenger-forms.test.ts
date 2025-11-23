@@ -1,11 +1,11 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { PassengerFormData } from "@/components/flights/passenger-form-card";
+import type { PassengerFormData } from "@/components/flights/booking/passenger-form-card";
+import type { SavedPassenger } from "@/types/dto";
 
 import {
   isFormEmpty,
-  type SavedPassenger,
   savedPassengerToFormData,
   shouldShowDeleteButton,
   usePassengerForms,
