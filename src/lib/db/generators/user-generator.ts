@@ -48,6 +48,7 @@ export function generateUsers(count: number): UserInsert[] {
         probability: 0.5,
       }),
       phoneNumberVerified: null,
+      balance: "10000.00", // Default balance for all users
     });
   }
 
