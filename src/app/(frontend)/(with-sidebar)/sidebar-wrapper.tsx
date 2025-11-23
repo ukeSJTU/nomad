@@ -10,7 +10,7 @@ export function SidebarWrapper({ children }: { children: ReactNode }) {
       defaultOpen={true}
       style={
         {
-          "--sidebar-width": "11rem",
+          "--sidebar-width": "13rem",
           "--sidebar-width-icon": "4.75rem",
         } as React.CSSProperties
       }
