@@ -20,6 +20,7 @@ export function ConfirmationFlightDetails({
   outboundFlight,
   inboundFlight,
 }: ConfirmationFlightDetailsProps) {
+  console.table(outboundFlight);
   return (
     <div className="space-y-4">
       {/* Outbound Flight Information */}

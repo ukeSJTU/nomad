@@ -13,13 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { OrderConfirmation } from "@/types/dto/booking";
+import { ConfirmationPageOrderDTO } from "@/types/dto";
 
-type Props = {
-  order: OrderConfirmation;
-};
-
-export default function ConfirmationPageClient({ order }: Props) {
+export default function ConfirmationPageClient({
+  order,
+}: {
+  order: ConfirmationPageOrderDTO;
+}) {
   const router = useRouter();
 
   return (

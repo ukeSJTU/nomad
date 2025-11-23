@@ -5,13 +5,13 @@ import { requireAuth } from "@/utils/auth-helpers";
 
 import PaymentPageClient from "./page.client";
 
-type PageProps = {
+export default async function BookingPaymentPage({
+  searchParams,
+}: {
   searchParams: Promise<{
     orderId?: string;
   }>;
-};
-
-export default async function BookingPaymentPage({ searchParams }: PageProps) {
+}) {
   // Check authentication (redirects to sign-in if not authenticated)
   const userId = await requireAuth();
 
