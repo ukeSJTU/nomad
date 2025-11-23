@@ -1,4 +1,10 @@
 {
   "title": "功能需求",
-  "pages": ["user-module", "flight-module", "order-module", "payment-module"]
+  "pages": [
+    "user-module",
+    "flight-module",
+    "order-module",
+    "payment-module",
+    "ui-ux-module"
+  ]
 }
