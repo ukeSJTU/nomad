@@ -117,7 +117,11 @@ export function AncillarySelection({
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Accordion type="multiple" className="w-full">
+        <Accordion
+          type="multiple"
+          className="w-full"
+          defaultValue={["insurance", "airport-pickup", "meal"]}
+        >
           {/* Insurance Services */}
           <AccordionItem value="insurance">
             <AccordionTrigger>
