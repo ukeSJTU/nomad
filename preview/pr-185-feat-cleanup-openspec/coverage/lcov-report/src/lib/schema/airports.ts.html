@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">69.69% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/33</span>
+                <span class='fraction'>23/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">69.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/33</span>
+                <span class='fraction'>23/33</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -194,26 +194,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { relations, sql } from "drizzle-orm";
 import {
@@ -270,26 +270,26 @@ export const airports = pgTable(
   },
   table =&gt; [
     // Index Design
-    index("idx_airports_city_id").on(table.cityId), // Query all airports in a city
-    index("idx_airports_is_deleted").on(table.isDeleted), // Soft delete filter optimization
-    index("idx_airports_name").on(table.name), // Search by name
+<span class="cstat-no" title="statement not covered" >    index("idx_airports_city_id").on(table.cityId), // Query all airports in a city</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_airports_is_deleted").on(table.isDeleted), // Soft delete filter optimization</span>
+<span class="cstat-no" title="statement not covered" >    index("idx_airports_name").on(table.name), // Search by name</span>
 &nbsp;
     // Composite Index: Query active airports in a city
-    index("idx_airports_city_active").on(table.cityId, table.isDeleted),
+<span class="cstat-no" title="statement not covered" >    index("idx_airports_city_active").on(table.cityId, table.isDeleted),</span>
 &nbsp;
     // Constraints
-    check("airports_iata_code_format", sql`${table.iataCode} ~ '^[A-Z]{3}$'`), // IATA code must be 3 uppercase letters
-  ]
+<span class="cstat-no" title="statement not covered" >    check("airports_iata_code_format", sql`${table.iataCode} ~ '^[A-Z]{3}$'`), // IATA code must be 3 uppercase letters</span>
+<span class="cstat-no" title="statement not covered" >  ]</span>
 );
 &nbsp;
 /**
  * Airports Relations
  */
 export const airportsRelations = relations(airports, ({ one }) =&gt; ({
-  city: one(cities, {
-    fields: [airports.cityId],
-    references: [cities.id],
-  }),
+<span class="cstat-no" title="statement not covered" >  city: one(cities, {</span>
+<span class="cstat-no" title="statement not covered" >    fields: [airports.cityId],</span>
+<span class="cstat-no" title="statement not covered" >    references: [cities.id],</span>
+<span class="cstat-no" title="statement not covered" >  }),</span>
 }));
 &nbsp;</pre></td></tr></table></pre>
 
@@ -298,7 +298,7 @@ export const airportsRelations = relations(airports, ({ one }) =&gt; ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-20T11:08:42.879Z
+                at 2025-11-23T08:40:08.769Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
