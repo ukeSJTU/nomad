@@ -14,8 +14,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { usePassengerForms } from "@/hooks/use-passenger-forms";
-import { createOrderAction } from "@/lib/actions";
-import type { CreateOrderResult } from "@/types/actions";
+import { createOrderAction, CreateOrderResult } from "@/lib/actions";
 import type { PassengerPageFlight, SavedPassenger } from "@/types/dto";
 
 interface BookingPassengersPageClientProps {

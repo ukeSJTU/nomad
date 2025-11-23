@@ -12,12 +12,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { updateOrderAncillaryAction } from "@/lib/actions/orders";
+import {
+  updateOrderAncillaryAction,
+  type UpdateOrderAncillaryResult,
+} from "@/lib/actions/orders";
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
 } from "@/lib/schema";
-import type { UpdateOrderAncillaryResult } from "@/types/actions/orders";
 import type { AncillaryPageOrder } from "@/types/dto";
 import {
   addCurrency,

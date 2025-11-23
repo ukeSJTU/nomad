@@ -11,11 +11,6 @@ import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
 import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/lib/schema/orders";
 import { cancelOrder, refundOrder } from "@/lib/services/orders";
-import type {
-  CreateOrderResult,
-  DeleteOrderResult,
-  UpdateOrderAncillaryResult,
-} from "@/types/actions/orders";
 import type { ActionResult } from "@/types/common";
 import {
   addCurrency,
@@ -24,6 +19,32 @@ import {
   parseCurrency,
   toDatabaseValue,
 } from "@/utils/currency";
+
+/**
+ * Create order action result data
+ */
+export type CreateOrderData = {
+  orderId: string;
+  orderNumber: string;
+  paymentDeadline: string;
+};
+
+export type CreateOrderResult = ActionResult<CreateOrderData>;
+
+/**
+ * Update order ancillary action result data
+ */
+export type UpdateOrderAncillaryData = {
+  orderId: string;
+  totalAmount: string;
+};
+
+export type UpdateOrderAncillaryResult = ActionResult<UpdateOrderAncillaryData>;
+
+/**
+ * Delete order action result
+ */
+export type DeleteOrderResult = ActionResult<void>;
 
 /**
  * Validation schema for passenger data

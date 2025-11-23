@@ -11,7 +11,7 @@ import { getOrderDetailById } from "@/lib/queries/orders";
 import { user } from "@/lib/schema";
 import { orders, payments } from "@/lib/schema/orders";
 import { sendOrderConfirmationEmail } from "@/lib/services/email";
-import type { ProcessPaymentResult } from "@/types/actions/payments";
+import type { ActionResult } from "@/types/common";
 import {
   getCurrencyValue,
   parseCurrency,
@@ -19,6 +19,20 @@ import {
   toDatabaseValue,
 } from "@/utils/currency";
 import { transformOrderDetailToEmailData } from "@/utils/email-transformers";
+
+/**
+ * Process payment action result data
+ */
+export type ProcessPaymentData = {
+  orderId: string;
+  orderNumber: string;
+  paymentId: string;
+  transactionId: string;
+  amount: string;
+  remainingBalance: string;
+};
+
+export type ProcessPaymentResult = ActionResult<ProcessPaymentData>;
 
 /**
  * Validation schema for process payment request

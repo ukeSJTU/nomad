@@ -7,7 +7,7 @@
 /**
  * Seat class information for a flight
  */
-export type SeatClass = {
+type SeatClass = {
   id: string;
   classType: "ECONOMY" | "BUSINESS" | "FIRST";
   totalSeats: number;
