@@ -239,25 +239,25 @@ async function setupGitHooks() {
 async function setupEnvFile() {
   logStep("5/7", "配置环境变量文件");
 
-  const envPath = path.join(__dirname, "../.env");
+  const envPath = path.join(__dirname, "../.env.local");
   const envExamplePath = path.join(__dirname, "../.env.example");
 
   if (fs.existsSync(envPath)) {
-    logInfo(".env 文件已存在，跳过创建");
+    logInfo(".env.local 文件已存在，跳过创建");
     return;
   }
 
   if (!fs.existsSync(envExamplePath)) {
-    logWarning(".env.example 文件不存在，跳过 .env 创建");
+    logWarning(".env.example 文件不存在，跳过 .env.local 创建");
     return;
   }
 
   try {
     fs.copyFileSync(envExamplePath, envPath);
-    logSuccess(".env 文件已创建（基于 .env.example）");
-    logWarning("请编辑 .env 文件并填写必要的配置信息");
+    logSuccess(".env.local 文件已创建（基于 .env.example）");
+    logWarning("请编辑 .env.local 文件并填写必要的配置信息");
   } catch (error) {
-    logWarning(".env 文件创建失败，请手动复制 .env.example");
+    logWarning(".env.local 文件创建失败，请手动复制 .env.example");
   }
 }
 
@@ -318,7 +318,7 @@ async function showNextSteps() {
     {
       title: "1. 配置环境变量",
       commands: [
-        "   编辑 .env 文件，填写必要的配置信息",
+        "   编辑 .env.local 文件，填写必要的配置信息",
         "   特别是数据库连接字符串 (DATABASE_URL)",
       ],
     },
