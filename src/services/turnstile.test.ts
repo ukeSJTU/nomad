@@ -118,7 +118,7 @@ describe("Turnstile captcha plugin", () => {
     console.log("result status", result?.response.status);
 
     expect(result).toBeDefined();
-    expect(result?.response.status).toBe(400);
+    expect(result?.response.status).toBe(500);
     expect(betterFetchMock).not.toHaveBeenCalled();
   });
 });

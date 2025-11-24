@@ -7,5 +7,6 @@
  * Note: Most internal operations use Server Actions instead of REST APIs
  */
 
+export * from "./auth-forgot-password";
 export * from "./health";
 export * from "./response";

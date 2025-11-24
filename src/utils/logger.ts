@@ -1,5 +1,4 @@
 import pino from "pino";
-import pretty from "pino-pretty";
 
 import { isDevelopment, isProduction, isTest } from "@/utils/env";
 
@@ -64,26 +63,20 @@ const pinoOptions: pino.LoggerOptions = {
   }),
 };
 
-/**
- * Creates the appropriate stream for the logger based on environment.
- * Uses pino-pretty stream in development for better readability.
- * Uses standard process.stdout in production for structured logging.
- */
-const createLoggerStream = () => {
+// 说明：避免在测试环境同步引入 pino-pretty，使用顶层 await 按需加载以防止阻塞
+const loggerStream = await (async () => {
   if (isDevelopment() && !isTest()) {
-    // Development: Use pino-pretty stream for enhanced readability
+    const { default: pretty } = await import("pino-pretty");
     return pretty({
-      colorize: true, // Add colors to log levels
-      ignore: "pid,hostname", // Hide process ID and hostname for cleaner output
-      translateTime: "yyyy-mm-dd HH:MM:ss", // Human-readable timestamp format
-      singleLine: false, // Multi-line formatting for better readability
-      hideObject: false, // Show log objects in full detail
+      colorize: true,
+      ignore: "pid,hostname",
+      translateTime: "yyyy-mm-dd HH:MM:ss",
+      singleLine: false,
+      hideObject: false,
     });
   }
-
-  // Production/Test: Use standard output for structured logging
   return process.stdout;
-};
+})();
 
 /**
  * Configured pino logger instance.
@@ -105,6 +98,6 @@ const createLoggerStream = () => {
  * logger.debug({ req, res }, 'Request processed');
  * ```
  */
-const logger = pino(pinoOptions, createLoggerStream());
+const logger = pino(pinoOptions, loggerStream);
 
 export default logger;

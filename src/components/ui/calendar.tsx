@@ -131,6 +131,18 @@ function Calendar({
               data-slot="calendar"
               ref={rootRef}
               className={cn(className)}
+              onClickCapture={e => {
+                const target = e.target as HTMLElement;
+                const button = target.closest(
+                  "button[data-day]"
+                ) as HTMLButtonElement | null;
+                if (button?.dataset.day && props?.onClick) {
+                  const selected = new Date(button.dataset.day);
+                  // Call DayPicker's selection handler if provided via props
+                  (props as any).onClick?.(e);
+                  (props as any).onSelect?.(selected);
+                }
+              }}
               {...props}
             />
           );
@@ -206,7 +218,9 @@ function CalendarDayButton({
         className
       )}
       {...props}
-    />
+    >
+      {day.date.getDate()}
+    </Button>
   );
 }
 

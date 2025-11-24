@@ -141,7 +141,7 @@ describe("useDateSelector", () => {
   });
 
   describe("handleDateSelect - round-trip", () => {
-    it("handles complete range selection", () => {
+    it("updates only the active field for single selection", () => {
       const onDepartureDateChange = vi.fn();
       const onReturnDateChange = vi.fn();
       const { result } = renderHook(() =>
@@ -153,20 +153,30 @@ describe("useDateSelector", () => {
         })
       );
 
-      const from = new Date("2025-11-20");
-      const to = new Date("2025-11-25");
+      const departure = new Date("2025-11-20");
+      const ret = new Date("2025-11-25");
 
       act(() => {
         result.current.handleDepartureClick();
       });
 
       act(() => {
-        result.current.handleDateSelect({ from, to });
+        result.current.handleDateSelect(departure);
       });
 
-      expect(onDepartureDateChange).toHaveBeenCalledWith(from);
-      expect(onReturnDateChange).toHaveBeenCalledWith(to);
+      expect(onDepartureDateChange).toHaveBeenCalledWith(departure);
+      expect(onReturnDateChange).not.toHaveBeenCalled();
       expect(result.current.calendarOpen).toBe(false);
+
+      act(() => {
+        result.current.handleReturnClick();
+      });
+
+      act(() => {
+        result.current.handleDateSelect(ret);
+      });
+
+      expect(onReturnDateChange).toHaveBeenCalledWith(ret);
     });
 
     it("handles single date selection for departure with existing return", () => {
@@ -189,15 +199,14 @@ describe("useDateSelector", () => {
       });
 
       act(() => {
-        result.current.handleDateSelect({ from: newDeparture, to: undefined });
+        result.current.handleDateSelect(newDeparture);
       });
 
       expect(onDepartureDateChange).toHaveBeenCalledWith(newDeparture);
       expect(result.current.calendarOpen).toBe(false);
     });
 
-    it("handles return date selection with date swap when needed", () => {
-      const onDepartureDateChange = vi.fn();
+    it("prevents selecting a return date earlier than departure via disabled dates", () => {
       const onReturnDateChange = vi.fn();
       const departureDate = new Date("2025-11-25");
 
@@ -206,24 +215,19 @@ describe("useDateSelector", () => {
           ...defaultProps,
           tripType: "round-trip",
           departureDate,
-          onDepartureDateChange,
           onReturnDateChange,
         })
       );
 
-      const newReturn = new Date("2025-11-20"); // Before departure
+      const earlierReturn = new Date("2025-11-20");
 
       act(() => {
         result.current.handleReturnClick();
       });
 
-      act(() => {
-        result.current.handleDateSelect({ from: newReturn, to: undefined });
-      });
-
-      // Should swap dates
-      expect(onDepartureDateChange).toHaveBeenCalledWith(newReturn);
-      expect(onReturnDateChange).toHaveBeenCalledWith(departureDate);
+      // Should be disabled in UI; we don't call handleDateSelect when disabled
+      expect(result.current.getDisabledDates(earlierReturn)).toBe(true);
+      expect(onReturnDateChange).not.toHaveBeenCalled();
     });
   });
 

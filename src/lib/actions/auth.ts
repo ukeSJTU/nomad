@@ -371,3 +371,198 @@ export async function updateEmailAction(email: string) {
     };
   }
 }
+
+/**
+ * Send OTP for forgot password flow (supports phone or email)
+ * Requires Turnstile captcha token
+ */
+export async function requestPasswordResetAction(
+  accountInput: string,
+  captchaToken: string
+) {
+  try {
+    const headersList = await headers();
+    const mergedHeaders = new Headers(headersList);
+    mergedHeaders.set("x-captcha-response", captchaToken);
+
+    const { nanoid } = await import("nanoid");
+    const { validateAccount } = await import("@/utils/auth");
+    const { isPhone, isEmail } = validateAccount(accountInput);
+
+    if (!isPhone && !isEmail) {
+      return {
+        success: false,
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "请输入正确的手机号或邮箱格式",
+        },
+        meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+      };
+    }
+
+    if (isPhone) {
+      const result = await auth.api.phoneNumber.sendOtp({
+        body: { phoneNumber: accountInput },
+        headers: mergedHeaders,
+      });
+      if ((result as any)?.error) {
+        return {
+          success: false,
+          error: { code: "INTERNAL_ERROR", message: "发送验证码失败，请重试" },
+          meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+        };
+      }
+    } else {
+      const result = await auth.api.emailOtp.sendVerificationOtp({
+        body: { email: accountInput, type: "sign-in" },
+        headers: mergedHeaders,
+      });
+      if ((result as any)?.error) {
+        return {
+          success: false,
+          error: { code: "INTERNAL_ERROR", message: "发送验证码失败，请重试" },
+          meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+        };
+      }
+    }
+
+    return {
+      success: true,
+      data: { message: "验证码已发送" },
+      meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+    };
+  } catch (_error) {
+    // 修改原因：未使用的错误变量触发 ESLint 规则，重命名为 _error 以符合命名规范
+    const { nanoid } = await import("nanoid");
+    return {
+      success: false,
+      error: { code: "INTERNAL_ERROR", message: "发送验证码失败，请稍后重试" },
+      meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+    };
+  }
+}
+
+/**
+ * Verify OTP for forgot password flow (supports phone or email)
+ * Requires Turnstile captcha token. Successful verification signs the user in.
+ */
+export async function verifyPasswordResetOtpAction(
+  accountInput: string,
+  otp: string,
+  captchaToken: string
+) {
+  try {
+    const headersList = await headers();
+    const mergedHeaders = new Headers(headersList);
+    mergedHeaders.set("x-captcha-response", captchaToken);
+
+    const { nanoid } = await import("nanoid");
+    const { validateAccount } = await import("@/utils/auth");
+    const { isPhone, isEmail } = validateAccount(accountInput);
+
+    if (!isPhone && !isEmail) {
+      return {
+        success: false,
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "请输入正确的手机号或邮箱格式",
+        },
+        meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+      };
+    }
+
+    let verifyError: any = null;
+
+    if (isPhone) {
+      const res = await auth.api.phoneNumber.verify({
+        body: { phoneNumber: accountInput, code: otp },
+        headers: mergedHeaders,
+      });
+      verifyError = (res as any)?.error;
+    } else {
+      const res = await auth.api.signIn.emailOtp({
+        body: { email: accountInput, otp },
+        headers: mergedHeaders,
+      });
+      verifyError = (res as any)?.error;
+    }
+
+    if (verifyError) {
+      const errorMessage = verifyError.message || "验证码错误或已失效";
+      return {
+        success: false,
+        error: { code: "OTP_INVALID_OR_EXPIRED", message: errorMessage },
+        meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+      };
+    }
+
+    return {
+      success: true,
+      data: { verified: true },
+      meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+    };
+  } catch (_error) {
+    // 修改原因：未使用的错误变量触发 ESLint 规则，重命名为 _error 以符合命名规范
+    const { nanoid } = await import("nanoid");
+    return {
+      success: false,
+      error: { code: "INTERNAL_ERROR", message: "验证码验证失败，请稍后重试" },
+      meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+    };
+  }
+}
+
+/**
+ * Reset password after OTP verification and sign-in
+ * Uses Better Auth setPassword API to update the password
+ */
+export async function resetPasswordAfterOtpAction(newPassword: string) {
+  try {
+    const headersList = await headers();
+    const { nanoid } = await import("nanoid");
+
+    const { validatePasswordStrength } = await import("@/lib/services/auth");
+    const validation = validatePasswordStrength(newPassword);
+    if (!validation.success) {
+      return {
+        success: false,
+        error: {
+          code: "VALIDATION_ERROR",
+          message: validation.error || "密码不符合要求",
+        },
+        meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+      };
+    }
+
+    const session = await auth.api.getSession({ headers: headersList });
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: { code: "INTERNAL_ERROR", message: "请先完成验证码验证" },
+        meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+      };
+    }
+
+    await auth.api.setPassword({
+      body: { newPassword },
+      headers: headersList,
+    });
+
+    try {
+      revalidatePath("/home/security");
+    } catch {}
+    return {
+      success: true,
+      data: { message: "密码更新成功" },
+      meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+    };
+  } catch (_error) {
+    // 修改原因：未使用的错误变量触发 ESLint 规则，重命名为 _error 以符合命名规范
+    const { nanoid } = await import("nanoid");
+    return {
+      success: false,
+      error: { code: "INTERNAL_ERROR", message: "密码更新失败，请稍后重试" },
+      meta: { timestamp: new Date().toISOString(), requestId: nanoid() },
+    };
+  }
+}

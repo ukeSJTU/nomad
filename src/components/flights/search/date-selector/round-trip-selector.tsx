@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { type DateRange } from "react-day-picker";
 
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +75,13 @@ export function RoundTripSelector({
             }`}
             onClick={onReturnClick}
           >
-            <div className="text-xs text-muted-foreground mb-1 text-right">
+            <div
+              className="text-xs text-muted-foreground mb-1 text-right"
+              onClick={onReturnClick}
+              onClickCapture={onReturnClick}
+              role="button"
+              aria-label="返回日期选择"
+            >
               返回日期
             </div>
             <div className="flex items-baseline gap-2 justify-end">
@@ -84,7 +91,22 @@ export function RoundTripSelector({
         </div>
       </PopoverAnchor>
 
-      <PopoverContent className="w-auto p-0" align="start" sideOffset={8}>
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        sideOffset={8}
+        forceMount
+        onClickCapture={e => {
+          const target = e.target as HTMLElement;
+          const button = target.closest(
+            "button[data-day]"
+          ) as HTMLButtonElement | null;
+          if (button && button.dataset.day) {
+            const selected = new Date(button.dataset.day);
+            onDateSelect(selected);
+          }
+        }}
+      >
         <Calendar
           mode="single"
           defaultMonth={
