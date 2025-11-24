@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { addDays } from "date-fns";
+import { addDays, format } from "date-fns";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DateDisplay } from "./date-display";
@@ -113,6 +113,186 @@ describe("DateSelector", () => {
       );
 
       expect(screen.queryByText("1天")).not.toBeInTheDocument();
+    });
+
+    it("updates active field to departure and calls departure callback", async () => {
+      const today = new Date("2025-11-15");
+      today.setHours(0, 0, 0, 0);
+
+      const user = userEvent.setup();
+
+      const onDepartureDateChange = vi.fn();
+      const onReturnDateChange = vi.fn();
+
+      const departureDate = addDays(today, 5);
+      const returnDate = addDays(today, 10);
+
+      const { rerender } = render(
+        <DateSelector
+          tripType="round-trip"
+          departureDate={departureDate}
+          returnDate={returnDate}
+          onDepartureDateChange={onDepartureDateChange}
+          onReturnDateChange={onReturnDateChange}
+          minDate={today}
+        />
+      );
+
+      const departureField = screen.getByText("出发日期").closest("div");
+      await user.click(departureField!);
+
+      const targetDate = addDays(today, 7);
+      const targetDay = format(targetDate, "d");
+      const dateButtons = screen.getAllByRole("button");
+      const targetButton = dateButtons.find(
+        btn => btn.textContent === targetDay
+      );
+      await user.click(targetButton!);
+
+      expect(onDepartureDateChange).toHaveBeenCalledWith(targetDate);
+      expect(onReturnDateChange).not.toHaveBeenCalled();
+      rerender(
+        <DateSelector
+          tripType="round-trip"
+          departureDate={targetDate}
+          returnDate={returnDate}
+          onDepartureDateChange={onDepartureDateChange}
+          onReturnDateChange={onReturnDateChange}
+          minDate={today}
+        />
+      );
+      expect(
+        screen.getByText(format(targetDate, "yyyy-MM-dd"))
+      ).toBeInTheDocument();
+    });
+
+    it("updates active field to return and calls return callback", async () => {
+      const today = new Date("2025-11-15");
+      today.setHours(0, 0, 0, 0);
+
+      const user = userEvent.setup();
+
+      const onDepartureDateChange = vi.fn();
+      const onReturnDateChange = vi.fn();
+
+      const departureDate = addDays(today, 5);
+      const returnDate = addDays(today, 10);
+
+      const { rerender: rerender2 } = render(
+        <DateSelector
+          tripType="round-trip"
+          departureDate={departureDate}
+          returnDate={returnDate}
+          onDepartureDateChange={onDepartureDateChange}
+          onReturnDateChange={onReturnDateChange}
+          minDate={today}
+        />
+      );
+
+      const returnField = screen.getByText("返回日期").closest("div");
+      await user.click(returnField!);
+
+      const targetDate = addDays(today, 12);
+      const targetDay = format(targetDate, "d");
+      const dateButtons = screen.getAllByRole("button");
+      const targetButton = dateButtons.find(
+        btn => btn.textContent === targetDay
+      );
+      await user.click(targetButton!);
+
+      expect(onReturnDateChange).toHaveBeenCalledWith(targetDate);
+      expect(onDepartureDateChange).not.toHaveBeenCalled();
+      rerender2(
+        <DateSelector
+          tripType="round-trip"
+          departureDate={departureDate}
+          returnDate={targetDate}
+          onDepartureDateChange={onDepartureDateChange}
+          onReturnDateChange={onReturnDateChange}
+          minDate={today}
+        />
+      );
+      expect(
+        screen.getByText(format(targetDate, "yyyy-MM-dd"))
+      ).toBeInTheDocument();
+    });
+
+    it("enforces min/max date boundaries", async () => {
+      const today = new Date("2025-11-15");
+      today.setHours(0, 0, 0, 0);
+
+      const user = userEvent.setup();
+
+      const onDepartureDateChange = vi.fn();
+      const onReturnDateChange = vi.fn();
+
+      const departureDate = today;
+
+      render(
+        <DateSelector
+          tripType="round-trip"
+          departureDate={departureDate}
+          returnDate={null}
+          onDepartureDateChange={onDepartureDateChange}
+          onReturnDateChange={onReturnDateChange}
+          minDate={today}
+          maxDaysInFuture={2}
+        />
+      );
+
+      const departureField = screen.getByText("出发日期").closest("div");
+      await user.click(departureField!);
+
+      const beforeMin = addDays(today, -1);
+      const afterMax = addDays(today, 3);
+      const beforeMinDay = format(beforeMin, "d");
+      const afterMaxDay = format(afterMax, "d");
+
+      const dateButtons = screen.getAllByRole("button");
+      const beforeMinButton = dateButtons.find(
+        btn => btn.textContent === beforeMinDay
+      );
+      const afterMaxButton = dateButtons.find(
+        btn => btn.textContent === afterMaxDay
+      );
+
+      expect((beforeMinButton as HTMLButtonElement).disabled).toBe(true);
+      expect((afterMaxButton as HTMLButtonElement).disabled).toBe(true);
+    });
+
+    it("disables selecting return date earlier than departure", async () => {
+      const base = new Date("2025-11-15");
+      base.setHours(0, 0, 0, 0);
+
+      const user = userEvent.setup();
+
+      const onDepartureDateChange = vi.fn();
+      const onReturnDateChange = vi.fn();
+
+      const departureDate = addDays(base, 10);
+
+      render(
+        <DateSelector
+          tripType="round-trip"
+          departureDate={departureDate}
+          returnDate={null}
+          onDepartureDateChange={onDepartureDateChange}
+          onReturnDateChange={onReturnDateChange}
+          minDate={base}
+        />
+      );
+
+      const returnField = screen.getByText("返回日期").closest("div");
+      await user.click(returnField!);
+
+      const earlier = addDays(base, 5);
+      const earlierDay = format(earlier, "d");
+      const dateButtons = screen.getAllByRole("button");
+      const earlierButton = dateButtons.find(
+        btn => btn.textContent === earlierDay
+      )!;
+
+      expect((earlierButton as HTMLButtonElement).disabled).toBe(true);
     });
   });
 });

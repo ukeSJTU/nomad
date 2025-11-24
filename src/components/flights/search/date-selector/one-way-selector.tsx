@@ -4,10 +4,10 @@ import { type DateRange } from "react-day-picker";
 
 import { Calendar } from "@/components/ui/calendar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { type ActiveField } from "@/hooks/use-date-selector";
 
 import { DateDisplay } from "./date-display";
@@ -35,7 +35,7 @@ export function OneWaySelector({
 }: OneWaySelectorProps) {
   return (
     <div className="flex items-stretch gap-2">
-      <DropdownMenu
+      <Popover
         open={calendarOpen && activeField === "departure"}
         onOpenChange={open => {
           if (activeField === "departure") {
@@ -43,15 +43,18 @@ export function OneWaySelector({
           }
         }}
       >
-        <DropdownMenuTrigger asChild>
-          <div className="flex-1 border rounded-lg px-4 py-3 cursor-pointer bg-background hover:bg-accent/50 transition-colors">
+        <PopoverTrigger asChild>
+          <div
+            className="flex-1 border rounded-lg px-4 py-3 cursor-pointer bg-background hover:bg-accent/50 transition-colors"
+            onClick={() => onCalendarOpenChange(true)}
+          >
             <div className="text-xs text-muted-foreground mb-1">出发日期</div>
             <div className="flex items-baseline gap-2">
               <DateDisplay date={departureDate} today={today} />
             </div>
           </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-auto p-0" align="start">
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="single"
             defaultMonth={departureDate || new Date()}
@@ -61,10 +64,9 @@ export function OneWaySelector({
             disabled={getDisabledDates}
             className="rounded-lg"
           />
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </PopoverContent>
+      </Popover>
 
-      {/* Add Return Date Link */}
       <button
         onClick={onAddReturnDate}
         className="flex-1 border border-dashed rounded-lg px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors cursor-pointer text-left"

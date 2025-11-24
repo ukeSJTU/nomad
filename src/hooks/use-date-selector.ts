@@ -71,71 +71,33 @@ export function useDateSelector({
 
   const handleDateSelect = useCallback(
     (date: Date | DateRange | undefined) => {
+      if (!date) return;
+
       if (tripType === "round-trip") {
-        const range = date as DateRange | undefined;
+        const selectedDate = (date as DateRange).from
+          ? (date as DateRange).from
+          : (date as Date);
 
         if (activeField === "departure") {
-          if (range?.from && range?.to) {
-            onDepartureDateChange(range.from);
-            onReturnDateChange(range.to);
-            setCalendarOpen(false);
-          } else if (range?.from && !range?.to) {
-            const newDepartureDate = range.from;
-            onDepartureDateChange(newDepartureDate);
-
-            if (returnDate) {
-              if (newDepartureDate <= returnDate) {
-                setCalendarOpen(false);
-              } else {
-                onReturnDateChange(newDepartureDate);
-              }
-            } else {
-              onReturnDateChange(newDepartureDate);
-            }
-          }
+          onDepartureDateChange(selectedDate as Date);
+          setCalendarOpen(false);
         } else {
-          if (range?.from && range?.to) {
-            onDepartureDateChange(range.from);
-            onReturnDateChange(range.to);
-            setCalendarOpen(false);
-          } else if (range?.from && !range?.to) {
-            const newReturnDate = range.from;
-
-            if (departureDate) {
-              if (newReturnDate >= departureDate) {
-                onReturnDateChange(newReturnDate);
-                setCalendarOpen(false);
-              } else {
-                onDepartureDateChange(newReturnDate);
-                onReturnDateChange(departureDate);
-                setCalendarOpen(false);
-              }
-            } else {
-              onDepartureDateChange(newReturnDate);
-              onReturnDateChange(newReturnDate);
-              setCalendarOpen(false);
-            }
-          }
-        }
-      } else {
-        if (date && !(date as DateRange).from) {
-          if (activeField === "departure") {
-            onDepartureDateChange(date as Date);
-          } else {
-            onReturnDateChange(date as Date);
-          }
+          onReturnDateChange(selectedDate as Date);
           setCalendarOpen(false);
         }
+      } else {
+        if ((date as DateRange).from) {
+          return;
+        }
+        if (activeField === "departure") {
+          onDepartureDateChange(date as Date);
+        } else {
+          onReturnDateChange(date as Date);
+        }
+        setCalendarOpen(false);
       }
     },
-    [
-      tripType,
-      activeField,
-      departureDate,
-      returnDate,
-      onDepartureDateChange,
-      onReturnDateChange,
-    ]
+    [tripType, activeField, onDepartureDateChange, onReturnDateChange]
   );
 
   const handleDepartureClick = useCallback(() => {
@@ -156,28 +118,19 @@ export function useDateSelector({
 
   const getDisabledDates = useCallback(
     (date: Date): boolean => {
-      if (date < today || date > maxDate) {
+      if (date < today || date > maxDate) return true;
+
+      if (activeField === "return" && departureDate && date < departureDate) {
         return true;
       }
-      if (
-        tripType === "one-way" &&
-        activeField === "return" &&
-        departureDate &&
-        date < departureDate
-      ) {
+
+      if (activeField === "departure" && returnDate && date > returnDate) {
         return true;
       }
-      if (
-        tripType === "round-trip" &&
-        activeField === "return" &&
-        departureDate &&
-        date < departureDate
-      ) {
-        return true;
-      }
+
       return false;
     },
-    [today, maxDate, tripType, activeField, departureDate]
+    [today, maxDate, activeField, departureDate, returnDate]
   );
 
   return {

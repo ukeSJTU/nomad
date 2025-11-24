@@ -65,6 +65,7 @@ export function DateSelector({
           onReturnClick={handleReturnClick}
           onDateSelect={handleDateSelect}
           getDisabledDates={getDisabledDates}
+          activeField={activeField}
         />
       ) : (
         <OneWaySelector
