@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -51,7 +50,7 @@ export default defineConfig({
         // Better Auth configuration
         "src/lib/auth/**",
         // Better Auth client
-        "src/lib/db/**",
+        "src/orm/db/**",
         // Database connection and seed files
         "src/lib/fumadocs/**",
         // Fumadocs configuration files

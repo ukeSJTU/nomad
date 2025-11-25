@@ -2,7 +2,7 @@
 
 ### Requirement: Layered Backend Architecture
 
-The backend SHALL organize code into a presentation layer (`src/app/api/**`), a business logic layer (`src/lib/services/**`), and a data access layer (`src/lib/repositories/**`) with dependencies flowing only downward. The data access layer SHALL rely on ORM primitives housed under `src/orm/db/**` and `src/orm/schema/**`, and other layers SHALL NOT import ORM primitives directly.
+The backend SHALL organize code into a presentation layer (`src/app/api/**`), a business logic layer (`src/lib/services/**`), and a data access layer (`src/lib/repositories/**`) with dependencies flowing only downward. ORM primitives (Drizzle client, schema, seed helpers) SHALL live under `src/orm/db/**` and `src/orm/schema/**`; repositories SHALL import from there, and other layers SHOULD prefer repository/service boundaries instead of pulling ORM primitives directly.
 
 #### Scenario: API Routes Use Services
 

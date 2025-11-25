@@ -105,7 +105,7 @@ pnpm db:seed --scenario=development --mode=incremental
 **用途**：课程评估，精确可控的数据集
 
 **数据规模**：
-- 由 `src/lib/db/fixtures/scenarios/exam-2025.ts` 文件定义
+- 由 `src/orm/db/fixtures/scenarios/exam-2025.ts` 文件定义
 - 默认：2 个城市，2 个机场，2 个航空公司，1 个航班
 - 可由助教/老师手动编辑以满足考试要求
 
@@ -152,7 +152,7 @@ pnpm db:seed --scenario=development --mode=incremental
 ### 文件组织结构
 
 ```
-src/lib/db/
+src/orm/db/
 ├── seed.ts                          # 主种子脚本 - 执行入口
 ├── seed.config.ts                   # 配置管理 - 场景定义和参数解析
 ├── fixtures/
@@ -364,13 +364,13 @@ flowchart LR
 
 ### 修改 Exam 场景数据（助教常用）
 
-Exam 场景的数据完全由 `src/lib/db/fixtures/scenarios/exam-2025.ts` 文件定义，可以直接编辑：
+Exam 场景的数据完全由 `src/orm/db/fixtures/scenarios/exam-2025.ts` 文件定义，可以直接编辑：
 
 #### 步骤 1：打开场景文件
 
 ```bash
 # 使用编辑器打开
-code src/lib/db/fixtures/scenarios/exam-2025.ts
+code src/orm/db/fixtures/scenarios/exam-2025.ts
 ```
 
 #### 步骤 2：编辑数据
@@ -488,7 +488,7 @@ pnpm db:seed --scenario=exam
 
 #### 添加城市
 
-编辑 `src/lib/db/fixtures/base/cities.ts`：
+编辑 `src/orm/db/fixtures/base/cities.ts`：
 
 ```typescript
 export const REAL_CITIES: readonly CityFixture[] = [
@@ -508,7 +508,7 @@ export const REAL_CITIES: readonly CityFixture[] = [
 
 #### 添加机场
 
-编辑 `src/lib/db/fixtures/base/airports.ts`：
+编辑 `src/orm/db/fixtures/base/airports.ts`：
 
 ```typescript
 export const REAL_AIRPORTS: readonly AirportFixture[] = [
@@ -523,7 +523,7 @@ export const REAL_AIRPORTS: readonly AirportFixture[] = [
 
 #### 添加航空公司
 
-编辑 `src/lib/db/fixtures/base/airlines.ts`：
+编辑 `src/orm/db/fixtures/base/airlines.ts`：
 
 ```typescript
 export const REAL_AIRLINES: readonly AirlineFixture[] = [
@@ -542,7 +542,7 @@ export const REAL_AIRLINES: readonly AirlineFixture[] = [
 
 #### 修改场景配置
 
-编辑 `src/lib/db/seed.config.ts`：
+编辑 `src/orm/db/seed.config.ts`：
 
 ```typescript
 export const scenarios = {
@@ -576,10 +576,10 @@ export const scenarios = {
 
 如果需要修改数据生成的具体逻辑，编辑对应的生成器文件：
 
-- **航班生成规则**：`src/lib/db/generators/flight-generator.ts`
-- **用户生成规则**：`src/lib/db/generators/user-generator.ts`
-- **订单生成规则**：`src/lib/db/generators/order-generator.ts`
-- **搜索历史规则**：`src/lib/db/generators/search-history-generator.ts`
+- **航班生成规则**：`src/orm/db/generators/flight-generator.ts`
+- **用户生成规则**：`src/orm/db/generators/user-generator.ts`
+- **订单生成规则**：`src/orm/db/generators/order-generator.ts`
+- **搜索历史规则**：`src/orm/db/generators/search-history-generator.ts`
 
 ### 添加新的数据表支持
 
@@ -587,13 +587,13 @@ export const scenarios = {
 
 #### 步骤 1：创建 Generator（如果需要）
 
-在 `src/lib/db/generators/` 目录下创建新的生成器文件：
+在 `src/orm/db/generators/` 目录下创建新的生成器文件：
 
 ```typescript
-// src/lib/db/generators/new-table-generator.ts
+// src/orm/db/generators/new-table-generator.ts
 import { faker } from "@faker-js/faker";
 import type { InferInsertModel } from "drizzle-orm";
-import { newTable } from "@/lib/schema/new-table";
+import { newTable } from "@/orm/schema/new-table";
 
 type NewTableInsert = Omit<
   InferInsertModel<typeof newTable>,
@@ -630,7 +630,7 @@ export function generateNewTableData(
 
 #### 步骤 2：更新 seed.ts
 
-在 `src/lib/db/seed.ts` 中添加新表的种子逻辑：
+在 `src/orm/db/seed.ts` 中添加新表的种子逻辑：
 
 ```typescript
 // 导入生成器
@@ -656,7 +656,7 @@ async function seedFromConfig(config: SeedConfig) {
 
 #### 步骤 3：更新配置
 
-在 `src/lib/db/seed.config.ts` 中添加配置参数：
+在 `src/orm/db/seed.config.ts` 中添加配置参数：
 
 ```typescript
 export interface SeedCounts {
@@ -695,7 +695,7 @@ async function clearDatabase() {
 系统使用 Drizzle ORM 的类型推导功能，确保 Fixture 数据类型与数据库 Schema 保持同步：
 
 ```typescript
-// src/lib/db/fixtures/types.ts
+// src/orm/db/fixtures/types.ts
 import type { InferInsertModel, Table } from "drizzle-orm";
 
 export type FixtureData<T extends Table> = Omit<
@@ -713,9 +713,9 @@ export type FixtureData<T extends Table> = Omit<
 **使用示例**：
 
 ```typescript
-// src/lib/db/fixtures/base/cities.ts
+// src/orm/db/fixtures/base/cities.ts
 import type { InferInsertModel } from "drizzle-orm";
-import { cities } from "@/lib/schema/cities";
+import { cities } from "@/orm/schema/cities";
 
 export type CityFixture = Omit<
   InferInsertModel<typeof cities>,

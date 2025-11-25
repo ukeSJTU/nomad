@@ -18,7 +18,7 @@ import type { InferInsertModel, Table } from "drizzle-orm";
  *
  * @example
  * ```typescript
- * import { cities } from "@/lib/schema/cities";
+ * import { cities } from "@/orm/schema/cities";
  * import type { FixtureData } from "./types";
  *
  * export const REAL_CITIES: FixtureData<typeof cities>[] = [

@@ -1,9 +1,9 @@
 import { and, desc, eq, isNull, lt, sql } from "drizzle-orm";
 
-import { db } from "@/lib/db";
-import { user } from "@/lib/schema";
-import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
-import { orders } from "@/lib/schema/orders";
+import { db } from "@/orm/db";
+import { user } from "@/orm/schema";
+import { flightSeatClasses } from "@/orm/schema/flight-seat-classes";
+import { orders } from "@/orm/schema/orders";
 import { OrderDetailFull, OrderListItem } from "@/types/dto/orders";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
 

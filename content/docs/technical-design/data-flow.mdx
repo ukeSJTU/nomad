@@ -120,8 +120,8 @@ export default async function PassengersPage() {
 ```tsx title="src/lib/repositories/passengers.ts"
 import { eq } from "drizzle-orm";
 
-import { db } from "@/lib/db";
-import { passengers } from "@/lib/schema/passengers";
+import { db } from "@/orm/db";
+import { passengers } from "@/orm/schema/passengers";
 import type { Passenger } from "@/types/api/passengers";
 
 export async function getPassengers(userId: string): Promise<Passenger[]> {
@@ -304,7 +304,7 @@ export default function Error({
 
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { db } from "@/orm/db";
 
 export async function setInitialPasswordAction(password: string) {
   try {

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db } from "@/orm/db";
 
 export type DbTransaction = Parameters<typeof db.transaction>[0] extends (
   tx: infer T

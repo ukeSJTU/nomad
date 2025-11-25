@@ -6,11 +6,11 @@ import { headers } from "next/headers";
 import { z } from "zod";
 
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { getOrderDetailById } from "@/lib/repositories/orders";
-import { user } from "@/lib/schema";
-import { orders, payments } from "@/lib/schema/orders";
 import { sendOrderConfirmationEmail } from "@/lib/services/email";
+import { db } from "@/orm/db";
+import { user } from "@/orm/schema";
+import { orders, payments } from "@/orm/schema/orders";
 import type { ActionResult } from "@/types/common";
 import {
   getCurrencyValue,

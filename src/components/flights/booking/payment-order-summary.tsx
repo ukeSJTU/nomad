@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getAncillaryServiceByCode } from "@/lib/schema/ancillary";
+import { getAncillaryServiceByCode } from "@/orm/schema/ancillary";
 import { PaymentPageOrder } from "@/types/dto/booking";
 
 interface PaymentOrderSummaryProps {

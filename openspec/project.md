@@ -156,6 +156,9 @@ src/
 │   ├── api/               # API routes (auth, chat, health)
 │   ├── layout.tsx
 │   └── page.tsx
+├── orm/                   # Drizzle ORM layer (schema + db client/seeds)
+│   ├── db/               # Database client, seed config/utils
+│   └── schema/           # Drizzle tables/enums/types
 ├── components/            # React components
 │   ├── ui/               # Shadcn/UI components (DO NOT modify manually)
 │   ├── common/           # Shared components
@@ -163,10 +166,10 @@ src/
 │       ├── forms/
 │       └── index.ts      # Export barrel
 ├── hooks/                # React hooks
-├── lib/                  # Core configurations
-│   ├── db/              # Database config
-│   ├── schema/          # Drizzle schemas
+├── lib/                  # Core logic
 │   ├── auth/            # Authentication
+│   ├── repositories/    # Data access layer (uses orm/)
+│   ├── services/        # Business logic layer (uses repositories)
 │   └── utils.ts
 ├── types/               # TypeScript type definitions
 │   ├── api.ts

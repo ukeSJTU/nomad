@@ -5,8 +5,6 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { account } from "@/lib/schema";
 import {
   changePassword,
   setPasswordForOAuthUser,
@@ -14,6 +12,8 @@ import {
   updateEmail,
   updatePhoneNumber,
 } from "@/lib/services/auth";
+import { db } from "@/orm/db";
+import { account } from "@/orm/schema";
 
 /**
  * Server action to unlink a social account

@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 
-import { db } from "@/lib/db";
-import { passengers } from "@/lib/schema/passengers";
+import { db } from "@/orm/db";
+import { passengers } from "@/orm/schema/passengers";
 import type { Passenger, PassengerDetailData } from "@/types/dto/passengers";
 import {
   maskDocumentNumber,

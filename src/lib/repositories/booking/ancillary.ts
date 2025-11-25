@@ -8,14 +8,14 @@
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
-import { db } from "@/lib/db";
+import { db } from "@/orm/db";
 import {
   airlines,
   flights,
   flightSeatClasses,
   orderPassengers,
   orders,
-} from "@/lib/schema";
+} from "@/orm/schema";
 import type { AncillaryPageOrder } from "@/types/dto";
 
 /**

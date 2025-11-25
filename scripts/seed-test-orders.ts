@@ -21,10 +21,10 @@ const projectDir = process.cwd();
 loadEnvConfig(projectDir);
 
 import { user } from "../auth-schema";
-import { db } from "../src/lib/db";
-import { flightSeatClasses } from "../src/lib/schema/flight-seat-classes";
-import { flights } from "../src/lib/schema/flights";
-import { orderPassengers, orders, payments } from "../src/lib/schema/orders";
+import { db } from "../src/orm/db";
+import { flightSeatClasses } from "../src/orm/schema/flight-seat-classes";
+import { flights } from "../src/orm/schema/flights";
+import { orderPassengers, orders, payments } from "../src/orm/schema/orders";
 
 // 乘客名字池
 const PASSENGER_NAMES = [

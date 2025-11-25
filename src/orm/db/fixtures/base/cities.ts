@@ -7,7 +7,7 @@
 
 import type { InferInsertModel } from "drizzle-orm";
 
-import { cities } from "@/lib/schema/cities";
+import { cities } from "@/orm/schema/cities";
 
 /**
  * City fixture type - derived from schema, excluding auto-generated fields

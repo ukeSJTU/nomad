@@ -4,14 +4,14 @@ import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
-import { db } from "@/lib/db";
+import { db } from "@/orm/db";
 import {
   airlines,
   airports,
   cities,
   flights,
   flightSeatClasses,
-} from "@/lib/schema";
+} from "@/orm/schema";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,

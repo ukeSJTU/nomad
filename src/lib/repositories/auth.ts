@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 
-import { db } from "@/lib/db";
-import { account } from "@/lib/schema";
+import { db } from "@/orm/db";
+import { account } from "@/orm/schema";
 
 import type { DbExecutor } from "./transaction";
 

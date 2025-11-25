@@ -8,8 +8,8 @@
 import { faker } from "@faker-js/faker";
 import type { InferInsertModel } from "drizzle-orm";
 
-import { SearchSeatClass, TripType } from "@/lib/schema/enums";
-import { flightSearchHistory } from "@/lib/schema/flight-search-history";
+import { SearchSeatClass, TripType } from "@/orm/schema/enums";
+import { flightSearchHistory } from "@/orm/schema/flight-search-history";
 
 type SearchHistoryInsert = InferInsertModel<typeof flightSearchHistory>;
 

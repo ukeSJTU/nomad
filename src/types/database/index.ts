@@ -1,7 +1,7 @@
 /**
  * Database layer types - Single source of truth
  *
- * All types are inferred from Drizzle schema definitions in src/lib/schema/
+ * All types are inferred from Drizzle schema definitions in src/orm/schema/
  * Used in services, repositories, queries, and server actions (data layer)
  *
  * Type naming:

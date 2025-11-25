@@ -19,7 +19,7 @@ import {
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
-} from "@/lib/schema";
+} from "@/orm/schema";
 import type { AncillaryPageOrder } from "@/types/dto";
 import {
   addCurrency,

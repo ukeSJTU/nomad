@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import {
   type AncillaryService,
   getAncillaryServicesByCategory,
-} from "@/lib/schema/ancillary";
+} from "@/orm/schema/ancillary";
 import { formatCurrency } from "@/utils/currency";
 
 export interface AncillarySelectionProps {

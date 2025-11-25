@@ -1,7 +1,7 @@
 import { asc, eq } from "drizzle-orm";
 
-import { db } from "@/lib/db";
-import { cities } from "@/lib/schema";
+import { db } from "@/orm/db";
+import { cities } from "@/orm/schema";
 import { CityData } from "@/types/dto";
 
 /**

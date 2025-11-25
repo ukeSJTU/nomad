@@ -9,7 +9,7 @@
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-import type { airports } from "@/lib/schema";
+import type { airports } from "@/orm/schema";
 
 // ============================================================================
 // Airport Types
