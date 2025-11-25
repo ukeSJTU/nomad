@@ -9,8 +9,10 @@
 import { cancelExpiredOrders } from "@/lib/services/orders";
 import logger from "@/utils/logger";
 
-let orderCancellationInterval: NodeJS.Timeout | null = null;
+let orderCancellationTimer: NodeJS.Timeout | null = null;
 let isTaskRunning = false;
+
+const CRON_INTERVAL_MS = 60 * 1000; // 60 seconds
 
 /**
  * Signal handler for graceful shutdown
@@ -20,12 +22,34 @@ function handleShutdown() {
 }
 
 /**
+ * Run the order cancellation task and schedule the next execution
+ *
+ * This function ensures that tasks are executed serially (never concurrently)
+ * by waiting for the current task to complete before scheduling the next one.
+ */
+async function runOrderCancellationTask() {
+  // checkAndCancelOrders has its own try/catch, so we don't need another one here
+  await checkAndCancelOrders();
+
+  // If the task is still running, schedule the next execution
+  if (isTaskRunning) {
+    orderCancellationTimer = setTimeout(
+      runOrderCancellationTask,
+      CRON_INTERVAL_MS
+    );
+  }
+}
+
+/**
  * Start the automatic order cancellation task
  *
  * This function:
  * 1. Performs an immediate check for expired orders
- * 2. Sets up a 60-second interval for subsequent checks
+ * 2. Sets up a recurring task for subsequent checks
  * 3. Logs all cancellation activities for debugging
+ *
+ * Uses recursive setTimeout instead of setInterval to ensure tasks
+ * never run concurrently, preventing race conditions.
  *
  * Should only be called in development mode.
  */
@@ -38,17 +62,14 @@ export function startOrderCancellationTask() {
   isTaskRunning = true;
 
   logger.info("[Dev Cron] Starting automatic order cancellation task");
-  logger.info("[Dev Cron] Checking for expired orders every 60 seconds");
+  logger.info(
+    `[Dev Cron] Checking for expired orders every ${CRON_INTERVAL_MS / 1000} seconds`
+  );
 
-  // Initial check
-  checkAndCancelOrders();
+  // Start the first execution (subsequent runs are scheduled inside the runner)
+  runOrderCancellationTask();
 
-  // Set up interval for subsequent checks
-  orderCancellationInterval = setInterval(() => {
-    checkAndCancelOrders();
-  }, 60000); // 60 seconds
-
-  // Cleanup on process termination (register handlers only once)
+  // Cleanup on process termination
   process.once("SIGTERM", handleShutdown);
   process.once("SIGINT", handleShutdown);
 }
@@ -57,16 +78,22 @@ export function startOrderCancellationTask() {
  * Stop the automatic order cancellation task and clean up resources
  */
 export function stopOrderCancellationTask() {
-  if (orderCancellationInterval) {
-    clearInterval(orderCancellationInterval);
-    orderCancellationInterval = null;
-    isTaskRunning = false;
-    logger.info("[Dev Cron] Stopped automatic order cancellation task");
-
-    // Remove signal handlers
-    process.removeListener("SIGTERM", handleShutdown);
-    process.removeListener("SIGINT", handleShutdown);
+  if (!isTaskRunning) {
+    return;
   }
+
+  isTaskRunning = false;
+
+  if (orderCancellationTimer) {
+    clearTimeout(orderCancellationTimer);
+    orderCancellationTimer = null;
+  }
+
+  logger.info("[Dev Cron] Stopped automatic order cancellation task");
+
+  // Remove signal handlers
+  process.removeListener("SIGTERM", handleShutdown);
+  process.removeListener("SIGINT", handleShutdown);
 }
 
 /**
