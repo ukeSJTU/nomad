@@ -2,8 +2,7 @@
  * Order Service Layer
  *
  * This module contains business logic for order operations.
- * It is separate from the actions layer to allow reuse in different contexts
- * (e.g., API routes, cron jobs, background tasks).
+ * This layer delegates persistence to the repository layer.
  *
  * Key Functions:
  * - cancelExpiredOrders: Cancel orders that have exceeded their payment deadline
@@ -11,12 +10,15 @@
  * - refundOrder: Refund a confirmed order (user-initiated)
  */
 
-import { and, eq, lt, sql } from "drizzle-orm";
-
-import { db } from "@/lib/db";
-import { user } from "@/lib/schema";
-import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
-import { orders } from "@/lib/schema/orders";
+import {
+  cancelExpiredOrdersAndReleaseSeats,
+  cancelOrderAndReleaseSeats,
+  getExpiredOrders,
+  getOrderForCancellation,
+  getOrderForRefund,
+  type OrderRefundData,
+  refundOrderAndReleaseSeats,
+} from "@/lib/repositories/orders";
 
 import type { ServiceResult } from "./types";
 
@@ -43,18 +45,7 @@ export async function cancelOrder(
   userId: string
 ): Promise<ServiceResult> {
   try {
-    // 1. Validate order exists and belongs to user
-    const [order] = await db
-      .select({
-        id: orders.id,
-        userId: orders.userId,
-        status: orders.status,
-        outboundFlightSeatClassId: orders.outboundFlightSeatClassId,
-        inboundFlightSeatClassId: orders.inboundFlightSeatClassId,
-        passengerCount: orders.passengerCount,
-      })
-      .from(orders)
-      .where(and(eq(orders.id, orderId), eq(orders.userId, userId)));
+    const order = await getOrderForCancellation(orderId, userId);
 
     if (!order) {
       return {
@@ -63,7 +54,6 @@ export async function cancelOrder(
       };
     }
 
-    // 2. Validate order status - only PENDING_PAYMENT orders can be cancelled
     if (order.status !== "PENDING_PAYMENT") {
       return {
         success: false,
@@ -71,40 +61,15 @@ export async function cancelOrder(
       };
     }
 
-    // 3. Cancel order and release seats in a transaction
-    await db.transaction(async tx => {
-      const now = new Date();
-
-      // Update order status to CANCELLED
-      await tx
-        .update(orders)
-        .set({
-          status: "CANCELLED",
-          cancellationReason: "用户取消",
-          updatedAt: now,
-        })
-        .where(eq(orders.id, orderId));
-
-      // Release outbound flight seats
-      await tx
-        .update(flightSeatClasses)
-        .set({
-          availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
-          updatedAt: now,
-        })
-        .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
-
-      // Release inbound flight seats (if round-trip)
-      if (order.inboundFlightSeatClassId) {
-        await tx
-          .update(flightSeatClasses)
-          .set({
-            availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
-            updatedAt: now,
-          })
-          .where(eq(flightSeatClasses.id, order.inboundFlightSeatClassId));
-      }
-    });
+    await cancelOrderAndReleaseSeats(
+      {
+        id: order.id,
+        outboundFlightSeatClassId: order.outboundFlightSeatClassId,
+        inboundFlightSeatClassId: order.inboundFlightSeatClassId,
+        passengerCount: order.passengerCount,
+      },
+      new Date()
+    );
 
     return {
       success: true,
@@ -159,23 +124,8 @@ export async function cancelExpiredOrders(): Promise<
 > {
   try {
     const now = new Date();
+    const expiredOrders = await getExpiredOrders(now);
 
-    // Find all expired orders
-    const expiredOrders = await db.query.orders.findMany({
-      where: and(
-        eq(orders.status, "PENDING_PAYMENT"),
-        lt(orders.paymentDeadline, now)
-      ),
-      columns: {
-        id: true,
-        orderNumber: true,
-        outboundFlightSeatClassId: true,
-        inboundFlightSeatClassId: true,
-        passengerCount: true,
-      },
-    });
-
-    // If no expired orders, return early
     if (expiredOrders.length === 0) {
       return {
         success: true,
@@ -187,59 +137,7 @@ export async function cancelExpiredOrders(): Promise<
       };
     }
 
-    // Process cancellations in a transaction
-    const result = await db.transaction(async tx => {
-      let totalReleasedSeats = 0;
-
-      // Update all expired orders to CANCELLED status
-      await tx
-        .update(orders)
-        .set({
-          status: "CANCELLED",
-          cancellationReason: "支付失败",
-          updatedAt: now,
-        })
-        .where(
-          and(
-            eq(orders.status, "PENDING_PAYMENT"),
-            lt(orders.paymentDeadline, now)
-          )
-        );
-
-      // Release seats for each expired order
-      for (const order of expiredOrders) {
-        const seatsToRelease = order.passengerCount;
-
-        // Release outbound flight seats
-        await tx
-          .update(flightSeatClasses)
-          .set({
-            availableSeats: sql`${flightSeatClasses.availableSeats} + ${seatsToRelease}`,
-            updatedAt: now,
-          })
-          .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
-
-        totalReleasedSeats += seatsToRelease;
-
-        // Release inbound flight seats (if round-trip)
-        if (order.inboundFlightSeatClassId) {
-          await tx
-            .update(flightSeatClasses)
-            .set({
-              availableSeats: sql`${flightSeatClasses.availableSeats} + ${seatsToRelease}`,
-              updatedAt: now,
-            })
-            .where(eq(flightSeatClasses.id, order.inboundFlightSeatClassId));
-
-          totalReleasedSeats += seatsToRelease;
-        }
-      }
-
-      return {
-        cancelledCount: expiredOrders.length,
-        releasedSeats: totalReleasedSeats,
-      };
-    });
+    const result = await cancelExpiredOrdersAndReleaseSeats(expiredOrders, now);
 
     return {
       success: true,
@@ -257,6 +155,13 @@ export async function cancelExpiredOrders(): Promise<
           : "Unknown error occurred while cancelling expired orders",
     };
   }
+}
+
+function hasFlightDeparted(
+  flight: OrderRefundData["outboundFlightSeatClass"],
+  now: Date
+): boolean {
+  return flight.flight.departureDatetime <= now;
 }
 
 /**
@@ -287,41 +192,7 @@ export async function refundOrder(
   userId: string
 ): Promise<ServiceResult<RefundOrderData>> {
   try {
-    // 1. Validate order exists and belongs to user, and get flight info
-    const order = await db.query.orders.findFirst({
-      where: and(eq(orders.id, orderId), eq(orders.userId, userId)),
-      columns: {
-        id: true,
-        userId: true,
-        status: true,
-        outboundFlightSeatClassId: true,
-        inboundFlightSeatClassId: true,
-        passengerCount: true,
-        totalAmount: true,
-      },
-      with: {
-        outboundFlightSeatClass: {
-          with: {
-            flight: {
-              columns: {
-                departureDatetime: true,
-                flightNumber: true,
-              },
-            },
-          },
-        },
-        inboundFlightSeatClass: {
-          with: {
-            flight: {
-              columns: {
-                departureDatetime: true,
-                flightNumber: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    const order = await getOrderForRefund(orderId, userId);
 
     if (!order) {
       return {
@@ -330,7 +201,6 @@ export async function refundOrder(
       };
     }
 
-    // 2. Validate order status - only CONFIRMED orders can be refunded
     if (order.status !== "CONFIRMED") {
       return {
         success: false,
@@ -338,9 +208,8 @@ export async function refundOrder(
       };
     }
 
-    // 3. Validate flight hasn't departed
     const now = new Date();
-    if (order.outboundFlightSeatClass.flight.departureDatetime <= now) {
+    if (hasFlightDeparted(order.outboundFlightSeatClass, now)) {
       return {
         success: false,
         error: `Cannot refund: Outbound flight ${order.outboundFlightSeatClass.flight.flightNumber} has already departed.`,
@@ -357,46 +226,17 @@ export async function refundOrder(
       };
     }
 
-    // 4. Process refund in a transaction
-    await db.transaction(async tx => {
-      // Update order status to REFUNDED
-      await tx
-        .update(orders)
-        .set({
-          status: "REFUNDED",
-          updatedAt: now,
-        })
-        .where(eq(orders.id, orderId));
-
-      // Return funds to user balance
-      await tx
-        .update(user)
-        .set({
-          balance: sql`${user.balance} + ${order.totalAmount}`,
-          updatedAt: now,
-        })
-        .where(eq(user.id, userId));
-
-      // Release outbound flight seats
-      await tx
-        .update(flightSeatClasses)
-        .set({
-          availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
-          updatedAt: now,
-        })
-        .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
-
-      // Release inbound flight seats (if round-trip)
-      if (order.inboundFlightSeatClassId) {
-        await tx
-          .update(flightSeatClasses)
-          .set({
-            availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
-            updatedAt: now,
-          })
-          .where(eq(flightSeatClasses.id, order.inboundFlightSeatClassId));
-      }
-    });
+    await refundOrderAndReleaseSeats(
+      {
+        id: order.id,
+        userId: order.userId,
+        passengerCount: order.passengerCount,
+        totalAmount: order.totalAmount,
+        outboundFlightSeatClassId: order.outboundFlightSeatClassId,
+        inboundFlightSeatClassId: order.inboundFlightSeatClassId,
+      },
+      now
+    );
 
     return {
       success: true,

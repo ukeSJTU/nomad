@@ -1,9 +1,15 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull, lt, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
+import { user } from "@/lib/schema";
+import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
 import { orders } from "@/lib/schema/orders";
 import { OrderDetailFull, OrderListItem } from "@/types/dto/orders";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
+
+import { runInTransaction } from "./transaction";
+
+export type OrderRow = typeof orders.$inferSelect;
 
 /**
  * Retrieves all orders for a specific user
@@ -340,4 +346,273 @@ export async function getOrderDetailById(
       totalAmount: order.totalAmount.toString(),
     },
   };
+}
+
+export async function getOrderForCancellation(
+  orderId: string,
+  userId: string
+): Promise<{
+  id: string;
+  userId: string;
+  status: string;
+  outboundFlightSeatClassId: string;
+  inboundFlightSeatClassId: string | null;
+  passengerCount: number;
+} | null> {
+  const [order] = await db
+    .select({
+      id: orders.id,
+      userId: orders.userId,
+      status: orders.status,
+      outboundFlightSeatClassId: orders.outboundFlightSeatClassId,
+      inboundFlightSeatClassId: orders.inboundFlightSeatClassId,
+      passengerCount: orders.passengerCount,
+    })
+    .from(orders)
+    .where(and(eq(orders.id, orderId), eq(orders.userId, userId)));
+
+  return order ?? null;
+}
+
+export async function cancelOrderAndReleaseSeats(
+  order: {
+    id: string;
+    outboundFlightSeatClassId: string;
+    inboundFlightSeatClassId: string | null;
+    passengerCount: number;
+  },
+  now: Date
+): Promise<void> {
+  await runInTransaction(async tx => {
+    await tx
+      .update(orders)
+      .set({
+        status: "CANCELLED",
+        cancellationReason: "用户取消",
+        updatedAt: now,
+      })
+      .where(eq(orders.id, order.id));
+
+    await tx
+      .update(flightSeatClasses)
+      .set({
+        availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+        updatedAt: now,
+      })
+      .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
+
+    if (order.inboundFlightSeatClassId) {
+      await tx
+        .update(flightSeatClasses)
+        .set({
+          availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+          updatedAt: now,
+        })
+        .where(eq(flightSeatClasses.id, order.inboundFlightSeatClassId));
+    }
+  });
+}
+
+export async function getExpiredOrders(now: Date): Promise<
+  Array<{
+    id: string;
+    orderNumber: string;
+    outboundFlightSeatClassId: string;
+    inboundFlightSeatClassId: string | null;
+    passengerCount: number;
+  }>
+> {
+  return db.query.orders.findMany({
+    where: and(
+      eq(orders.status, "PENDING_PAYMENT"),
+      lt(orders.paymentDeadline, now)
+    ),
+    columns: {
+      id: true,
+      orderNumber: true,
+      outboundFlightSeatClassId: true,
+      inboundFlightSeatClassId: true,
+      passengerCount: true,
+    },
+  });
+}
+
+export async function cancelExpiredOrdersAndReleaseSeats(
+  expiredOrders: Array<{
+    id: string;
+    orderNumber: string;
+    outboundFlightSeatClassId: string;
+    inboundFlightSeatClassId: string | null;
+    passengerCount: number;
+  }>,
+  now: Date
+): Promise<{
+  cancelledCount: number;
+  releasedSeats: number;
+}> {
+  if (expiredOrders.length === 0) {
+    return {
+      cancelledCount: 0,
+      releasedSeats: 0,
+    };
+  }
+
+  return runInTransaction(async tx => {
+    await tx
+      .update(orders)
+      .set({
+        status: "CANCELLED",
+        cancellationReason: "支付失败",
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(orders.status, "PENDING_PAYMENT"),
+          lt(orders.paymentDeadline, now)
+        )
+      );
+
+    let totalReleasedSeats = 0;
+
+    for (const order of expiredOrders) {
+      await tx
+        .update(flightSeatClasses)
+        .set({
+          availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+          updatedAt: now,
+        })
+        .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
+
+      totalReleasedSeats += order.passengerCount;
+
+      if (order.inboundFlightSeatClassId) {
+        await tx
+          .update(flightSeatClasses)
+          .set({
+            availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+            updatedAt: now,
+          })
+          .where(eq(flightSeatClasses.id, order.inboundFlightSeatClassId));
+
+        totalReleasedSeats += order.passengerCount;
+      }
+    }
+
+    return {
+      cancelledCount: expiredOrders.length,
+      releasedSeats: totalReleasedSeats,
+    };
+  });
+}
+
+export interface OrderRefundData {
+  id: string;
+  userId: string;
+  status: string;
+  outboundFlightSeatClassId: string;
+  inboundFlightSeatClassId: string | null;
+  passengerCount: number;
+  totalAmount: string;
+  outboundFlightSeatClass: {
+    flight: {
+      departureDatetime: Date;
+      flightNumber: string;
+    };
+  };
+  inboundFlightSeatClass: {
+    flight: {
+      departureDatetime: Date;
+      flightNumber: string;
+    };
+  } | null;
+}
+
+export async function getOrderForRefund(
+  orderId: string,
+  userId: string
+): Promise<OrderRefundData | null> {
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, orderId), eq(orders.userId, userId)),
+    columns: {
+      id: true,
+      userId: true,
+      status: true,
+      outboundFlightSeatClassId: true,
+      inboundFlightSeatClassId: true,
+      passengerCount: true,
+      totalAmount: true,
+    },
+    with: {
+      outboundFlightSeatClass: {
+        with: {
+          flight: {
+            columns: {
+              departureDatetime: true,
+              flightNumber: true,
+            },
+          },
+        },
+      },
+      inboundFlightSeatClass: {
+        with: {
+          flight: {
+            columns: {
+              departureDatetime: true,
+              flightNumber: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return (order as OrderRefundData | null) ?? null;
+}
+
+export async function refundOrderAndReleaseSeats(
+  order: {
+    id: string;
+    userId: string;
+    passengerCount: number;
+    totalAmount: string;
+    outboundFlightSeatClassId: string;
+    inboundFlightSeatClassId: string | null;
+  },
+  now: Date
+): Promise<void> {
+  await runInTransaction(async tx => {
+    await tx
+      .update(orders)
+      .set({
+        status: "REFUNDED",
+        updatedAt: now,
+      })
+      .where(eq(orders.id, order.id));
+
+    await tx
+      .update(user)
+      .set({
+        balance: sql`${user.balance} + ${order.totalAmount}`,
+        updatedAt: now,
+      })
+      .where(eq(user.id, order.userId));
+
+    await tx
+      .update(flightSeatClasses)
+      .set({
+        availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+        updatedAt: now,
+      })
+      .where(eq(flightSeatClasses.id, order.outboundFlightSeatClassId));
+
+    if (order.inboundFlightSeatClassId) {
+      await tx
+        .update(flightSeatClasses)
+        .set({
+          availableSeats: sql`${flightSeatClasses.availableSeats} + ${order.passengerCount}`,
+          updatedAt: now,
+        })
+        .where(eq(flightSeatClasses.id, order.inboundFlightSeatClassId));
+    }
+  });
 }

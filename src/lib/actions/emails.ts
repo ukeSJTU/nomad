@@ -10,7 +10,7 @@
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
-import { getOrderDetailById } from "@/lib/queries/orders";
+import { getOrderDetailById } from "@/lib/repositories/orders";
 import { sendOrderConfirmationEmail } from "@/lib/services/email";
 import type { ActionResult } from "@/types/common";
 import { transformOrderDetailToEmailData } from "@/utils/email-transformers";

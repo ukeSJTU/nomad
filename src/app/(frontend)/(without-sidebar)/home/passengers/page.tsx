@@ -1,4 +1,4 @@
-import { getPassengers } from "@/lib/queries";
+import { getPassengers } from "@/lib/repositories";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import { PassengersPageClient } from "./page.client";

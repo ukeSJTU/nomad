@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { Suspense } from "react";
 
 import { auth } from "@/lib/auth";
-import { getAllCities, getRecentSearchHistory } from "@/lib/queries";
+import { getAllCities, getRecentSearchHistory } from "@/lib/repositories";
 
 import FlightsLoading from "./loading";
 import { FlightsPageClient } from "./page.client";

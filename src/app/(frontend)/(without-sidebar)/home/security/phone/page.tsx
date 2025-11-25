@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import type { SecurityStatus } from "@/components/security";
-import { getUserSecurityStatus } from "@/lib/queries";
+import { getUserSecurityStatus } from "@/lib/repositories";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import PhonePageClient from "./page.client";

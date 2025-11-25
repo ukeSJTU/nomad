@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getOrderDetailById } from "@/lib/queries/orders";
+import { getOrderDetailById } from "@/lib/repositories/orders";
 import { user } from "@/lib/schema";
 import { orders, payments } from "@/lib/schema/orders";
 import { sendOrderConfirmationEmail } from "@/lib/services/email";
@@ -205,7 +205,7 @@ export async function processPaymentAction(
         orderId: order.id,
         orderNumber: order.orderNumber,
         paymentId: payment.id,
-        transactionId: payment.transactionId!,
+        transactionId: payment.transactionId ?? transactionId,
         amount: order.totalAmount,
         remainingBalance: toDatabaseValue(newBalance),
       };
@@ -214,7 +214,7 @@ export async function processPaymentAction(
     // Send order confirmation email (async, non-blocking)
     // If email fails, we don't fail the payment - just log the error
     try {
-      console.log(
+      console.warn(
         `[Payment] Sending order confirmation email for order ${paymentResult.orderNumber}`
       );
 
@@ -235,7 +235,7 @@ export async function processPaymentAction(
         const emailResult = await sendOrderConfirmationEmail(emailData);
 
         if (emailResult.success) {
-          console.log(
+          console.warn(
             `[Payment] Order confirmation email sent successfully for order ${paymentResult.orderNumber}`
           );
         } else {

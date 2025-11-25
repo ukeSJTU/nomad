@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import type { SecurityStatus } from "@/components/security";
-import { getUserSecurityStatus } from "@/lib/queries/user";
+import { getUserSecurityStatus } from "@/lib/repositories/user";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import EmailPageClient from "./page.client";

@@ -287,7 +287,7 @@ async function getOneWayQuickPrices(params: {
 **城市/机场数据缓存**
 - **现状**: 每次搜索都查询城市和机场信息
 - **优化**: 启动时加载到Redis,几乎不变的数据
-- **代码位置**: `src/lib/queries/cities.ts`
+- **代码位置**: `src/lib/repositories/cities.ts`
 
 **预期收益**:
 - 搜索响应时间从 200ms 降低到 50ms

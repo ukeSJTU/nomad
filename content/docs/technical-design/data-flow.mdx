@@ -18,10 +18,10 @@ icon: TrendingUpDown
 ### 文件组织
 
 - `src/app/(frontend)/home/passengers/page.tsx` Server Component，负责调用查询以及后端业务（例如身份验证）
-- `src/lib/queries/passengers.ts` 实现具体的查询功能
-  - `src/lib/queries/index.ts` 统一导出所有查询函数
-  - `src/lib/queries/passengers.test.ts` 可选的单元测试，主要验证数据转换逻辑
-  - `src/lib/queries/passengers.integration.test.ts` 可选的集成测试，在测试数据库上验证业务逻辑
+- `src/lib/repositories/passengers.ts` 实现具体的查询功能
+  - `src/lib/repositories/index.ts` 统一导出所有查询函数
+  - `src/lib/repositories/passengers.test.ts` 可选的单元测试，主要验证数据转换逻辑
+  - `src/lib/repositories/passengers.integration.test.ts` 可选的集成测试，在测试数据库上验证业务逻辑
 - `src/components/passengers/passengers-page-client.tsx` Client Component，负责处理前端用户交互功能
 
 ### 代码示例
@@ -85,7 +85,7 @@ import { redirect } from "next/navigation";
 
 import { PassengersPageClient } from "@/components/passengers/passengers-page-client";
 import { auth } from "@/lib/auth";
-import { getPassengers } from "@/lib/queries";
+import { getPassengers } from "@/lib/repositories";
 
 export default async function PassengersPage() {
   // 1. 获取请求头（用于身份验证）
@@ -117,7 +117,7 @@ export default async function PassengersPage() {
 
 #### 查询函数
 
-```tsx title="src/lib/queries/passengers.ts"
+```tsx title="src/lib/repositories/passengers.ts"
 import { eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
@@ -179,7 +179,7 @@ export default async function PassengerDetailPage({
 
 **重要：** 查询函数如 `getPassengerById` 也必须在内部验证参数，避免在其他地方调用时忘记验证：
 
-```tsx title="src/lib/queries/passengers.ts"
+```tsx title="src/lib/repositories/passengers.ts"
 import { z } from "zod";
 
 export async function getPassengerById(id: string): Promise<Passenger | null> {

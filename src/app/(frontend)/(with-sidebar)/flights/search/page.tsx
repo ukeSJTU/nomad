@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getAllCities } from "@/lib/queries";
+import { getAllCities } from "@/lib/repositories";
 import { searchFlightsWithHistory } from "@/lib/services";
 import {
   type SeatClass,

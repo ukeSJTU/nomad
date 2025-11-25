@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import {
   getFlightSeatClassById,
   getSavedPassengers,
-} from "@/lib/queries/booking";
+} from "@/lib/repositories/booking";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingPassengersPageClient } from "./page.client";

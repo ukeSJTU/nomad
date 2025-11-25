@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
-import { getUserBalance } from "@/lib/queries";
+import { getUserBalance } from "@/lib/repositories";
 
 import { WalletPageClient } from "./page.client";
 

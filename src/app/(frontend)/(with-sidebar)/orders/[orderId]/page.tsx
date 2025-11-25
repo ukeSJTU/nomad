@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { BreadCrumbNav } from "@/components/common/bread-crumb-nav";
-import { getOrderDetailById } from "@/lib/queries/orders";
+import { getOrderDetailById } from "@/lib/repositories/orders";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import OrderDetailsPageClient from "./page.client";
