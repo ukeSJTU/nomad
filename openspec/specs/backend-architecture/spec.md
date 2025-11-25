@@ -1,4 +1,10 @@
-## ADDED Requirements
+# backend-architecture Specification
+
+## Purpose
+
+TBD - created by archiving change refactor-backend-layering. Update Purpose after archive.
+
+## Requirements
 
 ### Requirement: Layered Backend Architecture
 
