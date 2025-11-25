@@ -18,7 +18,7 @@ import type { RecordFlightSearchData } from "@/types/validations";
  * 2. Call service layer for business logic
  * 3. Format responses
  *
- * All business logic is in the service layer (src/lib/services/flight-search-history.ts)
+ * All business logic is in the service layer (src/domains/flights/flight-search-history.service.ts)
  * which can be tested independently without mocking Next.js runtime.
  */
 

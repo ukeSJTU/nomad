@@ -49,7 +49,7 @@
 **完整 Schema 代码:**
 
 ```typescript
-// src/lib/db/schema/[module].ts
+// src/db/schema/[module].ts
 export const [tableName] = pgTable('[table_name]', {
   // [字段定义]
 });
@@ -72,7 +72,7 @@ export const [tableName]Relations = relations([tableName], ({ one, many }) => ({
 **验证 Schema:**
 
 ```typescript
-// src/lib/schema/[module].ts
+// src/types/validations/[module].ts
 export const [schemaName] = z.object({
   [fieldName]: z.string().min(1, "[错误提示]"),
   // [其他字段验证规则]
@@ -117,7 +117,7 @@ export async function [actionName](formData: FormData) {
 **函数签名:**
 
 ```typescript
-// src/lib/services/[module].ts
+// src/domains/[module]/[module].service.ts
 export async function [serviceFunctionName](
   params: [ParamType]
 ): Promise<[ReturnType]> {
@@ -190,14 +190,14 @@ export async function [serviceFunctionName](
 
 ### 创建文件
 
-- `src/lib/db/schema/[module].ts` - [数据库 Schema 定义]
+- `src/db/schema/[module].ts` - [数据库 Schema 定义]
 - `src/app/(frontend)/[route]/actions.ts` - [Server Actions]
-- `src/lib/services/[module].ts` - [业务逻辑服务函数]
-- `src/lib/schema/[module].ts` - [Zod 验证 Schema]
+- `src/domains/[module]/[module].service.ts` - [业务逻辑服务函数]
+- `src/types/validations/[module].ts` - [Zod 验证 Schema]
 
 ### 修改文件
 
-- `src/lib/db/schema/index.ts` - [导出新的 Schema]
+- `src/db/schema/index.ts` - [导出新的 Schema]
 - `drizzle.config.ts` - [如有配置变更]
 
 ### 删除文件

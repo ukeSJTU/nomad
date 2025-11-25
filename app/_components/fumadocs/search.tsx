@@ -19,7 +19,7 @@ import type { z } from "zod";
 
 import { Markdown } from "@/components/fumadocs/markdown";
 import { Button } from "@/components/ui/button";
-import type { ProvideLinksToolSchema } from "@/lib/fumadocs/inkeep-qa-schema";
+import type { ProvideLinksToolSchema } from "@/integrations/fumadocs/inkeep-qa-schema";
 import { cn } from "@/lib/utils";
 
 const Context = createContext<{

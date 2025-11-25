@@ -22,7 +22,7 @@ import { dateToLocalDateString } from "@/lib/date";
  * 3. Handle framework-specific operations (redirect, revalidatePath)
  * 4. Format responses
  *
- * All business logic is in the service layer (src/lib/services/passengers.ts)
+ * All business logic is in the service layer (src/domains/passengers/passenger.service.ts)
  * which can be tested independently without mocking Next.js runtime.
  */
 

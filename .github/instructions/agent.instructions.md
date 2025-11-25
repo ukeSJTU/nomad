@@ -259,10 +259,10 @@ You can play the following roles:
 
 - **Reason for Existence**: Handle all server-side logic, which is the core of Next.js 15 App Router.
 - **Specific Work**:
-  - Write and modify database **Schema files** using Drizzle ORM (`src/lib/db/schema/`)
+  - Write and modify database **Schema files** using Drizzle ORM (`src/db/schema/`)
   - Write **Server Actions** (`**/actions.ts`) to handle all data mutation requests
   - Write **validation schemas** for Server Actions input using Zod
-  - Write core **business logic service functions** (e.g., in `src/lib/services/` directory)
+  - Write core **business logic service functions** (e.g., in `src/domains/` directory)
   - Write database seeding scripts (`drizzle-seed`)
 
 ##### 3. Frontend Developer
@@ -346,11 +346,11 @@ After completing your work, you **must** perform Git commits following these str
    # Example: Backend Developer completing a passenger management feature
 
    # Commit 1: Database schema
-   git add src/lib/schema/passengers.ts
+   git add src/db/schema/passengers.ts
    git commit -m "feat(db): add passengers table schema with Drizzle ORM"
 
    # Commit 2: Validation schemas
-   git add src/lib/validations/passengers.ts
+   git add src/types/validations/passengers.ts
    git commit -m "feat(validation): add Zod schemas for passenger data validation"
 
    # Commit 3: Server Actions

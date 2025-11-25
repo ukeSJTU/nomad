@@ -59,7 +59,7 @@ export const sidebarHeadingStyles = {
  *
  * 示例:
  * ```tsx
- * import { minimalHeadingStyles as headingStyles } from "@/lib/fumadocs/heading.config";
+ * import { minimalHeadingStyles as headingStyles } from "@/integrations/fumadocs/heading.config";
  *
  * const customHeadings: Partial<MDXComponents> = {
  *   h1: props => <h1 className={headingStyles.h1} {...props} />,
