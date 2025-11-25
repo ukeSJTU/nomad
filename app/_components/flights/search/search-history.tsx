@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import type { SearchHistoryRecord } from "@/types/dto";
 import {
   compareCurrency,
   formatCurrencyWithoutSymbol,
   parseCurrency,
-} from "@/utils/currency";
-import { getWeekdayLabel } from "@/utils/date";
+} from "@/lib/currency";
+import { getWeekdayLabel } from "@/lib/date";
+import { cn } from "@/lib/utils";
+import type { SearchHistoryRecord } from "@/types/dto";
 
 interface FlightSearchHistoryCardProps {
   record: SearchHistoryRecord;

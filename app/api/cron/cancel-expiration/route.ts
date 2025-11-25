@@ -1,8 +1,5 @@
 import { cancelExpiredOrders } from "@/domains/booking/orders.service";
-import {
-  createUnauthorizedResponse,
-  verifyCronSecret,
-} from "@/utils/cron-auth";
+import { createUnauthorizedResponse, verifyCronSecret } from "@/security/cron";
 
 /**
  * Cron Job: Cancel Expired Orders

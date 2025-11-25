@@ -10,13 +10,13 @@ import {
   searchOneWayFlights,
   searchRoundTripFlights,
 } from "@/domains/flights/flight.repository";
+import { calculateLowestPrice } from "@/domains/flights/utils/calculations";
 import logger from "@/lib/logger";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,
 } from "@/types/dto";
 import type { SeatClass, TripType, UpperSeatClass } from "@/types/validations";
-import { calculateLowestPrice } from "@/utils/flight-calculations";
 
 /**
  * Parameters for searching one-way flights

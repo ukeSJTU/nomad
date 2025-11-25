@@ -19,9 +19,9 @@ import {
   FLIGHT_UI_TEXT,
   ROUND_TRIP_STEPS,
 } from "@/domains/flights/flights.constants";
+import { formatDateWithWeekday, formatTime } from "@/lib/date";
 import type { CityData } from "@/types/dto";
 import type { TripType } from "@/types/validations";
-import { formatDateWithWeekday, formatTime } from "@/utils/date";
 
 interface FlightSearchHeaderProps {
   /**

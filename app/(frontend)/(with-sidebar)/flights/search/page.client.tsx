@@ -16,15 +16,15 @@ import {
   type SearchFormData,
 } from "@/components/flights/search";
 import { SEAT_CLASS_TYPE_MAP } from "@/domains/flights/flights.constants";
+import { buildFlightSearchUrl } from "@/domains/flights/utils/search-params";
 import { useFlightSearchState } from "@/hooks/use-flight-search-state";
+import { dateToLocalDateString } from "@/lib/date";
 import type {
   CityData,
   FlightSearchResult,
   RoundTripFlightSearchResult,
 } from "@/types/dto";
 import type { SeatClass, TripType } from "@/types/validations";
-import { dateToLocalDateString } from "@/utils/date";
-import { buildFlightSearchUrl } from "@/utils/flight-search-params";
 
 interface FlightSearchPageClientProps {
   cities: CityData[];

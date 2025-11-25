@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { ApiResponse } from "@/lib/api-response";
 import {
   type HealthData,
   healthDataSchema,
   type HealthResponse,
 } from "@/types/api";
-import { ApiResponse } from "@/utils/api-response";
 
 export async function GET(): Promise<NextResponse<HealthResponse>> {
   const healthData: HealthData = {

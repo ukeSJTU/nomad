@@ -24,11 +24,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { formatCurrency } from "@/lib/currency";
 import {
   type RechargeBalanceData,
   rechargeBalanceSchema,
 } from "@/types/validations";
-import { formatCurrency } from "@/utils/currency";
 
 interface WalletPageClientProps {
   initialBalance: string;

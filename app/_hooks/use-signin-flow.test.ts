@@ -35,7 +35,7 @@ vi.mock("@/domains/auth/client", () => ({
 }));
 
 // Mock validateAccount utility
-vi.mock("@/utils/auth", () => ({
+vi.mock("@/domains/auth/utils/validation", () => ({
   validateAccount: vi.fn(),
 }));
 
@@ -43,8 +43,8 @@ vi.mock("@/utils/auth", () => ({
 import { toast } from "sonner";
 
 import { authClient } from "@/domains/auth/client";
+import { validateAccount } from "@/domains/auth/utils/validation";
 import type { OtpLoginData, PasswordLoginData } from "@/types/validations/auth";
-import { validateAccount } from "@/utils/auth";
 
 import { useSignInFlow } from "./use-signin-flow";
 

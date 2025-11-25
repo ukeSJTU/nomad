@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
+import { formatDateString } from "@/lib/date";
 import type { PassengerDetailData } from "@/types/dto/passengers";
-import { formatDateString } from "@/utils/date";
 
 interface PassengerDetailViewProps {
   passenger: PassengerDetailData;

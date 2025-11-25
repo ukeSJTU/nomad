@@ -12,8 +12,8 @@ import {
   PaymentPriceBreakdown,
 } from "@/components/flights/booking";
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/currency";
 import { PaymentPageOrder } from "@/types/dto";
-import { formatCurrency } from "@/utils/currency";
 
 type PaymentPageClientProps = {
   order: PaymentPageOrder;

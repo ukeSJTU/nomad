@@ -36,7 +36,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { authClient } from "@/domains/auth/client";
-import { getInitials } from "@/utils/string";
+import { getInitials } from "@/lib/string";
 
 type User = Extract<DevUserListResult, { success: true }>["users"][number];
 

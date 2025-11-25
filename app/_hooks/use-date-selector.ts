@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { type DateRange } from "react-day-picker";
 
-import { calculateTripDuration, getBookingDateRange } from "@/utils/date";
+import { calculateTripDuration, getBookingDateRange } from "@/lib/date";
 
 export type TripType = "one-way" | "round-trip";
 export type ActiveField = "departure" | "return";

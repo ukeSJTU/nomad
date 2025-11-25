@@ -12,8 +12,8 @@ import { headers } from "next/headers";
 import { auth } from "@/domains/auth";
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
 import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
+import { transformOrderDetailToEmailData } from "@/domains/notification/utils/transformers";
 import type { ActionResult } from "@/types/common";
-import { transformOrderDetailToEmailData } from "@/utils/email-transformers";
 
 /**
  * Server action to resend order confirmation email

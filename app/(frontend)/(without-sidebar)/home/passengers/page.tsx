@@ -1,5 +1,5 @@
+import { requireAuth } from "@/domains/auth/utils/helpers";
 import { getPassengers } from "@/domains/passengers/passenger.repository";
-import { requireAuth } from "@/utils/auth-helpers";
 
 import { PassengersPageClient } from "./page.client";
 

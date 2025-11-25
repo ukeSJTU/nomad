@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { requireAuth } from "@/domains/auth/utils/helpers";
 import { getOrderForAncillary } from "@/domains/booking";
-import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingAncillaryPageClient } from "./page.client";
 

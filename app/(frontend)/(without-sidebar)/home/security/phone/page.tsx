@@ -2,8 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import type { SecurityStatus } from "@/components/security";
+import { requireAuth } from "@/domains/auth/utils/helpers";
 import { getUserSecurityStatus } from "@/domains/user/user.repository";
-import { requireAuth } from "@/utils/auth-helpers";
 
 import PhonePageClient from "./page.client";
 export const dynamic = "force-dynamic";

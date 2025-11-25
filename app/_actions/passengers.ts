@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { getAuthenticatedUserId } from "@/domains/auth/utils/helpers";
 import {
   batchDeletePassengers,
   createPassenger,
@@ -10,8 +11,7 @@ import {
   type PassengerInput,
   updatePassenger,
 } from "@/domains/passengers/passenger.service";
-import { getAuthenticatedUserId } from "@/utils/auth-helpers";
-import { dateToLocalDateString } from "@/utils/date";
+import { dateToLocalDateString } from "@/lib/date";
 
 /**
  * Server Actions for Passenger Management (Thin Controller Layer)

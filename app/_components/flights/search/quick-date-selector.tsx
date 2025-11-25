@@ -10,9 +10,9 @@ import {
 } from "@/app/_actions/quick-date-prices";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/lib/currency";
+import { dateToLocalDateString, formatDateWithWeekday } from "@/lib/date";
 import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/utils/currency";
-import { dateToLocalDateString, formatDateWithWeekday } from "@/utils/date";
 
 interface QuickDateSelectorProps {
   from: string; // Departure city IATA code

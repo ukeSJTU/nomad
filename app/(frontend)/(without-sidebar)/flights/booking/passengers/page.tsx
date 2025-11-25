@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { requireAuth } from "@/domains/auth/utils/helpers";
 import { getFlightSeatClassById, getSavedPassengers } from "@/domains/booking";
-import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingPassengersPageClient } from "./page.client";
 export const dynamic = "force-dynamic";

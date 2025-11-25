@@ -3,10 +3,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { authClient } from "@/domains/auth/client";
+import { validateAccount } from "@/domains/auth/utils/validation";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type { OtpLoginData, PasswordLoginData } from "@/types/validations/auth";
-import { validateAccount } from "@/utils/auth";
 
 export interface UseSignInFlowReturn {
   isLoading: boolean;

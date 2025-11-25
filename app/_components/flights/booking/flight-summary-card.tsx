@@ -2,15 +2,15 @@ import { Clock, Plane } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { PassengerPageFlight } from "@/types/dto";
 import {
   addCurrency,
   formatCurrency,
   getCurrencyValue,
   multiplyCurrency,
   parseCurrency,
-} from "@/utils/currency";
-import { formatDateWithWeekday } from "@/utils/date";
+} from "@/lib/currency";
+import { formatDateWithWeekday } from "@/lib/date";
+import type { PassengerPageFlight } from "@/types/dto";
 
 type FlightSummaryCardProps = {
   outboundFlight: PassengerPageFlight | null;

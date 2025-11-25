@@ -1,8 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 
+import { requireAuth } from "@/domains/auth/utils/helpers";
 import { getOrderForPayment } from "@/domains/booking/payment.repository";
 import { getUserBalance } from "@/domains/user/user.repository";
-import { requireAuth } from "@/utils/auth-helpers";
 
 import PaymentPageClient from "./page.client";
 export const dynamic = "force-dynamic";

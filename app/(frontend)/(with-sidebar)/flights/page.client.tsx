@@ -7,8 +7,8 @@ import {
   SearchForm,
   type SearchFormData,
 } from "@/components/flights/search";
+import { buildFlightSearchUrl } from "@/domains/flights/utils/search-params";
 import type { CityData, SearchHistoryRecord } from "@/types/dto";
-import { buildFlightSearchUrl } from "@/utils/flight-search-params";
 
 interface FlightsPageClientProps {
   cities: CityData[];

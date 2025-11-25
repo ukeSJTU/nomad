@@ -9,7 +9,7 @@ import {
 } from "./flight-card";
 
 // Mock the currency formatter
-vi.mock("@/utils/currency", () => ({
+vi.mock("@/lib/currency", () => ({
   formatCurrency: (value: number) => `¥${value.toFixed(2)}`,
 }));
 

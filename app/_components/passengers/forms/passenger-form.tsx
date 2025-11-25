@@ -29,12 +29,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { dateToLocalDateString } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import {
   type PassengerFormData,
   passengerFormSchema,
 } from "@/types/validations/passengers";
-import { dateToLocalDateString } from "@/utils/date";
 
 interface PassengerFormProps {
   onSubmit: (data: PassengerFormData) => void;

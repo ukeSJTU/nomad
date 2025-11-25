@@ -1,4 +1,4 @@
-import { requireAuth } from "@/utils/auth-helpers";
+import { requireAuth } from "@/domains/auth/utils/helpers";
 
 import { NewPassengerClient } from "./page.client";
 

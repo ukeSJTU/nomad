@@ -11,14 +11,14 @@ import { orders, payments } from "@/db/schema/orders";
 import { auth } from "@/domains/auth";
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
 import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
-import type { ActionResult } from "@/types/common";
+import { transformOrderDetailToEmailData } from "@/domains/notification/utils/transformers";
 import {
   getCurrencyValue,
   parseCurrency,
   subtractCurrency,
   toDatabaseValue,
-} from "@/utils/currency";
-import { transformOrderDetailToEmailData } from "@/utils/email-transformers";
+} from "@/lib/currency";
+import type { ActionResult } from "@/types/common";
 
 /**
  * Process payment action result data

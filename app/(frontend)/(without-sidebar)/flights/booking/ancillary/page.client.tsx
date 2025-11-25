@@ -20,13 +20,13 @@ import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
 } from "@/db/schema";
-import type { AncillaryPageOrder } from "@/types/dto";
 import {
   addCurrency,
   formatCurrency,
   getCurrencyValue,
   parseCurrency,
-} from "@/utils/currency";
+} from "@/lib/currency";
+import type { AncillaryPageOrder } from "@/types/dto";
 
 interface BookingAncillaryPageClientProps {
   order: AncillaryPageOrder;

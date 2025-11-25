@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { OrderUserEmailData } from "@/types/dto/emails";
 import type { OrderDetailFull } from "@/types/dto/orders";
 
-import { transformOrderDetailToEmailData } from "./email-transformers";
+import { transformOrderDetailToEmailData } from "./transformers";
 
 describe("email-transformers", () => {
   describe("transformOrderDetailToEmailData", () => {

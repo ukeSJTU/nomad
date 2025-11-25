@@ -16,15 +16,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FLIGHT_UI_TEXT } from "@/domains/flights/flights.constants";
-import type { FlightSearchResult } from "@/types/dto";
-import type { SeatClass } from "@/types/validations";
 import {
   calculateDaysOffset,
   calculateFlightDuration,
   formatAirportDisplay,
   formatDuration,
   formatFlightTime,
-} from "@/utils/flight";
+} from "@/domains/flights/utils/flight";
+import type { FlightSearchResult } from "@/types/dto";
+import type { SeatClass } from "@/types/validations";
 
 interface FlightListRoundTripProps {
   /**

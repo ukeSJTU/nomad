@@ -5,7 +5,7 @@
  */
 
 import type { SearchFormData } from "@/components/flights/search";
-import { dateToLocalDateString } from "@/utils/date";
+import { dateToLocalDateString } from "@/lib/date";
 
 /**
  * Build flight search URL from form data

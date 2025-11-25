@@ -3,8 +3,8 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { account, user } from "@/db/schema";
 import { type DbExecutor, runInTransaction } from "@/db/transaction";
+import { maskEmail, maskPhoneNumber } from "@/lib/mask-data";
 import type { UserInfo, UserSecurityStatus } from "@/types/dto";
-import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
 
 export type UserRow = typeof user.$inferSelect;
 type UserInsert = typeof user.$inferInsert;

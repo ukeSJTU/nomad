@@ -1,5 +1,5 @@
+import { requireAuth } from "@/domains/auth/utils/helpers";
 import { getAllOrdersByUserId } from "@/domains/booking/orders.repository";
-import { requireAuth } from "@/utils/auth-helpers";
 
 import OrdersPageClient from "./page.client";
 

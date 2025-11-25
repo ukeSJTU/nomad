@@ -13,7 +13,7 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-import { formatCurrency as formatCurrencyUtil } from "@/utils/currency";
+import { formatCurrency as formatCurrencyUtil } from "@/lib/currency";
 
 interface PassengerInfo {
   name: string;
