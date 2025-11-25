@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import PassengerDetailView, {
-  type PassengerDetailData,
-} from "./passenger-detail-view";
+import type { PassengerDetailData } from "@/types/dto/passengers";
+
+import PassengerDetailView from "./passenger-detail-view";
 
 const mockPassenger: PassengerDetailData = {
   name: "测试用户",
@@ -64,6 +64,10 @@ describe("PassengerDetailView Component", () => {
       dateOfBirth: "2004-09-12",
       documentType: "id_card",
       documentNumber: "3101**************876",
+      placeOfBirth: null,
+      phone: null,
+      email: null,
+      documentExpiryDate: null,
     };
     render(<PassengerDetailView passenger={passengerWithMissingFields} />);
 
