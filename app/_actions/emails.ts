@@ -11,7 +11,7 @@ import { headers } from "next/headers";
 
 import { auth } from "@/domains/auth";
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
-import { sendOrderConfirmationEmail } from "@/services/mail.service";
+import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
 import type { ActionResult } from "@/types/common";
 import { transformOrderDetailToEmailData } from "@/utils/email-transformers";
 
