@@ -10,6 +10,14 @@ import { cancelExpiredOrders } from "@/lib/services/orders";
 import logger from "@/utils/logger";
 
 let orderCancellationInterval: NodeJS.Timeout | null = null;
+let isTaskRunning = false;
+
+/**
+ * Signal handler for graceful shutdown
+ */
+function handleShutdown() {
+  stopOrderCancellationTask();
+}
 
 /**
  * Start the automatic order cancellation task
@@ -22,6 +30,13 @@ let orderCancellationInterval: NodeJS.Timeout | null = null;
  * Should only be called in development mode.
  */
 export function startOrderCancellationTask() {
+  // Prevent multiple instances
+  if (isTaskRunning) {
+    return;
+  }
+
+  isTaskRunning = true;
+
   logger.info("[Dev Cron] Starting automatic order cancellation task");
   logger.info("[Dev Cron] Checking for expired orders every 60 seconds");
 
@@ -33,9 +48,9 @@ export function startOrderCancellationTask() {
     checkAndCancelOrders();
   }, 60000); // 60 seconds
 
-  // Cleanup on process termination
-  process.on("SIGTERM", stopOrderCancellationTask);
-  process.on("SIGINT", stopOrderCancellationTask);
+  // Cleanup on process termination (register handlers only once)
+  process.once("SIGTERM", handleShutdown);
+  process.once("SIGINT", handleShutdown);
 }
 
 /**
@@ -45,7 +60,12 @@ export function stopOrderCancellationTask() {
   if (orderCancellationInterval) {
     clearInterval(orderCancellationInterval);
     orderCancellationInterval = null;
+    isTaskRunning = false;
     logger.info("[Dev Cron] Stopped automatic order cancellation task");
+
+    // Remove signal handlers
+    process.removeListener("SIGTERM", handleShutdown);
+    process.removeListener("SIGINT", handleShutdown);
   }
 }
 
