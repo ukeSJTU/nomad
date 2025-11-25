@@ -1,7 +1,11 @@
-import { and, eq, inArray } from "drizzle-orm";
-
-import { db } from "@/lib/db";
-import { passengers } from "@/lib/schema/passengers";
+import {
+  batchSoftDeletePassengersForUser,
+  createPassengerRecord,
+  findPassengerForUser,
+  PassengerRow,
+  softDeletePassengerForUser,
+  updatePassengerRecord,
+} from "@/lib/repositories/passengers";
 import type { Passenger } from "@/types/dto/passengers";
 import type {
   CreatePassengerData,
@@ -41,6 +45,25 @@ function isValidUUID(id: string): boolean {
  */
 export type PassengerInput = CreatePassengerData;
 
+function toPassengerDto(row: PassengerRow): Passenger {
+  return {
+    id: row.id,
+    name: row.name,
+    nationality: row.nationality,
+    gender: row.gender,
+    dateOfBirth: row.dateOfBirth,
+    placeOfBirth: row.placeOfBirth,
+    phone: row.phone,
+    email: row.email,
+    documentType: row.documentType,
+    documentNumber: row.documentNumber,
+    documentExpiryDate: row.documentExpiryDate ?? null,
+    isDeleted: false,
+    createdAt: row.createdAt?.toISOString() ?? new Date().toISOString(),
+    updatedAt: row.updatedAt?.toISOString() ?? new Date().toISOString(),
+  };
+}
+
 /**
  * Create a new passenger for a user
  *
@@ -67,7 +90,7 @@ export async function createPassenger(
     }
 
     // Prepare passenger data for database
-    const passengerData: any = {
+    const passengerData = {
       userId,
       name: data.name,
       nationality: data.nationality || null,
@@ -83,34 +106,11 @@ export async function createPassenger(
     };
 
     // Insert into database
-    const [createdPassenger] = await db
-      .insert(passengers)
-      .values(passengerData)
-      .returning();
-
-    // Convert to API format
-    const passenger: Passenger = {
-      id: createdPassenger.id,
-      name: createdPassenger.name,
-      nationality: createdPassenger.nationality,
-      gender: createdPassenger.gender,
-      dateOfBirth: createdPassenger.dateOfBirth,
-      placeOfBirth: createdPassenger.placeOfBirth,
-      phone: createdPassenger.phone,
-      email: createdPassenger.email,
-      documentType: createdPassenger.documentType,
-      documentNumber: createdPassenger.documentNumber,
-      documentExpiryDate: createdPassenger.documentExpiryDate ?? null,
-      isDeleted: false,
-      createdAt:
-        createdPassenger.createdAt?.toISOString() ?? new Date().toISOString(),
-      updatedAt:
-        createdPassenger.updatedAt?.toISOString() ?? new Date().toISOString(),
-    };
+    const createdPassenger = await createPassengerRecord(passengerData);
 
     return {
       success: true,
-      data: passenger,
+      data: toPassengerDto(createdPassenger),
       message: "Passenger created successfully",
     };
   } catch (error) {
@@ -152,16 +152,7 @@ export async function updatePassenger(
     }
 
     // Check if passenger exists and belongs to user
-    const [existingPassenger] = await db
-      .select()
-      .from(passengers)
-      .where(
-        and(
-          eq(passengers.id, id),
-          eq(passengers.userId, userId),
-          eq(passengers.isDeleted, false)
-        )
-      );
+    const existingPassenger = await findPassengerForUser(id, userId);
 
     if (!existingPassenger) {
       return {
@@ -171,7 +162,7 @@ export async function updatePassenger(
     }
 
     // Prepare update data (only include provided fields)
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date(),
     };
 
@@ -193,35 +184,21 @@ export async function updatePassenger(
       updateData.documentExpiryDate = data.documentExpiryDate;
 
     // Update in database
-    const [updatedPassenger] = await db
-      .update(passengers)
-      .set(updateData)
-      .where(eq(passengers.id, id))
-      .returning();
+    const updatedPassenger = await updatePassengerRecord(
+      id,
+      updateData as Partial<PassengerRow>
+    );
 
-    // Convert to API format
-    const passenger: Passenger = {
-      id: updatedPassenger.id,
-      name: updatedPassenger.name,
-      nationality: updatedPassenger.nationality,
-      gender: updatedPassenger.gender,
-      dateOfBirth: updatedPassenger.dateOfBirth,
-      placeOfBirth: updatedPassenger.placeOfBirth,
-      phone: updatedPassenger.phone,
-      email: updatedPassenger.email,
-      documentType: updatedPassenger.documentType,
-      documentNumber: updatedPassenger.documentNumber,
-      documentExpiryDate: updatedPassenger.documentExpiryDate ?? null,
-      isDeleted: false,
-      createdAt:
-        updatedPassenger.createdAt?.toISOString() ?? new Date().toISOString(),
-      updatedAt:
-        updatedPassenger.updatedAt?.toISOString() ?? new Date().toISOString(),
-    };
+    if (!updatedPassenger) {
+      return {
+        success: false,
+        error: "Passenger not found",
+      };
+    }
 
     return {
       success: true,
-      data: passenger,
+      data: toPassengerDto(updatedPassenger),
       message: "Passenger updated successfully",
     };
   } catch (error) {
@@ -261,16 +238,7 @@ export async function getPassenger(
     }
 
     // Get passenger
-    const [passenger] = await db
-      .select()
-      .from(passengers)
-      .where(
-        and(
-          eq(passengers.id, id),
-          eq(passengers.userId, userId),
-          eq(passengers.isDeleted, false)
-        )
-      );
+    const passenger = await findPassengerForUser(id, userId);
 
     if (!passenger) {
       return {
@@ -280,27 +248,9 @@ export async function getPassenger(
       };
     }
 
-    // Convert to API format
-    const passengerData: Passenger = {
-      id: passenger.id,
-      name: passenger.name,
-      nationality: passenger.nationality,
-      gender: passenger.gender,
-      dateOfBirth: passenger.dateOfBirth,
-      placeOfBirth: passenger.placeOfBirth,
-      phone: passenger.phone,
-      email: passenger.email,
-      documentType: passenger.documentType,
-      documentNumber: passenger.documentNumber,
-      documentExpiryDate: passenger.documentExpiryDate ?? null,
-      isDeleted: false,
-      createdAt: passenger.createdAt?.toISOString() ?? new Date().toISOString(),
-      updatedAt: passenger.updatedAt?.toISOString() ?? new Date().toISOString(),
-    };
-
     return {
       success: true,
-      data: passengerData,
+      data: toPassengerDto(passenger),
     };
   } catch (error) {
     console.error("Get passenger error:", error);
@@ -337,16 +287,7 @@ export async function deletePassenger(
     }
 
     // Check if passenger exists and belongs to user
-    const [existingPassenger] = await db
-      .select()
-      .from(passengers)
-      .where(
-        and(
-          eq(passengers.id, id),
-          eq(passengers.userId, userId),
-          eq(passengers.isDeleted, false)
-        )
-      );
+    const existingPassenger = await findPassengerForUser(id, userId);
 
     if (!existingPassenger) {
       return {
@@ -356,10 +297,7 @@ export async function deletePassenger(
     }
 
     // Soft delete the passenger
-    await db
-      .update(passengers)
-      .set({ isDeleted: true, updatedAt: new Date() })
-      .where(eq(passengers.id, id));
+    await softDeletePassengerForUser(id, userId);
 
     return {
       success: true,
@@ -402,19 +340,7 @@ export async function batchDeletePassengers(
     }
 
     // Soft delete passengers (only those belonging to the user and not already deleted)
-    const result = await db
-      .update(passengers)
-      .set({ isDeleted: true, updatedAt: new Date() })
-      .where(
-        and(
-          inArray(passengers.id, ids),
-          eq(passengers.userId, userId),
-          eq(passengers.isDeleted, false)
-        )
-      )
-      .returning({ id: passengers.id });
-
-    const deletedCount = result.length;
+    const deletedCount = await batchSoftDeletePassengersForUser(userId, ids);
 
     return {
       success: true,

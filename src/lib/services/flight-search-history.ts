@@ -1,7 +1,10 @@
-import { and, eq, sql } from "drizzle-orm";
-
-import { db } from "@/lib/db";
-import { cities, flightSearchHistory } from "@/lib/schema";
+import {
+  createSearchHistoryRecord,
+  findCityByIataCode,
+  findExistingSearchHistory,
+  softDeleteSearchHistoryByUser,
+  updateSearchHistory,
+} from "@/lib/repositories/flight-search-history";
 import type { RecordFlightSearchData } from "@/types/validations";
 import logger from "@/utils/logger";
 
@@ -11,7 +14,7 @@ import type { ServiceResult } from "./types";
  * Service layer for flight search history business logic
  *
  * This layer contains pure business logic without framework dependencies (no Next.js runtime),
- * making it easy to test and reuse in different contexts.
+ * making it easy to test and reuse in different contexts (user actions, admin operations, cron jobs, etc.).
  *
  * All functions accept userId as a parameter instead of accessing session directly,
  * following the dependency injection pattern.
@@ -39,20 +42,9 @@ export async function recordFlightSearch(
   );
 
   try {
-    // Fetch city details for both departure and arrival cities
     const [departureCity, arrivalCity] = await Promise.all([
-      db.query.cities.findFirst({
-        where: and(
-          eq(cities.iataCode, data.departureCityIata.toUpperCase()),
-          eq(cities.isDeleted, false)
-        ),
-      }),
-      db.query.cities.findFirst({
-        where: and(
-          eq(cities.iataCode, data.arrivalCityIata.toUpperCase()),
-          eq(cities.isDeleted, false)
-        ),
-      }),
+      findCityByIataCode(data.departureCityIata),
+      findCityByIataCode(data.arrivalCityIata),
     ]);
 
     if (!departureCity || !arrivalCity) {
@@ -71,40 +63,24 @@ export async function recordFlightSearch(
       | "first"
       | undefined;
 
-    // Check if this exact search already exists (not deleted)
-    const existingSearch = await db.query.flightSearchHistory.findFirst({
-      where: and(
-        eq(flightSearchHistory.userId, userId),
-        eq(flightSearchHistory.departureCityId, departureCity.id),
-        eq(flightSearchHistory.arrivalCityId, arrivalCity.id),
-        eq(flightSearchHistory.departureDate, data.departureDate),
-        data.returnDate
-          ? eq(flightSearchHistory.returnDate, data.returnDate)
-          : sql`${flightSearchHistory.returnDate} IS NULL`,
-        eq(flightSearchHistory.isDeleted, false)
-      ),
+    const existingSearch = await findExistingSearchHistory({
+      userId,
+      departureCityId: departureCity.id,
+      arrivalCityId: arrivalCity.id,
+      departureDate: data.departureDate,
+      returnDate: data.returnDate,
     });
 
     if (existingSearch) {
-      // Update existing search: increment count, update timestamp, and optionally update price
-      await db
-        .update(flightSearchHistory)
-        .set({
-          searchCount: sql`${flightSearchHistory.searchCount} + 1`,
-          lastSearchedAt: new Date(),
-          ...(data.lowestPrice !== undefined && {
-            currentLowestPrice: data.lowestPrice.toString(),
-          }),
-          updatedAt: new Date(),
-        })
-        .where(eq(flightSearchHistory.id, existingSearch.id));
+      await updateSearchHistory(existingSearch.id, {
+        lowestPrice: data.lowestPrice?.toString(),
+      });
 
       logger.debug(
         `Updated existing search history: ${existingSearch.id} (count: ${existingSearch.searchCount + 1})`
       );
     } else {
-      // Create new search history record
-      await db.insert(flightSearchHistory).values({
+      await createSearchHistoryRecord({
         userId,
         departureCityId: departureCity.id,
         arrivalCityId: arrivalCity.id,
@@ -115,7 +91,7 @@ export async function recordFlightSearch(
         tripType: data.tripType,
         departureDate: data.departureDate,
         returnDate: data.returnDate || null,
-        seatClass: seatClass || "any", // Default to "any" to match database schema default
+        seatClass: seatClass || "any",
         lowestPriceAtSearch: data.lowestPrice?.toString() || null,
         currentLowestPrice: data.lowestPrice?.toString() || null,
         searchCount: 1,
@@ -158,19 +134,7 @@ export async function clearFlightSearchHistory(
   logger.debug(`Clearing search history for user ${userId}`);
 
   try {
-    // Soft delete all search history for this user
-    await db
-      .update(flightSearchHistory)
-      .set({
-        isDeleted: true,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(flightSearchHistory.userId, userId),
-          eq(flightSearchHistory.isDeleted, false)
-        )
-      );
+    await softDeleteSearchHistoryByUser(userId);
 
     logger.debug(`Cleared search history for user ${userId}`);
 

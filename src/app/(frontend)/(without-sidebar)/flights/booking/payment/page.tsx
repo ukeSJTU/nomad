@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { getOrderForPayment, getUserBalance } from "@/lib/queries";
+import { getOrderForPayment, getUserBalance } from "@/lib/repositories";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import PaymentPageClient from "./page.client";

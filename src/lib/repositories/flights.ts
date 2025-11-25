@@ -271,7 +271,10 @@ export async function searchFlights(params: {
 
     // Add seat class if present
     if (row.seatClass) {
-      const flight = flightMap.get(flightId)!;
+      const flight = flightMap.get(flightId);
+      if (!flight) {
+        continue;
+      }
       flight.seatClasses.push({
         id: row.seatClass.id,
         classType: row.seatClass.classType as "ECONOMY" | "BUSINESS" | "FIRST",

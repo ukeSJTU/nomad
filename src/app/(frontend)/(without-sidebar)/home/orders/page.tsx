@@ -1,4 +1,4 @@
-import { getAllOrdersByUserId } from "@/lib/queries/orders";
+import { getAllOrdersByUserId } from "@/lib/repositories/orders";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import OrdersPageClient from "./page.client";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getUserSecurityStatus } from "@/lib/queries/user";
+import { getUserSecurityStatus } from "@/lib/repositories/user";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import PasswordPageClient from "./page.client";

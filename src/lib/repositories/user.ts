@@ -1,9 +1,14 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { account, user } from "@/lib/schema";
 import type { UserInfo, UserSecurityStatus } from "@/types/dto";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
+
+import { type DbExecutor, runInTransaction } from "./transaction";
+
+export type UserRow = typeof user.$inferSelect;
+type UserInsert = typeof user.$inferInsert;
 
 /**
  * Get user information by user ID
@@ -14,8 +19,14 @@ import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
  * @param userId - The ID of the user to fetch
  * @returns User info with masked sensitive data, or null if user not found
  */
-export async function getUserInfo(userId: string): Promise<UserInfo> {
-  const [result] = await db.select().from(user).where(eq(user.id, userId));
+export async function getUserInfo(
+  userId: string,
+  dbClient: DbExecutor = db
+): Promise<UserInfo> {
+  const [result] = await dbClient
+    .select()
+    .from(user)
+    .where(eq(user.id, userId));
 
   // Apply data masking for sensitive fields
   const maskedEmail = maskEmail(result.email);
@@ -54,13 +65,17 @@ export async function getUserInfo(userId: string): Promise<UserInfo> {
  * @returns User security status with masked sensitive data, or null if user not found
  */
 export async function getUserSecurityStatus(
-  userId: string
+  userId: string,
+  dbClient: DbExecutor = db
 ): Promise<UserSecurityStatus> {
   // Fetch user data
-  const [userData] = await db.select().from(user).where(eq(user.id, userId));
+  const [userData] = await dbClient
+    .select()
+    .from(user)
+    .where(eq(user.id, userId));
 
   // Check if user has a password by querying account table for credential provider
-  const credentialAccounts = await db
+  const credentialAccounts = await dbClient
     .select()
     .from(account)
     .where(eq(account.userId, userId));
@@ -92,8 +107,11 @@ export async function getUserSecurityStatus(
  * @param userId - The ID of the user to fetch
  * @returns User balance as a string (e.g., "10000.00"), or "0.00" if user not found
  */
-export async function getUserBalance(userId: string): Promise<string> {
-  const [userData] = await db
+export async function getUserBalance(
+  userId: string,
+  dbClient: DbExecutor = db
+): Promise<string> {
+  const [userData] = await dbClient
     .select({
       balance: user.balance,
     })
@@ -101,4 +119,75 @@ export async function getUserBalance(userId: string): Promise<string> {
     .where(eq(user.id, userId));
 
   return userData?.balance ?? "0.00";
+}
+
+export async function getUserById(
+  userId: string,
+  dbClient: DbExecutor = db
+): Promise<UserRow | undefined> {
+  const [result] = await dbClient
+    .select()
+    .from(user)
+    .where(eq(user.id, userId));
+  return result;
+}
+
+export async function updateUserProfile(
+  userId: string,
+  updateData: Partial<UserInsert>,
+  dbClient: DbExecutor = db
+): Promise<void> {
+  await dbClient.update(user).set(updateData).where(eq(user.id, userId));
+}
+
+export async function updateUserPhoneNumber(
+  userId: string,
+  phoneNumber: string,
+  dbClient: DbExecutor = db
+): Promise<void> {
+  await dbClient
+    .update(user)
+    .set({
+      phoneNumber,
+      phoneNumberVerified: true,
+    })
+    .where(eq(user.id, userId));
+}
+
+export async function updateUserEmail(
+  userId: string,
+  email: string,
+  dbClient: DbExecutor = db
+): Promise<void> {
+  await dbClient
+    .update(user)
+    .set({
+      email,
+      emailVerified: true,
+    })
+    .where(eq(user.id, userId));
+}
+
+export async function rechargeUserBalance(
+  userId: string,
+  amount: number
+): Promise<string | null> {
+  return runInTransaction(async tx => {
+    const existingUser = await getUserById(userId, tx);
+
+    if (!existingUser) {
+      return null;
+    }
+
+    const [updated] = await tx
+      .update(user)
+      .set({
+        balance: sql`CAST(${user.balance} AS DECIMAL(10,2)) + ${amount}`,
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, userId))
+      .returning({ balance: user.balance });
+
+    return updated?.balance ?? null;
+  });
 }

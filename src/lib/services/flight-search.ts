@@ -6,7 +6,10 @@
  */
 
 import { recordSearchHistoryAction } from "@/lib/actions";
-import { searchOneWayFlights, searchRoundTripFlights } from "@/lib/queries";
+import {
+  searchOneWayFlights,
+  searchRoundTripFlights,
+} from "@/lib/repositories";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,

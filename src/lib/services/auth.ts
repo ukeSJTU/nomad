@@ -1,7 +1,13 @@
-import { and, eq } from "drizzle-orm";
-
-import { db } from "@/lib/db";
-import { account, user } from "@/lib/schema";
+import {
+  deleteAccountById,
+  findCredentialAccount,
+  getAccountsByUserId,
+} from "@/lib/repositories/auth";
+import { runInTransaction } from "@/lib/repositories/transaction";
+import {
+  updateUserEmail,
+  updateUserPhoneNumber,
+} from "@/lib/repositories/user";
 
 import type { ServiceResult } from "./types";
 
@@ -33,22 +39,15 @@ export async function unlinkSocialAccount(
   providerId: string
 ): Promise<ServiceResult> {
   try {
-    // Use a transaction to ensure atomicity
-    const result = await db.transaction(async tx => {
-      // 1. Get all accounts for this user
-      const userAccounts = await tx
-        .select()
-        .from(account)
-        .where(eq(account.userId, userId));
+    const result = await runInTransaction(async tx => {
+      const userAccounts = await getAccountsByUserId(userId, tx);
 
-      // 2. Prevent unlinking if this is the only account
       if (userAccounts.length <= 1) {
         throw new Error(
           "Cannot unlink your only account. Please add another account first."
         );
       }
 
-      // 3. Find the specific account to unlink
       const accountToUnlink = userAccounts.find(
         acc => acc.providerId === providerId
       );
@@ -57,12 +56,7 @@ export async function unlinkSocialAccount(
         throw new Error("Account not found or already unlinked.");
       }
 
-      // 4. Delete the account from database (within transaction)
-      await tx
-        .delete(account)
-        .where(
-          and(eq(account.id, accountToUnlink.id), eq(account.userId, userId))
-        );
+      await deleteAccountById(accountToUnlink.id, userId, tx);
 
       return {
         success: true,
@@ -164,13 +158,7 @@ export async function changePassword(
     }
 
     // 3. Verify user has a credential account (password-based login)
-    const [credentialAccount] = await db
-      .select({ id: account.id })
-      .from(account)
-      .where(
-        and(eq(account.userId, userId), eq(account.providerId, "credential"))
-      )
-      .limit(1);
+    const credentialAccount = await findCredentialAccount(userId);
 
     if (!credentialAccount) {
       return {
@@ -221,13 +209,7 @@ export async function setPasswordForOAuthUser(
     }
 
     // 2. Check if user already has a password
-    const [credentialAccount] = await db
-      .select({ id: account.id })
-      .from(account)
-      .where(
-        and(eq(account.userId, userId), eq(account.providerId, "credential"))
-      )
-      .limit(1);
+    const credentialAccount = await findCredentialAccount(userId);
 
     if (credentialAccount) {
       return {
@@ -289,13 +271,7 @@ export async function updatePhoneNumber(
     }
 
     // 2. Update the user's phone number in the database
-    await db
-      .update(user)
-      .set({
-        phoneNumber,
-        phoneNumberVerified: true, // Mark as verified since OTP was verified
-      })
-      .where(eq(user.id, userId));
+    await updateUserPhoneNumber(userId, phoneNumber);
 
     return {
       success: true,
@@ -336,13 +312,7 @@ export async function updateEmail(
     }
 
     // 2. Update the user's email in the database
-    await db
-      .update(user)
-      .set({
-        email,
-        emailVerified: true, // Mark as verified since OTP was verified
-      })
-      .where(eq(user.id, userId));
+    await updateUserEmail(userId, email);
 
     return {
       success: true,
