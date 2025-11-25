@@ -78,3 +78,5 @@ public/storybook/
 # Vitest
 vitest.config.mts.timestamp-
 
+# Openspec
+openspec/changes/archive
