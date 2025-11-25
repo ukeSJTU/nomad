@@ -74,7 +74,7 @@ export default defineConfig({
         // Re-export file
         "src/types/api/index.ts",
         // Re-export file
-        "src/hooks/**",
+        "app/_hooks/**",
         // React hooks (can be tested separately if needed)
         "src/middleware.ts",
         // Next.js middleware

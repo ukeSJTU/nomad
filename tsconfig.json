@@ -19,12 +19,10 @@
       }
     ],
     "paths": {
-      "@/config/*": ["./src/config/*"],
-      "@/domains/*": ["./src/domains/*"],
-      "@/integrations/*": ["./src/integrations/*"],
-      "@/services/*": ["./src/services/*"],
-      "@/security/*": ["./src/security/*"],
+      "@/actions/*": ["./app/_actions/*"],
       "@/components/*": ["./app/_components/*"],
+      "@/hooks/*": ["./app/_hooks/*"],
+      "@/stories/*": ["./app/_stories/*"],
       "@/app/*": ["./app/*"],
       "@/*": ["./src/*"],
       "@/.source": ["./.source"],
