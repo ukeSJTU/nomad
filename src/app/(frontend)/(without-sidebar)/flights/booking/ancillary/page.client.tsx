@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
 import {
+  updateOrderAncillaryAction,
+  type UpdateOrderAncillaryResult,
+} from "@/app/_actions/orders";
+import {
   AncillarySelection,
   PaymentCountdownTimer,
 } from "@/components/flights/booking";
@@ -12,10 +16,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  updateOrderAncillaryAction,
-  type UpdateOrderAncillaryResult,
-} from "@/lib/actions/orders";
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,

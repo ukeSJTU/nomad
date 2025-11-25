@@ -18,6 +18,11 @@
 import { Loader2, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import {
+  type DevUserListResult,
+  getAllUsersForDevAction,
+  switchUserAction,
+} from "@/app/_actions/dev-tools";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,11 +35,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  type DevUserListResult,
-  getAllUsersForDevAction,
-  switchUserAction,
-} from "@/lib/actions/dev-tools";
 import { authClient } from "@/lib/auth/client";
 import { getInitials } from "@/utils/string";
 

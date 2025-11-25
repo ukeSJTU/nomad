@@ -25,14 +25,14 @@ vi.mock("@/lib/auth/client", () => ({
 }));
 
 // Mock setInitialPasswordAction
-vi.mock("@/lib/actions", () => ({
+vi.mock("@/app/_actions", () => ({
   setInitialPasswordAction: vi.fn(),
 }));
 
 // Import the hook after mocking dependencies
 import { toast } from "sonner";
 
-import { setInitialPasswordAction } from "@/lib/actions";
+import { setInitialPasswordAction } from "@/app/_actions";
 import { authClient } from "@/lib/auth/client";
 import type {
   EmailVerificationData,

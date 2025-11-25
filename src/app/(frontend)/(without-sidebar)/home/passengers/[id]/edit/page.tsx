@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { getPassengerAction } from "@/lib/actions";
+import { getPassengerAction } from "@/app/_actions";
 
 import { EditPassengerClient } from "./page.client";
 

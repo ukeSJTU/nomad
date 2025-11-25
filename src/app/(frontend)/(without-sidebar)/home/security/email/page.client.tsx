@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { updateEmailAction } from "@/app/_actions/auth";
 import type { SecurityStatus } from "@/components/security";
 import UpdateEmailForm, {
   type EmailFormMode,
@@ -12,7 +13,6 @@ import UpdateEmailForm, {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
-import { updateEmailAction } from "@/lib/actions/auth";
 import { authClient } from "@/lib/auth/client";
 
 /**

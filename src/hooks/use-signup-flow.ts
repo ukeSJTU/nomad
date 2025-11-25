@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { setInitialPasswordAction } from "@/lib/actions";
+import { setInitialPasswordAction } from "@/app/_actions";
 import { authClient } from "@/lib/auth/client";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";

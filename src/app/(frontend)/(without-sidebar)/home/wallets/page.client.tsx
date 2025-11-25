@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { rechargeBalanceAction } from "@/app/_actions/user";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +24,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { rechargeBalanceAction } from "@/lib/actions/user";
 import {
   type RechargeBalanceData,
   rechargeBalanceSchema,

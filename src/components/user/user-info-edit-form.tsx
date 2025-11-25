@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
+import { updateUserInfoAction } from "@/app/_actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { updateUserInfoAction } from "@/lib/actions";
 import type { ActionResult } from "@/types/common";
 import type { UserInfo } from "@/types/dto";
 import {

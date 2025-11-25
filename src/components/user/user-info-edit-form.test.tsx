@@ -6,7 +6,7 @@ import { UserInfoEditForm } from "@/components/user/user-info-edit-form";
 import type { UserInfo } from "@/types/dto";
 
 // Mock the updateUserInfoAction
-vi.mock("@/lib/actions", () => ({
+vi.mock("@/app/_actions", () => ({
   updateUserInfoAction: vi.fn(),
 }));
 
@@ -132,7 +132,7 @@ describe("UserInfoEditForm Component", () => {
   describe("Form Submission", () => {
     it("should call updateUserInfoAction on form submit", async () => {
       const user = userEvent.setup();
-      const { updateUserInfoAction } = await import("@/lib/actions");
+      const { updateUserInfoAction } = await import("@/app/_actions");
       vi.mocked(updateUserInfoAction).mockResolvedValue({
         success: true,
         data: undefined,
@@ -151,7 +151,7 @@ describe("UserInfoEditForm Component", () => {
     it("should call onSuccess when update succeeds", async () => {
       const user = userEvent.setup();
       const onSuccess = vi.fn();
-      const { updateUserInfoAction } = await import("@/lib/actions");
+      const { updateUserInfoAction } = await import("@/app/_actions");
       vi.mocked(updateUserInfoAction).mockResolvedValue({
         success: true,
         data: undefined,
@@ -169,7 +169,7 @@ describe("UserInfoEditForm Component", () => {
 
     it("should display error message when update fails", async () => {
       const user = userEvent.setup();
-      const { updateUserInfoAction } = await import("@/lib/actions");
+      const { updateUserInfoAction } = await import("@/app/_actions");
       vi.mocked(updateUserInfoAction).mockResolvedValue({
         success: false,
         error: "更新失败",
@@ -187,7 +187,7 @@ describe("UserInfoEditForm Component", () => {
 
     it("should show loading state during submission", async () => {
       const user = userEvent.setup();
-      const { updateUserInfoAction } = await import("@/lib/actions");
+      const { updateUserInfoAction } = await import("@/app/_actions");
       vi.mocked(updateUserInfoAction).mockImplementation(
         () =>
           new Promise(resolve =>

@@ -4,12 +4,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   getQuickDatePrices,
   type QuickDatePrice,
-} from "@/lib/actions/quick-date-prices";
+} from "@/app/_actions/quick-date-prices";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/currency";
 import { dateToLocalDateString, formatDateWithWeekday } from "@/utils/date";

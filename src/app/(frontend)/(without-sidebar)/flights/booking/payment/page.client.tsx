@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { processPaymentAction } from "@/app/_actions/payments";
 import {
   PaymentCountdownTimer,
   PaymentMethodSelector,
@@ -11,7 +12,6 @@ import {
   PaymentPriceBreakdown,
 } from "@/components/flights/booking";
 import { Button } from "@/components/ui/button";
-import { processPaymentAction } from "@/lib/actions/payments";
 import { PaymentPageOrder } from "@/types/dto";
 import { formatCurrency } from "@/utils/currency";
 

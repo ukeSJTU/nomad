@@ -5,7 +5,7 @@
  * This service layer abstracts the complexity of searching flights and recording history.
  */
 
-import { recordSearchHistoryAction } from "@/lib/actions";
+import { recordSearchHistoryAction } from "@/app/_actions";
 import {
   searchOneWayFlights,
   searchRoundTripFlights,

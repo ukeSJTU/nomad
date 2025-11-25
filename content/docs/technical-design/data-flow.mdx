@@ -373,7 +373,7 @@ export async function setInitialPasswordAction(password: string) {
 ```tsx title="src/app/(frontend)/auth/sign-up/page.tsx"
 "use client";
 
-import { setInitialPasswordAction } from "@/lib/actions";
+import { setInitialPasswordAction } from "@/app/_actions";
 
 export default function SignUpPage() {
   const handlePasswordSetup = async (password: string) => {
@@ -580,7 +580,7 @@ export async function updatePassengerAction(
 "use client";
 
 import { useState, useTransition } from "react";
-import { updatePassengerAction } from "@/lib/actions/passengers";
+import { updatePassengerAction } from "@/app/_actions/passengers";
 import type { ActionResult } from "@/types/common";
 
 export function UpdatePassengerForm({ passengerId }: { passengerId: string }) {

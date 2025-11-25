@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { clearSearchHistoryAction } from "@/app/_actions";
 import { Button } from "@/components/ui/button";
-import { clearSearchHistoryAction } from "@/lib/actions";
 import type { SearchHistoryRecord } from "@/types/dto";
 
 import { FlightSearchHistoryCard } from "./search-history";

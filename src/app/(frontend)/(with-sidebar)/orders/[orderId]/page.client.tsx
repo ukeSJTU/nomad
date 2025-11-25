@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { resendOrderConfirmationAction } from "@/app/_actions/emails";
+import { cancelOrderAction, refundOrderAction } from "@/app/_actions/orders";
 import {
   CancelOrderDialog,
   OrderContactInfo,
@@ -13,8 +15,6 @@ import {
   OrderStatusCard,
   RefundOrderDialog,
 } from "@/components/flights/orders";
-import { resendOrderConfirmationAction } from "@/lib/actions/emails";
-import { cancelOrderAction, refundOrderAction } from "@/lib/actions/orders";
 import { OrderDetailFull } from "@/types/dto/orders";
 
 type OrderDetailsPageClientProps = {
