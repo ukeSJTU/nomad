@@ -2,8 +2,8 @@
 
 import { headers } from "next/headers";
 
-import { auth } from "@/lib/auth";
-import { rechargeBalance, updateUserInfo } from "@/lib/services/user";
+import { auth } from "@/domains/auth";
+import { rechargeBalance, updateUserInfo } from "@/domains/user/user.service";
 import type { ActionResult } from "@/types/common";
 import {
   RechargeBalanceData,

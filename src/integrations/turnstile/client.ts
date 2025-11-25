@@ -1,4 +1,4 @@
-import { isProduction } from "@/utils/env";
+import { isProduction } from "@/config/env";
 
 /**
  * Cloudflare's test site key for Turnstile CAPTCHA.

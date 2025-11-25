@@ -12,7 +12,7 @@ import {
   TURNSTILE_PROTECTED_ENDPOINTS,
   TURNSTILE_TEST_SECRET_KEY,
   TURNSTILE_TEST_SITE_KEY,
-} from "@/services/turnstile";
+} from "@/integrations/turnstile/client";
 
 const createPlugin = async () => {
   const { captcha } = await import("better-auth/plugins");

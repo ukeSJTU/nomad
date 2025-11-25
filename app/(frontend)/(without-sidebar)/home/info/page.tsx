@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { Separator } from "@/components/ui/separator";
 import { UserInfoForm } from "@/components/user";
-import { getUserInfo } from "@/lib/repositories";
+import { getUserInfo } from "@/domains/user/user.repository";
 import { requireAuth } from "@/utils/auth-helpers";
 
 export const dynamic = "force-dynamic";

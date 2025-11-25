@@ -2,14 +2,13 @@ import { and, eq, inArray } from "drizzle-orm";
 
 import { db } from "@/db";
 import { passengers } from "@/db/schema/passengers";
+import type { DbExecutor } from "@/db/transaction";
 import type { Passenger, PassengerDetailData } from "@/types/dto/passengers";
 import {
   maskDocumentNumber,
   maskEmail,
   maskPhoneNumber,
 } from "@/utils/mask-data";
-
-import type { DbExecutor } from "./transaction";
 
 export type PassengerRow = typeof passengers.$inferSelect;
 type PassengerInsert = typeof passengers.$inferInsert;

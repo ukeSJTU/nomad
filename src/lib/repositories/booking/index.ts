@@ -9,11 +9,11 @@
  * - confirmation: Order confirmation with payment info
  */
 
-export { getOrderForAncillary } from "./ancillary";
-export { getOrderConfirmation } from "./confirmation";
+export { getOrderForAncillary } from "@/domains/booking/ancillary.repository";
 export {
   getFlightSeatClassById,
   getFlightSeatClassesByIds,
   getSavedPassengers,
-} from "./passengers";
-export { getOrderForPayment } from "./payment";
+} from "@/domains/booking/booking-passengers.repository";
+export { getOrderConfirmation } from "@/domains/booking/confirmation.repository";
+export { getOrderForPayment } from "@/domains/booking/payment.repository";

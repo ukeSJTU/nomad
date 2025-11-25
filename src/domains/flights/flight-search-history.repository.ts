@@ -2,9 +2,8 @@ import { and, desc, eq, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { cities, flightSearchHistory } from "@/db/schema";
+import type { DbExecutor } from "@/db/transaction";
 import { SearchHistoryRecord } from "@/types/dto";
-
-import type { DbExecutor } from "./transaction";
 
 export type FlightSearchHistoryRow = typeof flightSearchHistory.$inferSelect;
 export type CityRow = typeof cities.$inferSelect;

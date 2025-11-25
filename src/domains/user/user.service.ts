@@ -1,10 +1,9 @@
+import type { ServiceResult } from "@/domains/types";
 import {
   rechargeUserBalance,
   updateUserProfile,
-} from "@/lib/repositories/user";
+} from "@/domains/user/user.repository";
 import type { UserInfoUpdateData } from "@/types/validations";
-
-import type { ServiceResult } from "./types";
 
 /**
  * Service layer for user-related business logic

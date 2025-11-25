@@ -2,10 +2,9 @@ import { eq, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { account, user } from "@/db/schema";
+import { type DbExecutor, runInTransaction } from "@/db/transaction";
 import type { UserInfo, UserSecurityStatus } from "@/types/dto";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
-
-import { type DbExecutor, runInTransaction } from "./transaction";
 
 export type UserRow = typeof user.$inferSelect;
 type UserInsert = typeof user.$inferInsert;

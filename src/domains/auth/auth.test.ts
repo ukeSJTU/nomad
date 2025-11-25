@@ -6,15 +6,15 @@ vi.mock("@/db", () => ({
 }));
 
 // Mock other dependencies that might be imported
-vi.mock("@/services/sms", () => ({
+vi.mock("@/integrations/aliyun-sms/client", () => ({
   sendSmsOtp: vi.fn(),
 }));
 
-vi.mock("@/services/email", () => ({
+vi.mock("@/integrations/resend/client", () => ({
   sendEmailOtp: vi.fn(),
 }));
 
-vi.mock("@/utils/logger", () => ({
+vi.mock("@/lib/logger", () => ({
   default: {
     info: vi.fn(),
     error: vi.fn(),

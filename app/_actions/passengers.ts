@@ -9,7 +9,7 @@ import {
   getPassenger,
   type PassengerInput,
   updatePassenger,
-} from "@/lib/services";
+} from "@/domains/passengers/passenger.service";
 import { getAuthenticatedUserId } from "@/utils/auth-helpers";
 import { dateToLocalDateString } from "@/utils/date";
 

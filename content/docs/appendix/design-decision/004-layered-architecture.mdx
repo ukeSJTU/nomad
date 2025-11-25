@@ -162,7 +162,7 @@ test("创建旅客成功", async () => {
   }));
 
   // 需要 mock auth.api.getSession()
-  vi.mock("@/lib/auth", () => ({
+  vi.mock("@/domains/auth", () => ({
     auth: {
       api: {
         getSession: vi.fn(() => ({ user: { id: "test-user" } })),

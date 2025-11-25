@@ -1,9 +1,6 @@
 import { redirect } from "next/navigation";
 
-import {
-  getFlightSeatClassById,
-  getSavedPassengers,
-} from "@/lib/repositories/booking";
+import { getFlightSeatClassById, getSavedPassengers } from "@/domains/booking";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import { BookingPassengersPageClient } from "./page.client";

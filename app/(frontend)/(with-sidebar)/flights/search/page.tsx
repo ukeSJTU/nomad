@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getAllCities } from "@/lib/repositories";
-import { searchFlightsWithHistory } from "@/lib/services";
+import { getAllCities } from "@/domains/flights/city.repository";
+import { searchFlightsWithHistory } from "@/domains/flights/flight-search.service";
+import logger from "@/lib/logger";
 import {
   type SeatClass,
   seatClassSchema,
@@ -11,7 +12,6 @@ import {
   type UpperSeatClass,
   upperSeatClassSchema,
 } from "@/types/validations";
-import logger from "@/utils/logger";
 
 import { FlightSearchPageClient } from "./page.client";
 

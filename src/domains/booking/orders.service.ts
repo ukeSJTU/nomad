@@ -18,9 +18,8 @@ import {
   getOrderForRefund,
   type OrderRefundData,
   refundOrderAndReleaseSeats,
-} from "@/lib/repositories/orders";
-
-import type { ServiceResult } from "./types";
+} from "@/domains/booking/orders.repository";
+import type { ServiceResult } from "@/domains/types";
 
 /**
  * Cancel a specific order (user-initiated)

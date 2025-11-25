@@ -9,8 +9,8 @@ import { db } from "@/db";
 import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
 import { flightSeatClasses } from "@/db/schema/flight-seat-classes";
 import { orderPassengers, orders } from "@/db/schema/orders";
-import { auth } from "@/lib/auth";
-import { cancelOrder, refundOrder } from "@/lib/services/orders";
+import { auth } from "@/domains/auth";
+import { cancelOrder, refundOrder } from "@/domains/booking/orders.service";
 import type { ActionResult } from "@/types/common";
 import {
   addCurrency,

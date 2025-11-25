@@ -6,14 +6,14 @@ import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { account } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/domains/auth";
 import {
   changePassword,
   setPasswordForOAuthUser,
   unlinkSocialAccount,
   updateEmail,
   updatePhoneNumber,
-} from "@/lib/services/auth";
+} from "@/domains/auth/auth.service";
 
 /**
  * Server action to unlink a social account

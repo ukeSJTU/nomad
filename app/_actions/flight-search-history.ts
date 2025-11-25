@@ -2,10 +2,13 @@
 
 import { headers } from "next/headers";
 
-import { auth } from "@/lib/auth";
-import { clearFlightSearchHistory, recordFlightSearch } from "@/lib/services";
+import { auth } from "@/domains/auth";
+import {
+  clearFlightSearchHistory,
+  recordFlightSearch,
+} from "@/domains/flights/flight-search-history.service";
+import logger from "@/lib/logger";
 import type { RecordFlightSearchData } from "@/types/validations";
-import logger from "@/utils/logger";
 
 /**
  * Server Actions for Flight Search History Management (Thin Controller Layer)

@@ -1,8 +1,9 @@
 import { headers } from "next/headers";
 import { Suspense } from "react";
 
-import { auth } from "@/lib/auth";
-import { getAllCities, getRecentSearchHistory } from "@/lib/repositories";
+import { auth } from "@/domains/auth";
+import { getAllCities } from "@/domains/flights/city.repository";
+import { getRecentSearchHistory } from "@/domains/flights/flight-search-history.repository";
 
 import FlightsLoading from "./loading";
 import { FlightsPageClient } from "./page.client";

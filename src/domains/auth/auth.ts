@@ -4,15 +4,15 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";
 
+import { isProduction } from "@/config/env";
 import { db } from "@/db";
-import { sendEmailOtp } from "@/services/email";
-import { sendSmsOtp } from "@/services/sms";
+import { sendSmsOtp } from "@/integrations/aliyun-sms/client";
+import { sendEmailOtp } from "@/integrations/resend/client";
 import {
   getTurnstileSecretKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
-} from "@/services/turnstile";
-import { isProduction } from "@/utils/env";
-import logger from "@/utils/logger";
+} from "@/integrations/turnstile/client";
+import logger from "@/lib/logger";
 
 /**
  * Determine whether Aliyun SMS service should be enabled

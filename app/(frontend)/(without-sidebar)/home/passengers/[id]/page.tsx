@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PassengerDetailView } from "@/components/passengers";
-import { getPassengerById } from "@/lib/repositories/passengers";
+import { getPassengerById } from "@/domains/passengers/passenger.repository";
 
 export default async function PassengerDetailPage({
   params,

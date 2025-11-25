@@ -84,8 +84,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { PassengersPageClient } from "@/components/passengers/passengers-page-client";
-import { auth } from "@/lib/auth";
-import { getPassengers } from "@/lib/repositories";
+import { auth } from "@/domains/auth";
+import { getPassengers } from "@/domains/passengers/passenger.repository";
 
 export default async function PassengersPage() {
   // 1. 获取请求头（用于身份验证）
@@ -303,7 +303,7 @@ export default function Error({
 "use server"; // 必须在文件顶部声明
 
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { auth } from "@/domains/auth";
 import { db } from "@/db";
 
 export async function setInitialPasswordAction(password: string) {

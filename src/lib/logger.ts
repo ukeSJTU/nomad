@@ -1,7 +1,7 @@
 import pino from "pino";
 import pretty from "pino-pretty";
 
-import { isDevelopment, isProduction, isTest } from "@/utils/env";
+import { isDevelopment, isProduction, isTest } from "@/config/env";
 
 // Environment detection flags for conditional logger configuration
 const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [

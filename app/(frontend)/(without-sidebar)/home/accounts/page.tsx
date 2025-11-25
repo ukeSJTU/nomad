@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 
 import { LinkButton, SocialAccountCard, UnlinkButton } from "@/components/auth";
-import { auth } from "@/lib/auth";
+import { auth } from "@/domains/auth";
 import { requireAuth } from "@/utils/auth-helpers";
 
 export const dynamic = "force-dynamic";

@@ -13,7 +13,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-import { authClient } from "@/lib/auth/client";
+import { authClient } from "@/domains/auth/client";
 import { getInitials } from "@/utils/string";
 
 /**

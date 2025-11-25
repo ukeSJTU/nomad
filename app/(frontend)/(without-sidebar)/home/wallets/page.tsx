@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
-import { getUserBalance } from "@/lib/repositories";
+import { auth } from "@/domains/auth";
+import { getUserBalance } from "@/domains/user/user.repository";
 
 import { WalletPageClient } from "./page.client";
 

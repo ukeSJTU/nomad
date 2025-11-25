@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/domains/auth";
 
 // ============================================================================
 // Types - Using schema native types

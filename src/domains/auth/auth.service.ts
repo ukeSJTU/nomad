@@ -1,15 +1,14 @@
+import { runInTransaction } from "@/db/transaction";
 import {
   deleteAccountById,
   findCredentialAccount,
   getAccountsByUserId,
-} from "@/lib/repositories/auth";
-import { runInTransaction } from "@/lib/repositories/transaction";
+} from "@/domains/auth/auth.repository";
+import type { ServiceResult } from "@/domains/types";
 import {
   updateUserEmail,
   updateUserPhoneNumber,
-} from "@/lib/repositories/user";
-
-import type { ServiceResult } from "./types";
+} from "@/domains/user/user.repository";
 
 /**
  * Service layer for authentication-related business logic

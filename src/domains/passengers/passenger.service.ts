@@ -5,14 +5,13 @@ import {
   PassengerRow,
   softDeletePassengerForUser,
   updatePassengerRecord,
-} from "@/lib/repositories/passengers";
+} from "@/domains/passengers/passenger.repository";
+import type { ServiceResult } from "@/domains/types";
 import type { Passenger } from "@/types/dto/passengers";
 import type {
   CreatePassengerData,
   UpdatePassengerData,
 } from "@/types/validations/passengers";
-
-import type { ServiceResult } from "./types";
 
 /**
  * Service layer for passenger-related business logic

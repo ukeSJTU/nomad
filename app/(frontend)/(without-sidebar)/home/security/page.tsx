@@ -1,5 +1,5 @@
 import { SecurityItem, type SecurityStatus } from "@/components/security";
-import { getUserSecurityStatus } from "@/lib/repositories";
+import { getUserSecurityStatus } from "@/domains/user/user.repository";
 import { requireAuth } from "@/utils/auth-helpers";
 
 export const dynamic = "force-dynamic";

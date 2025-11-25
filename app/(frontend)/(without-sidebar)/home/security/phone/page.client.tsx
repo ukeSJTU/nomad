@@ -12,9 +12,9 @@ import {
   UpdatePhoneForm,
 } from "@/components/security";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authClient } from "@/domains/auth/client";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
-import { authClient } from "@/lib/auth/client";
 
 /**
  * Props for the PhonePageClient component

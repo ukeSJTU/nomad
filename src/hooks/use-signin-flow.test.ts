@@ -17,7 +17,7 @@ vi.mock("sonner", () => ({
 }));
 
 // Mock auth client
-vi.mock("@/lib/auth/client", () => ({
+vi.mock("@/domains/auth/client", () => ({
   authClient: {
     signIn: {
       phoneNumber: vi.fn(),
@@ -42,7 +42,7 @@ vi.mock("@/utils/auth", () => ({
 // Import the hook after mocking dependencies
 import { toast } from "sonner";
 
-import { authClient } from "@/lib/auth/client";
+import { authClient } from "@/domains/auth/client";
 import type { OtpLoginData, PasswordLoginData } from "@/types/validations/auth";
 import { validateAccount } from "@/utils/auth";
 

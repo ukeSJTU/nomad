@@ -2,8 +2,7 @@ import { and, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { account } from "@/db/schema";
-
-import type { DbExecutor } from "./transaction";
+import type { DbExecutor } from "@/db/transaction";
 
 export type AccountRow = typeof account.$inferSelect;
 

@@ -5,37 +5,39 @@
  * Service layer contains pure business logic without framework dependencies.
  */
 
-// Export common types (used by all services)
-export type { ServiceResult } from "./types";
+// Shims to keep existing imports working while the codebase migrates to domain paths
+export type { ServiceResult } from "@/domains/types";
 
-// Export auth services
+// Auth services
 export {
   changePassword,
   setPasswordForOAuthUser,
   unlinkSocialAccount,
-} from "./auth";
+  updateEmail,
+  updatePhoneNumber,
+} from "@/domains/auth/auth.service";
 
-// Export order services
-export { cancelExpiredOrders } from "./orders";
+// Order services
+export { cancelExpiredOrders } from "@/domains/booking/orders.service";
 
-// Export passenger services
-export type { PassengerInput } from "./passengers";
+// Passenger services
+export type { PassengerInput } from "@/domains/passengers/passenger.service";
 export {
   batchDeletePassengers,
   createPassenger,
   deletePassenger,
   getPassenger,
   updatePassenger,
-} from "./passengers";
+} from "@/domains/passengers/passenger.service";
 
-// Export user services
-export { updateUserInfo } from "./user";
+// User services
+export { updateUserInfo } from "@/domains/user/user.service";
 
-// Export flight search history services
+// Flight search history services
 export {
   clearFlightSearchHistory,
   recordFlightSearch,
-} from "./flight-search-history";
+} from "@/domains/flights/flight-search-history.service";
 
-// Export flight search services
-export { searchFlightsWithHistory } from "./flight-search";
+// Flight search services
+export { searchFlightsWithHistory } from "@/domains/flights/flight-search.service";

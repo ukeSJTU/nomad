@@ -37,7 +37,7 @@ vi.mock("next/link", () => ({
 
 // Mock auth client
 const mockUseSession = vi.fn();
-vi.mock("@/lib/auth/client", () => ({
+vi.mock("@/domains/auth/client", () => ({
   authClient: {
     useSession: () => mockUseSession(),
     signOut: vi.fn(),

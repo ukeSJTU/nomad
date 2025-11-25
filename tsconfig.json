@@ -19,6 +19,11 @@
       }
     ],
     "paths": {
+      "@/config/*": ["./src/config/*"],
+      "@/domains/*": ["./src/domains/*"],
+      "@/integrations/*": ["./src/integrations/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/security/*": ["./src/security/*"],
       "@/components/*": ["./app/_components/*"],
       "@/app/*": ["./app/*"],
       "@/*": ["./src/*"],

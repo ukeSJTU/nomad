@@ -9,7 +9,7 @@ vi.mock("sonner", () => ({
 }));
 
 // Mock auth client
-vi.mock("@/lib/auth/client", () => ({
+vi.mock("@/domains/auth/client", () => ({
   authClient: {
     phoneNumber: {
       verify: vi.fn(),
@@ -33,7 +33,7 @@ vi.mock("@/app/_actions", () => ({
 import { toast } from "sonner";
 
 import { setInitialPasswordAction } from "@/app/_actions";
-import { authClient } from "@/lib/auth/client";
+import { authClient } from "@/domains/auth/client";
 import type {
   EmailVerificationData,
   PasswordSetupData,

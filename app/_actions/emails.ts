@@ -9,9 +9,9 @@
 
 import { headers } from "next/headers";
 
-import { auth } from "@/lib/auth";
-import { getOrderDetailById } from "@/lib/repositories/orders";
-import { sendOrderConfirmationEmail } from "@/lib/services/email";
+import { auth } from "@/domains/auth";
+import { getOrderDetailById } from "@/domains/booking/orders.repository";
+import { sendOrderConfirmationEmail } from "@/services/mail.service";
 import type { ActionResult } from "@/types/common";
 import { transformOrderDetailToEmailData } from "@/utils/email-transformers";
 

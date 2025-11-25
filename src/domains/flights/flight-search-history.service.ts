@@ -4,11 +4,10 @@ import {
   findExistingSearchHistory,
   softDeleteSearchHistoryByUser,
   updateSearchHistory,
-} from "@/lib/repositories/flight-search-history";
+} from "@/domains/flights/flight-search-history.repository";
+import type { ServiceResult } from "@/domains/types";
+import logger from "@/lib/logger";
 import type { RecordFlightSearchData } from "@/types/validations";
-import logger from "@/utils/logger";
-
-import type { ServiceResult } from "./types";
 
 /**
  * Service layer for flight search history business logic

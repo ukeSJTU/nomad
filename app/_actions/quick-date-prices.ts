@@ -4,12 +4,12 @@ import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { airports, cities, flights, flightSeatClasses } from "@/db/schema";
+import logger from "@/lib/logger";
 import { addCurrency, getCurrencyValue, parseCurrency } from "@/utils/currency";
 import {
   calculateQuickSelectDateRange,
   getBookingDateRange,
 } from "@/utils/date";
-import logger from "@/utils/logger";
 
 /**
  * Result type for quick date price lookup

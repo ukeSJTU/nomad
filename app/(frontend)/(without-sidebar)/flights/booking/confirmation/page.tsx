@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { getOrderConfirmation } from "@/lib/repositories/booking";
+import { getOrderConfirmation } from "@/domains/booking";
 import { requireAuth } from "@/utils/auth-helpers";
 
 import ConfirmationPageClient from "./page.client";

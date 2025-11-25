@@ -9,14 +9,14 @@ import { recordSearchHistoryAction } from "@/app/_actions";
 import {
   searchOneWayFlights,
   searchRoundTripFlights,
-} from "@/lib/repositories";
+} from "@/domains/flights/flight.repository";
+import logger from "@/lib/logger";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,
 } from "@/types/dto";
 import type { SeatClass, TripType, UpperSeatClass } from "@/types/validations";
 import { calculateLowestPrice } from "@/utils/flight-calculations";
-import logger from "@/utils/logger";
 
 /**
  * Parameters for searching one-way flights

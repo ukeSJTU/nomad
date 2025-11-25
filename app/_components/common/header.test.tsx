@@ -49,7 +49,7 @@ vi.mock("next/image", () => ({
 }));
 
 // Mock auth client
-vi.mock("@/lib/auth/client", () => ({
+vi.mock("@/domains/auth/client", () => ({
   authClient: {
     useSession: () => ({
       data: null,
