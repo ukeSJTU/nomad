@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { getAncillaryServiceByCode } from "@/orm/schema/ancillary";
+import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
 import { IdentityType } from "@/types/dto/booking";
 
 // Identity type mapping

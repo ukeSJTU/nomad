@@ -9,7 +9,7 @@ import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
-import { db } from "@/orm/db";
+import { db } from "@/db";
 import {
   airlines,
   airports,
@@ -17,7 +17,7 @@ import {
   flightSeatClasses,
   orderPassengers,
   orders,
-} from "@/orm/schema";
+} from "@/db/schema";
 import type { PaymentPageOrder } from "@/types/dto";
 
 /**

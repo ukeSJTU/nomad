@@ -299,7 +299,7 @@ tests/
 // tests/factories/user.factory.ts
 import { defineFactory } from "fishery";
 import { faker } from "@faker-js/faker";
-import { user } from "@/orm/schema";
+import { user } from "@/db/schema";
 import { hashToDigits } from "./utils";
 
 export const userFactory = defineFactory<typeof user.$inferInsert>(
@@ -330,7 +330,7 @@ const testUser = userFactory.build({
 ```typescript
 // tests/factories/order.factory.ts
 import { defineFactory } from "fishery";
-import { orders } from "@/orm/schema";
+import { orders } from "@/db/schema";
 
 export const orderFactory = defineFactory<typeof orders.$inferInsert>(
   ({ sequence, transientParams, associations }) => {
@@ -366,7 +366,7 @@ export const orderFactory = defineFactory<typeof orders.$inferInsert>(
 // tests/factories/flight.factory.ts
 import { defineFactory } from "fishery";
 import { faker } from "@faker-js/faker";
-import { flights, flightSeatClasses, airlines, airports } from "@/orm/schema";
+import { flights, flightSeatClasses, airlines, airports } from "@/db/schema";
 import { hashToDigits } from "./utils";
 
 // 航空公司工厂
@@ -475,8 +475,8 @@ export { hashToDigits, generateNamespace } from "./utils";
 
 ```typescript
 // tests/helpers/auth.helpers.ts
-import { db } from "@/orm/db";
-import { user, session } from "@/orm/schema";
+import { db } from "@/db";
+import { user, session } from "@/db/schema";
 import { userFactory } from "../factories";
 import type { Page } from "@playwright/test";
 
@@ -559,8 +559,8 @@ export async function switchUser(page: Page, namespace: string) {
 
 ```typescript
 // tests/helpers/data.helpers.ts
-import { db } from "@/orm/db";
-import { orders, flights, flightSeatClasses, passengers } from "@/orm/schema";
+import { db } from "@/db";
+import { orders, flights, flightSeatClasses, passengers } from "@/db/schema";
 import {
   orderFactory,
   flightFactory,
@@ -829,8 +829,8 @@ test("should send SMS when OTP is requested", async () => {
 ```typescript
 // tests/fixtures/e2e-fixtures.ts
 import { test as base } from "@playwright/test";
-import { db } from "@/orm/db";
-import { verification } from "@/orm/schema";
+import { db } from "@/db";
+import { verification } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 type Fixtures = {
@@ -870,7 +870,7 @@ export const test = base.extend<Fixtures>({
 ```typescript
 // tests/setup/integration-db.ts
 import { beforeAll, afterAll } from "vitest";
-import { db } from "@/orm/db";
+import { db } from "@/db";
 import { sql } from "drizzle-orm";
 import { seedStaticData } from "../fixtures/seed-static-data";
 
@@ -914,14 +914,14 @@ afterAll(async () => {
 
 ```typescript
 // tests/fixtures/seed-static-data.ts
-import { db } from "@/orm/db";
+import { db } from "@/db";
 import {
   cities,
   airlines,
   airports,
   flights,
   flightSeatClasses,
-} from "@/orm/schema";
+} from "@/db/schema";
 import {
   airlineFactory,
   airportFactory,
@@ -1543,7 +1543,7 @@ export default defineConfig({
 
 ```typescript
 // tests/fixtures/e2e-global-setup.ts
-import { db } from "@/orm/db";
+import { db } from "@/db";
 import { sql } from "drizzle-orm";
 import { seedStaticData } from "./seed-static-data";
 

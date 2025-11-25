@@ -2,7 +2,7 @@ import { loadEnvConfig } from "@next/env";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { EnhancedQueryLogger } from "drizzle-query-logger";
 
-import * as schema from "@/orm/schema";
+import * as schema from "@/db/schema";
 
 // Load environment variables based on NODE_ENV
 // - NODE_ENV=test → loads .env.test

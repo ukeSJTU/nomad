@@ -9,7 +9,7 @@
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-import type { account, session, user, verification } from "@/orm/schema";
+import type { account, session, user, verification } from "@/db/schema";
 
 // ============================================================================
 // User Types

@@ -40,7 +40,7 @@ import {
   passengers,
   payments,
   user,
-} from "@/orm/schema";
+} from "@/db/schema";
 import { generateAirlineLogoForSeed } from "@/utils/airline";
 
 import { REAL_AIRLINES } from "./fixtures/base/airlines";

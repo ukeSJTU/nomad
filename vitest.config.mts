@@ -56,7 +56,7 @@ export default defineConfig({
         // Better Auth configuration
         "src/lib/auth/**",
         // Better Auth client
-        "src/orm/db/**",
+        "src/db/**",
         // Database connection and seed files
         "src/lib/fumadocs/**",
         // Fumadocs configuration files

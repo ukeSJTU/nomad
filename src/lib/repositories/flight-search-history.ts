@@ -1,7 +1,7 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 
-import { db } from "@/orm/db";
-import { cities, flightSearchHistory } from "@/orm/schema";
+import { db } from "@/db";
+import { cities, flightSearchHistory } from "@/db/schema";
 import { SearchHistoryRecord } from "@/types/dto";
 
 import type { DbExecutor } from "./transaction";

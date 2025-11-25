@@ -10,7 +10,7 @@ loadEnvConfig(process.cwd());
 export default defineConfig({
   out: "./drizzle",
   schema: [
-    "./src/orm/schema/index.ts",
+    "./src/db/schema/index.ts",
     "./auth-schema.ts", // Better Auth tables
   ],
   dialect: "postgresql",

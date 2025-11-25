@@ -5,12 +5,12 @@ import { nanoid } from "nanoid";
 import { headers } from "next/headers";
 import { z } from "zod";
 
+import { db } from "@/db";
+import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
+import { flightSeatClasses } from "@/db/schema/flight-seat-classes";
+import { orderPassengers, orders } from "@/db/schema/orders";
 import { auth } from "@/lib/auth";
 import { cancelOrder, refundOrder } from "@/lib/services/orders";
-import { db } from "@/orm/db";
-import { getAncillaryServiceByCode } from "@/orm/schema/ancillary";
-import { flightSeatClasses } from "@/orm/schema/flight-seat-classes";
-import { orderPassengers, orders } from "@/orm/schema/orders";
 import type { ActionResult } from "@/types/common";
 import {
   addCurrency,

@@ -9,7 +9,7 @@
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-import type { cities } from "@/orm/schema";
+import type { cities } from "@/db/schema";
 
 // ============================================================================
 // City Types

@@ -4,6 +4,8 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
+import { db } from "@/db";
+import { account } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import {
   changePassword,
@@ -12,8 +14,6 @@ import {
   updateEmail,
   updatePhoneNumber,
 } from "@/lib/services/auth";
-import { db } from "@/orm/db";
-import { account } from "@/orm/schema";
 
 /**
  * Server action to unlink a social account

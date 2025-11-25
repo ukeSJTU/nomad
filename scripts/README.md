@@ -213,5 +213,5 @@ DELETE FROM orders WHERE order_number LIKE 'NMD%';
 ## 📚 相关文档
 
 - [订单列表页面实现](<../app/(frontend)/(without-sidebar)/home/orders/README.md>)
-- [订单数据模型](../src/orm/schema/orders.ts)
+- [订单数据模型](../src/db/schema/orders.ts)
 - [订单 Actions](../src/lib/actions/orders.ts)

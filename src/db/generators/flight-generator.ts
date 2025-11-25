@@ -8,9 +8,9 @@
 import { faker } from "@faker-js/faker";
 import type { InferInsertModel } from "drizzle-orm";
 
-import type { airlines } from "@/orm/schema/airlines";
-import type { airports } from "@/orm/schema/airports";
-import type { flights } from "@/orm/schema/flights";
+import type { airlines } from "@/db/schema/airlines";
+import type { airports } from "@/db/schema/airports";
+import type { flights } from "@/db/schema/flights";
 
 type Airport = InferInsertModel<typeof airports> & { id: string };
 type Airline = InferInsertModel<typeof airlines> & { id: string };

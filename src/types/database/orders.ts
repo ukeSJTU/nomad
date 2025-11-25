@@ -9,7 +9,7 @@
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-import type { orderPassengers, orders } from "@/orm/schema";
+import type { orderPassengers, orders } from "@/db/schema";
 
 // ============================================================================
 // Order Types

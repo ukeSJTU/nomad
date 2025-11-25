@@ -4,7 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";
 
-import { db } from "@/orm/db";
+import { db } from "@/db";
 import { sendEmailOtp } from "@/services/email";
 import { sendSmsOtp } from "@/services/sms";
 import {

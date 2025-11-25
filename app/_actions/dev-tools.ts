@@ -3,9 +3,9 @@
 import { desc, eq, type InferSelectModel } from "drizzle-orm";
 import { headers } from "next/headers";
 
+import { db } from "@/db";
+import { user, verification } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { db } from "@/orm/db";
-import { user, verification } from "@/orm/schema";
 
 // ============================================================================
 // Types - Using schema native types

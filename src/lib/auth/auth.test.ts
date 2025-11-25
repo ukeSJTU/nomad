@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the database dependency before importing
-vi.mock("@/orm/db", () => ({
+vi.mock("@/db", () => ({
   db: {},
 }));
 

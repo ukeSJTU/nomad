@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 
-import { db } from "@/orm/db";
-import { account, user } from "@/orm/schema";
+import { db } from "@/db";
+import { account, user } from "@/db/schema";
 import type { UserInfo, UserSecurityStatus } from "@/types/dto";
 import { maskEmail, maskPhoneNumber } from "@/utils/mask-data";
 

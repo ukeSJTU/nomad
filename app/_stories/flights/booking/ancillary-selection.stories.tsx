@@ -5,7 +5,7 @@ import { AncillarySelection } from "@/components/flights/booking/ancillary-selec
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
-} from "@/orm/schema/ancillary";
+} from "@/db/schema/ancillary";
 
 // Helper function to create the toggle handler with single-selection logic
 const createToggleHandler = (

@@ -31,7 +31,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:studio:test": "cross-env NODE_ENV=test drizzle-kit studio",
-    "db:seed": "cross-env NODE_ENV=development tsx src/orm/db/seed.ts",
+    "db:seed": "cross-env NODE_ENV=development tsx src/db/seed.ts",
     "db:seed:orders": "cross-env NODE_ENV=development tsx scripts/seed-test-orders.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix",

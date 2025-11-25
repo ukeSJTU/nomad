@@ -5,12 +5,12 @@ import { nanoid } from "nanoid";
 import { headers } from "next/headers";
 import { z } from "zod";
 
+import { db } from "@/db";
+import { user } from "@/db/schema";
+import { orders, payments } from "@/db/schema/orders";
 import { auth } from "@/lib/auth";
 import { getOrderDetailById } from "@/lib/repositories/orders";
 import { sendOrderConfirmationEmail } from "@/lib/services/email";
-import { db } from "@/orm/db";
-import { user } from "@/orm/schema";
-import { orders, payments } from "@/orm/schema/orders";
 import type { ActionResult } from "@/types/common";
 import {
   getCurrencyValue,

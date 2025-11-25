@@ -8,7 +8,7 @@
 import { and, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
-import { db } from "@/orm/db";
+import { db } from "@/db";
 import {
   airlines,
   airports,
@@ -16,7 +16,7 @@ import {
   flights,
   flightSeatClasses,
   passengers,
-} from "@/orm/schema";
+} from "@/db/schema";
 import type { PassengerPageFlight, SavedPassenger } from "@/types/dto";
 
 /**
