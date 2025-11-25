@@ -70,7 +70,7 @@ All official documentation (requirements, technical design, testing strategy, co
 ### Documentation & Storybook Requirements
 
 - `content/docs` **MUST** be the living repository for product decisions, runbooks, and release evidence; updates are required whenever a story affects behavior, architecture, or test coverage so reviewers can browse the latest state without digging into code.
-- All shared UI components **MUST** publish at least one Storybook story under `src/stories/*.stories.tsx`, using `Meta` and `StoryObj` from `@storybook/nextjs-vite` for type safety.
+- All shared UI components **MUST** publish at least one Storybook story under `app/_stories/*.stories.tsx`, using `Meta` and `StoryObj` from `@storybook/nextjs-vite` for type safety.
 - Storybook **MUST** stay in sync with the main docs, with navigation links pointing to stories that demonstrate the most recent component states and interactive flows (e.g., logged-in vs. logged-out menus, loading states, error variants).
 
 #### Scenario: Documenting a new component behavior
