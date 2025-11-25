@@ -2,9 +2,9 @@ import type { Preview } from "@storybook/nextjs-vite";
 import { Geist, Geist_Mono } from "next/font/google";
 import { useEffect } from "react";
 
-import { ThemeProvider } from "../src/components/common/theme-provider";
+import { ThemeProvider } from "../app/_components/common/theme-provider";
 
-import "../src/app/(frontend)/globals.css";
+import "../app/(frontend)/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

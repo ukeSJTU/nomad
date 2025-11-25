@@ -1,9 +1,9 @@
 {
   "aliases": {
-    "uiDir": "./src/components/ui",
-    "componentsDir": "./src/components",
-    "blockDir": "./src/components",
-    "cssDir": "./src/app/(frontend)",
+    "uiDir": "./app/_components/ui",
+    "componentsDir": "./app/_components",
+    "blockDir": "./app/_components",
+    "cssDir": "./app/(frontend)",
     "libDir": "./src/lib"
   },
   "baseDir": ".",

@@ -206,7 +206,7 @@ PENDING_PAYMENT  →  CONFIRMED  →  REFUNDED
 
 **API 实现**：
 ```typescript
-// src/app/api/cron/cancel-expiration/route.ts
+// app/api/cron/cancel-expiration/route.ts
 export async function POST(request: Request) {
   // 1. 验证 Bearer Token
   if (!verifyCronSecret(request)) {

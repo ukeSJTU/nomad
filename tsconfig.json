@@ -19,6 +19,8 @@
       }
     ],
     "paths": {
+      "@/components/*": ["./app/_components/*"],
+      "@/app/*": ["./app/*"],
       "@/*": ["./src/*"],
       "@/.source": ["./.source"],
       "@tests/*": ["./tests/*"]
