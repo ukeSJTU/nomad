@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { ErrorDisplay } from "@/components/common/error-display";
-import { ERROR_CONFIGS } from "@/constants/errors";
+import { ERROR_CONFIGS } from "@/domains/_errors/registry";
 
 const meta = {
   title: "Common/ErrorDisplay",

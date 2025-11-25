@@ -9,25 +9,23 @@ import { File, Files, Folder } from "fumadocs-ui/components/files";
 
 ```files
 src/
-├── app/                    # Next.js App Router 页面
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── [路由目录]/
-├── components/            # 自定义组件
-│   ├── ui/               # shadcn/ui 组件（不要手动修改）
-│   ├── common/           # 通用组件
-│   └── [功能域]/         # 按功能域组织
-│       ├── forms/
-│       └── index.ts      # 统一导出
-├── hooks/                # React Hooks
-├── lib/                  # 核心配置
-│   ├── db/              # 数据库配置
-│   ├── schema/          # 数据库 schema
-│   └── utils.ts
-├── types/               # TypeScript 类型定义
-│   └── index.ts
-└── utils/               # 工具函数
+├── app/                    # Next.js App Router (根目录)
+│   ├── _components/        # 共享 UI 组件
+│   ├── (frontend)/...      # 路由分组
+│   └── page.tsx
+├── domains/                # 领域代码（仓储/服务/常量/错误定义）
+│   ├── flights/            # flights.constants.ts, flights.error.ts 等
+│   ├── booking/
+│   ├── auth/
+│   └── ...
+├── config/                 # 环境变量、logger 等配置
+├── db/                     # Drizzle client/schema
+├── services/               # 跨领域服务门面
+├── integrations/           # 外部服务适配层
+├── lib/                    # 通用工具/封装
+├── hooks/                  # React Hooks
+├── types/                  # TypeScript 类型定义
+└── utils/                  # 轻量前端工具
 ```
 
 ## 导入规范
@@ -70,6 +68,11 @@ import "./styles.css";
 | 类型/接口 | PascalCase | `UserProfile`, `ApiResponse` |
 | 组件 | PascalCase | `UserProfile`, `SignUpForm` |
 | 测试文件 | `*.test.ts` | `utils.test.ts` |
+
+## 领域常量与错误配置
+
+- **领域常量**：与航班搜索/预订相关的 UI 文案、舱位映射等放在 `src/domains/flights/flights.constants.ts`，避免新增 `src/constants` 这类汇总目录。
+- **错误配置**：各领域的错误配置放在 `src/domains/<domain>/<domain>.error.ts`，通过 `src/domains/_errors/registry.ts` 聚合导出 `ERROR_CONFIGS` / `DEFAULT_ERROR_CONFIG`，供错误页和重定向工具统一引用。
 
 ## Schema 和类型
 

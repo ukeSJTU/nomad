@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FLIGHT_UI_TEXT } from "@/constants/flights";
+import { FLIGHT_UI_TEXT } from "@/domains/flights/flights.constants";
 import type { FlightSearchResult } from "@/types/dto";
 import type { SeatClass } from "@/types/validations";
 import {

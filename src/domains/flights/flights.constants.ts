@@ -1,7 +1,7 @@
 /**
- * Flight-related constants
+ * Flight-related constants scoped to the flights domain.
  *
- * Centralized constants for flight search and booking UI
+ * Shared by flight search UI and booking flows.
  */
 
 /**
