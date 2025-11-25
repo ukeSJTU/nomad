@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">1.8% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/277</span>
+                <span class='fraction'>5/277</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/3</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">1.8% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/277</span>
+                <span class='fraction'>5/277</span>
             </div>
         
             
@@ -496,12 +496,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -916,12 +916,12 @@
  * - refundOrder: Refund a confirmed order (user-initiated)
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { and, eq, lt, sql } from "drizzle-orm";</span>
+import { and, eq, lt, sql } from "drizzle-orm";
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { db } from "@/lib/db";</span>
-<span class="cstat-no" title="statement not covered" >import { user } from "@/lib/schema";</span>
-<span class="cstat-no" title="statement not covered" >import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";</span>
-<span class="cstat-no" title="statement not covered" >import { orders } from "@/lib/schema/orders";</span>
+import { db } from "@/lib/db";
+import { user } from "@/lib/schema";
+import { flightSeatClasses } from "@/lib/schema/flight-seat-classes";
+import { orders } from "@/lib/schema/orders";
 &nbsp;
 import type { ServiceResult } from "./types";
 &nbsp;
@@ -943,7 +943,7 @@ import type { ServiceResult } from "./types";
  * @param userId - User UUID (for ownership validation)
  * @returns Result object with success/error
  */
-<span class="cstat-no" title="statement not covered" >export async function cancelOrder(</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function cancelOrder(</span></span>
 <span class="cstat-no" title="statement not covered" >  orderId: string,</span>
 <span class="cstat-no" title="statement not covered" >  userId: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&gt; {</span>
@@ -1059,7 +1059,7 @@ export interface RefundOrderData {
  *
  * @returns Result object with cancellation statistics or error
  */
-<span class="cstat-no" title="statement not covered" >export async function cancelExpiredOrders(): Promise&lt;</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function cancelExpiredOrders(): Promise&lt;</span></span>
   ServiceResult&lt;CancelExpiredOrdersData&gt;
 <span class="cstat-no" title="statement not covered" >&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
@@ -1187,7 +1187,7 @@ export interface RefundOrderData {
  * @param userId - User UUID (for ownership validation)
  * @returns Result object with success/error and refund amount
  */
-<span class="cstat-no" title="statement not covered" >export async function refundOrder(</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function refundOrder(</span></span>
 <span class="cstat-no" title="statement not covered" >  orderId: string,</span>
 <span class="cstat-no" title="statement not covered" >  userId: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;RefundOrderData&gt;&gt; {</span>
@@ -1330,7 +1330,7 @@ export interface RefundOrderData {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-25T03:18:17.259Z
+                at 2025-11-25T11:44:40.293Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
