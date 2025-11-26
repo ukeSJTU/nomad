@@ -8,8 +8,8 @@ import {
   getCurrencyValue,
   multiplyCurrency,
   parseCurrency,
-} from "@/lib/currency";
-import { formatDateWithWeekday } from "@/lib/date";
+} from "@/lib/format/currency";
+import { formatDateWithWeekday } from "@/lib/format/date";
 import type { PassengerPageFlight } from "@/types/dto";
 
 type FlightSummaryCardProps = {

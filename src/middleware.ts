@@ -2,7 +2,7 @@ import { getSessionCookie } from "better-auth/cookies";
 import { isMarkdownPreferred, rewritePath } from "fumadocs-core/negotiation";
 import { NextRequest, NextResponse } from "next/server";
 
-import logger from "@/lib/logger";
+import logger from "@/lib/server/logger";
 
 const { rewrite: rewriteLLM } = rewritePath("/docs/*path", "/llms.mdx/*path");
 

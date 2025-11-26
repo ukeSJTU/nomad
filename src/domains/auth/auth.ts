@@ -12,7 +12,7 @@ import {
   getTurnstileSecretKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
 } from "@/integrations/turnstile/client";
-import logger from "@/lib/logger";
+import logger from "@/lib/server/logger";
 
 /**
  * Determine whether Aliyun SMS service should be enabled

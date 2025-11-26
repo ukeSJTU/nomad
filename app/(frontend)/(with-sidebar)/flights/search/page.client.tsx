@@ -15,10 +15,10 @@ import {
   SearchForm,
   type SearchFormData,
 } from "@/components/flights/search";
+import { SEAT_CLASS_TYPE_MAP } from "@/config/ui/flights";
 import { useFlightSearchState } from "@/hooks/use-flight-search-state";
-import { dateToLocalDateString } from "@/lib/date";
-import { SEAT_CLASS_TYPE_MAP } from "@/lib/flights/constants";
 import { buildFlightSearchUrl } from "@/lib/flights/search-params";
+import { dateToLocalDateString } from "@/lib/format/date";
 import type {
   CityData,
   FlightSearchResult,

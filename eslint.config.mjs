@@ -16,8 +16,8 @@ const compat = new FlatCompat({
 });
 
 const APP_BOUNDARY_ALLOWLIST = [
-  "@/domains/_errors/registry",
-  "@/domains/_errors/types",
+  "@/config/errors",
+  "@/config/errors/types",
   "@/db/schema/ancillary",
 ];
 

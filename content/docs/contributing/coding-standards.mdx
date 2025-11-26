@@ -13,16 +13,16 @@ src/
 │   ├── _components/        # 共享 UI 组件
 │   ├── (frontend)/...      # 路由分组
 │   └── page.tsx
-├── domains/                # 领域代码（仓储/服务/常量/错误定义）
-│   ├── flights/            # flights.constants.ts, flights.error.ts 等（已迁移至 src/lib/flights）
+├── domains/                # 领域代码（仓储/服务/业务逻辑）
+│   ├── flights/            # 领域服务，UI 文案/映射已迁移至 src/config/ui/flights.ts
 │   ├── booking/
 │   ├── auth/
 │   └── ...
-├── config/                 # 环境变量、logger 等配置
+├── config/                 # 环境变量、UI/错误/系统常量配置
 ├── db/                     # Drizzle client/schema
 ├── services/               # 跨领域服务门面
 ├── integrations/           # 外部服务适配层
-├── lib/                    # 通用工具/封装
+├── lib/                    # 通用工具/封装（format/validation/server/security 等分组）
 ├── hooks/                  # React Hooks
 ├── types/                  # TypeScript 类型定义
 └── utils/                  # 轻量前端工具
@@ -35,7 +35,7 @@ src/
 ```typescript
 // 推荐
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
+import { formatDateString } from "@/lib/format/date";
 
 // 避免
 import { Button } from "../../../_components/ui/button";
@@ -71,8 +71,8 @@ import "./styles.css";
 
 ## 领域常量与错误配置
 
-- **领域常量**：与航班搜索/预订相关的 UI 文案、舱位映射等放在 `src/lib/flights`（原 `src/domains/flights` 已迁移），避免新增 `src/constants` 这类汇总目录。
-- **错误配置**：各领域的错误配置放在 `src/domains/<domain>/<domain>.error.ts`，通过 `src/domains/_errors/registry.ts` 聚合导出 `ERROR_CONFIGS` / `DEFAULT_ERROR_CONFIG`，供错误页和重定向工具统一引用。
+- **领域常量**：与航班搜索/预订相关的 UI 文案、舱位映射等放在 `src/config/ui/*`（如 `src/config/ui/flights.ts`），避免新增 `src/constants` 这类汇总目录。
+- **错误配置**：各领域的错误配置集中在 `src/config/errors` 并通过 `ERROR_CONFIGS` / `DEFAULT_ERROR_CONFIG` 聚合导出，供错误页和重定向工具统一引用。
 
 ## Schema 和类型
 

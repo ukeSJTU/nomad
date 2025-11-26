@@ -2,8 +2,8 @@ import { ErrorDisplay } from "@/components/common";
 import {
   DEFAULT_ERROR_CONFIG,
   ERROR_CONFIGS,
-} from "@/domains/_errors/registry";
-import type { ErrorConfig } from "@/domains/_errors/types";
+  type ErrorConfig,
+} from "@/config/errors";
 
 interface ErrorPageProps {
   searchParams: Promise<{

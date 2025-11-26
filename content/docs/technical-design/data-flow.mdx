@@ -670,7 +670,7 @@ export function UpdatePassengerForm({ passengerId }: { passengerId: string }) {
 ### 示例：健康检查 API
 
 ```tsx title="app/api/health/route.ts"
-import { ApiResponse } from "@/lib/utils/api-response";
+import { ApiResponse } from "@/lib/server/api-response";
 
 export async function GET() {
   const healthData = {

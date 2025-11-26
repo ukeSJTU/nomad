@@ -13,7 +13,7 @@ import {
   getPassengerById,
   getPassengers,
 } from "@/domains/passengers/passenger-read.service";
-import { dateToLocalDateString } from "@/lib/date";
+import { dateToLocalDateString } from "@/lib/format/date";
 
 async function requireUserId(redirectTo?: string): Promise<string> {
   const user = await requireSessionUser(redirectTo);

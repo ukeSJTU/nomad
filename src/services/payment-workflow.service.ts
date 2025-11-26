@@ -13,7 +13,7 @@ import {
   parseCurrency,
   subtractCurrency,
   toDatabaseValue,
-} from "@/lib/currency";
+} from "@/lib/format/currency";
 
 export interface ProcessPaymentParams {
   orderId: string;

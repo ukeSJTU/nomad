@@ -11,7 +11,7 @@ vi.mock("resend", () => ({
 }));
 
 // Mock logger
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/server/logger", () => ({
   default: {
     info: vi.fn(),
     error: vi.fn(),

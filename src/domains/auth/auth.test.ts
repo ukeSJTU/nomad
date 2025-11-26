@@ -14,7 +14,7 @@ vi.mock("@/integrations/resend/client", () => ({
   sendEmailOtp: vi.fn(),
 }));
 
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/server/logger", () => ({
   default: {
     info: vi.fn(),
     error: vi.fn(),

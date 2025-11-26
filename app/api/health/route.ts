@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { ApiResponse } from "@/lib/api-response";
+import { ApiResponse } from "@/lib/server/api-response";
 import {
   type HealthData,
   healthDataSchema,

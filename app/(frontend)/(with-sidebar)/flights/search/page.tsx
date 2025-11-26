@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { getCitiesAction, searchFlightsAction } from "@/actions/flights";
-import logger from "@/lib/logger";
+import logger from "@/lib/server/logger";
 import {
   type SeatClass,
   seatClassSchema,

@@ -7,7 +7,7 @@ import {
   clearFlightSearchHistory,
   recordFlightSearch,
 } from "@/domains/flights/flight-search-history.service";
-import logger from "@/lib/logger";
+import logger from "@/lib/server/logger";
 import type { RecordFlightSearchData } from "@/types/validations";
 
 /**

@@ -6,7 +6,7 @@ import {
   updateSearchHistory,
 } from "@/domains/flights/flight-search-history.repository";
 import type { ServiceResult } from "@/domains/types";
-import logger from "@/lib/logger";
+import logger from "@/lib/server/logger";
 import type { RecordFlightSearchData } from "@/types/validations";
 
 /**

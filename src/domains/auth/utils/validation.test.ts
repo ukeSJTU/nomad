@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { validateAccount } from "@/lib/auth/validation";
+import { validateAccount } from "@/lib/validation/account";
 
 describe("validateAccount", () => {
   it("should validate phone numbers correctly", () => {

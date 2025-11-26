@@ -7,7 +7,7 @@ import {
   maskDocumentNumber,
   maskEmail,
   maskPhoneNumber,
-} from "@/lib/mask-data";
+} from "@/lib/security/mask-data";
 import type { Passenger, PassengerDetailData } from "@/types/dto/passengers";
 
 export type PassengerRow = typeof passengers.$inferSelect;

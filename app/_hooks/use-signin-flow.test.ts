@@ -34,13 +34,13 @@ vi.mock("@/app/_actions/auth", () => ({
 }));
 
 // Mock validateAccount utility
-vi.mock("@/lib/auth/validation", () => ({
+vi.mock("@/lib/validation/account", () => ({
   validateAccount: vi.fn(),
 }));
 
 import { toast } from "sonner";
 
-import { validateAccount } from "@/lib/auth/validation";
+import { validateAccount } from "@/lib/validation/account";
 
 const mockToastError = vi.mocked(toast.error);
 const mockValidateAccount = vi.mocked(validateAccount);

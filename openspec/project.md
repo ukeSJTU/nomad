@@ -24,7 +24,7 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 - **Better Auth 1.3.27** powers phone/email OTP, GitHub OAuth, and session cookies via `nextCookies`, plus custom plugins for Cloudflare Turnstile captcha.
 - **Drizzle ORM 0.44.6** with `drizzle-kit` migrations/seeding, `drizzle-query-logger`, and PostgreSQL schemas stored in `src/db/schema`.
 - **Neon DB** (serverless PostgreSQL) hosts the data layer; connection logic lives in `src/db/index.ts` with SSL/ENV handling.
-- **Pino 10.0.0** plus `pino-pretty` for logging; `src/lib/logger.ts` configures env-sensitive formatting.
+- **Pino 10.0.0** plus `pino-pretty` for logging; `src/lib/server/logger.ts` configures env-sensitive formatting.
 
 ### Integrations & AI
 
@@ -96,7 +96,7 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 - **Booking & Orders:** Multi-step flow ties flight selection to passenger info, ancillaries, payment deadlines, and confirmation. `orders.service.ts` handles seat locking, cancellations, refunds, and order number generation. Cron job (`app/api/cron/cancel-expiration`) cancels expired pending orders and releases seats. UI flows use `app/_actions/orders.ts`, the booking sidebar, and `app/(frontend)/(with-sidebar)/orders/[orderId]`.
 - **Payments:** Payments are simulated through `src/services/payment-workflow.service.ts` (balance-only). It debits user balance, updates orders/payments tables, and optionally triggers confirmation emails via Resend (`src/domains/notification`). Document the lack of real gateway integration.
 - **Notifications & Emails:** `src/integrations/resend/client.tsx` and `app/_components/emails` define OTP and order confirmation templates; `sendOrderConfirmationEmail` dispatches emails after payments.
-- **Security & Infrastructure:** Turnstile, cron secret verification (`src/security/cron.ts`), API response helpers (`src/lib/api-response.ts`), and consistent response meta (`src/types/api/response.ts`) ensure predictable HTTP behavior. The health check at `/api/health` validates uptime/status.
+- **Security & Infrastructure:** Turnstile, cron secret verification (`src/security/cron.ts`), API response helpers (`src/lib/server/api-response.ts`), and consistent response meta (`src/types/api/response.ts`) ensure predictable HTTP behavior. The health check at `/api/health` validates uptime/status.
 - **Documentation & AI:** The docs chat endpoint (`app/api/chat/route.ts`) streams answers with Inkeep/AI Tools, while `content/docs` provides MoSCoW requirements, testing strategy, and architecture write-ups. `app/(docs)` exposes these pages plus LLM explorations (`llms.mdx`).
 
 ## Important Constraints
@@ -140,6 +140,6 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 
 ## Monitoring & Logging
 
-- Use `src/lib/logger.ts` to capture structured logs; dev uses `pino-pretty`, production streams to stdout with ISO timestamps.
+- Use `src/lib/server/logger.ts` to capture structured logs; dev uses `pino-pretty`, production streams to stdout with ISO timestamps.
 - API responses follow the schema in `src/types/api/response.ts`, so every route (`app/api/health`, cron APIs, Server Actions that expose REST endpoints) returns consistent metadata and request IDs.
 - Track cron health via `/api/health` and protect cancellation jobs with `CRON_SECRET`.

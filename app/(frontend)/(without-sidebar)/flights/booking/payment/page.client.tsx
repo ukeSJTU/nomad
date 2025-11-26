@@ -12,7 +12,7 @@ import {
   PaymentPriceBreakdown,
 } from "@/components/flights/booking";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/currency";
+import { formatCurrency } from "@/lib/format/currency";
 import { PaymentPageOrder } from "@/types/dto";
 
 type PaymentPageClientProps = {

@@ -48,16 +48,10 @@ vi.mock("@/app/_actions/auth", () => ({
 describe("UserMenu Component", () => {
   describe("when user is logged in", () => {
     const mockSession = {
-      user: {
-        id: "user-123",
-        name: "张三",
-        email: "zhangsan@example.com",
-        image: "https://github.com/shadcn.png",
-      },
-      session: {
-        token: "mock-token",
-        expiresAt: new Date(Date.now() + 86400000),
-      },
+      id: "user-123",
+      name: "张三",
+      email: "zhangsan@example.com",
+      image: "https://github.com/shadcn.png",
     };
 
     it("should display standardized text '尊敬的用户' instead of username", () => {
@@ -168,14 +162,8 @@ describe("UserMenu Component", () => {
   describe("when user has no name (anonymous)", () => {
     it("should still display '尊敬的用户' text", () => {
       const sessionWithoutName = {
-        user: {
-          id: "user-456",
-          email: "anonymous@example.com",
-        },
-        session: {
-          token: "mock-token",
-          expiresAt: new Date(Date.now() + 86400000),
-        },
+        id: "user-456",
+        email: "anonymous@example.com",
       };
 
       mockUseSession.mockReturnValue({
@@ -190,14 +178,8 @@ describe("UserMenu Component", () => {
 
     it("should display 'A' as avatar fallback for anonymous users", () => {
       const sessionWithoutName = {
-        user: {
-          id: "user-456",
-          email: "anonymous@example.com",
-        },
-        session: {
-          token: "mock-token",
-          expiresAt: new Date(Date.now() + 86400000),
-        },
+        id: "user-456",
+        email: "anonymous@example.com",
       };
 
       mockUseSession.mockReturnValue({

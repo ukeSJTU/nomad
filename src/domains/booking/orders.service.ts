@@ -21,7 +21,7 @@ import {
   multiplyCurrency,
   parseCurrency,
   toDatabaseValue,
-} from "@/lib/currency";
+} from "@/lib/format/currency";
 
 /**
  * Order Service Layer

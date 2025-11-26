@@ -12,8 +12,8 @@ import {
   updateEmail,
   updatePhoneNumber,
 } from "@/domains/auth/auth.service";
-import { validateAccount } from "@/lib/auth/validation";
-import logger from "@/lib/logger";
+import logger from "@/lib/server/logger";
+import { validateAccount } from "@/lib/validation/account";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {

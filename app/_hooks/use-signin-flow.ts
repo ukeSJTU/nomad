@@ -8,7 +8,7 @@ import {
   signInWithOtpAction,
   signInWithPasswordAction,
 } from "@/app/_actions/auth";
-import { validateAccount } from "@/lib/auth/validation";
+import { validateAccount } from "@/lib/validation/account";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type { OtpLoginData, PasswordLoginData } from "@/types/validations/auth";
