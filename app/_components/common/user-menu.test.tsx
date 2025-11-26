@@ -35,13 +35,14 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-// Mock auth client
+// Mock auth actions + session hook
 const mockUseSession = vi.fn();
-vi.mock("@/domains/auth/client", () => ({
-  authClient: {
-    useSession: () => mockUseSession(),
-    signOut: vi.fn(),
-  },
+const mockSignOutAction = vi.fn();
+vi.mock("@/hooks/use-client-session", () => ({
+  useClientSession: () => mockUseSession(),
+}));
+vi.mock("@/app/_actions/auth", () => ({
+  signOutAction: (...args: any[]) => mockSignOutAction(...args),
 }));
 
 describe("UserMenu Component", () => {

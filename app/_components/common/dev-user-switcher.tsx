@@ -35,20 +35,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { authClient } from "@/domains/auth/client";
+import { useClientSession } from "@/hooks/use-client-session";
 import { getInitials } from "@/lib/string";
 
 type User = Extract<DevUserListResult, { success: true }>["users"][number];
 
 export default function DevUserSwitcher() {
   // Call all hooks unconditionally first (React Hooks Rules)
-  const { data: session } = authClient.useSession();
+  const { data: session } = useClientSession();
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
 
-  const currentUserId = session?.user?.id;
+  const currentUserId = session?.id;
 
   useEffect(() => {
     if (open && users.length === 0) {

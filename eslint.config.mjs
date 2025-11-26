@@ -16,13 +16,8 @@ const compat = new FlatCompat({
 });
 
 const APP_BOUNDARY_ALLOWLIST = [
-  "@/domains/auth/client",
-  "@/domains/auth/utils/validation",
   "@/domains/_errors/registry",
   "@/domains/_errors/types",
-  "@/domains/flights/flights.constants",
-  "@/domains/flights/utils/flight",
-  "@/domains/flights/utils/search-params",
   "@/db/schema/ancillary",
 ];
 

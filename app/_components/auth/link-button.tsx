@@ -2,8 +2,8 @@
 
 import { toast } from "sonner";
 
+import { linkSocialAccountAction } from "@/app/_actions/auth";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/domains/auth/client";
 
 /**
  * Props for LinkButton component
@@ -19,10 +19,10 @@ interface LinkButtonProps {
  * LinkButton Component
  *
  * A client component that handles OAuth linking for social accounts.
- * When clicked, it initiates the OAuth flow via better-auth's linkSocial method.
+ * When clicked, it requests a server-generated OAuth URL and redirects the browser.
  *
  * This component must be a Client Component because:
- * - authClient.linkSocial() triggers browser redirect
+ * - Browser must perform the redirect after receiving the URL from the server
  * - Cannot be called from Server Components
  *
  * @example
@@ -38,17 +38,20 @@ export function LinkButton({ providerId, providerName }: LinkButtonProps) {
   const handleLink = async () => {
     try {
       // Initiate OAuth flow for linking account
-      const result = await authClient.linkSocial({
-        provider: providerId,
-        callbackURL: "/home/accounts", // Redirect back after OAuth
-      });
+      const result = await linkSocialAccountAction(
+        providerId,
+        "/home/accounts"
+      );
 
-      if (result.error) {
+      if (!result.success || !result.data?.url) {
         console.error(`Failed to link ${providerId}:`, result.error);
         toast.error(`Failed to link ${providerName} account`, {
-          description: result.error.message || "Please try again later",
+          description: result.error || "Please try again later",
         });
+        return;
       }
+
+      window.location.href = result.data.url;
       // OAuth redirect will happen automatically if successful
     } catch (error) {
       console.error(`Error linking ${providerId}:`, error);

@@ -15,14 +15,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FLIGHT_UI_TEXT } from "@/domains/flights/flights.constants";
+import { FLIGHT_UI_TEXT } from "@/lib/flights/constants";
 import {
   calculateDaysOffset,
   calculateFlightDuration,
   formatAirportDisplay,
   formatDuration,
   formatFlightTime,
-} from "@/domains/flights/utils/flight";
+} from "@/lib/flights/flight";
 import type { FlightSearchResult } from "@/types/dto";
 import type { SeatClass } from "@/types/validations";
 

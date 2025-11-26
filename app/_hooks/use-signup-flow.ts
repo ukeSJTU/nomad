@@ -4,7 +4,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { setInitialPasswordAction } from "@/app/_actions";
-import { authClient } from "@/domains/auth/client";
+import {
+  sendEmailOtpAction,
+  sendPhoneOtpAction,
+  signInWithOtpAction,
+  verifyEmailOtpAction,
+} from "@/app/_actions/auth";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
@@ -63,21 +68,19 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
   ): Promise<ActionResult> => {
     setIsLoading(true);
 
-    const fullPhoneNumber = `+86${data.phoneNumber}`;
-
     try {
-      const { error: verifyError } = await authClient.phoneNumber.verify(
+      const result = await signInWithOtpAction(
         {
-          phoneNumber: fullPhoneNumber,
-          code: data.otp,
+          account: `+86${data.phoneNumber}`,
+          otp: data.otp,
+          agreedToTerms: data.agreedToTerms,
         },
         fetchOptions
       );
 
-      if (verifyError) {
-        const errorMessage = verifyError.message || "验证码错误，请重试";
-        toast.error(errorMessage);
-        return { success: false, error: errorMessage };
+      if (!result.success) {
+        toast.error(result.error || "验证码错误，请重试");
+        return { success: false, error: result.error || "验证码错误，请重试" };
       }
 
       setPhoneData(data);
@@ -102,18 +105,11 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     setIsLoading(true);
 
     try {
-      const { error: verifyError } = await authClient.signIn.emailOtp(
-        {
-          email: data.email,
-          otp: data.otp,
-        },
-        fetchOptions
-      );
+      const result = await verifyEmailOtpAction(data, fetchOptions);
 
-      if (verifyError) {
-        const errorMessage = verifyError.message || "验证码错误，请重试";
-        toast.error(errorMessage);
-        return { success: false, error: errorMessage };
+      if (!result.success) {
+        toast.error(result.error || "验证码错误，请重试");
+        return { success: false, error: result.error || "验证码错误，请重试" };
       }
 
       setEmailData(data);
@@ -166,21 +162,13 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
 
     setIsLoading(true);
 
-    const fullPhoneNumber = `+86${phoneNumber}`;
-
     try {
-      const { error: sendError } = await authClient.phoneNumber.sendOtp(
-        {
-          phoneNumber: fullPhoneNumber,
-        },
+      const result = await sendPhoneOtpAction(
+        `+86${phoneNumber}`,
         fetchOptions
       );
 
-      if (sendError) {
-        return false;
-      }
-
-      return true;
+      return result.success;
     } catch {
       return false;
     } finally {
@@ -203,20 +191,9 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     setIsLoading(true);
 
     try {
-      const { error: sendError } =
-        await authClient.emailOtp.sendVerificationOtp(
-          {
-            email,
-            type: "sign-in",
-          },
-          fetchOptions
-        );
+      const result = await sendEmailOtpAction(email, "sign-in", fetchOptions);
 
-      if (sendError) {
-        return false;
-      }
-
-      return true;
+      return result.success;
     } catch {
       return false;
     } finally {

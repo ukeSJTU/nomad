@@ -14,7 +14,7 @@ src/
 │   ├── (frontend)/...      # 路由分组
 │   └── page.tsx
 ├── domains/                # 领域代码（仓储/服务/常量/错误定义）
-│   ├── flights/            # flights.constants.ts, flights.error.ts 等
+│   ├── flights/            # flights.constants.ts, flights.error.ts 等（已迁移至 src/lib/flights）
 │   ├── booking/
 │   ├── auth/
 │   └── ...
@@ -71,7 +71,7 @@ import "./styles.css";
 
 ## 领域常量与错误配置
 
-- **领域常量**：与航班搜索/预订相关的 UI 文案、舱位映射等放在 `src/domains/flights/flights.constants.ts`，避免新增 `src/constants` 这类汇总目录。
+- **领域常量**：与航班搜索/预订相关的 UI 文案、舱位映射等放在 `src/lib/flights`（原 `src/domains/flights` 已迁移），避免新增 `src/constants` 这类汇总目录。
 - **错误配置**：各领域的错误配置放在 `src/domains/<domain>/<domain>.error.ts`，通过 `src/domains/_errors/registry.ts` 聚合导出 `ERROR_CONFIGS` / `DEFAULT_ERROR_CONFIG`，供错误页和重定向工具统一引用。
 
 ## Schema 和类型

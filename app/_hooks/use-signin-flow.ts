@@ -2,8 +2,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { authClient } from "@/domains/auth/client";
-import { validateAccount } from "@/domains/auth/utils/validation";
+import {
+  sendEmailOtpAction,
+  sendPhoneOtpAction,
+  signInWithOtpAction,
+  signInWithPasswordAction,
+} from "@/app/_actions/auth";
+import { validateAccount } from "@/lib/auth/validation";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type { OtpLoginData, PasswordLoginData } from "@/types/validations/auth";
@@ -38,43 +43,11 @@ export function useSignInFlow(): UseSignInFlowReturn {
     setIsLoading(true);
 
     try {
-      const { isPhone, isEmail } = validateAccount(data.account);
+      const result = await signInWithPasswordAction(data);
 
-      // Only support phone or email login
-      if (!isPhone && !isEmail) {
-        return {
-          success: false,
-          error: "请输入正确的手机号或邮箱格式",
-        };
-      }
-
-      let signInError;
-
-      if (isPhone) {
-        const result = await authClient.signIn.phoneNumber({
-          phoneNumber: data.account,
-          password: data.password,
-          rememberMe: true,
-        });
-        signInError = result.error;
-      } else {
-        // isEmail
-        const result = await authClient.signIn.email({
-          email: data.account,
-          password: data.password,
-          rememberMe: true,
-        });
-        signInError = result.error;
-      }
-
-      if (signInError) {
-        const errorMessage =
-          signInError.message || "登录失败，请检查账号和密码";
-        toast.error(errorMessage);
-        return {
-          success: false,
-          error: errorMessage,
-        };
+      if (!result.success) {
+        toast.error(result.error || "登录失败，请检查账号和密码");
+        return result;
       }
 
       // Redirect to home page after successful login
@@ -104,46 +77,11 @@ export function useSignInFlow(): UseSignInFlowReturn {
     setIsLoading(true);
 
     try {
-      const { isPhone, isEmail } = validateAccount(data.account);
+      const result = await signInWithOtpAction(data, fetchOptions);
 
-      // Only support phone or email login
-      if (!isPhone && !isEmail) {
-        return {
-          success: false,
-          error: "请输入正确的手机号或邮箱格式",
-        };
-      }
-
-      let verifyError;
-
-      if (isPhone) {
-        const result = await authClient.phoneNumber.verify(
-          {
-            phoneNumber: data.account,
-            code: data.otp,
-          },
-          fetchOptions
-        );
-        verifyError = result.error;
-      } else {
-        // isEmail
-        const result = await authClient.signIn.emailOtp(
-          {
-            email: data.account,
-            otp: data.otp,
-          },
-          fetchOptions
-        );
-        verifyError = result.error;
-      }
-
-      if (verifyError) {
-        const errorMessage = verifyError.message || "验证码错误";
-        toast.error(errorMessage);
-        return {
-          success: false,
-          error: errorMessage,
-        };
+      if (!result.success) {
+        toast.error(result.error || "验证码错误");
+        return result;
       }
 
       // Redirect to home page after successful login
@@ -181,30 +119,12 @@ export function useSignInFlow(): UseSignInFlowReturn {
         return false;
       }
 
-      let sendError;
+      const result = isPhone
+        ? await sendPhoneOtpAction(account, fetchOptions)
+        : await sendEmailOtpAction(account, "sign-in", fetchOptions);
 
-      if (isPhone) {
-        const result = await authClient.phoneNumber.sendOtp(
-          {
-            phoneNumber: account,
-          },
-          fetchOptions
-        );
-        sendError = result.error;
-      } else {
-        // isEmail
-        const result = await authClient.emailOtp.sendVerificationOtp(
-          {
-            email: account,
-            type: "sign-in",
-          },
-          fetchOptions
-        );
-        sendError = result.error;
-      }
-
-      if (sendError) {
-        console.error("发送验证码失败:", sendError);
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
         toast.error("发送验证码失败，请重试");
         return false;
       }

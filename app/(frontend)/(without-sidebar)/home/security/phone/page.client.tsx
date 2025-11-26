@@ -5,14 +5,17 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { updatePhoneNumberAction } from "@/app/_actions/auth";
+import {
+  sendPhoneOtpAction,
+  signInWithOtpAction,
+  updatePhoneNumberAction,
+} from "@/app/_actions/auth";
 import {
   type PhoneFormMode,
   type SecurityStatus,
   UpdatePhoneForm,
 } from "@/components/security";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { authClient } from "@/domains/auth/client";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 
@@ -85,19 +88,14 @@ export default function PhonePageClient({
       // Add +86 prefix for China mainland phone numbers
       const fullPhoneNumber = `+86${phoneNumber}`;
 
-      const { error } = await authClient.phoneNumber.sendOtp({
-        phoneNumber: fullPhoneNumber,
-        fetchOptions: captchaRequest.fetchOptions,
-      });
+      const result = await sendPhoneOtpAction(
+        fullPhoneNumber,
+        captchaRequest.fetchOptions
+      );
 
-      if (error) {
-        if (isCaptchaValidationError(error)) {
-          setCaptchaError("人机验证失败，请重新完成人机验证");
-          toast.error("人机验证失败，请重试");
-          return;
-        }
-        console.error("发送验证码失败:", error);
-        toast.error("发送验证码失败，请重试");
+      if (!result.success) {
+        console.error("发送验证码失败:", result.error);
+        toast.error(result.error || "发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送");
         startCountdown();
@@ -132,21 +130,24 @@ export default function PhonePageClient({
       // Add +86 prefix for China mainland phone numbers
       const fullPhoneNumber = `+86${data.phoneNumber}`;
 
-      // 1. Verify OTP using better-auth
-      const { error: verifyError } = await authClient.phoneNumber.verify({
-        phoneNumber: fullPhoneNumber,
-        code: data.otp,
-        fetchOptions: captchaRequest.fetchOptions,
-      });
+      // 1. Verify OTP using server action
+      const verifyResult = await signInWithOtpAction(
+        {
+          account: fullPhoneNumber,
+          otp: data.otp,
+          agreedToTerms: true,
+        },
+        captchaRequest.fetchOptions
+      );
 
-      if (verifyError) {
-        if (isCaptchaValidationError(verifyError)) {
+      if (!verifyResult.success) {
+        if (isCaptchaValidationError({ message: verifyResult.error })) {
           setCaptchaError("人机验证失败，请重新完成人机验证");
           toast.error("人机验证失败，请重试");
           return;
         }
-        console.error("验证码验证失败:", verifyError);
-        toast.error("验证码错误，请重试");
+        console.error("验证码验证失败:", verifyResult.error);
+        toast.error(verifyResult.error || "验证码错误，请重试");
         return;
       }
 

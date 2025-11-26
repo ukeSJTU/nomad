@@ -12,6 +12,270 @@ import {
   updateEmail,
   updatePhoneNumber,
 } from "@/domains/auth/auth.service";
+import { validateAccount } from "@/lib/auth/validation";
+import logger from "@/lib/logger";
+import type { ActionResult } from "@/types/common";
+import type { FetchOptions } from "@/types/http";
+import type {
+  EmailVerificationData,
+  OtpLoginData,
+  PasswordLoginData,
+} from "@/types/validations/auth";
+
+function resolveAccountType(account: string) {
+  const trimmedAccount = account.trim();
+  const withoutCountryCode = trimmedAccount.startsWith("+86")
+    ? trimmedAccount.slice(3)
+    : trimmedAccount;
+
+  const directValidation = validateAccount(trimmedAccount);
+  const normalizedValidation = validateAccount(withoutCountryCode);
+
+  const isPhone = directValidation.isPhone || normalizedValidation.isPhone;
+  const isEmail = directValidation.isEmail;
+
+  return { isPhone, isEmail, account: trimmedAccount };
+}
+
+function mergeHeaders(base: Headers, fetchOptions?: FetchOptions): HeadersInit {
+  if (!fetchOptions?.headers) {
+    return base;
+  }
+
+  const merged = new Headers(base);
+
+  for (const [key, value] of Object.entries(fetchOptions.headers)) {
+    merged.set(key, value);
+  }
+
+  return merged;
+}
+
+async function buildHeaders(fetchOptions?: FetchOptions): Promise<Headers> {
+  const headersList = await headers();
+  return new Headers(mergeHeaders(headersList, fetchOptions));
+}
+
+/**
+ * Password-based sign-in for phone or email accounts.
+ */
+export async function signInWithPasswordAction(
+  data: PasswordLoginData
+): Promise<ActionResult> {
+  const { isPhone, isEmail, account } = resolveAccountType(data.account);
+
+  if (!isPhone && !isEmail) {
+    return { success: false, error: "请输入正确的手机号或邮箱格式" };
+  }
+
+  try {
+    const headersList = await buildHeaders();
+
+    if (isPhone) {
+      await auth.api.signInPhoneNumber({
+        body: {
+          phoneNumber: account,
+          password: data.password,
+          rememberMe: true,
+        },
+        headers: headersList,
+      });
+    } else {
+      await auth.api.signInEmail({
+        body: {
+          email: account,
+          password: data.password,
+          rememberMe: true,
+        },
+        headers: headersList,
+      });
+    }
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Password sign-in failed");
+    return {
+      success: false,
+      error: "登录失败，请检查账号和密码",
+    };
+  }
+}
+
+/**
+ * OTP-based sign-in for phone and email.
+ */
+export async function signInWithOtpAction(
+  data: OtpLoginData,
+  fetchOptions?: FetchOptions
+): Promise<ActionResult> {
+  const { isPhone, isEmail, account } = resolveAccountType(data.account);
+
+  if (!isPhone && !isEmail) {
+    return { success: false, error: "请输入正确的手机号或邮箱格式" };
+  }
+
+  try {
+    const headersList = await buildHeaders(fetchOptions);
+
+    if (isPhone) {
+      await auth.api.verifyPhoneNumber({
+        body: {
+          phoneNumber: account,
+          code: data.otp,
+        },
+        headers: headersList,
+      });
+    } else {
+      await auth.api.signInEmailOTP({
+        body: {
+          email: account,
+          otp: data.otp,
+        },
+        headers: headersList,
+      });
+    }
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "OTP sign-in failed");
+    return {
+      success: false,
+      error: "验证码错误，请重试",
+    };
+  }
+}
+
+/**
+ * Send phone OTP via server boundary.
+ */
+export async function sendPhoneOtpAction(
+  phoneNumber: string,
+  fetchOptions?: FetchOptions
+): Promise<ActionResult> {
+  try {
+    const headersList = await buildHeaders(fetchOptions);
+    await auth.api.sendPhoneNumberOTP({
+      body: { phoneNumber },
+      headers: headersList,
+    });
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Send phone OTP failed");
+    return {
+      success: false,
+      error: "发送验证码失败，请重试",
+    };
+  }
+}
+
+/**
+ * Send email OTP via server boundary.
+ */
+export async function sendEmailOtpAction(
+  email: string,
+  type: "sign-in" | "forget-password" | "email-verification",
+  fetchOptions?: FetchOptions
+): Promise<ActionResult> {
+  try {
+    const headersList = await buildHeaders(fetchOptions);
+    await auth.api.sendVerificationOTP({
+      body: {
+        email,
+        type,
+      },
+      headers: headersList,
+    });
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Send email OTP failed");
+    return {
+      success: false,
+      error: "发送验证码失败，请重试",
+    };
+  }
+}
+
+/**
+ * Verify email OTP (for verification flows).
+ */
+export async function verifyEmailOtpAction(
+  data: EmailVerificationData,
+  fetchOptions?: FetchOptions
+): Promise<ActionResult> {
+  try {
+    const headersList = await buildHeaders(fetchOptions);
+    await auth.api.verifyEmailOTP({
+      body: {
+        email: data.email,
+        otp: data.otp,
+      },
+      headers: headersList,
+    });
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Verify email OTP failed");
+    return {
+      success: false,
+      error: "验证码错误，请重试",
+    };
+  }
+}
+
+/**
+ * Sign out current session.
+ */
+export async function signOutAction(): Promise<ActionResult> {
+  try {
+    const headersList = await headers();
+    await auth.api.signOut({
+      headers: headersList,
+    });
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Sign out failed");
+    return {
+      success: false,
+      error: "退出登录失败，请重试",
+    };
+  }
+}
+
+/**
+ * Start social linking and return redirect URL.
+ */
+export async function linkSocialAccountAction(
+  providerId: "github" | "google",
+  callbackURL = "/home/accounts"
+): Promise<ActionResult<{ url: string }>> {
+  try {
+    const headersList = await headers();
+    const result = await auth.api.linkSocialAccount({
+      body: {
+        provider: providerId,
+        callbackURL,
+        disableRedirect: true,
+      },
+      headers: headersList,
+    });
+
+    if (!result?.url) {
+      return {
+        success: false,
+        error: "未能生成跳转链接，请稍后重试",
+      };
+    }
+
+    return { success: true, data: { url: result.url } };
+  } catch (error) {
+    logger.error({ error }, "Link social account failed");
+    return {
+      success: false,
+      error: "绑定失败，请稍后重试",
+    };
+  }
+}
 
 /**
  * Server action to unlink a social account

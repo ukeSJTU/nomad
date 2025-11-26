@@ -1,7 +1,5 @@
 /**
- * Flight search URL parameter utilities
- *
- * Utilities for building and parsing flight search URLs
+ * Flight search URL parameter utilities (frontend-safe)
  */
 
 import type { SearchFormData } from "@/components/flights/search";

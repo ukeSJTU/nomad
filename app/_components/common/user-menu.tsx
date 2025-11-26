@@ -4,6 +4,7 @@ import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { signOutAction } from "@/app/_actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-import { authClient } from "@/domains/auth/client";
+import { useClientSession } from "@/hooks/use-client-session";
 import { getInitials } from "@/lib/string";
 
 /**
@@ -42,11 +43,11 @@ import { getInitials } from "@/lib/string";
  * ```
  */
 export default function UserMenu() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = useClientSession();
   const router = useRouter();
 
   const handleSignOut = async () => {
-    await authClient.signOut();
+    await signOutAction();
     router.push("/");
   };
 
@@ -80,11 +81,11 @@ export default function UserMenu() {
         >
           <Avatar className="size-8">
             <AvatarImage
-              src={session.user?.image || undefined}
-              alt={session.user?.name || "User"}
+              src={session.image || undefined}
+              alt={session.name || "User"}
             />
             <AvatarFallback>
-              {getInitials(session.user?.name || undefined)}
+              {getInitials(session.name || undefined)}
             </AvatarFallback>
           </Avatar>
           <span className="hidden text-sm font-medium md:inline-block">
@@ -98,11 +99,11 @@ export default function UserMenu() {
           <div className="flex items-center gap-3 px-2 py-1.5">
             <Avatar className="size-10">
               <AvatarImage
-                src={session.user?.image || undefined}
-                alt={session.user?.name || "User"}
+                src={session.image || undefined}
+                alt={session.name || "User"}
               />
               <AvatarFallback>
-                {getInitials(session.user?.name || undefined)}
+                {getInitials(session.name || undefined)}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col gap-1">

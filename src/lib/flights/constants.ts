@@ -1,7 +1,5 @@
 /**
- * Flight-related constants scoped to the flights domain.
- *
- * Shared by flight search UI and booking flows.
+ * Flight-related constants scoped for frontend-safe usage.
  */
 
 /**

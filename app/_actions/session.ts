@@ -9,6 +9,7 @@ export interface SessionUser {
   id: string;
   name?: string | null;
   email?: string | null;
+  image?: string | null;
 }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
@@ -23,6 +24,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     id: session.user.id,
     name: session.user.name ?? null,
     email: session.user.email ?? null,
+    image: session.user.image ?? null,
   };
 }
 

@@ -48,17 +48,6 @@ vi.mock("next/image", () => ({
   }) => <img src={src} alt={alt} {...props} />,
 }));
 
-// Mock auth client
-vi.mock("@/domains/auth/client", () => ({
-  authClient: {
-    useSession: () => ({
-      data: null,
-      isPending: false,
-    }),
-    signOut: vi.fn(),
-  },
-}));
-
 // Mock child components
 vi.mock("@/components/common/search-bar", () => ({
   default: () => <div data-testid="search-bar">Search Bar</div>,

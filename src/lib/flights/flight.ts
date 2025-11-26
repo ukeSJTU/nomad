@@ -1,5 +1,5 @@
 /**
- * Flight utility functions
+ * Flight utility functions (frontend-safe)
  *
  * This module provides utility functions for flight data transformation and calculations
  */
