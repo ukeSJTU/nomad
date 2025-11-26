@@ -9,7 +9,7 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-import { genderEnum } from "./src/db/schema/enums";
+import { genderEnum } from "./enums";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),

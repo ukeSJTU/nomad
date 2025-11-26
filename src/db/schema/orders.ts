@@ -13,7 +13,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { user } from "../../../auth-schema";
+import { user } from "./auth";
 import { documentTypeEnum } from "./enums";
 import { flightSeatClasses } from "./flight-seat-classes";
 

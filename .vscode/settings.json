@@ -50,6 +50,13 @@
     "**/drizzle": true,
     "tsconfig.tsbuildinfo": true
   },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    ".env": ".env.*",
+    "package.json": "*.config.ts, *.config.js, *.config.mjs, *.config.cjs, .npmrc, .nvmrc, yarn.lock, pnpm-lock.yaml, tsconfig*.json, *.config.mts, components.json",
+    "README.md": "CHANGELOG.md, LICENSE, LICENSE.md, CONTRIBUTING.md"
+  },
 
   // Language-specific settings
   "[javascript]": {
@@ -139,6 +146,9 @@
       "text": "Use conventional commit format: type(scope): description"
     },
     {
+      "text": "Keep the entire generated commit message under 25 words; be concise"
+    },
+    {
       "text": "Type must be one of: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
     },
     {
@@ -148,34 +158,10 @@
       "text": "Subject must start with lowercase, avoid sentence-case, start-case, pascal-case, or upper-case"
     },
     {
-      "text": "Subject cannot be empty"
-    },
-    {
       "text": "Subject must not end with a period (.)"
     },
     {
-      "text": "Header (type + scope + subject) must not exceed 100 characters"
-    },
-    {
       "text": "Use imperative mood: 'add feature' not 'added feature'"
-    },
-    {
-      "text": "If body exists, there must be a blank line between subject and body"
-    },
-    {
-      "text": "Body lines must not exceed 100 characters each"
-    },
-    {
-      "text": "If footer exists, there must be a blank line between body and footer"
-    },
-    {
-      "text": "Footer lines must not exceed 100 characters each"
-    },
-    {
-      "text": "Scope is optional, use when relevant (e.g., api, ui, auth)"
-    },
-    {
-      "text": "For breaking changes, use 'BREAKING CHANGE:' in footer"
     },
     {
       "text": "Generate commit messages in English only"

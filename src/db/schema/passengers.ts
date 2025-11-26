@@ -18,7 +18,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { user } from "../../../auth-schema";
+import { user } from "./auth";
 import { documentTypeEnum, genderEnum } from "./enums";
 
 // All other fields are optional

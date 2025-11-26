@@ -9,7 +9,7 @@ import { z } from "zod";
  * - Schemas: camelCase ending with "Schema" (e.g., userInfoUpdateSchema)
  * - Types: PascalCase ending with "Data" (e.g., UserInfoUpdateData)
  *
- * Note: These schemas align with the user table in auth-schema.ts
+ * Note: These schemas align with the user table in `src/db/schema/auth.ts`
  */
 
 // ============================================================================

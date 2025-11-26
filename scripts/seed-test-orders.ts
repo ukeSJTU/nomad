@@ -20,8 +20,8 @@ import { and, desc, eq, gte, lt } from "drizzle-orm";
 const projectDir = process.cwd();
 loadEnvConfig(projectDir);
 
-import { user } from "../auth-schema";
 import { db } from "../src/db";
+import { user } from "../src/db/schema/auth";
 import { flightSeatClasses } from "../src/db/schema/flight-seat-classes";
 import { flights } from "../src/db/schema/flights";
 import { orderPassengers, orders, payments } from "../src/db/schema/orders";
