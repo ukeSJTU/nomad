@@ -1,11 +1,9 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
-import { db } from "@/db";
-import { account } from "@/db/schema";
+import { requireSessionUser } from "@/actions/session";
 import { auth } from "@/domains/auth";
 import {
   changePassword,
@@ -79,7 +77,6 @@ export async function setInitialPasswordAction(password: string) {
       headers: headersList,
     });
 
-    // Check if user is authenticated
     if (!session?.user?.id) {
       return {
         success: false,
@@ -87,24 +84,13 @@ export async function setInitialPasswordAction(password: string) {
       };
     }
 
-    // Check if user has already set a password
-    // Query the account table for existing credential provider records
-    const existingAccounts = await db
-      .select()
-      .from(account)
-      .where(
-        and(
-          eq(account.userId, session.user.id),
-          eq(account.providerId, "credential")
-        )
-      );
+    const validationResult = await setPasswordForOAuthUser(
+      session.user.id,
+      password
+    );
 
-    // Prevent users from setting password multiple times
-    if (existingAccounts.length > 0) {
-      return {
-        success: false,
-        error: "Password has already been set for this account.",
-      };
+    if (!validationResult.success) {
+      return validationResult;
     }
 
     // Set the password using better-auth API
@@ -118,7 +104,7 @@ export async function setInitialPasswordAction(password: string) {
 
     return {
       success: true,
-      message: "Password set successfully",
+      message: validationResult.message ?? "Password set successfully",
     };
   } catch (error) {
     console.error("Set password error:", error);
@@ -370,4 +356,14 @@ export async function updateEmailAction(email: string) {
       error: "更新邮箱失败，请重试",
     };
   }
+}
+
+export async function getLinkedAccountsAction() {
+  await requireSessionUser();
+  const headersList = await headers();
+  const accounts = await auth.api.listUserAccounts({
+    headers: headersList,
+  });
+
+  return accounts || [];
 }

@@ -1,6 +1,5 @@
+import { getUserSecurityStatusAction } from "@/actions/user";
 import { SecurityItem, type SecurityStatus } from "@/components/security";
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getUserSecurityStatus } from "@/domains/user/user.repository";
 
 export const dynamic = "force-dynamic";
 
@@ -51,11 +50,11 @@ const SECURITY_ITEMS = {
  * - Action buttons for each security item
  */
 export default async function SecurityPage() {
-  // Check authentication (redirects to sign-in if not authenticated)
-  const userId = await requireAuth();
+  const securityStatus = await getUserSecurityStatusAction();
 
-  // Fetch user security status
-  const securityStatus = await getUserSecurityStatus(userId);
+  if (!securityStatus) {
+    return null;
+  }
 
   // Helper function to determine security status
   const getSecurityStatus = (

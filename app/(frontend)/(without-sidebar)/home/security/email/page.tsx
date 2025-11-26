@@ -1,8 +1,7 @@
 import Link from "next/link";
 
+import { getUserSecurityStatusAction } from "@/actions/user";
 import type { SecurityStatus } from "@/components/security";
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getUserSecurityStatus } from "@/domains/user/user.repository";
 
 import EmailPageClient from "./page.client";
 
@@ -19,11 +18,11 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function EmailPage() {
-  // Check authentication (redirects to sign-in if not authenticated)
-  const userId = await requireAuth();
+  const securityStatus = await getUserSecurityStatusAction();
 
-  // Fetch user security status to get current email
-  const securityStatus = await getUserSecurityStatus(userId);
+  if (!securityStatus) {
+    return null;
+  }
 
   // Helper function to determine security status
   const getSecurityStatus = (

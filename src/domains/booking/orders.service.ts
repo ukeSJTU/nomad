@@ -1,15 +1,10 @@
-/**
- * Order Service Layer
- *
- * This module contains business logic for order operations.
- * This layer delegates persistence to the repository layer.
- *
- * Key Functions:
- * - cancelExpiredOrders: Cancel orders that have exceeded their payment deadline
- * - cancelOrder: Cancel a specific order (user-initiated)
- * - refundOrder: Refund a confirmed order (user-initiated)
- */
+import { and, eq, inArray, sql } from "drizzle-orm";
+import { nanoid } from "nanoid";
 
+import { db } from "@/db";
+import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
+import { flightSeatClasses } from "@/db/schema/flight-seat-classes";
+import { orderPassengers, orders } from "@/db/schema/orders";
 import {
   cancelExpiredOrdersAndReleaseSeats,
   cancelOrderAndReleaseSeats,
@@ -20,6 +15,312 @@ import {
   refundOrderAndReleaseSeats,
 } from "@/domains/booking/orders.repository";
 import type { ServiceResult } from "@/domains/types";
+import {
+  addCurrency,
+  getCurrencyValue,
+  multiplyCurrency,
+  parseCurrency,
+  toDatabaseValue,
+} from "@/lib/currency";
+
+/**
+ * Order Service Layer
+ *
+ * This module contains business logic for order operations.
+ * This layer delegates persistence to the repository layer.
+ *
+ * Key Functions:
+ * - createOrder: Create a new order and lock seats
+ * - updateOrderAncillary: Update ancillary selections and totals
+ * - cancelExpiredOrders: Cancel orders that have exceeded their payment deadline
+ * - cancelOrder: Cancel a specific order (user-initiated)
+ * - refundOrder: Refund a confirmed order (user-initiated)
+ */
+
+export interface CreateOrderInput {
+  outboundSeatClassId: string;
+  inboundSeatClassId?: string;
+  passengers: {
+    name: string;
+    documentType: "id_card" | "passport" | "other";
+    documentNumber: string;
+    phone?: string;
+  }[];
+  contactInfo: {
+    method: "email" | "phone";
+    email?: string;
+    phone?: string;
+  };
+}
+
+export interface CreateOrderPayload {
+  orderId: string;
+  orderNumber: string;
+  paymentDeadline: string;
+}
+
+export interface UpdateOrderAncillaryResult {
+  orderId: string;
+  totalAmount: string;
+}
+
+function generateOrderNumber(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const dateStr = `${year}${month}${day}`;
+  const randomSuffix = nanoid(4).toUpperCase();
+
+  return `NMD${dateStr}${randomSuffix}`;
+}
+
+function calculatePaymentDeadline(): Date {
+  const deadline = new Date();
+  deadline.setMinutes(deadline.getMinutes() + 15);
+  return deadline;
+}
+
+export async function createOrder(
+  userId: string,
+  payload: CreateOrderInput
+): Promise<ServiceResult<CreateOrderPayload>> {
+  try {
+    const passengerCount = payload.passengers.length;
+    const seatClassIds = [
+      payload.outboundSeatClassId,
+      ...(payload.inboundSeatClassId ? [payload.inboundSeatClassId] : []),
+    ];
+
+    const seatClasses = await db
+      .select()
+      .from(flightSeatClasses)
+      .where(
+        and(
+          inArray(flightSeatClasses.id, seatClassIds),
+          eq(flightSeatClasses.isDeleted, false)
+        )
+      );
+
+    if (seatClasses.length !== seatClassIds.length) {
+      return {
+        success: false,
+        error: "One or more seat classes not found",
+      };
+    }
+
+    for (const seatClass of seatClasses) {
+      if (seatClass.availableSeats < passengerCount) {
+        return {
+          success: false,
+          error: `Not enough seats available. Only ${seatClass.availableSeats} seats remaining.`,
+        };
+      }
+    }
+
+    const outboundSeatClass = seatClasses.find(
+      sc => sc.id === payload.outboundSeatClassId
+    )!;
+    const inboundSeatClass = payload.inboundSeatClassId
+      ? seatClasses.find(sc => sc.id === payload.inboundSeatClassId)
+      : null;
+
+    const outboundPrice = parseCurrency(outboundSeatClass.price);
+    const inboundPrice = inboundSeatClass
+      ? parseCurrency(inboundSeatClass.price)
+      : parseCurrency(0);
+
+    const totalPricePerTicket = addCurrency(
+      getCurrencyValue(outboundPrice),
+      getCurrencyValue(inboundPrice)
+    );
+    const baseAmount = multiplyCurrency(
+      getCurrencyValue(totalPricePerTicket),
+      passengerCount
+    );
+
+    const orderNumber = generateOrderNumber();
+    const paymentDeadline = calculatePaymentDeadline();
+
+    const [createdOrder] = await db.transaction(async tx => {
+      const [order] = await tx
+        .insert(orders)
+        .values({
+          orderNumber,
+          userId,
+          outboundFlightSeatClassId: payload.outboundSeatClassId,
+          inboundFlightSeatClassId: payload.inboundSeatClassId || null,
+          status: "PENDING_PAYMENT",
+          paymentDeadline,
+          contactPhone: payload.contactInfo.phone || null,
+          contactEmail: payload.contactInfo.email || null,
+          passengerCount,
+          pricePerTicket: toDatabaseValue(totalPricePerTicket),
+          baseAmount: toDatabaseValue(baseAmount),
+          ancillaryAmount: "0.00",
+          totalAmount: toDatabaseValue(baseAmount),
+          ancillaryDetails: null,
+        })
+        .returning();
+
+      const passengerData = payload.passengers.map(passenger => ({
+        orderId: order.id,
+        name: passenger.name,
+        identityType: passenger.documentType,
+        identityNumber: passenger.documentNumber,
+        phone: passenger.phone || null,
+      }));
+
+      await tx.insert(orderPassengers).values(passengerData);
+
+      for (const seatClassId of seatClassIds) {
+        await tx
+          .update(flightSeatClasses)
+          .set({
+            availableSeats: sql`${flightSeatClasses.availableSeats} - ${passengerCount}`,
+            updatedAt: new Date(),
+          })
+          .where(eq(flightSeatClasses.id, seatClassId));
+      }
+
+      return [order];
+    });
+
+    return {
+      success: true,
+      data: {
+        orderId: createdOrder.id,
+        orderNumber: createdOrder.orderNumber,
+        paymentDeadline: createdOrder.paymentDeadline.toISOString(),
+      },
+    };
+  } catch (error) {
+    console.error("Error creating order:", error);
+    return {
+      success: false,
+      error: "Failed to create order. Please try again.",
+    };
+  }
+}
+
+export async function updateOrderAncillary(
+  userId: string,
+  params: {
+    orderId: string;
+    ancillaryServiceCodes: string[];
+  }
+): Promise<ServiceResult<UpdateOrderAncillaryResult>> {
+  try {
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(and(eq(orders.id, params.orderId), eq(orders.userId, userId)));
+
+    if (!order) {
+      return {
+        success: false,
+        error: "Order not found",
+      };
+    }
+
+    let ancillaryAmount = parseCurrency(0);
+    for (const code of params.ancillaryServiceCodes) {
+      const service = getAncillaryServiceByCode(code);
+      if (service) {
+        ancillaryAmount = addCurrency(
+          getCurrencyValue(ancillaryAmount),
+          service.price
+        );
+      }
+    }
+    const totalAmount = addCurrency(order.baseAmount, ancillaryAmount);
+
+    await db
+      .update(orders)
+      .set({
+        ancillaryDetails:
+          params.ancillaryServiceCodes.length > 0
+            ? params.ancillaryServiceCodes
+            : null,
+        ancillaryAmount: toDatabaseValue(ancillaryAmount),
+        totalAmount: toDatabaseValue(totalAmount),
+      })
+      .where(eq(orders.id, params.orderId));
+
+    return {
+      success: true,
+      data: {
+        orderId: order.id,
+        totalAmount: toDatabaseValue(totalAmount),
+      },
+    };
+  } catch (error) {
+    console.error("Error updating order ancillary:", error);
+    return {
+      success: false,
+      error: "Failed to update order. Please try again.",
+    };
+  }
+}
+
+export async function deleteOrder(
+  userId: string,
+  orderId: string
+): Promise<ServiceResult> {
+  try {
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(and(eq(orders.id, orderId), eq(orders.userId, userId)));
+
+    if (!order) {
+      return {
+        success: false,
+        error: "Order not found or you do not have permission to delete it.",
+      };
+    }
+
+    if (order.deletedAt) {
+      return {
+        success: false,
+        error: "Order has already been deleted.",
+      };
+    }
+
+    if (order.status === "PENDING_PAYMENT") {
+      return {
+        success: false,
+        error:
+          "Cannot delete pending payment orders. Please wait for payment timeout or complete the payment.",
+      };
+    }
+
+    if (!["CONFIRMED", "CANCELLED", "REFUNDED"].includes(order.status)) {
+      return {
+        success: false,
+        error: `Cannot delete order with status: ${order.status}`,
+      };
+    }
+
+    await db
+      .update(orders)
+      .set({
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(orders.id, orderId));
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    return {
+      success: false,
+      error: "Failed to delete order. Please try again.",
+    };
+  }
+}
 
 /**
  * Cancel a specific order (user-initiated)

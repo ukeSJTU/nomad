@@ -1,8 +1,5 @@
-import { headers } from "next/headers";
-
+import { getLinkedAccountsAction } from "@/actions/auth";
 import { LinkButton, SocialAccountCard, UnlinkButton } from "@/components/auth";
-import { auth } from "@/domains/auth";
-import { requireAuth } from "@/domains/auth/utils/helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -36,14 +33,7 @@ const PROVIDERS: ProviderConfig[] = [
  * - Link/unlink functionality via Client Component buttons
  */
 export default async function AccountsPage() {
-  // Check authentication
-  await requireAuth();
-
-  // Fetch user's linked accounts using better-auth server API
-  const headersList = await headers();
-  const accounts = await auth.api.listUserAccounts({
-    headers: headersList,
-  });
+  const accounts = await getLinkedAccountsAction();
 
   /**
    * Create a map of linked accounts for efficient O(1) lookup

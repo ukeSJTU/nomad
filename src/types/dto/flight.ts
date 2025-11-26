@@ -71,3 +71,24 @@ export type RoundTripFlightSearchResult = {
   outbound: FlightSearchResult[];
   inbound: FlightSearchResult[];
 };
+
+/**
+ * Quick date price information
+ */
+export interface QuickDatePrice {
+  date: string;
+  lowestPrice: number | null;
+  returnDate?: string;
+}
+
+/**
+ * Parameters for fetching quick date prices
+ */
+export interface GetQuickDatePricesParams {
+  from: string;
+  to: string;
+  departureDate: string;
+  returnDate?: string;
+  tripType: "one-way" | "round-trip";
+  classType?: "ECONOMY" | "BUSINESS" | "FIRST";
+}

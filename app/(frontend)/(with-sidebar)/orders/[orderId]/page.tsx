@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 
+import { getOrderDetailAction } from "@/actions/orders";
 import { BreadCrumbNav } from "@/components/common/bread-crumb-nav";
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getOrderDetailById } from "@/domains/booking/orders.repository";
 
 import OrderDetailsPageClient from "./page.client";
 
@@ -33,11 +32,7 @@ export default async function OrderDetailsPage({
   const resolvedParams = await params;
   const orderId = resolvedParams.orderId;
 
-  // Check authentication (redirects to sign-in with return URL if not authenticated)
-  const userId = await requireAuth(`/orders/${orderId}`);
-
-  // Fetch order details
-  const order = await getOrderDetailById(orderId, userId);
+  const order = await getOrderDetailAction(orderId, `/orders/${orderId}`);
 
   // Return 404 if order not found or user doesn't have permission
   if (!order) {

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { getPassengerDetailAction } from "@/actions/passengers";
 import { PassengerDetailView } from "@/components/passengers";
-import { getPassengerById } from "@/domains/passengers/passenger.repository";
 
 export default async function PassengerDetailPage({
   params,
@@ -12,7 +12,7 @@ export default async function PassengerDetailPage({
   const { id } = await params;
 
   // Fetch passenger data with masked sensitive information
-  const passenger = await getPassengerById(id);
+  const passenger = await getPassengerDetailAction(id);
 
   if (!passenger) {
     notFound();

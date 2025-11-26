@@ -5,11 +5,11 @@
  * This service layer abstracts the complexity of searching flights and recording history.
  */
 
-import { recordSearchHistoryAction } from "@/app/_actions";
 import {
   searchOneWayFlights,
   searchRoundTripFlights,
 } from "@/domains/flights/flight.repository";
+import { recordFlightSearch } from "@/domains/flights/flight-search-history.service";
 import { calculateLowestPrice } from "@/domains/flights/utils/calculations";
 import logger from "@/lib/logger";
 import type {
@@ -27,6 +27,7 @@ export interface SearchOneWayParams {
   departureDate: string;
   seatClass: SeatClass;
   classType?: UpperSeatClass;
+  userId?: string;
 }
 
 /**
@@ -45,7 +46,7 @@ export interface SearchRoundTripParams extends SearchOneWayParams {
 export async function searchOneWayFlightsWithHistory(
   params: SearchOneWayParams
 ): Promise<FlightSearchResult[] | undefined> {
-  const { from, to, departureDate, seatClass, classType } = params;
+  const { from, to, departureDate, seatClass, classType, userId } = params;
 
   try {
     // Execute flight search
@@ -57,16 +58,18 @@ export async function searchOneWayFlightsWithHistory(
     });
 
     // Record search history (fire-and-forget, non-blocking)
-    recordSearchHistoryAction({
-      departureCityIata: from,
-      arrivalCityIata: to,
-      departureDate,
-      tripType: "one-way",
-      seatClass,
-      lowestPrice: calculateLowestPrice(flights),
-    }).catch(error => {
-      logger.error({ err: error }, "Failed to record search history");
-    });
+    if (userId) {
+      recordFlightSearch(userId, {
+        departureCityIata: from,
+        arrivalCityIata: to,
+        departureDate,
+        tripType: "one-way",
+        seatClass,
+        lowestPrice: calculateLowestPrice(flights),
+      }).catch(error => {
+        logger.error({ err: error }, "Failed to record search history");
+      });
+    }
 
     return flights;
   } catch (error) {
@@ -84,7 +87,8 @@ export async function searchOneWayFlightsWithHistory(
 export async function searchRoundTripFlightsWithHistory(
   params: SearchRoundTripParams
 ): Promise<RoundTripFlightSearchResult | undefined> {
-  const { from, to, departureDate, returnDate, seatClass, classType } = params;
+  const { from, to, departureDate, returnDate, seatClass, classType, userId } =
+    params;
 
   try {
     // Execute flight search
@@ -97,17 +101,19 @@ export async function searchRoundTripFlightsWithHistory(
     });
 
     // Record search history (fire-and-forget, non-blocking)
-    recordSearchHistoryAction({
-      departureCityIata: from,
-      arrivalCityIata: to,
-      departureDate,
-      returnDate,
-      tripType: "round-trip",
-      seatClass,
-      lowestPrice: calculateLowestPrice(flights),
-    }).catch(error => {
-      logger.error({ err: error }, "Failed to record search history");
-    });
+    if (userId) {
+      recordFlightSearch(userId, {
+        departureCityIata: from,
+        arrivalCityIata: to,
+        departureDate,
+        returnDate,
+        tripType: "round-trip",
+        seatClass,
+        lowestPrice: calculateLowestPrice(flights),
+      }).catch(error => {
+        logger.error({ err: error }, "Failed to record search history");
+      });
+    }
 
     return flights;
   } catch (error) {
@@ -132,6 +138,7 @@ export async function searchFlightsWithHistory(params: {
   returnDate?: string;
   seatClass: SeatClass;
   classType?: UpperSeatClass;
+  userId?: string;
 }): Promise<FlightSearchResult[] | RoundTripFlightSearchResult | undefined> {
   const {
     tripType,
@@ -141,6 +148,7 @@ export async function searchFlightsWithHistory(params: {
     returnDate,
     seatClass,
     classType,
+    userId,
   } = params;
 
   if (tripType === "round-trip") {
@@ -155,6 +163,7 @@ export async function searchFlightsWithHistory(params: {
       returnDate,
       seatClass,
       classType,
+      userId,
     });
   }
 
@@ -164,5 +173,6 @@ export async function searchFlightsWithHistory(params: {
     departureDate,
     seatClass,
     classType,
+    userId,
   });
 }

@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getOrderForAncillary } from "@/domains/booking";
+import { getAncillaryOrderAction } from "@/actions/orders";
 
 import { BookingAncillaryPageClient } from "./page.client";
 
@@ -23,11 +22,7 @@ export default async function BookingAncillaryPage({
     redirect("/error?type=missing_order_id");
   }
 
-  // Check authentication (redirects to sign-in if not authenticated)
-  const userId = await requireAuth();
-
-  // Fetch order details
-  const order = await getOrderForAncillary(params.orderId, userId);
+  const order = await getAncillaryOrderAction(params.orderId);
 
   // If order not found or doesn't belong to user, redirect
   if (!order) {

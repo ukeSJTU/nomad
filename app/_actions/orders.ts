@@ -1,24 +1,34 @@
 "use server";
 
-import { and, eq, inArray, sql } from "drizzle-orm";
-import { nanoid } from "nanoid";
 import { headers } from "next/headers";
 import { z } from "zod";
 
-import { db } from "@/db";
-import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
-import { flightSeatClasses } from "@/db/schema/flight-seat-classes";
-import { orderPassengers, orders } from "@/db/schema/orders";
+import { requireSessionUser } from "@/actions/session";
 import { auth } from "@/domains/auth";
-import { cancelOrder, refundOrder } from "@/domains/booking/orders.service";
 import {
-  addCurrency,
-  getCurrencyValue,
-  multiplyCurrency,
-  parseCurrency,
-  toDatabaseValue,
-} from "@/lib/currency";
+  getAllOrdersByUserId,
+  getFlightSeatClassById,
+  getOrderConfirmation,
+  getOrderDetailById,
+  getOrderForAncillary,
+  getOrderForPayment,
+  getSavedPassengers,
+} from "@/domains/booking/booking-read.service";
+import {
+  cancelOrder,
+  createOrder,
+  deleteOrder,
+  refundOrder,
+  updateOrderAncillary,
+} from "@/domains/booking/orders.service";
+import { getUserBalance } from "@/domains/user/user-read.service";
 import type { ActionResult } from "@/types/common";
+import type {
+  AncillaryPageOrder,
+  ConfirmationPageOrder,
+  PaymentPageOrder,
+} from "@/types/dto/booking";
+import type { OrderDetailFull, OrderListItem } from "@/types/dto/orders";
 
 /**
  * Create order action result data
@@ -78,30 +88,6 @@ const createOrderSchema = z.object({
 });
 
 /**
- * Generate order number in format: "NMD" + YYYYMMDD + random suffix
- * Example: "NMD20251104A1B2"
- */
-function generateOrderNumber(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const dateStr = `${year}${month}${day}`;
-  const randomSuffix = nanoid(4).toUpperCase();
-
-  return `NMD${dateStr}${randomSuffix}`;
-}
-
-/**
- * Calculate payment deadline (15 minutes from now)
- */
-function calculatePaymentDeadline(): Date {
-  const deadline = new Date();
-  deadline.setMinutes(deadline.getMinutes() + 15);
-  return deadline;
-}
-
-/**
  * Server action to create a new order
  *
  * This is invoked after successful submit of first step of flights/booking/passengers/
@@ -114,7 +100,6 @@ export async function createOrderAction(
   formData: unknown
 ): Promise<CreateOrderResult> {
   try {
-    // 1. Check authentication
     const headersList = await headers();
     const session = await auth.api.getSession({
       headers: headersList,
@@ -127,7 +112,6 @@ export async function createOrderAction(
       };
     }
 
-    // 2. Validate input data
     const result = createOrderSchema.safeParse(formData);
 
     if (!result.success) {
@@ -139,140 +123,40 @@ export async function createOrderAction(
     }
 
     const validatedData = result.data;
-    const passengerCount = validatedData.passengers.length;
 
-    // 3. Validate contact information
-    if (validatedData.contactInfo.method === "email") {
-      if (!validatedData.contactInfo.email) {
-        return {
-          success: false as const,
-          error: "Email is required when contact method is email",
-        };
-      }
-    } else if (validatedData.contactInfo.method === "phone") {
-      if (!validatedData.contactInfo.phone) {
-        return {
-          success: false as const,
-          error: "Phone is required when contact method is phone",
-        };
-      }
-    }
-
-    // 4. Check seat availability and get seat class details
-    const seatClassIds = [validatedData.outboundSeatClassId];
-    if (validatedData.inboundSeatClassId) {
-      seatClassIds.push(validatedData.inboundSeatClassId);
-    }
-
-    const seatClasses = await db
-      .select()
-      .from(flightSeatClasses)
-      .where(
-        and(
-          inArray(flightSeatClasses.id, seatClassIds),
-          eq(flightSeatClasses.isDeleted, false)
-        )
-      );
-
-    if (seatClasses.length !== seatClassIds.length) {
+    if (
+      validatedData.contactInfo.method === "email" &&
+      !validatedData.contactInfo.email
+    ) {
       return {
         success: false as const,
-        error: "One or more seat classes not found",
+        error: "Email is required when contact method is email",
       };
     }
 
-    // Check if enough seats are available for all flights
-    for (const seatClass of seatClasses) {
-      if (seatClass.availableSeats < passengerCount) {
-        return {
-          success: false as const,
-          error: `Not enough seats available. Only ${seatClass.availableSeats} seats remaining.`,
-        };
-      }
+    if (
+      validatedData.contactInfo.method === "phone" &&
+      !validatedData.contactInfo.phone
+    ) {
+      return {
+        success: false as const,
+        error: "Phone is required when contact method is phone",
+      };
     }
 
-    // 5. Calculate pricing using currency.js for precision
-    const outboundSeatClass = seatClasses.find(
-      sc => sc.id === validatedData.outboundSeatClassId
-    )!;
-    const inboundSeatClass = validatedData.inboundSeatClassId
-      ? seatClasses.find(sc => sc.id === validatedData.inboundSeatClassId)
-      : null;
+    const createResult = await createOrder(session.user.id, validatedData);
 
-    const outboundPrice = parseCurrency(outboundSeatClass.price);
-    const inboundPrice = inboundSeatClass
-      ? parseCurrency(inboundSeatClass.price)
-      : parseCurrency(0);
-    const totalPricePerTicket = addCurrency(
-      getCurrencyValue(outboundPrice),
-      getCurrencyValue(inboundPrice)
-    );
-    const baseAmount = multiplyCurrency(
-      getCurrencyValue(totalPricePerTicket),
-      passengerCount
-    );
-
-    // 6. Create order in a transaction
-    const orderNumber = generateOrderNumber();
-    const paymentDeadline = calculatePaymentDeadline();
-
-    const [createdOrder] = await db.transaction(async tx => {
-      // Create order
-      const [order] = await tx
-        .insert(orders)
-        .values({
-          orderNumber,
-          userId: session.user.id,
-          outboundFlightSeatClassId: validatedData.outboundSeatClassId,
-          inboundFlightSeatClassId: validatedData.inboundSeatClassId || null,
-          status: "PENDING_PAYMENT",
-          paymentDeadline,
-          contactPhone: validatedData.contactInfo.phone || null,
-          contactEmail: validatedData.contactInfo.email || null,
-          passengerCount,
-          pricePerTicket: toDatabaseValue(totalPricePerTicket),
-          baseAmount: toDatabaseValue(baseAmount),
-          ancillaryAmount: "0.00", // Will be updated in ancillary step
-          totalAmount: toDatabaseValue(baseAmount), // Will be updated in ancillary step
-          ancillaryDetails: null, // Will be updated in ancillary step
-        })
-        .returning();
-
-      // Create order passengers
-      const passengerData = validatedData.passengers.map(passenger => ({
-        orderId: order.id,
-        name: passenger.name,
-        identityType: passenger.documentType as
-          | "id_card"
-          | "passport"
-          | "other",
-        identityNumber: passenger.documentNumber,
-        phone: passenger.phone || null,
-      }));
-
-      await tx.insert(orderPassengers).values(passengerData);
-
-      // Lock seats by decrementing available seats
-      for (const seatClassId of seatClassIds) {
-        await tx
-          .update(flightSeatClasses)
-          .set({
-            availableSeats: sql`${flightSeatClasses.availableSeats} - ${passengerCount}`,
-            updatedAt: new Date(),
-          })
-          .where(eq(flightSeatClasses.id, seatClassId));
-      }
-
-      return [order];
-    });
+    if (!createResult.success || !createResult.data) {
+      return {
+        success: false as const,
+        error:
+          createResult.error || "Failed to create order. Please try again.",
+      };
+    }
 
     return {
       success: true as const,
-      data: {
-        orderId: createdOrder.id,
-        orderNumber: createdOrder.orderNumber,
-        paymentDeadline: createdOrder.paymentDeadline.toISOString(),
-      },
+      data: createResult.data,
     };
   } catch (error) {
     console.error("Error creating order:", error);
@@ -303,7 +187,6 @@ export async function updateOrderAncillaryAction(
   formData: unknown
 ): Promise<UpdateOrderAncillaryResult> {
   try {
-    // 1. Validate input
     const result = updateOrderAncillarySchema.safeParse(formData);
     if (!result.success) {
       return {
@@ -315,7 +198,6 @@ export async function updateOrderAncillaryAction(
 
     const { orderId, ancillaryServiceCodes } = result.data;
 
-    // 2. Check authentication
     const headersList = await headers();
     const session = await auth.api.getSession({
       headers: headersList,
@@ -328,49 +210,22 @@ export async function updateOrderAncillaryAction(
       };
     }
 
-    // 3. Validate order exists and belongs to user
-    const [order] = await db
-      .select()
-      .from(orders)
-      .where(and(eq(orders.id, orderId), eq(orders.userId, session.user.id)));
+    const updateResult = await updateOrderAncillary(session.user.id, {
+      orderId,
+      ancillaryServiceCodes,
+    });
 
-    if (!order) {
+    if (!updateResult.success || !updateResult.data) {
       return {
         success: false as const,
-        error: "Order not found",
+        error:
+          updateResult.error || "Failed to update order. Please try again.",
       };
     }
 
-    // 3. Calculate ancillary amount using currency.js for precision
-    let ancillaryAmount = parseCurrency(0);
-    for (const code of ancillaryServiceCodes) {
-      const service = getAncillaryServiceByCode(code);
-      if (service) {
-        ancillaryAmount = addCurrency(
-          getCurrencyValue(ancillaryAmount),
-          service.price
-        );
-      }
-    }
-    const totalAmount = addCurrency(order.baseAmount, ancillaryAmount);
-
-    // 4. Update order
-    await db
-      .update(orders)
-      .set({
-        ancillaryDetails:
-          ancillaryServiceCodes.length > 0 ? ancillaryServiceCodes : null,
-        ancillaryAmount: toDatabaseValue(ancillaryAmount),
-        totalAmount: toDatabaseValue(totalAmount),
-      })
-      .where(eq(orders.id, orderId));
-
     return {
       success: true as const,
-      data: {
-        orderId: order.id,
-        totalAmount: toDatabaseValue(totalAmount),
-      },
+      data: updateResult.data,
     };
   } catch (error) {
     console.error("Error updating order ancillary:", error);
@@ -510,7 +365,6 @@ export async function deleteOrderAction(
   formData: unknown
 ): Promise<DeleteOrderResult> {
   try {
-    // Step 1: Validate input
     const result = deleteOrderSchema.safeParse(formData);
 
     if (!result.success) {
@@ -523,7 +377,6 @@ export async function deleteOrderAction(
 
     const { orderId } = result.data;
 
-    // Step 2: Check authentication
     const headersList = await headers();
     const session = await auth.api.getSession({ headers: headersList });
 
@@ -534,51 +387,15 @@ export async function deleteOrderAction(
       };
     }
 
-    // Step 3: Query order and verify ownership
-    const [order] = await db
-      .select()
-      .from(orders)
-      .where(and(eq(orders.id, orderId), eq(orders.userId, session.user.id)));
+    const deleteResult = await deleteOrder(session.user.id, orderId);
 
-    if (!order) {
-      return {
-        success: false as const,
-        error: "Order not found or you do not have permission to delete it.",
-      };
-    }
-
-    // Step 4: Check if order is already deleted
-    if (order.deletedAt) {
-      return {
-        success: false as const,
-        error: "Order has already been deleted.",
-      };
-    }
-
-    // Step 5: Verify order status - only allow deletion for completed/cancelled orders
-    if (order.status === "PENDING_PAYMENT") {
+    if (!deleteResult.success) {
       return {
         success: false as const,
         error:
-          "Cannot delete pending payment orders. Please wait for payment timeout or complete the payment.",
+          deleteResult.error || "Failed to delete order. Please try again.",
       };
     }
-
-    if (!["CONFIRMED", "CANCELLED", "REFUNDED"].includes(order.status)) {
-      return {
-        success: false as const,
-        error: `Cannot delete order with status: ${order.status}`,
-      };
-    }
-
-    // Step 6: Perform soft delete
-    await db
-      .update(orders)
-      .set({
-        deletedAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .where(eq(orders.id, orderId));
 
     return {
       success: true as const,
@@ -591,4 +408,82 @@ export async function deleteOrderAction(
       error: "Failed to delete order. Please try again.",
     };
   }
+}
+
+export async function getOrderDetailAction(
+  orderId: string,
+  redirectTo?: string
+): Promise<OrderDetailFull | null> {
+  const user = await requireSessionUser(redirectTo);
+
+  return getOrderDetailById(orderId, user.id);
+}
+
+export async function listUserOrdersAction(
+  redirectTo?: string
+): Promise<OrderListItem[]> {
+  const user = await requireSessionUser(redirectTo);
+
+  return getAllOrdersByUserId(user.id);
+}
+
+export async function getBookingPassengersDataAction(params: {
+  seatClassId?: string;
+  outboundSeatClassId?: string;
+  inboundSeatClassId?: string;
+}) {
+  const user = await requireSessionUser();
+
+  const outboundFlight = params.seatClassId
+    ? await getFlightSeatClassById(params.seatClassId)
+    : params.outboundSeatClassId
+      ? await getFlightSeatClassById(params.outboundSeatClassId)
+      : null;
+
+  const inboundFlight = params.inboundSeatClassId
+    ? await getFlightSeatClassById(params.inboundSeatClassId)
+    : null;
+
+  const savedPassengers = await getSavedPassengers(user.id);
+
+  return {
+    outboundFlight,
+    inboundFlight,
+    savedPassengers,
+  };
+}
+
+export async function getAncillaryOrderAction(
+  orderId: string
+): Promise<AncillaryPageOrder | null> {
+  const user = await requireSessionUser();
+  return getOrderForAncillary(orderId, user.id);
+}
+
+export async function getOrderConfirmationAction(
+  orderId: string
+): Promise<ConfirmationPageOrder | null> {
+  const user = await requireSessionUser();
+
+  return getOrderConfirmation(orderId, user.id);
+}
+
+export async function getPaymentPageDataAction(
+  orderId: string
+): Promise<{ order: PaymentPageOrder; balance: string } | null> {
+  const user = await requireSessionUser();
+
+  const [order, balance] = await Promise.all([
+    getOrderForPayment(orderId, user.id),
+    getUserBalance(user.id),
+  ]);
+
+  if (!order) {
+    return null;
+  }
+
+  return {
+    order,
+    balance,
+  };
 }

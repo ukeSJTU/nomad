@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { getUserSecurityStatusAction } from "@/actions/user";
 import type { SecurityStatus } from "@/components/security";
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getUserSecurityStatus } from "@/domains/user/user.repository";
 
 import PhonePageClient from "./page.client";
 export const dynamic = "force-dynamic";
@@ -21,11 +20,7 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function PhonePage() {
-  // Check authentication (redirects to sign-in if not authenticated)
-  const userId = await requireAuth();
-
-  // Fetch user security status to get current phone number
-  const securityStatus = await getUserSecurityStatus(userId);
+  const securityStatus = await getUserSecurityStatusAction();
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!securityStatus) {

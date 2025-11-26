@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
-} from "@/db/schema";
+} from "@/db/schema/ancillary";
 import {
   addCurrency,
   formatCurrency,

@@ -1,8 +1,6 @@
 "use server";
 
-import { redirect } from "next/navigation";
-
-import { getAuthenticatedUserId } from "@/domains/auth/utils/helpers";
+import { requireSessionUser } from "@/actions/session";
 import {
   batchDeletePassengers,
   createPassenger,
@@ -11,7 +9,16 @@ import {
   type PassengerInput,
   updatePassenger,
 } from "@/domains/passengers/passenger.service";
+import {
+  getPassengerById,
+  getPassengers,
+} from "@/domains/passengers/passenger-read.service";
 import { dateToLocalDateString } from "@/lib/date";
+
+async function requireUserId(redirectTo?: string): Promise<string> {
+  const user = await requireSessionUser(redirectTo);
+  return user.id;
+}
 
 /**
  * Server Actions for Passenger Management (Thin Controller Layer)
@@ -40,14 +47,7 @@ import { dateToLocalDateString } from "@/lib/date";
  */
 export async function createPassengerAction(formData: unknown) {
   try {
-    // 1. Verify authentication
-    const authResult = await getAuthenticatedUserId();
-    if (!authResult.success || !authResult.userId) {
-      return {
-        success: false,
-        error: authResult.error,
-      };
-    }
+    const userId = await requireUserId();
 
     // 2. Convert form data to service input format
     const data = formData as any;
@@ -69,7 +69,7 @@ export async function createPassengerAction(formData: unknown) {
     };
 
     // 3. Call service layer
-    const result = await createPassenger(authResult.userId, passengerInput);
+    const result = await createPassenger(userId, passengerInput);
 
     // 4. Return result
     return result;
@@ -98,14 +98,7 @@ export async function createPassengerAction(formData: unknown) {
  */
 export async function updatePassengerAction(id: string, formData: unknown) {
   try {
-    // 1. Verify authentication
-    const authResult = await getAuthenticatedUserId();
-    if (!authResult.success || !authResult.userId) {
-      return {
-        success: false,
-        error: authResult.error,
-      };
-    }
+    const userId = await requireUserId();
 
     // 2. Convert form data to service input format
     const data = formData as any;
@@ -127,7 +120,7 @@ export async function updatePassengerAction(id: string, formData: unknown) {
     };
 
     // 3. Call service layer
-    const result = await updatePassenger(authResult.userId, id, passengerInput);
+    const result = await updatePassenger(userId, id, passengerInput);
 
     // 4. Return result
     return result;
@@ -154,14 +147,10 @@ export async function updatePassengerAction(id: string, formData: unknown) {
  */
 export async function getPassengerAction(id: string) {
   try {
-    // 1. Verify authentication (redirect if not authenticated)
-    const authResult = await getAuthenticatedUserId();
-    if (!authResult.success || !authResult.userId) {
-      redirect("/auth/sign-in");
-    }
+    const userId = await requireUserId();
 
     // 2. Call service layer
-    const result = await getPassenger(authResult.userId, id);
+    const result = await getPassenger(userId, id);
 
     // 3. Return passenger data or null
     if (!result.success || !result.data) {
@@ -188,17 +177,10 @@ export async function getPassengerAction(id: string) {
  */
 export async function deletePassengerAction(id: string) {
   try {
-    // 1. Verify authentication
-    const authResult = await getAuthenticatedUserId();
-    if (!authResult.success || !authResult.userId) {
-      return {
-        success: false,
-        error: authResult.error,
-      };
-    }
+    const userId = await requireUserId();
 
     // 2. Call service layer
-    const result = await deletePassenger(authResult.userId, id);
+    const result = await deletePassenger(userId, id);
 
     // 3. Return result
     return result;
@@ -225,17 +207,8 @@ export async function deletePassengerAction(id: string) {
  */
 export async function batchDeletePassengersAction(ids: string[]) {
   try {
-    // 1. Verify authentication
-    const authResult = await getAuthenticatedUserId();
-    if (!authResult.success || !authResult.userId) {
-      return {
-        success: false,
-        error: authResult.error,
-      };
-    }
-
-    // 2. Call service layer
-    const result = await batchDeletePassengers(authResult.userId, ids);
+    const userId = await requireUserId();
+    const result = await batchDeletePassengers(userId, ids);
 
     // 3. Return result
     return result;
@@ -249,4 +222,14 @@ export async function batchDeletePassengersAction(ids: string[]) {
           : "Failed to batch delete passengers",
     };
   }
+}
+
+export async function getPassengersAction() {
+  const user = await requireSessionUser("/home/passengers");
+  return getPassengers(user.id);
+}
+
+export async function getPassengerDetailAction(id: string) {
+  const user = await requireSessionUser();
+  return getPassengerById(id, user.id);
 }

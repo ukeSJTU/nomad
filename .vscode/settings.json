@@ -46,6 +46,8 @@
     "**/.prettierignore": true,
     "**/.prettierrc.json": true,
     "**/.nvmrc": true,
+    "**/.pnpm-store": true,
+    "**/drizzle": true,
     "tsconfig.tsbuildinfo": true
   },
 

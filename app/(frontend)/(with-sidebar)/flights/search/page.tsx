@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getAllCities } from "@/domains/flights/city.repository";
-import { searchFlightsWithHistory } from "@/domains/flights/flight-search.service";
+import { getCitiesAction, searchFlightsAction } from "@/actions/flights";
 import logger from "@/lib/logger";
 import {
   type SeatClass,
@@ -62,7 +61,7 @@ export default async function FlightSearchPage({
 
   // Parallel data fetching with error handling
   const [flights, cities] = await Promise.all([
-    searchFlightsWithHistory({
+    searchFlightsAction({
       tripType,
       from: params.from,
       to: params.to,
@@ -74,7 +73,7 @@ export default async function FlightSearchPage({
       logger.error({ err: error }, "Flight search failed in page component");
       return undefined;
     }),
-    getAllCities(),
+    getCitiesAction(),
   ]);
 
   return (

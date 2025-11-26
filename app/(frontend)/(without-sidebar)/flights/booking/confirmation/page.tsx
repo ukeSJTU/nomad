@@ -1,7 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getOrderConfirmation } from "@/domains/booking";
+import { getOrderConfirmationAction } from "@/actions/orders";
 
 import ConfirmationPageClient from "./page.client";
 
@@ -16,9 +15,6 @@ type PageProps = {
 export default async function BookingConfirmationPage({
   searchParams,
 }: PageProps) {
-  // Check authentication (redirects to sign-in if not authenticated)
-  const userId = await requireAuth();
-
   // Get orderId from search params
   const params = await searchParams;
   const orderId = params.orderId;
@@ -27,8 +23,7 @@ export default async function BookingConfirmationPage({
     redirect("/error?type=missing_order_id");
   }
 
-  // Fetch order confirmation details
-  const order = await getOrderConfirmation(orderId, userId);
+  const order = await getOrderConfirmationAction(orderId);
 
   if (!order) {
     notFound();

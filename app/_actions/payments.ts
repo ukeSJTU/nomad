@@ -1,36 +1,19 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
-import { nanoid } from "nanoid";
 import { headers } from "next/headers";
 import { z } from "zod";
 
-import { db } from "@/db";
-import { user } from "@/db/schema";
-import { orders, payments } from "@/db/schema/orders";
 import { auth } from "@/domains/auth";
-import { getOrderDetailById } from "@/domains/booking/orders.repository";
-import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
-import { transformOrderDetailToEmailData } from "@/domains/notification/utils/transformers";
 import {
-  getCurrencyValue,
-  parseCurrency,
-  subtractCurrency,
-  toDatabaseValue,
-} from "@/lib/currency";
+  processPayment,
+  type ProcessPaymentData,
+} from "@/domains/payments/payment.service";
 import type { ActionResult } from "@/types/common";
 
 /**
  * Process payment action result data
  */
-export type ProcessPaymentData = {
-  orderId: string;
-  orderNumber: string;
-  paymentId: string;
-  transactionId: string;
-  amount: string;
-  remainingBalance: string;
-};
+// export type { ProcessPaymentData } from "@/domains/payments/payment.service";
 
 export type ProcessPaymentResult = ActionResult<ProcessPaymentData>;
 
@@ -41,24 +24,6 @@ const processPaymentSchema = z.object({
   orderId: z.string().uuid("Invalid order ID"),
   paymentMethod: z.enum(["balance", "wechat", "alipay"]),
 });
-
-/**
- * Generate transaction ID in format: "TXN" + YYYYMMDDHHMMSS + random suffix
- * Example: "TXN20251104153045A1B2"
- */
-function generateTransactionId(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
-  const dateTimeStr = `${year}${month}${day}${hours}${minutes}${seconds}`;
-  const randomSuffix = nanoid(4).toUpperCase();
-
-  return `TXN${dateTimeStr}${randomSuffix}`;
-}
 
 /**
  * Server action to process payment
@@ -73,7 +38,6 @@ export async function processPaymentAction(
   formData: unknown
 ): Promise<ProcessPaymentResult> {
   try {
-    // 1. Validate input
     const result = processPaymentSchema.safeParse(formData);
     if (!result.success) {
       return {
@@ -85,7 +49,6 @@ export async function processPaymentAction(
 
     const { orderId, paymentMethod } = result.data;
 
-    // 2. Check authentication
     const headersList = await headers();
     const session = await auth.api.getSession({
       headers: headersList,
@@ -98,168 +61,24 @@ export async function processPaymentAction(
       };
     }
 
-    // 3. Only support balance payment for now
-    if (paymentMethod !== "balance") {
-      return {
-        success: false as const,
-        error: "Only balance payment is supported at this time.",
-      };
-    }
-
-    // 4. Process payment in a transaction
-    const paymentResult = await db.transaction(async tx => {
-      // Get order and verify ownership
-      const [order] = await tx
-        .select()
-        .from(orders)
-        .where(and(eq(orders.id, orderId), eq(orders.userId, session.user.id)))
-        .for("update"); // Lock the row for update
-
-      if (!order) {
-        throw new Error("Order not found");
-      }
-
-      // Check order status
-      if (order.status !== "PENDING_PAYMENT") {
-        throw new Error(
-          `Order cannot be paid. Current status: ${order.status}`
-        );
-      }
-
-      // Check payment deadline
-      if (new Date() > order.paymentDeadline) {
-        // Update order status to CANCELLED
-        await tx
-          .update(orders)
-          .set({
-            status: "CANCELLED",
-            updatedAt: new Date(),
-          })
-          .where(eq(orders.id, orderId));
-
-        throw new Error(
-          "Payment deadline has passed. Order has been cancelled."
-        );
-      }
-
-      // Get user balance
-      const [userData] = await tx
-        .select({
-          balance: user.balance,
-        })
-        .from(user)
-        .where(eq(user.id, session.user.id))
-        .for("update"); // Lock the row for update
-
-      if (!userData) {
-        throw new Error("User not found");
-      }
-
-      // Check if user has sufficient balance
-      const userBalance = parseCurrency(userData.balance);
-      const orderAmount = parseCurrency(order.totalAmount);
-
-      if (getCurrencyValue(userBalance) < getCurrencyValue(orderAmount)) {
-        throw new Error(
-          `Insufficient balance. Required: ¥${order.totalAmount}, Available: ¥${userData.balance}`
-        );
-      }
-
-      // Deduct balance
-      const newBalance = subtractCurrency(
-        getCurrencyValue(userBalance),
-        getCurrencyValue(orderAmount)
-      );
-
-      await tx
-        .update(user)
-        .set({
-          balance: toDatabaseValue(newBalance),
-          updatedAt: new Date(),
-        })
-        .where(eq(user.id, session.user.id));
-
-      // Update order status to CONFIRMED
-      await tx
-        .update(orders)
-        .set({
-          status: "CONFIRMED",
-          updatedAt: new Date(),
-        })
-        .where(eq(orders.id, orderId));
-
-      // Create payment record
-      const transactionId = generateTransactionId();
-      const [payment] = await tx
-        .insert(payments)
-        .values({
-          orderId: order.id,
-          amount: order.totalAmount,
-          method: paymentMethod,
-          status: "SUCCESS",
-          transactionId,
-        })
-        .returning();
-
-      return {
-        orderId: order.id,
-        orderNumber: order.orderNumber,
-        paymentId: payment.id,
-        transactionId: payment.transactionId ?? transactionId,
-        amount: order.totalAmount,
-        remainingBalance: toDatabaseValue(newBalance),
-      };
+    const paymentResult = await processPayment(session.user.id, {
+      orderId,
+      paymentMethod,
+      userEmail: session.user.email,
+      userName: session.user.name,
     });
 
-    // Send order confirmation email (async, non-blocking)
-    // If email fails, we don't fail the payment - just log the error
-    try {
-      console.warn(
-        `[Payment] Sending order confirmation email for order ${paymentResult.orderNumber}`
-      );
-
-      // Fetch full order details for email
-      const orderDetail = await getOrderDetailById(
-        paymentResult.orderId,
-        session.user.id
-      );
-
-      if (orderDetail && session.user.email) {
-        // Transform to email data
-        const emailData = transformOrderDetailToEmailData(orderDetail, {
-          name: session.user.name ?? undefined,
-          email: session.user.email,
-        });
-
-        // Send email via service
-        const emailResult = await sendOrderConfirmationEmail(emailData);
-
-        if (emailResult.success) {
-          console.warn(
-            `[Payment] Order confirmation email sent successfully for order ${paymentResult.orderNumber}`
-          );
-        } else {
-          console.error(
-            `[Payment] Failed to send order confirmation email for order ${paymentResult.orderNumber}:`,
-            emailResult.error
-          );
-        }
-      } else {
-        console.warn(
-          `[Payment] Cannot send email: missing order details or user email for order ${paymentResult.orderNumber}`
-        );
-      }
-    } catch (emailError) {
-      // Email failure should not affect payment success
-      console.error(
-        `[Payment] Error sending order confirmation email:`,
-        emailError
-      );
+    if (!paymentResult.success || !paymentResult.data) {
+      return {
+        success: false as const,
+        error:
+          paymentResult.error || "Failed to process payment. Please try again.",
+      };
     }
 
     return {
       success: true as const,
-      data: paymentResult,
+      data: paymentResult.data,
     };
   } catch (error) {
     console.error("Error processing payment:", error);

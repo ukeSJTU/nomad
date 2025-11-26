@@ -2,9 +2,16 @@
 
 import { headers } from "next/headers";
 
+import { getSessionUser, requireSessionUser } from "@/actions/session";
 import { auth } from "@/domains/auth";
 import { rechargeBalance, updateUserInfo } from "@/domains/user/user.service";
+import {
+  getUserBalance,
+  getUserInfo,
+  getUserSecurityStatus,
+} from "@/domains/user/user-read.service";
 import type { ActionResult } from "@/types/common";
+import type { UserInfo, UserSecurityStatus } from "@/types/dto";
 import {
   RechargeBalanceData,
   rechargeBalanceSchema,
@@ -78,6 +85,16 @@ export async function updateUserInfoAction(
   }
 }
 
+export async function getUserInfoAction(): Promise<UserInfo | null> {
+  const user = await getSessionUser();
+
+  if (!user) {
+    return null;
+  }
+
+  return getUserInfo(user.id);
+}
+
 /**
  * Recharge user balance action
  *
@@ -145,4 +162,24 @@ export async function rechargeBalanceAction(
       error: error instanceof Error ? error.message : "充值失败，请稍后重试",
     };
   }
+}
+
+export async function getUserBalanceAction(): Promise<string | null> {
+  const user = await getSessionUser();
+
+  if (!user) {
+    return null;
+  }
+
+  return getUserBalance(user.id);
+}
+
+export async function getUserSecurityStatusAction(): Promise<UserSecurityStatus | null> {
+  const user = await requireSessionUser();
+
+  if (!user) {
+    return null;
+  }
+
+  return getUserSecurityStatus(user.id);
 }

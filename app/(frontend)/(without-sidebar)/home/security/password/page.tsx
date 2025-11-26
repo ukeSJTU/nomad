@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getUserSecurityStatus } from "@/domains/user/user.repository";
+import { getUserSecurityStatusAction } from "@/actions/user";
 
 import PasswordPageClient from "./page.client";
 
@@ -20,11 +19,11 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function PasswordPage() {
-  // Check authentication
-  const userId = await requireAuth();
+  const securityStatus = await getUserSecurityStatusAction();
 
-  // Fetch user security status to determine if user has a password
-  const securityStatus = await getUserSecurityStatus(userId);
+  if (!securityStatus) {
+    return null;
+  }
 
   // Get user email for OAuth password setup (unmasked)
   const userEmail = securityStatus.email;

@@ -22,7 +22,7 @@ import {
   type DevUserListResult,
   getAllUsersForDevAction,
   switchUserAction,
-} from "@/app/_actions/dev-tools";
+} from "@/actions/dev-tools";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

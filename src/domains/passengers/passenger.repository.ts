@@ -48,16 +48,24 @@ export async function getPassengers(
  * data masking for sensitive fields (phone, email, documentNumber).
  *
  * @param id - The ID of the passenger to fetch
+ * @param userId - The ID of the user who owns the passenger
  * @returns Passenger detail with masked sensitive data, or null if passenger not found
  */
 export async function getPassengerById(
   id: string,
+  userId: string,
   dbClient: DbExecutor = db
 ): Promise<PassengerDetailData | null> {
   const [passenger] = await dbClient
     .select()
     .from(passengers)
-    .where(eq(passengers.id, id))
+    .where(
+      and(
+        eq(passengers.id, id),
+        eq(passengers.userId, userId),
+        eq(passengers.isDeleted, false)
+      )
+    )
     .limit(1);
 
   if (!passenger) {

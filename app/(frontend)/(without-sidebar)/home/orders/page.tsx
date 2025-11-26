@@ -1,5 +1,4 @@
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getAllOrdersByUserId } from "@/domains/booking/orders.repository";
+import { listUserOrdersAction } from "@/actions/orders";
 
 import OrdersPageClient from "./page.client";
 
@@ -26,10 +25,7 @@ export const dynamic = "force-dynamic";
  * Route: /home/orders
  */
 export default async function OrdersPage() {
-  // Check authentication (redirects to sign-in if not authenticated)
-  const userId = await requireAuth();
-
-  const allOrders = await getAllOrdersByUserId(userId);
+  const allOrders = await listUserOrdersAction("/home/orders");
 
   return <OrdersPageClient orders={allOrders} />;
 }

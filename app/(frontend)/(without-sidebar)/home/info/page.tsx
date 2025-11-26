@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { getUserInfoAction } from "@/actions/user";
 import { Separator } from "@/components/ui/separator";
 import { UserInfoForm } from "@/components/user";
-import { requireAuth } from "@/domains/auth/utils/helpers";
-import { getUserInfo } from "@/domains/user/user.repository";
 
 export const dynamic = "force-dynamic";
 
@@ -22,15 +21,11 @@ export const dynamic = "force-dynamic";
  * - Update functionality via Server Actions
  */
 export default async function UserInfoPage() {
-  // Check authentication (redirects to sign-in if not authenticated)
-  const userId = await requireAuth();
-
-  // Fetch user information (with masked sensitive data)
-  const userData = await getUserInfo(userId);
+  const userData = await getUserInfoAction();
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!userData) {
-    redirect("/error?type=session_expired");
+    redirect("/auth/sign-in");
   }
 
   return (

@@ -1,22 +1,15 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/domains/auth";
-import { getUserBalance } from "@/domains/user/user.repository";
+import { getUserBalanceAction } from "@/actions/user";
 
 import { WalletPageClient } from "./page.client";
 
 export default async function WalletPage() {
-  // Check authentication
-  const headersList = await headers();
-  const session = await auth.api.getSession({ headers: headersList });
+  const balance = await getUserBalanceAction();
 
-  if (!session?.user?.id) {
+  if (!balance) {
     redirect("/error?type=unauthorized");
   }
-
-  // Fetch user balance
-  const balance = await getUserBalance(session.user.id);
 
   return <WalletPageClient initialBalance={balance} />;
 }

@@ -10,9 +10,7 @@
 import { headers } from "next/headers";
 
 import { auth } from "@/domains/auth";
-import { getOrderDetailById } from "@/domains/booking/orders.repository";
-import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
-import { transformOrderDetailToEmailData } from "@/domains/notification/utils/transformers";
+import { resendOrderConfirmation } from "@/domains/notification/order-email.service";
 import type { ActionResult } from "@/types/common";
 
 /**
@@ -41,7 +39,6 @@ export async function resendOrderConfirmationAction(
   orderId: string
 ): Promise<ActionResult<void>> {
   try {
-    // 1. Check authentication
     const headersList = await headers();
     const session = await auth.api.getSession({ headers: headersList });
 
@@ -52,40 +49,12 @@ export async function resendOrderConfirmationAction(
       };
     }
 
-    // 2. Fetch order details and verify ownership
-    const orderDetail = await getOrderDetailById(orderId, session.user.id);
-
-    if (!orderDetail) {
-      return {
-        success: false as const,
-        error: "订单不存在或您没有访问权限",
-      };
-    }
-
-    // 3. Verify order status is CONFIRMED
-    if (orderDetail.status.status !== "CONFIRMED") {
-      return {
-        success: false as const,
-        error: "只有已确认的订单才能重新发送确认邮件",
-      };
-    }
-
-    // 4. Get user email from session
-    if (!session.user.email) {
-      return {
-        success: false as const,
-        error: "用户邮箱信息缺失，无法发送邮件",
-      };
-    }
-
-    // 5. Transform order detail to email data
-    const emailData = transformOrderDetailToEmailData(orderDetail, {
-      name: session.user.name ?? undefined,
-      email: session.user.email,
+    const result = await resendOrderConfirmation({
+      orderId,
+      userId: session.user.id,
+      userEmail: session.user.email,
+      userName: session.user.name,
     });
-
-    // 6. Send email via service layer
-    const result = await sendOrderConfirmationEmail(emailData);
 
     if (!result.success) {
       return {
