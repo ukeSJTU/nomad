@@ -4,12 +4,12 @@ import { headers } from "next/headers";
 
 import { getSessionUser, requireSessionUser } from "@/actions/session";
 import { auth } from "@/domains/auth";
-import { rechargeBalance, updateUserInfo } from "@/domains/user/user.service";
 import {
   getUserBalance,
   getUserInfo,
   getUserSecurityStatus,
-} from "@/domains/user/user-read.service";
+} from "@/domains/user/user.read.service";
+import { rechargeBalance, updateUserInfo } from "@/domains/user/user.service";
 import type { ActionResult } from "@/types/common";
 import type { UserInfo, UserSecurityStatus } from "@/types/dto";
 import {

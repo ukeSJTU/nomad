@@ -5,7 +5,7 @@ import {
   getAllCities,
   getRecentSearchHistory,
   searchFlightsWithHistory,
-} from "@/domains/flights/flights-read.service";
+} from "@/domains/flights/flights.read.service";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,
