@@ -6,7 +6,7 @@ import {
   type DevUser,
   listDevUsers,
   switchUser as switchUserService,
-} from "@/domains/dev-tools/dev-users.service";
+} from "@/services/dev-tools/dev-users.service";
 
 // ============================================================================
 export type DevUserListResult =
