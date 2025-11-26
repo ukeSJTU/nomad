@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_ERROR_CONFIG, ERROR_CONFIGS } from "./registry";
+import { DEFAULT_ERROR_CONFIG, ERROR_CONFIGS } from "./index";
 import type { ErrorConfig } from "./types";
 
 describe("Error Configurations", () => {
