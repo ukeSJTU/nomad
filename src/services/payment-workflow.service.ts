@@ -6,7 +6,6 @@ import { user } from "@/db/schema";
 import { orders, payments } from "@/db/schema/orders";
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
 import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
-import { transformOrderDetailToEmailData } from "@/domains/notification/utils/transformers";
 import type { ServiceResult } from "@/domains/types";
 import {
   getCurrencyValue,
@@ -14,6 +13,7 @@ import {
   subtractCurrency,
   toDatabaseValue,
 } from "@/lib/format/currency";
+import { transformOrderDetailToEmailData } from "@/lib/notification/transformers";
 
 export interface ProcessPaymentParams {
   orderId: string;
