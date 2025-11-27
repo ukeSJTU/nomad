@@ -19,6 +19,11 @@
       }
     ],
     "paths": {
+      "@/actions/*": ["./app/_actions/*"],
+      "@/components/*": ["./app/_components/*"],
+      "@/hooks/*": ["./app/_hooks/*"],
+      "@/stories/*": ["./app/_stories/*"],
+      "@/app/*": ["./app/*"],
       "@/*": ["./src/*"],
       "@/.source": ["./.source"],
       "@tests/*": ["./tests/*"]

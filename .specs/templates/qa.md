@@ -47,9 +47,9 @@
 **测试实现示例:**
 
 ```typescript
-// src/lib/services/[module].test.ts
+// src/domains/[module]/[module].service.test.ts
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { [functionName] } from './[module]';
+import { [functionName] } from './[module].service';
 
 describe('[functionName]', () => {
   it('should [测试目的]', async () => {
@@ -308,7 +308,7 @@ export const mockApiResponse = {
 
 ### 创建文件
 
-- `src/lib/services/[module].test.ts` - [单元测试文件]
+- `src/domains/[module]/[module].service.test.ts` - [单元测试文件]
 - `src/components/[module]/[component-name].test.tsx` - [组件测试文件]
 - `tests/[module]/[feature].spec.ts` - [E2E测试文件]
 - `tests/fixtures/[data].ts` - [测试数据文件]

@@ -56,7 +56,7 @@
 
 ```typescript
 // src/app/(frontend)/[route]/page.tsx
-import { [serviceFunctionName] } from '@/lib/services/[module]';
+import { [serviceFunctionName] } from '@/domains/[module]/[module].service';
 
 export default async function [ComponentName]() {
   const data = await [serviceFunctionName]();

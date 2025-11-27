@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -42,8 +41,14 @@ export default defineConfig({
         "**/*.test.*",
         "**/*.spec.*",
         "**/tests/**",
-        "src/app/**",
-        // Next.js app directory
+        "app/(docs)/**",
+        "app/(frontend)/**",
+        "app/(site)/**",
+        "app/api/**",
+        "app/_actions/**",
+        "app/layout.tsx",
+        "app/not-found.tsx",
+        // Next.js app routes and entrypoints
         "**/.next/**",
         "**/playwright-report/**",
         "**/test-results/**",
@@ -51,31 +56,31 @@ export default defineConfig({
         // Better Auth configuration
         "src/lib/auth/**",
         // Better Auth client
-        "src/lib/db/**",
+        "src/db/**",
         // Database connection and seed files
         "src/lib/fumadocs/**",
         // Fumadocs configuration files
-        "src/components/ui/**",
+        "app/_components/ui/**",
         // Shadcn/UI components (third-party)
-        "src/components/fumadocs/**",
+        "app/_components/fumadocs/**",
         // Fumadocs components
-        "src/components/auth/index.tsx",
+        "app/_components/auth/index.tsx",
         // Re-export file
-        "src/components/common/index.tsx",
+        "app/_components/common/index.tsx",
         // Re-export file
-        "src/components/passengers/index.ts",
+        "app/_components/passengers/index.ts",
         // Re-export file
         "src/types/index.ts",
         // Re-export file
         "src/types/api/index.ts",
         // Re-export file
-        "src/hooks/**",
+        "app/_hooks/**",
         // React hooks (can be tested separately if needed)
         "src/middleware.ts",
         // Next.js middleware
         "src/instrumentation.ts", // Next.js instrumentation
       ],
-      include: ["src/**/*.{ts,tsx,js,jsx}"],
+      include: ["src/**/*.{ts,tsx,js,jsx}", "app/**/*.{ts,tsx,js,jsx}"],
       thresholds: {
         global: {
           branches: 80,
@@ -95,7 +100,7 @@ export default defineConfig({
         test: {
           name: { label: "unit", color: "green" },
           environment: "jsdom",
-          include: ["src/**/*.test.ts"],
+          include: ["src/**/*.test.ts", "app/**/*.test.ts"],
           exclude: [
             "**/node_modules/**",
             "**/dist/**",
@@ -109,7 +114,7 @@ export default defineConfig({
         test: {
           name: { label: "components", color: "white" },
           environment: "jsdom",
-          include: ["src/**/*.test.tsx"],
+          include: ["src/**/*.test.tsx", "app/**/*.test.tsx"],
           exclude: [
             "**/node_modules/**",
             "**/dist/**",

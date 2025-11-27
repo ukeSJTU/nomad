@@ -15,6 +15,67 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
+const APP_BOUNDARY_ALLOWLIST = [
+  "@/config/errors",
+  "@/config/errors/types",
+  "@/db/schema/ancillary",
+];
+
+const appBoundaryRule = {
+  meta: {
+    type: "problem",
+    docs: {
+      description:
+        "Prevent app layer from importing domain/database modules directly",
+    },
+    schema: [],
+  },
+  create(context) {
+    const restrictedPrefixes = ["@/db", "@/domains"];
+
+    function isAllowedImport(value) {
+      return APP_BOUNDARY_ALLOWLIST.some(
+        allowed => value === allowed || value.startsWith(`${allowed}/`)
+      );
+    }
+
+    function checkSource(node, source) {
+      if (!source || typeof source.value !== "string") {
+        return;
+      }
+
+      const importPath = source.value;
+      const isRestricted = restrictedPrefixes.some(prefix =>
+        importPath.startsWith(prefix)
+      );
+
+      if (!isRestricted || isAllowedImport(importPath)) {
+        return;
+      }
+
+      context.report({
+        node: source,
+        message:
+          "App layer should call backend through server actions or API clients instead of importing '{{path}}'. Move the logic into app/_actions or use an allowed client/constant.",
+        data: {
+          path: importPath,
+        },
+      });
+    }
+
+    return {
+      ImportDeclaration(node) {
+        checkSource(node, node.source);
+      },
+      ExportNamedDeclaration(node) {
+        if (node.source) {
+          checkSource(node, node.source);
+        }
+      },
+    };
+  },
+};
+
 const eslintConfig = [
   // Global ignores
   {
@@ -84,6 +145,20 @@ const eslintConfig = [
   }, // Prettier config must be the last to override conflicting rules
   ...compat.extends("prettier"),
   ...storybook.configs["flat/recommended"],
+  {
+    files: ["app/**/*.{ts,tsx}"],
+    ignores: ["app/_actions/**", "app/api/**"],
+    plugins: {
+      "app-boundary": {
+        rules: {
+          "no-app-boundary-leaks": appBoundaryRule,
+        },
+      },
+    },
+    rules: {
+      "app-boundary/no-app-boundary-leaks": "error",
+    },
+  },
 ];
 
 export default eslintConfig;

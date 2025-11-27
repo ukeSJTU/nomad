@@ -31,7 +31,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:studio:test": "cross-env NODE_ENV=test drizzle-kit studio",
-    "db:seed": "cross-env NODE_ENV=development tsx src/lib/db/seed.ts",
+    "db:seed": "cross-env NODE_ENV=development tsx src/db/seed.ts",
     "db:seed:orders": "cross-env NODE_ENV=development tsx scripts/seed-test-orders.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
@@ -42,7 +42,7 @@
     "setup:dev": "node scripts/setup-dev.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "email": "email dev --dir ./src/components/emails --port 6007"
+    "email": "email dev --dir ./app/_components/emails --port 6007"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.22",

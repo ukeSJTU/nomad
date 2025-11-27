@@ -1,0 +1,72 @@
+/**
+ * Service layer for email-related business logic
+ *
+ * This layer contains pure business logic without framework dependencies (no Next.js runtime),
+ * making it easy to test and reuse in different contexts (user actions, admin operations, cron jobs, etc.).
+ */
+
+import type { ServiceResult } from "@/domains/types";
+import { sendOrderConfirmationEmail as sendEmailViaClient } from "@/integrations/resend/client";
+import type { OrderConfirmationEmailData } from "@/types/dto/emails";
+
+/**
+ * Send order confirmation email
+ *
+ * This service function sends an order confirmation email to the user.
+ * It wraps the email client call with proper error handling and logging.
+ *
+ * @param emailData - Order confirmation email data
+ * @returns ServiceResult indicating success or failure
+ *
+ * @example
+ * ```typescript
+ * const result = await sendOrderConfirmationEmail(emailData);
+ * if (result.success) {
+ *   console.log("Email sent successfully");
+ * } else {
+ *   console.error("Failed to send email:", result.error);
+ * }
+ * ```
+ */
+export async function sendOrderConfirmationEmail(
+  emailData: OrderConfirmationEmailData
+): Promise<ServiceResult<void>> {
+  try {
+    console.log(
+      `[Email Service] Sending order confirmation email for order ${emailData.orderNumber} to ${emailData.user.email}`
+    );
+
+    // Send email via client
+    const success = await sendEmailViaClient(emailData);
+
+    if (!success) {
+      console.error(
+        `[Email Service] Failed to send order confirmation email for order ${emailData.orderNumber}`
+      );
+      return {
+        success: false,
+        error: "邮件发送失败，请稍后重试",
+      };
+    }
+
+    console.log(
+      `[Email Service] Order confirmation email sent successfully for order ${emailData.orderNumber}`
+    );
+
+    return {
+      success: true,
+      message: "订单确认邮件已发送",
+    };
+  } catch (error) {
+    console.error(
+      `[Email Service] Error sending order confirmation email:`,
+      error
+    );
+
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "邮件发送过程中发生未知错误",
+    };
+  }
+}

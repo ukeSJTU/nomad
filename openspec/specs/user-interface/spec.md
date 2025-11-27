@@ -5,18 +5,21 @@
 This specification defines the user interface requirements for common UI components in the Nomad application, focusing on user-facing interactions, visual design, and component behavior.
 
 **Scope:**
+
 - User authentication UI (UserMenu, sign-in/sign-up flows)
 - Navigation components (Header, menus, links)
 - User profile and account management interfaces
 - Common UI patterns and component documentation (Storybook)
 
 **Goals:**
+
 - Provide consistent and intuitive user interfaces
 - Ensure compliance with course requirements and design standards
 - Maintain accessibility and responsive design across devices
 - Document components for development and testing
 
 ## Requirements
+
 ### Requirement: User Menu Visual Guidance
 
 UserMenu 组件 SHALL 提供清晰的视觉引导,使用户知道可以与菜单交互查看更多选项。
@@ -77,9 +80,8 @@ UserMenu 组件 SHALL 提供 Storybook 文档,以便在隔离环境中展示和�
 
 #### Scenario: Storybook follows project conventions
 
-- **WHEN** 开发者查看 `src/stories/user-menu.stories.tsx` 文件
+- **WHEN** 开发者查看 `app/_stories/common/user-menu.stories.tsx` 文件
 - **THEN** 文件结构遵循项目现有 Story 约定
 - **AND** 使用 `@storybook/nextjs-vite` 的 `Meta` 和 `StoryObj` 类型
 - **AND** Story 布局设置为 `centered`
 - **AND** 组件标题遵循命名约定(如 `Common/UserMenu` 或 `Shadcn/UserMenu`)
-

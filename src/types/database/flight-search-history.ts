@@ -9,7 +9,7 @@
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-import type { flightSearchHistory } from "@/lib/schema";
+import type { flightSearchHistory } from "@/db/schema";
 
 // ============================================================================
 // Flight Search History Types

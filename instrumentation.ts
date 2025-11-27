@@ -13,7 +13,7 @@ export async function register() {
     // Only run on server (not in edge runtime)
     if (process.env.NEXT_RUNTIME === "nodejs") {
       const { startOrderCancellationTask } = await import(
-        "./src/utils/dev-cron"
+        "@/services/dev-tools/dev-cron"
       );
       startOrderCancellationTask();
     }
