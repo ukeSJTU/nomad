@@ -9,11 +9,13 @@ import {
   changePassword,
   setPasswordForOAuthUser,
   unlinkSocialAccount,
-  updateEmail,
-  updatePhoneNumber,
 } from "@/domains/auth/auth.service";
 import logger from "@/lib/server/logger";
 import { validateAccount } from "@/lib/validation/account";
+import {
+  updateUserEmailWorkflow,
+  updateUserPhoneNumberWorkflow,
+} from "@/services/auth-workflow.service";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
@@ -548,7 +550,10 @@ export async function updatePhoneNumberAction(phoneNumber: string) {
     }
 
     // 2. Call service layer for business logic
-    const result = await updatePhoneNumber(session.user.id, phoneNumber);
+    const result = await updateUserPhoneNumberWorkflow(
+      session.user.id,
+      phoneNumber
+    );
 
     if (!result.success) {
       return result;
@@ -599,7 +604,7 @@ export async function updateEmailAction(email: string) {
     }
 
     // 2. Call service layer for business logic
-    const result = await updateEmail(session.user.id, email);
+    const result = await updateUserEmailWorkflow(session.user.id, email);
 
     if (!result.success) {
       return result;
