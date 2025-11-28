@@ -44,7 +44,10 @@ vi.mock("@faker-js/faker", () => ({
 }));
 
 // Import the functions we want to test directly after mocking dependencies
-import { shouldEnableAliyunSms, shouldEnableResend } from "./auth";
+import {
+  shouldEnableAliyunSms,
+  shouldEnableResend,
+} from "./infra/auth.integrations";
 
 describe("Auth Configuration", () => {
   beforeEach(() => {

@@ -8,4 +8,4 @@ const authClient = createAuthClient({
 
 export const { signIn, signUp, useSession } = authClient;
 
-export { auth } from "./auth";
+export { auth } from "./infra/auth.plugin";

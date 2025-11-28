@@ -3,7 +3,7 @@ import {
   deleteAccountById,
   findCredentialAccount,
   getAccountsByUserId,
-} from "@/domains/auth/auth.repository";
+} from "@/domains/auth/infra/auth.repository";
 import type { ServiceResult } from "@/domains/types";
 
 /**
