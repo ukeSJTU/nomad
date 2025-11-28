@@ -14,14 +14,14 @@ export type DataSource = "fixture-faker" | "scenario";
 export const seedConfigSchema = z.object({
   /**
    * Data source type
-   * @default "fixture-faker"
+   * @default "fixture-faker"q
    */
   dataSource: z.enum(["fixture-faker", "scenario"]).default("fixture-faker"),
 
   /**
    * Scenario file name (only used when dataSource is "scenario")
    * Points to a file in fixtures/scenarios/ directory
-   * @example "exam-2025"
+   * @example "exam.2025"
    */
   scenarioFile: z.string().optional(),
 
@@ -74,7 +74,7 @@ export const seedConfigSchema = z.object({
           max: z.number().int().positive().default(5),
         })
         .default({ min: 1, max: 5 }),
-      orders: z.number().int().positive().optional(), // Optional: defaults to 1.5x users in seed.ts
+      orders: z.number().int().positive().optional(), // Optional: defaults to 1.5x users in the seed runner
       searchesPerUser: z
         .object({
           min: z.number().int().positive().default(2),
@@ -139,7 +139,7 @@ export const scenarios = {
     name: "Exam 2025",
     description: "Exact data for course exam (predefined scenario)",
     dataSource: "scenario" as const,
-    scenarioFile: "exam-2025",
+    scenarioFile: "exam.2025",
     seed: 42, // Not used in scenario mode, but required by schema
     mode: "full" as const,
     // counts is not needed for scenario mode
