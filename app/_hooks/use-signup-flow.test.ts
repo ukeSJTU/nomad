@@ -5,7 +5,7 @@ import type {
   EmailVerificationData,
   PasswordSetupData,
   PhoneVerificationData,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 import { useSignUpFlow } from "./use-signup-flow";
 

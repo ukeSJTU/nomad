@@ -70,8 +70,6 @@ export default defineConfig({
         // Re-export file
         "app/_components/passengers/index.ts",
         // Re-export file
-        "src/types/index.ts",
-        // Re-export file
         "src/types/api/index.ts",
         // Re-export file
         "app/_hooks/**",

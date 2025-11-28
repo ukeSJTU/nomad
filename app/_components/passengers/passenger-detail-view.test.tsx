@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { PassengerDetailData } from "@/types/dto/passengers";
+import type { PassengerDetailData } from "@/types/dto";
 
 import PassengerDetailView from "./passenger-detail-view";
 

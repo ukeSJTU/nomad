@@ -15,10 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  type EmailLoginData,
-  emailLoginSchema,
-} from "@/types/validations/auth";
+import { type EmailLoginData, emailLoginSchema } from "@/types/validations";
 
 interface EmailLoginFormProps {
   onSubmit: (data: EmailLoginData) => void;

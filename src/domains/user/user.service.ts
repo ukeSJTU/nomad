@@ -1,8 +1,8 @@
-import type { ServiceResult } from "@/domains/types";
 import {
   rechargeUserBalance,
   updateUserProfile,
 } from "@/domains/user/user.repository";
+import type { ServiceResult } from "@/types/result";
 import type { UserInfoUpdateData } from "@/types/validations";
 
 /**

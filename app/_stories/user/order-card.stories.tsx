@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import OrderCard from "@/components/user/order-card";
-import type { OrderListItem } from "@/types/dto/orders";
+import type { OrderListItem } from "@/types/dto";
 
 const meta = {
   title: "User/OrderCard",

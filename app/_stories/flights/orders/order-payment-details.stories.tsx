@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { OrderPaymentDetails } from "@/components/flights/orders";
-import type { OrderPaymentCardData } from "@/types/dto/orders";
+import type { OrderPaymentCardData } from "@/types/dto";
 
 const meta: Meta<typeof OrderPaymentDetails> = {
   title: "Flights/Orders/OrderPaymentDetails",

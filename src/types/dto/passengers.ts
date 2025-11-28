@@ -4,7 +4,7 @@
  * Data Transfer Objects for passenger information display and API communication.
  * Used in Query layer, components, and client-side code.
  *
- * Note: Use direct imports from this file (e.g., "@/types/dto/passengers")
+ * Note: Use direct imports from this file (e.g., "@/types/dto")
  * to avoid naming conflicts with database Passenger type.
  */
 

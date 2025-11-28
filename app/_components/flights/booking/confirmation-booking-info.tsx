@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
-import { IdentityType } from "@/types/dto/booking";
+import { IdentityType } from "@/types/dto";
 
 // Identity type mapping
 const IDENTITY_TYPE_MAP = {

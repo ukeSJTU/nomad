@@ -1,13 +1,12 @@
-import { desc, eq, type InferSelectModel } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
 import { auth } from "@/domains/auth";
-import type { ServiceResult } from "@/domains/types";
+import type { User } from "@/types/db";
+import type { ServiceResult } from "@/types/result";
 
-export type DevUser = InferSelectModel<typeof user>;
-
-export async function listDevUsers(): Promise<ServiceResult<DevUser[]>> {
+export async function listDevUsers(): Promise<ServiceResult<User[]>> {
   if (process.env.NODE_ENV !== "development") {
     return { success: false, error: "Not available" };
   }

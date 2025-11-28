@@ -14,7 +14,6 @@ import {
   type OrderRefundData,
   refundOrderAndReleaseSeats,
 } from "@/domains/booking/orders.repository";
-import type { ServiceResult } from "@/domains/types";
 import {
   addCurrency,
   getCurrencyValue,
@@ -22,6 +21,11 @@ import {
   parseCurrency,
   toDatabaseValue,
 } from "@/lib/format/currency";
+import type {
+  CreateOrderPayload,
+  UpdateOrderAncillaryPayload,
+} from "@/types/dto";
+import type { ServiceResult } from "@/types/result";
 
 /**
  * Order Service Layer
@@ -51,17 +55,6 @@ export interface CreateOrderInput {
     email?: string;
     phone?: string;
   };
-}
-
-export interface CreateOrderPayload {
-  orderId: string;
-  orderNumber: string;
-  paymentDeadline: string;
-}
-
-export interface UpdateOrderAncillaryResult {
-  orderId: string;
-  totalAmount: string;
 }
 
 function generateOrderNumber(): string {
@@ -209,7 +202,7 @@ export async function updateOrderAncillary(
     orderId: string;
     ancillaryServiceCodes: string[];
   }
-): Promise<ServiceResult<UpdateOrderAncillaryResult>> {
+): Promise<ServiceResult<UpdateOrderAncillaryPayload>> {
   try {
     const [order] = await db
       .select()

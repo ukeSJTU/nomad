@@ -6,7 +6,7 @@ import { flightSeatClasses } from "@/db/schema/flight-seat-classes";
 import { orders } from "@/db/schema/orders";
 import { runInTransaction } from "@/db/transaction";
 import { maskEmail, maskPhoneNumber } from "@/lib/security/mask-data";
-import { OrderDetailFull, OrderListItem } from "@/types/dto/orders";
+import { OrderDetailFull, OrderListItem } from "@/types/dto";
 
 export type OrderRow = typeof orders.$inferSelect;
 

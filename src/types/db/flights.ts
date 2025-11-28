@@ -4,7 +4,7 @@
  * These types are automatically inferred from the Drizzle schema definitions.
  * They represent flight information and seat class data.
  *
- * @module types/database/flights
+ * @module types/db/flights
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";

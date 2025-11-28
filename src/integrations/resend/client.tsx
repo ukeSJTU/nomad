@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
 import { OrderConfirmationEmail, OtpEmailTemplate } from "@/components/emails";
-import type { OrderConfirmationEmailData } from "@/types/dto/emails";
+import type { OrderConfirmationEmailData } from "@/types/dto";
 
 /**
  * Resend Email Client for sending verification emails

@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 import {
   type PassengerFormData,
   passengerFormSchema,
-} from "@/types/validations/passengers";
+} from "@/types/validations";
 
 interface PassengerFormProps {
   onSubmit: (data: PassengerFormData) => void;

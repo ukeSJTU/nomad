@@ -11,7 +11,7 @@ import {
 import PasswordSetupForm from "@/components/auth/forms/password-setup";
 import ChangePasswordForm from "@/components/security/change-password-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type PasswordSetupData } from "@/types/validations/auth";
+import { type PasswordSetupData } from "@/types/validations";
 
 /**
  * Props for the PasswordPageClient component

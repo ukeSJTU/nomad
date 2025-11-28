@@ -1,4 +1,15 @@
-import { FlightSeatClass, OrderPassenger, OrderStatus } from "@/types/database";
+import { FlightSeatClass, OrderPassenger, OrderStatus } from "@/types/db";
+
+export interface CreateOrderPayload {
+  orderId: string;
+  orderNumber: string;
+  paymentDeadline: string;
+}
+
+export interface UpdateOrderAncillaryPayload {
+  orderId: string;
+  totalAmount: string;
+}
 
 export interface OrderFlightInfo {
   flightNumber: string;

@@ -1,4 +1,4 @@
-import { emailSchema, phoneNumberSchema } from "@/types/validations/auth";
+import { emailSchema, phoneNumberSchema } from "@/types/validations";
 
 /**
  * Validates if account is a valid phone number or email

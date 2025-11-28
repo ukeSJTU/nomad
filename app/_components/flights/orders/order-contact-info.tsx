@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { OrderDetailFull } from "@/types/dto/orders";
+import { OrderDetailFull } from "@/types/dto";
 
 export type OrderContactInfoProps = {
   contactInfo: OrderDetailFull["contact"];

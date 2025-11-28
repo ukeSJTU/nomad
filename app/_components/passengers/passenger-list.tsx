@@ -13,13 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Passenger } from "@/types/dto/passengers";
+import type { PassengerDTO } from "@/types/dto";
 
 interface PassengerListProps {
-  passengers: Passenger[];
-  onEdit: (passenger: Passenger) => void;
-  onDelete: (passengerId: string) => void;
-  onBatchDelete: (passengerIds: string[]) => void;
+  passengers: PassengerDTO[];
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
+  onBatchDelete: (ids: string[]) => void;
   isLoading?: boolean;
 }
 
@@ -217,7 +217,7 @@ export default function PassengerList({
                         variant="link"
                         size="sm"
                         className="text-blue-600 h-auto p-0"
-                        onClick={() => onEdit(passenger)}
+                        onClick={() => onEdit(passenger.id)}
                         disabled={isLoading}
                       >
                         查看
@@ -226,7 +226,7 @@ export default function PassengerList({
                         variant="link"
                         size="sm"
                         className="text-blue-600 h-auto p-0"
-                        onClick={() => onEdit(passenger)}
+                        onClick={() => onEdit(passenger.id)}
                         disabled={isLoading}
                       >
                         编辑

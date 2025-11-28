@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import {
   type ChangePasswordData,
   changePasswordSchema,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 type ChangePasswordFormData = ChangePasswordData;
 

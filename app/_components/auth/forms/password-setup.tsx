@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import {
   type PasswordSetupData,
   passwordSetupSchema,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 /**
  * Props for the PasswordSetupForm component

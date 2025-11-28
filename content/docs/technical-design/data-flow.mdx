@@ -122,7 +122,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { passengers } from "@/db/schema/passengers";
-import type { Passenger } from "@/types/api/passengers";
+import type { Passenger } from "@/types/dto";
 
 export async function getPassengers(userId: string): Promise<Passenger[]> {
   // 直接查询数据库

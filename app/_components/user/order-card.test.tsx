@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { OrderListItem } from "@/types/dto/orders";
+import type { OrderListItem } from "@/types/dto";
 
 import OrderCard from "./order-card";
 

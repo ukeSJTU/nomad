@@ -4,7 +4,7 @@
  * These types are automatically inferred from the Drizzle schema definitions.
  * They represent user flight search history for analytics and recommendations.
  *
- * @module types/database/flight-search-history
+ * @module types/db/flight-search-history
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";

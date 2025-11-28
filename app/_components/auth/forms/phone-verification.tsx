@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import {
   type PhoneVerificationData,
   phoneVerificationSchema,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 import OtpInput from "./otp-input";
 

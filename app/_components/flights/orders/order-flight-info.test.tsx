@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { OrderFlightCardData } from "@/types/dto/orders";
+import type { OrderFlightCardData } from "@/types/dto";
 
 import { OrderFlightInfo } from "./order-flight-info";
 

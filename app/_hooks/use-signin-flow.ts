@@ -11,7 +11,7 @@ import {
 import { validateAccount } from "@/lib/validation/account";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
-import type { OtpLoginData, PasswordLoginData } from "@/types/validations/auth";
+import type { OtpLoginData, PasswordLoginData } from "@/types/validations";
 
 export interface UseSignInFlowReturn {
   isLoading: boolean;

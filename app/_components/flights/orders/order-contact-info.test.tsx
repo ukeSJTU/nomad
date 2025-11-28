@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { OrderContactCardData } from "@/types/dto/orders";
+import type { OrderContactCardData } from "@/types/dto";
 
 import { OrderContactInfo } from "./order-contact-info";
 

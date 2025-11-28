@@ -4,7 +4,7 @@
  * These types are automatically inferred from the Drizzle schema definitions.
  * They represent airline company information.
  *
- * @module types/database/airlines
+ * @module types/db/airlines
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";

@@ -1,4 +1,4 @@
-import { randomUUID, randomInt } from "crypto";
+import { randomInt, randomUUID } from "crypto";
 import { addHours } from "date-fns";
 
 import { db } from "@/db";
@@ -39,9 +39,7 @@ const randomCode = (length: number) => {
 const uniqueSuffix = () => randomCode(3) + Math.floor(Math.random() * 1000);
 
 const uniquePhone = () =>
-  `+8613${randomInt(0, 1_0000_0000)
-    .toString()
-    .padStart(8, "0")}`;
+  `+8613${randomInt(0, 1_0000_0000).toString().padStart(8, "0")}`;
 
 const maxAirlineCodes = 26 * 26; // Two-letter space (A-Z)
 const usedAirlineCodes = new Set<string>();

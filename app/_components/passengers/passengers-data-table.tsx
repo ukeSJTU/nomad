@@ -10,10 +10,10 @@ import {
   type RowAction,
 } from "@/components/common/data-table-with-actions";
 import { Input } from "@/components/ui/input";
-import type { Passenger } from "@/types/dto/passengers";
+import type { PassengerDTO } from "@/types/dto";
 
 interface PassengersDataTableProps {
-  initialData: Passenger[];
+  initialData: PassengerDTO[];
   onAdd: () => void;
   onDelete: (passengerId: string) => void;
   onBatchDelete: (passengerIds: string[]) => void;
@@ -64,7 +64,7 @@ export function PassengersDataTable({
 }: PassengersDataTableProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [data, setData] = useState<Passenger[]>(initialData);
+  const [data, setData] = useState<PassengerDTO[]>(initialData);
   const [isLoading, _setIsLoading] = useState(false);
 
   // Sync data with initialData when it changes
@@ -85,7 +85,7 @@ export function PassengersDataTable({
   });
 
   // Column definitions
-  const columns: ColumnDefinition<Passenger>[] = [
+  const columns: ColumnDefinition<PassengerDTO>[] = [
     {
       key: "name",
       header: "姓名",
@@ -147,7 +147,7 @@ export function PassengersDataTable({
   ];
 
   // Row actions
-  const rowActions: RowAction<Passenger>[] = [
+  const rowActions: RowAction<PassengerDTO>[] = [
     {
       label: "查看",
       onClick: row => {
@@ -175,7 +175,7 @@ export function PassengersDataTable({
   ];
 
   // Batch actions
-  const batchActions: BatchAction<Passenger>[] = [
+  const batchActions: BatchAction<PassengerDTO>[] = [
     {
       label: "✕ 删除",
       onClick: selectedRows => {

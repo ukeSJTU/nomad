@@ -5,8 +5,8 @@ import {
   softDeleteSearchHistoryByUser,
   updateSearchHistory,
 } from "@/domains/flights/flight-search-history.repository";
-import type { ServiceResult } from "@/domains/types";
 import logger from "@/lib/server/logger";
+import type { ServiceResult } from "@/types/result";
 import type { RecordFlightSearchData } from "@/types/validations";
 
 /**

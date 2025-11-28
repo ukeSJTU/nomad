@@ -3,14 +3,14 @@
 import { headers } from "next/headers";
 
 import {
-  type DevUser,
   listDevUsers,
   switchUser as switchUserService,
 } from "@/services/dev-tools/dev-users.service";
+import type { User } from "@/types/db";
 
 // ============================================================================
 export type DevUserListResult =
-  | { success: true; users: DevUser[] }
+  | { success: true; users: User[] }
   | { success: false; error: string };
 
 export type SwitchUserResult =

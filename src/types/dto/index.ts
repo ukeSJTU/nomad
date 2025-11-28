@@ -12,10 +12,12 @@
 
 export * from "./booking";
 export * from "./cities";
+export * from "./emails";
 export * from "./flight";
-export { type SearchHistoryRecord } from "./flight-search-history";
+export * from "./flight-search-history";
 export * from "./orders";
 export {
+  type PassengerDetailData,
   type Passenger as PassengerDTO,
   type PassengerListItem,
 } from "./passengers";

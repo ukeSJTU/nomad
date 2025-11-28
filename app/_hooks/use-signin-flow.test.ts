@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { OtpLoginData, PasswordLoginData } from "@/types/validations/auth";
+import type { OtpLoginData, PasswordLoginData } from "@/types/validations";
 
 import { useSignInFlow } from "./use-signin-flow";
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { FlightSearchResult } from "@/types/dto/flight";
+import type { FlightSearchResult } from "@/types/dto";
 
 import {
   calculateDaysOffset,

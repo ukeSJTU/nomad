@@ -6,10 +6,10 @@ import { toast } from "sonner";
 
 import { updatePassengerAction } from "@/app/_actions";
 import PassengerForm from "@/components/passengers/forms/passenger-form";
-import type { Passenger } from "@/types/dto/passengers";
+import type { PassengerDTO } from "@/types/dto";
 
 interface EditPassengerClientProps {
-  passenger: Passenger;
+  passenger: PassengerDTO;
 }
 
 export function EditPassengerClient({ passenger }: EditPassengerClientProps) {
@@ -41,7 +41,7 @@ export function EditPassengerClient({ passenger }: EditPassengerClientProps) {
   };
 
   // Convert passenger data to form format
-  const convertPassengerToFormData = (passenger: Passenger) => ({
+  const convertPassengerToFormData = (passenger: PassengerDTO) => ({
     name: passenger.name,
     nationality: passenger.nationality ?? undefined,
     gender: passenger.gender ?? undefined,

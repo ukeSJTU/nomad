@@ -26,30 +26,17 @@ import type { ActionResult } from "@/types/common";
 import type {
   AncillaryPageOrder,
   ConfirmationPageOrder,
+  CreateOrderPayload,
+  OrderDetailFull,
+  OrderListItem,
   PaymentPageOrder,
-} from "@/types/dto/booking";
-import type { OrderDetailFull, OrderListItem } from "@/types/dto/orders";
+  UpdateOrderAncillaryPayload,
+} from "@/types/dto";
 
-/**
- * Create order action result data
- */
-export type CreateOrderData = {
-  orderId: string;
-  orderNumber: string;
-  paymentDeadline: string;
-};
+export type CreateOrderResult = ActionResult<CreateOrderPayload>;
 
-export type CreateOrderResult = ActionResult<CreateOrderData>;
-
-/**
- * Update order ancillary action result data
- */
-export type UpdateOrderAncillaryData = {
-  orderId: string;
-  totalAmount: string;
-};
-
-export type UpdateOrderAncillaryResult = ActionResult<UpdateOrderAncillaryData>;
+export type UpdateOrderAncillaryResult =
+  ActionResult<UpdateOrderAncillaryPayload>;
 
 /**
  * Delete order action result

@@ -4,7 +4,7 @@
  * These types are automatically inferred from the Drizzle schema definitions.
  * They represent the structure of order data as it exists in the database.
  *
- * @module types/database/orders
+ * @module types/db/orders
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";

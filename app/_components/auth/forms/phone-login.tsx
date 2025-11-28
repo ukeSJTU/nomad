@@ -15,10 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  type PhoneLoginData,
-  phoneLoginSchema,
-} from "@/types/validations/auth";
+import { type PhoneLoginData, phoneLoginSchema } from "@/types/validations";
 
 interface PhoneLoginFormProps {
   onSubmit: (data: PhoneLoginData) => void;
