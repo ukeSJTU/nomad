@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import {
   type EmailOtpLoginData,
   emailOtpLoginSchema,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 interface EmailOtpLoginFormProps {
   onSubmit: (data: EmailOtpLoginData) => void;

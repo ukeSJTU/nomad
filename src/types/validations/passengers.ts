@@ -7,7 +7,7 @@
 
 import { z } from "zod";
 
-import { emailSchema, phoneNumberSchema } from "@/types/validations/auth";
+import { emailSchema, phoneNumberSchema } from "@/types/validations";
 
 /**
  * Document number validation pattern

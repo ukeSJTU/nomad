@@ -19,10 +19,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Passenger } from "@/types/dto/passengers";
+import type { PassengerDTO } from "@/types/dto";
 
 interface PassengersPageClientProps {
-  initialPassengers: Passenger[];
+  initialPassengers: PassengerDTO[];
 }
 
 export function PassengersPageClient({

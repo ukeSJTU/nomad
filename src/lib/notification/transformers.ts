@@ -7,11 +7,11 @@
 
 import type {
   OrderConfirmationEmailData,
+  OrderDetailFull,
   OrderFlightEmailData,
   OrderPassengerEmailData,
   OrderUserEmailData,
-} from "@/types/dto/emails";
-import type { OrderDetailFull } from "@/types/dto/orders";
+} from "@/types/dto";
 
 /**
  * Transform OrderDetailFull to OrderConfirmationEmailData

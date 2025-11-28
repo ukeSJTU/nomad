@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { OrderStatusCardData } from "@/types/dto/orders";
+import { OrderStatusCardData } from "@/types/dto";
 
 export type OrderStatusCardProps = {
   data: OrderStatusCardData;

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { OrderDetailFull } from "@/types/dto/orders";
+import { OrderDetailFull } from "@/types/dto";
 
 import { getSeatClassName } from "./utils";
 

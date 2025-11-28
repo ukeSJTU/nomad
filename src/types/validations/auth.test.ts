@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { emailSchema, phoneNumberSchema } from "@/types/validations/auth";
+import { emailSchema, phoneNumberSchema } from "@/types/validations";
 
 describe("Auth Schemas", () => {
   describe("phoneNumberSchema", () => {

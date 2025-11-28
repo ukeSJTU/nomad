@@ -33,7 +33,7 @@ import {
   otpLoginSchema,
   type PasswordLoginData,
   passwordLoginSchema,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 import OtpInput from "./otp-input";
 

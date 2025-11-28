@@ -4,7 +4,7 @@ import { getQuickDatePrices as getQuickDatePricesService } from "@/domains/fligh
 import {
   type GetQuickDatePricesParams,
   type QuickDatePrice,
-} from "@/types/dto/flight";
+} from "@/types/dto";
 
 // export type { QuickDatePrice } from "@/domains/flights/quick-date-price.service";
 

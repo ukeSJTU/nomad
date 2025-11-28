@@ -16,13 +16,13 @@ import {
   updateUserEmailWorkflow,
   updateUserPhoneNumberWorkflow,
 } from "@/services/auth-workflow.service";
-import type { ActionResult } from "@/types/common";
+import type { ActionResult, ServiceResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
   EmailVerificationData,
   OtpLoginData,
   PasswordLoginData,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 function resolveAccountType(account: string) {
   const trimmedAccount = account.trim();
@@ -291,7 +291,9 @@ export async function linkSocialAccountAction(
  * @param providerId - The social provider ID (e.g., "github", "google")
  * @returns Result object with success status and message/error
  */
-export async function unlinkAccountAction(providerId: string) {
+export async function unlinkAccountAction(
+  providerId: string
+): Promise<ServiceResult> {
   try {
     // 1. Verify authentication (framework-specific)
     const headersList = await headers();

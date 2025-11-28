@@ -13,7 +13,7 @@ import {
   formatDateWithWeekday,
 } from "@/lib/format/date";
 import { cn } from "@/lib/utils";
-import { type QuickDatePrice } from "@/types/dto/flight";
+import { type QuickDatePrice } from "@/types/dto";
 
 interface QuickDateSelectorProps {
   from: string; // Departure city IATA code

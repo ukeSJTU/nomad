@@ -1,23 +1,10 @@
 import { EventEmitter } from "events";
 
-type AuthEventMap = {
-  phoneNumberUpdated: {
-    userId: string;
-    phoneNumber: string;
-    userEmail?: string | null;
-    userName?: string | null;
-  };
-  emailUpdated: {
-    userId: string;
-    email: string;
-    userName?: string | null;
-  };
-};
-
-type AuthEventKey = keyof AuthEventMap;
-type AuthEventHandler<K extends AuthEventKey> = (
-  payload: AuthEventMap[K]
-) => void | Promise<void>;
+import type {
+  AuthEventHandler,
+  AuthEventKey,
+  AuthEventMap,
+} from "@/types/services";
 
 const authEventEmitter = new EventEmitter();
 

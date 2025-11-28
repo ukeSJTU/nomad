@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { OrderUserEmailData } from "@/types/dto/emails";
-import type { OrderDetailFull } from "@/types/dto/orders";
+import type { OrderDetailFull, OrderUserEmailData } from "@/types/dto";
 
 import { transformOrderDetailToEmailData } from "./transformers";
 

@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 
 import { Separator } from "@/components/ui/separator";
-import { ConfirmationPageFlight } from "@/types/dto/booking";
+import { ConfirmationPageFlight } from "@/types/dto";
 
 // Seat class type mapping
 const SEAT_CLASS_MAP = {

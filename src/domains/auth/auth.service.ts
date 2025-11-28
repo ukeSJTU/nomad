@@ -4,7 +4,7 @@ import {
   findCredentialAccount,
   getAccountsByUserId,
 } from "@/domains/auth/infra/auth.repository";
-import type { ServiceResult } from "@/domains/types";
+import type { ServiceResult } from "@/types/result";
 
 /**
  * Service layer for authentication-related business logic
@@ -56,7 +56,7 @@ export async function unlinkSocialAccount(
       return {
         success: true,
         message: `Successfully unlinked ${providerId} account.`,
-      };
+      } as ServiceResult;
     });
 
     return result;

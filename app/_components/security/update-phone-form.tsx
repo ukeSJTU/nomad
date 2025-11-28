@@ -14,10 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  type UpdatePhoneData,
-  updatePhoneSchema,
-} from "@/types/validations/auth";
+import { type UpdatePhoneData, updatePhoneSchema } from "@/types/validations";
 
 export type PhoneFormMode = "bind" | "verify" | "update";
 

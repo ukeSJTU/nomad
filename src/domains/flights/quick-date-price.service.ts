@@ -15,7 +15,7 @@ import logger from "@/lib/server/logger";
 import {
   type GetQuickDatePricesParams,
   type QuickDatePrice,
-} from "@/types/dto/flight";
+} from "@/types/dto";
 
 export async function getQuickDatePrices(
   params: GetQuickDatePricesParams

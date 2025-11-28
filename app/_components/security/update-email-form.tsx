@@ -14,10 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  type UpdateEmailData,
-  updateEmailSchema,
-} from "@/types/validations/auth";
+import { type UpdateEmailData, updateEmailSchema } from "@/types/validations";
 
 export type EmailFormMode = "bind" | "verify" | "update";
 

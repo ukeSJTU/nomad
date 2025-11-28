@@ -4,13 +4,13 @@ import {
   validateEmailFormat,
   validatePhoneNumberFormat,
 } from "@/domains/auth/auth.service";
-import type { ServiceResult } from "@/domains/types";
 import {
   getUserById,
   updateUserEmail,
   updateUserPhoneNumber,
 } from "@/domains/user/user.repository";
 import logger from "@/lib/server/logger";
+import type { ServiceResult } from "@/types/result";
 
 import { emitAuthEvent } from "./auth-events";
 
@@ -23,7 +23,7 @@ export async function updateUserPhoneNumberWorkflow(
   if (!validation.success || !validation.data) {
     return {
       success: false,
-      error: validation.error,
+      error: validation.error || "Invalid phone number format",
     };
   }
 

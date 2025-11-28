@@ -1,7 +1,7 @@
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
 import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
-import type { ServiceResult } from "@/domains/types";
 import { transformOrderDetailToEmailData } from "@/lib/notification/transformers";
+import type { ServiceResult } from "@/types/result";
 
 export async function resendOrderConfirmation(params: {
   orderId: string;

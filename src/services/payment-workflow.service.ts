@@ -6,7 +6,6 @@ import { user } from "@/db/schema";
 import { orders, payments } from "@/db/schema/orders";
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
 import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
-import type { ServiceResult } from "@/domains/types";
 import {
   getCurrencyValue,
   parseCurrency,
@@ -14,22 +13,13 @@ import {
   toDatabaseValue,
 } from "@/lib/format/currency";
 import { transformOrderDetailToEmailData } from "@/lib/notification/transformers";
+import type { ServiceResult } from "@/types/result";
+import type {
+  ProcessPaymentData,
+  ProcessPaymentParams,
+} from "@/types/services";
 
-export interface ProcessPaymentParams {
-  orderId: string;
-  paymentMethod: "balance" | "wechat" | "alipay";
-  userEmail?: string | null;
-  userName?: string | null;
-}
-
-export type ProcessPaymentData = {
-  orderId: string;
-  orderNumber: string;
-  paymentId: string;
-  transactionId: string;
-  amount: string;
-  remainingBalance: string;
-};
+export type { ProcessPaymentData, ProcessPaymentParams };
 
 function generateTransactionId(): string {
   const now = new Date();

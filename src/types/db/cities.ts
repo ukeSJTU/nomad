@@ -4,7 +4,7 @@
  * These types are automatically inferred from the Drizzle schema definitions.
  * They represent city information for flight destinations.
  *
- * @module types/database/cities
+ * @module types/db/cities
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";

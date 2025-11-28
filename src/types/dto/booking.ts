@@ -15,7 +15,7 @@ import type {
   FlightSeatClass,
   OrderPassenger,
   OrderStatus,
-} from "@/types/database";
+} from "@/types/db";
 
 /**
  * Airline information included in booking responses
@@ -274,7 +274,7 @@ export interface ConfirmationPageOrder {
 }
 
 // Re-export database types commonly used in booking flow
-export type { DocumentType, OrderStatus } from "@/types/database";
+export type { DocumentType, OrderStatus } from "@/types/db";
 
 // Additional type exports for component props
 export type IdentityType = DocumentType;

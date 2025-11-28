@@ -6,12 +6,12 @@ import {
   softDeletePassengerForUser,
   updatePassengerRecord,
 } from "@/domains/passengers/passenger.repository";
-import type { ServiceResult } from "@/domains/types";
-import type { Passenger } from "@/types/dto/passengers";
+import type { PassengerDTO } from "@/types/dto";
+import type { ServiceResult } from "@/types/result";
 import type {
   CreatePassengerData,
   UpdatePassengerData,
-} from "@/types/validations/passengers";
+} from "@/types/validations";
 
 /**
  * Service layer for passenger-related business logic
@@ -44,7 +44,7 @@ function isValidUUID(id: string): boolean {
  */
 export type PassengerInput = CreatePassengerData;
 
-function toPassengerDto(row: PassengerRow): Passenger {
+function toPassengerDto(row: PassengerRow): PassengerDTO {
   return {
     id: row.id,
     name: row.name,
@@ -78,7 +78,7 @@ function toPassengerDto(row: PassengerRow): Passenger {
 export async function createPassenger(
   userId: string,
   data: PassengerInput
-): Promise<ServiceResult<Passenger>> {
+): Promise<ServiceResult<PassengerDTO>> {
   try {
     // Validate required fields
     if (!data.name || !data.documentType || !data.documentNumber) {
@@ -140,7 +140,7 @@ export async function updatePassenger(
   userId: string,
   id: string,
   data: UpdatePassengerData
-): Promise<ServiceResult<Passenger>> {
+): Promise<ServiceResult<PassengerDTO>> {
   try {
     // Validate UUID format
     if (!isValidUUID(id)) {
@@ -225,7 +225,7 @@ export async function updatePassenger(
 export async function getPassenger(
   userId: string,
   id: string
-): Promise<ServiceResult<Passenger | null>> {
+): Promise<ServiceResult<PassengerDTO | null>> {
   try {
     // Validate UUID format
     if (!isValidUUID(id)) {

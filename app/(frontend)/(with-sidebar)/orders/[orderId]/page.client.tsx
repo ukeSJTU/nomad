@@ -15,7 +15,7 @@ import {
   OrderStatusCard,
   RefundOrderDialog,
 } from "@/components/flights/orders";
-import { OrderDetailFull } from "@/types/dto/orders";
+import { OrderDetailFull } from "@/types/dto";
 
 type OrderDetailsPageClientProps = {
   order: OrderDetailFull;

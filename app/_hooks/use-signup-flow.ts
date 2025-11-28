@@ -16,7 +16,7 @@ import type {
   EmailVerificationData,
   PasswordSetupData,
   PhoneVerificationData,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 export interface UseSignUpFlowReturn {
   // State

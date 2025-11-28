@@ -9,7 +9,7 @@ import { deleteOrderAction } from "@/app/_actions/orders";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DeleteOrderDialog from "@/components/user/delete-order-dialog";
 import OrderCard from "@/components/user/order-card";
-import type { OrderListItem } from "@/types/dto/orders";
+import type { OrderListItem } from "@/types/dto";
 
 interface OrdersPageClientProps {
   orders: OrderListItem[];

@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { OrderDetailFull } from "@/types/dto/orders";
+import { OrderDetailFull } from "@/types/dto";
 
 export type OrderPaymentDetailsProps = {
   paymentData: OrderDetailFull["payment"];

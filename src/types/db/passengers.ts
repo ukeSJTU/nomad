@@ -4,7 +4,7 @@
  * These types are automatically inferred from the Drizzle schema definitions.
  * They represent passenger information stored in the database.
  *
- * @module types/database/passengers
+ * @module types/db/passengers
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";

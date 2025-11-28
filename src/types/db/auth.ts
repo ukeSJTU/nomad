@@ -4,7 +4,7 @@
  * These types are automatically inferred from the Drizzle schema definitions.
  * They represent the structure of data as it exists in the database.
  *
- * @module types/database/auth
+ * @module types/db/auth
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";

@@ -5,9 +5,9 @@
  * making it easy to test and reuse in different contexts (user actions, admin operations, cron jobs, etc.).
  */
 
-import type { ServiceResult } from "@/domains/types";
 import { sendOrderConfirmationEmail as sendEmailViaClient } from "@/integrations/resend/client";
-import type { OrderConfirmationEmailData } from "@/types/dto/emails";
+import type { OrderConfirmationEmailData } from "@/types/dto";
+import type { ServiceResult } from "@/types/result";
 
 /**
  * Send order confirmation email

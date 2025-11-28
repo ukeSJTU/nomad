@@ -13,7 +13,7 @@ import type { FetchOptions } from "@/types/http";
 import type {
   EmailVerificationData,
   PhoneVerificationData,
-} from "@/types/validations/auth";
+} from "@/types/validations";
 
 import EmailVerificationForm from "./email-verification";
 import PhoneVerificationForm from "./phone-verification";
