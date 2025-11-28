@@ -14,7 +14,7 @@ export type DataSource = "fixture-faker" | "scenario";
 export const seedConfigSchema = z.object({
   /**
    * Data source type
-   * @default "fixture-faker"q
+   * @default "fixture-faker"
    */
   dataSource: z.enum(["fixture-faker", "scenario"]).default("fixture-faker"),
 
