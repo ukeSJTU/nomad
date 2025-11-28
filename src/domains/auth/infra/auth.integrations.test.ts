@@ -52,6 +52,7 @@ describe("Auth integrations toggles", () => {
     });
 
     it("defaults to production true, non-prod false", () => {
+      vi.stubEnv("ENABLE_ALIYUN_SMS", "");
       vi.stubEnv("NODE_ENV", "production");
       expect(shouldEnableAliyunSms()).toBe(true);
       vi.stubEnv("NODE_ENV", "development");
@@ -71,6 +72,7 @@ describe("Auth integrations toggles", () => {
     });
 
     it("defaults to production true, non-prod false", () => {
+      vi.stubEnv("ENABLE_RESEND", "");
       vi.stubEnv("NODE_ENV", "production");
       expect(shouldEnableResend()).toBe(true);
       vi.stubEnv("NODE_ENV", "development");

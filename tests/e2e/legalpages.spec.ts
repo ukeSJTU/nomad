@@ -113,8 +113,12 @@ test.describe("Legal Pages Navigation", () => {
     await termsLink.click();
     await expect(page).toHaveURL(/\/terms$/);
 
-    // Go back to Disclaimer
-    await page.goto("/disclaimer");
+    // Go back to Disclaimer via sidebar link
+    const backToDisclaimer = page
+      .getByRole("complementary")
+      .getByRole("link", { name: /免责声明/ });
+    await backToDisclaimer.click();
+    await expect(page).toHaveURL(/\/disclaimer$/);
 
     // Navigate to Privacy
     const privacyLink = page
