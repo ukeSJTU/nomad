@@ -43,17 +43,14 @@ import {
 } from "@/db/schema";
 import { generateAirlineLogoForSeed } from "@/lib/flights/airline";
 
+import { db } from "../index";
 import { REAL_AIRLINES } from "./fixtures/base/airlines";
 import { REAL_AIRPORTS } from "./fixtures/base/airports";
 import { REAL_CITIES } from "./fixtures/base/cities";
-import {
-  generateFlights,
-  generateSeatClasses,
-} from "./generators/flight-generator";
-import { generateOrders } from "./generators/order-generator";
-import { generateSearchHistory } from "./generators/search-history-generator";
-import { generatePassengers, generateUsers } from "./generators/user-generator";
-import { db } from "./index";
+import { generateFlights, generateSeatClasses } from "./generators/flight";
+import { generateOrders } from "./generators/order";
+import { generateSearchHistory } from "./generators/search.history";
+import { generatePassengers, generateUsers } from "./generators/user";
 import {
   displaySeedConfig,
   parseSeedConfig,
@@ -143,7 +140,9 @@ async function seedFromScenario(config: SeedConfig) {
   const scenarioModule = await import(
     `./fixtures/scenarios/${config.scenarioFile}.ts`
   );
-  const scenarioKey = `${config.scenarioFile.toUpperCase().replace(/-/g, "_")}_SCENARIO`;
+  const scenarioKey = `${config.scenarioFile
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "_")}_SCENARIO`;
   const scenario = scenarioModule[scenarioKey];
 
   if (!scenario) {

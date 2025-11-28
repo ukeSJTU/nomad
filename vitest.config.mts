@@ -105,6 +105,7 @@ export default defineConfig({
             "**/node_modules/**",
             "**/dist/**",
             "**/*.stories.tsx", // Exclude Storybook files from unit tests
+            "**/*.repository.test.ts", // Integration repository tests run in the integration project
           ],
           setupFiles: ["./tests/setup/global.ts"],
         },
@@ -121,6 +122,26 @@ export default defineConfig({
             "**/*.stories.tsx", // Exclude Storybook files from component tests
           ],
           setupFiles: ["./tests/setup/global.ts"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: { label: "repository", color: "magenta" },
+          environment: "node",
+          include: ["src/**/*.repository.test.ts"],
+          setupFiles: ["./tests/setup/integration-db.ts"],
+          pool: "threads",
+          minThreads: 1,
+          maxThreads: 1,
+          sequence: {
+            concurrent: false,
+          },
+          poolOptions: {
+            threads: {
+              singleThread: true,
+            },
+          },
         },
       },
       {

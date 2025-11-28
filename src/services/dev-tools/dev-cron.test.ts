@@ -222,7 +222,7 @@ describe("Development Cron Job Simulator", () => {
       startOrderCancellationTask();
 
       // Simulate SIGTERM
-      process.emit("SIGTERM" as any);
+      process.emit("SIGTERM");
 
       await vi.advanceTimersByTimeAsync(60000);
 
@@ -234,7 +234,7 @@ describe("Development Cron Job Simulator", () => {
       startOrderCancellationTask();
 
       // Simulate SIGINT (Ctrl+C)
-      process.emit("SIGINT" as any);
+      process.emit("SIGINT");
 
       await vi.advanceTimersByTimeAsync(60000);
 

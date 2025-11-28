@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
 
   // 2. Check for session cookie existence
   // Note: This only checks if the cookie exists, not if it's valid
-  // Full session validation is done in Server Components
+  // Deeper validation happens in server-side handlers/components when required
   const sessionCookie = getSessionCookie(request);
 
   // 3. Protect routes that require authentication

@@ -3,12 +3,8 @@ import {
   deleteAccountById,
   findCredentialAccount,
   getAccountsByUserId,
-} from "@/domains/auth/auth.repository";
+} from "@/domains/auth/infra/auth.repository";
 import type { ServiceResult } from "@/domains/types";
-import {
-  updateUserEmail,
-  updateUserPhoneNumber,
-} from "@/domains/user/user.repository";
 
 /**
  * Service layer for authentication-related business logic
@@ -234,93 +230,38 @@ export async function setPasswordForOAuthUser(
 }
 
 /**
- * Update user's phone number
- *
- * This function updates the phone number in the database.
- * It performs the following:
- * 1. Validates the phone number format
- * 2. Updates the user's phoneNumber and phoneNumberVerified fields
- *
- * @param userId - The ID of the user
- * @param phoneNumber - The new phone number (with +86 prefix)
- * @returns Result object with success status and message/error
+ * Validate and normalize phone numbers for auth flows.
+ * Returns the normalized phone number with +86 prefix on success.
  */
-export async function updatePhoneNumber(
-  userId: string,
+export function validatePhoneNumberFormat(
   phoneNumber: string
-): Promise<ServiceResult> {
-  try {
-    // 1. Validate phone number format (should have +86 prefix)
-    if (!phoneNumber.startsWith("+86")) {
-      return {
-        success: false,
-        error: "手机号格式错误",
-      };
-    }
+): ServiceResult<string> {
+  const trimmed = phoneNumber.trim();
+  const normalized = trimmed.startsWith("+86") ? trimmed : `+86${trimmed}`;
 
-    // Remove +86 prefix to get the actual phone number
-    const actualPhoneNumber = phoneNumber.substring(3);
-
-    // Validate it's 11 digits
-    if (!/^[0-9]{11}$/.test(actualPhoneNumber)) {
-      return {
-        success: false,
-        error: "手机号必须是11位数字",
-      };
-    }
-
-    // 2. Update the user's phone number in the database
-    await updateUserPhoneNumber(userId, phoneNumber);
-
-    return {
-      success: true,
-      message: "手机号更新成功",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "更新手机号失败，请重试",
-    };
+  if (!normalized.startsWith("+86")) {
+    return { success: false, error: "手机号格式错误" };
   }
+
+  const digits = normalized.replace("+86", "");
+
+  if (!/^[0-9]{11}$/.test(digits)) {
+    return { success: false, error: "手机号必须是11位数字" };
+  }
+
+  return { success: true, data: normalized };
 }
 
 /**
- * Update user's email address
- *
- * This function updates the email address in the database.
- * It performs the following:
- * 1. Validates the email format
- * 2. Updates the user's email and emailVerified fields
- *
- * @param userId - The ID of the user
- * @param email - The new email address
- * @returns Result object with success status and message/error
+ * Validate email format for auth flows.
  */
-export async function updateEmail(
-  userId: string,
-  email: string
-): Promise<ServiceResult> {
-  try {
-    // 1. Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return {
-        success: false,
-        error: "邮箱格式错误",
-      };
-    }
+export function validateEmailFormat(email: string): ServiceResult<void> {
+  const trimmed = email.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // 2. Update the user's email in the database
-    await updateUserEmail(userId, email);
-
-    return {
-      success: true,
-      message: "邮箱更新成功",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "更新邮箱失败，请重试",
-    };
+  if (!emailRegex.test(trimmed)) {
+    return { success: false, error: "邮箱格式错误" };
   }
+
+  return { success: true };
 }
