@@ -8,7 +8,7 @@ import {
   deleteAccountById,
   findCredentialAccount,
   getAccountsByUserId,
-} from "@/domains/auth/infra/auth.repository";
+} from "./auth.repository";
 
 describe("auth.repository", () => {
   it("returns accounts for user and finds credential account", async () => {

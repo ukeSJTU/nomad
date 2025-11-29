@@ -84,7 +84,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { PassengersPageClient } from "@/components/passengers/passengers-page-client";
-import { auth } from "@/domains/auth";
+import { auth } from "@/infra/auth";
 import { getPassengers } from "@/domains/passengers/passenger.repository";
 
 export default async function PassengersPage() {
@@ -303,7 +303,7 @@ export default function Error({
 "use server"; // 必须在文件顶部声明
 
 import { headers } from "next/headers";
-import { auth } from "@/domains/auth";
+import { auth } from "@/infra/auth";
 import { db } from "@/db";
 
 export async function setInitialPasswordAction(password: string) {
@@ -670,7 +670,7 @@ export function UpdatePassengerForm({ passengerId }: { passengerId: string }) {
 ### 示例：健康检查 API
 
 ```tsx title="app/api/health/route.ts"
-import { ApiResponse } from "@/lib/server/api-response";
+import { ApiResponse } from "@/infra/http";
 
 export async function GET() {
   const healthData = {

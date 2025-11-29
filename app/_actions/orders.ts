@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { z } from "zod";
 
 import { requireSessionUser } from "@/actions/session";
-import { auth } from "@/domains/auth";
 import {
   getAllOrdersByUserId,
   getFlightSeatClassById,
@@ -22,6 +21,7 @@ import {
   updateOrderAncillary,
 } from "@/domains/booking/orders.service";
 import { getUserBalance } from "@/domains/user/user.read.service";
+import { auth } from "@/infra/auth";
 import type { ActionResult } from "@/types/common";
 import type {
   AncillaryPageOrder,

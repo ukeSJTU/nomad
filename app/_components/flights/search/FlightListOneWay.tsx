@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FLIGHT_UI_TEXT } from "@/config/ui/flights";
+import { FLIGHT_UI_TEXT } from "@/config/ui";
 import {
   calculateDaysOffset,
   calculateFlightDuration,
@@ -57,7 +57,7 @@ export function FlightListOneWay({
     );
   }
 
-  const handleBooking = (flightId: string, seatClassId: string) => {
+  const handleBooking = (seatClassId: string) => {
     router.push(`/flights/booking/passengers?seatClassId=${seatClassId}`);
   };
 
@@ -115,7 +115,7 @@ export function FlightListOneWay({
             buttonText={FLIGHT_UI_TEXT.BOOK_BUTTON}
             onButtonClick={
               selectedSeatClass
-                ? () => handleBooking(flight.id, selectedSeatClass.id)
+                ? () => handleBooking(selectedSeatClass.id)
                 : undefined
             }
             onSeatClassClick={seatClassOption => {

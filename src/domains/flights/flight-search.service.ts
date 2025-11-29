@@ -10,8 +10,8 @@ import {
   searchRoundTripFlights,
 } from "@/domains/flights/flight.repository";
 import { recordFlightSearch } from "@/domains/flights/flight-search-history.service";
+import { logger } from "@/infra/logging";
 import { calculateLowestPrice } from "@/lib/flights/calculations";
-import logger from "@/lib/server/logger";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,

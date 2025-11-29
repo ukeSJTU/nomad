@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FLIGHT_UI_TEXT } from "@/config/ui/flights";
+import { FLIGHT_UI_TEXT } from "@/config/ui";
 import {
   calculateDaysOffset,
   calculateFlightDuration,

@@ -2,6 +2,7 @@ import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { airports, cities, flights, flightSeatClasses } from "@/db/schema";
+import { logger } from "@/infra/logging";
 import {
   addCurrency,
   getCurrencyValue,
@@ -11,7 +12,6 @@ import {
   calculateQuickSelectDateRange,
   getBookingDateRange,
 } from "@/lib/format/date";
-import logger from "@/lib/server/logger";
 import {
   type GetQuickDatePricesParams,
   type QuickDatePrice,

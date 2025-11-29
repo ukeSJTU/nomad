@@ -24,13 +24,13 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 - **Better Auth 1.3.27** powers phone/email OTP, GitHub OAuth, and session cookies via `nextCookies`, plus custom plugins for Cloudflare Turnstile captcha.
 - **Drizzle ORM 0.44.6** with `drizzle-kit` migrations/seeding, `drizzle-query-logger`, and PostgreSQL schemas stored in `src/db/schema`.
 - **Neon DB** (serverless PostgreSQL) hosts the data layer; connection logic lives in `src/db/index.ts` with SSL/ENV handling.
-- **Pino 10.0.0** plus `pino-pretty` for logging; `src/lib/server/logger.ts` configures env-sensitive formatting.
+- **Pino 10.0.0** plus `pino-pretty` for logging; `src/infra/logging/logger.ts` configures env-sensitive formatting.
 
 ### Integrations & AI
 
 - **Resend** for email OTP and order confirmation templates (`app/_components/emails`).
-- **Alibaba Cloud SMS** for phone OTP; wrappers live in `src/integrations/aliyun-sms`.
-- **Cloudflare Turnstile** captcha secures sensitive Better Auth endpoints (`src/integrations/turnstile`, `auth` plugin config).
+- **Alibaba Cloud SMS** for phone OTP; wrappers live in `src/infra/communications/aliyun-sms.client.ts`.
+- **Cloudflare Turnstile** captcha secures sensitive Better Auth endpoints (`src/infra/auth/turnstile`, `auth` plugin config).
 - **@ai-sdk/openai-compatible + ai@5.0.76** stream answers from Inkeep (API key via `INKEEP_API_KEY`) for the documentation chat endpoint (`app/api/chat/route.ts`) using `ProvideLinksToolSchema`.
 
 ### Documentation & Storybook
@@ -53,11 +53,11 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 - **Server Actions:** `app/_actions` exposes Server Actions such as `auth.ts`, `flight-search-history.ts`, `orders.ts`, `payments.ts`, `passengers.ts`, and `dev-tools.ts`. They validate with Zod, call domain services, and return typed `ActionResult` objects.
 - **Shared Hooks & Components:** Domain-agnostic hooks (`app/_hooks`, e.g., `use-flight-search-state`, `use-otp-countdown`, `use-mobile`) keep logic reusable. Reusable UI elements live under `app/_components` (common layout pieces, domain-specific views, email templates, Fumadocs helpers, and the Shadcn-derived component library). `app/_components/common` includes `Header`, `Footer`, `DevUserSwitcher`, and `BreadcrumbNav`.
 - **Storybook:** `app/_stories` mirrors `app/_components` (auth, flights, forms, security, passengers, etc.) and ensures each shared component publishes at least one Storybook story.
-- **API Routes:** `app/api/auth/[...all]` delegates to Better Auth (`domains/auth/infra/auth.plugin.ts`), `app/api/chat/route.ts` streams AI-powered answers, `app/api/cron/cancel-expiration` uses `src/security/cron` to authenticate and cancel expired orders, and `app/api/health/route.ts` returns a standardized `ApiResponse.success` payload validated against `src/types/api/health.ts`.
+- **API Routes:** `app/api/auth/[...all]` delegates to Better Auth (`src/infra/auth/better-auth.plugin.ts`), `app/api/chat/route.ts` streams AI-powered answers, `app/api/cron/cancel-expiration` uses `src/infra/http/cron-auth` to authenticate and cancel expired orders, and `app/api/health/route.ts` returns a standardized `ApiResponse.success` payload validated against `src/types/api/health.ts`.
 - **Domain & Service Layers:** Business logic lives under `src/domains` (auth, booking, flights, payments, passengers, notification, user, dev-tools). Cross-domain orchestrations such as `src/services/payment-workflow.service.ts` handle balance payments, email notifications, and ledger updates.
 - **Integrations & Utilities:** `src/integrations` centralizes Aliyun SMS, Resend, Turnstile, and Fumadocs helpers (search, mermaid, LLM tooling). `src/lib` provides helpers for API responses, currency math, masking sensitive data, and logging.
 - **Database Schema:** `src/db/schema` defines tables for flights, airports, orders, passengers, and ancillary services; seeds are seeded via `drizzle-kit` and helper scripts.
-- **Documentation Layer:** `app/(docs)` contains the Fumadocs-powered docs UI, including LLM pages (`llms.mdx`/`llms-full.txt`) and shared components from `src/integrations/fumadocs`. The canonical content lives in `content/docs` (MoSCoW requirements, technical design, testing strategy, appendices).
+- **Documentation Layer:** `app/(docs)` contains the Fumadocs-powered docs UI, including LLM pages (`llms.mdx`/`llms-full.txt`) and shared components from `src/infra/fumadocs`. The canonical content lives in `content/docs` (MoSCoW requirements, technical design, testing strategy, appendices).
 
 ## Documentation Requirements
 
@@ -95,8 +95,8 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 - **Flights:** Search, filter, sort, quick-date pricing, and saved search history are orchestrated through `app/_actions/flight-search-history.ts`, `src/domains/flights`, and UI components under `app/_components/flights`. Seat selection, ancillary services, and status pages live within the `(with-sidebar)` booking workspace.
 - **Booking & Orders:** Multi-step flow ties flight selection to passenger info, ancillaries, payment deadlines, and confirmation. `orders.service.ts` handles seat locking, cancellations, refunds, and order number generation. Cron job (`app/api/cron/cancel-expiration`) cancels expired pending orders and releases seats. UI flows use `app/_actions/orders.ts`, the booking sidebar, and `app/(frontend)/(with-sidebar)/orders/[orderId]`.
 - **Payments:** Payments are simulated through `src/services/payment-workflow.service.ts` (balance-only). It debits user balance, updates orders/payments tables, and optionally triggers confirmation emails via Resend (`src/domains/notification`). Document the lack of real gateway integration.
-- **Notifications & Emails:** `src/integrations/resend/client.tsx` and `app/_components/emails` define OTP and order confirmation templates; `sendOrderConfirmationEmail` dispatches emails after payments.
-- **Security & Infrastructure:** Turnstile, cron secret verification (`src/security/cron.ts`), API response helpers (`src/lib/server/api-response.ts`), and consistent response meta (`src/types/api/response.ts`) ensure predictable HTTP behavior. The health check at `/api/health` validates uptime/status.
+- **Notifications & Emails:** `src/infra/communications/resend.client.tsx` and `app/_components/emails` define OTP and order confirmation templates; `sendOrderConfirmationEmail` dispatches emails after payments.
+- **Security & Infrastructure:** Turnstile, cron secret verification (`src/infra/http/cron-auth.ts`), API response helpers (`src/infra/http/api-response.ts`), and consistent response meta (`src/types/api/response.ts`) ensure predictable HTTP behavior. The health check at `/api/health` validates uptime/status.
 - **Documentation & AI:** The docs chat endpoint (`app/api/chat/route.ts`) streams answers with Inkeep/AI Tools, while `content/docs` provides MoSCoW requirements, testing strategy, and architecture write-ups. `app/(docs)` exposes these pages plus LLM explorations (`llms.mdx`).
 
 ## Important Constraints
@@ -107,7 +107,7 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 - PostgreSQL is the only supported database (hosted on Neon); leverage branching for isolation. Schema migrations/seeding use `drizzle-kit`.
 - Deployments go through Vercel; design code for serverless limits (no long-running background loops). Always use HTTPS in prod.
 - Authentication requires Better Auth configuration: `captcha` with Turnstile (site and secret keys), `phoneNumber` (Aliyun SMS or console simulator via `ENABLE_ALIYUN_SMS`), `emailOTP` (Resend or console via `ENABLE_RESEND`), and `github` social provider.
-- Cron endpoints require `CRON_SECRET`; requests must include `Authorization: Bearer <CRON_SECRET>` and are protected by `src/security/cron.ts`.
+- Cron endpoints require `CRON_SECRET`; requests must include `Authorization: Bearer <CRON_SECRET>` and are protected by `src/infra/http/cron-auth.ts`.
 - Mask sensitive data before logging (use `src/lib/mask-data.ts` for documents/phone/email).
 - Payment processing currently supports **balance payment only**; document that there is no real payment gateway and continue to simulate notifications.
 - UI/docs/comments primary language is Chinese; keep user-facing copy and docs in Chinese with English technical notes as needed.
@@ -140,6 +140,6 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 
 ## Monitoring & Logging
 
-- Use `src/lib/server/logger.ts` to capture structured logs; dev uses `pino-pretty`, production streams to stdout with ISO timestamps.
+- Use `src/infra/logging/logger.ts` to capture structured logs; dev uses `pino-pretty`, production streams to stdout with ISO timestamps.
 - API responses follow the schema in `src/types/api/response.ts`, so every route (`app/api/health`, cron APIs, Server Actions that expose REST endpoints) returns consistent metadata and request IDs.
 - Track cron health via `/api/health` and protect cancellation jobs with `CRON_SECRET`.

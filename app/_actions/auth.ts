@@ -4,13 +4,13 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { requireSessionUser } from "@/actions/session";
-import { auth } from "@/domains/auth";
 import {
   changePassword,
   setPasswordForOAuthUser,
   unlinkSocialAccount,
 } from "@/domains/auth/auth.service";
-import logger from "@/lib/server/logger";
+import { auth } from "@/infra/auth";
+import { logger } from "@/infra/logging";
 import { validateAccount } from "@/lib/validation/account";
 import {
   updateUserEmailWorkflow,

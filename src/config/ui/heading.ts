@@ -59,7 +59,7 @@ export const sidebarHeadingStyles = {
  *
  * 示例:
  * ```tsx
- * import { minimalHeadingStyles as headingStyles } from "@/config/ui/heading";
+ * import { minimalHeadingStyles as headingStyles } from "@/config/ui";
  *
  * const customHeadings: Partial<MDXComponents> = {
  *   h1: props => <h1 className={headingStyles.h1} {...props} />,

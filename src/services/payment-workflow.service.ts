@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { user } from "@/db/schema";
 import { orders, payments } from "@/db/schema/orders";
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
-import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
+import { sendOrderConfirmationEmail } from "@/infra/notifications";
 import {
   getCurrencyValue,
   parseCurrency,

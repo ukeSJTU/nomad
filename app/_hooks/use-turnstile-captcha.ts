@@ -3,7 +3,7 @@
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import { getTurnstileSiteKey } from "@/integrations/turnstile/client";
+import { getTurnstileSiteKey } from "@/config/system";
 
 // Constants for captcha verification
 const CAPTCHA_TIMEOUT = 30000; // 30 seconds

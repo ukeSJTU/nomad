@@ -1,5 +1,3 @@
-import "./auth-notification.service";
-
 import {
   validateEmailFormat,
   validatePhoneNumberFormat,
@@ -9,10 +7,13 @@ import {
   updateUserEmail,
   updateUserPhoneNumber,
 } from "@/domains/user/user.repository";
-import logger from "@/lib/server/logger";
+import { logger } from "@/infra/logging";
+import { registerAuthNotificationHandlers } from "@/infra/notifications";
 import type { ServiceResult } from "@/types/result";
 
 import { emitAuthEvent } from "./auth-events";
+
+registerAuthNotificationHandlers();
 
 export async function updateUserPhoneNumberWorkflow(
   userId: string,

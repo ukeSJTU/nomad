@@ -1,11 +1,9 @@
 "use server";
 
 import { getSessionUser } from "@/actions/session";
-import {
-  getAllCities,
-  getRecentSearchHistory,
-  searchFlightsWithHistory,
-} from "@/domains/flights/flights.read.service";
+import { getAllCities } from "@/domains/flights/city.repository";
+import { searchFlightsWithHistory } from "@/domains/flights/flight-search.service";
+import { getRecentSearchHistory } from "@/domains/flights/flight-search-history.repository";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,

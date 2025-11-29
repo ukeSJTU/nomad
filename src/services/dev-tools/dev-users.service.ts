@@ -2,7 +2,7 @@ import { desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
-import { auth } from "@/domains/auth";
+import { auth } from "@/infra/auth";
 import type { User } from "@/types/db";
 import type { ServiceResult } from "@/types/result";
 

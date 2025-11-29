@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/domains/auth";
+import { auth } from "@/infra/auth";
 
 export interface SessionUser {
   id: string;
