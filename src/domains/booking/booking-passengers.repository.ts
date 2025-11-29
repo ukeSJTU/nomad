@@ -13,8 +13,8 @@ import {
   airlines,
   airports,
   cities,
-  flights,
   flightSeatClasses,
+  flights,
   passengers,
 } from "@/db/schema";
 import type { PassengerPageFlight, SavedPassenger } from "@/types/dto";

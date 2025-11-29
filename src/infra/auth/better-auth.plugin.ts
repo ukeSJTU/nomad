@@ -8,8 +8,8 @@ import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@/db";
 import {
-  getTurnstileSecretKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
+  getTurnstileSecretKey,
 } from "@/infra/auth/turnstile";
 import { logger } from "@/infra/logging";
 

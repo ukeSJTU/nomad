@@ -1,13 +1,13 @@
 "use client";
-import { type UIMessage, useChat, type UseChatHelpers } from "@ai-sdk/react";
+import { type UIMessage, type UseChatHelpers, useChat } from "@ai-sdk/react";
 import { Presence } from "@radix-ui/react-presence";
 import { DefaultChatTransport } from "ai";
 import Link from "fumadocs-core/link";
 import { Loader2, RefreshCw, SearchIcon, Send, X } from "lucide-react";
 import {
   type ComponentProps,
-  createContext,
   type SyntheticEvent,
+  createContext,
   use,
   useEffect,
   useMemo,

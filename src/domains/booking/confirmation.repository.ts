@@ -13,8 +13,8 @@ import { db } from "@/db";
 import {
   airlines,
   airports,
-  flights,
   flightSeatClasses,
+  flights,
   orderPassengers,
   orders,
   payments,

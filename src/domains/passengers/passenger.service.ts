@@ -1,8 +1,8 @@
 import {
+  PassengerRow,
   batchSoftDeletePassengersForUser,
   createPassengerRecord,
   findPassengerForUser,
-  PassengerRow,
   softDeletePassengerForUser,
   updatePassengerRecord,
 } from "@/domains/passengers/passenger.repository";

@@ -14,8 +14,8 @@ import type { ActionResult } from "@/types/common";
 import type { UserInfo, UserSecurityStatus } from "@/types/dto";
 import {
   RechargeBalanceData,
-  rechargeBalanceSchema,
   UserInfoUpdateData,
+  rechargeBalanceSchema,
   userInfoUpdateSchema,
 } from "@/types/validations";
 

@@ -299,7 +299,7 @@ You can play the following roles:
 - **Specific Work**:
   - Write and maintain **GitHub Actions** workflow files (`.github/workflows/`)
   - Manage **Vercel** platform deployment configuration and environment variables
-  - Maintain the project's **scaffolding and development toolchain** (e.g., ESLint, Prettier, Husky configuration)
+  - Maintain the project's **scaffolding and development toolchain** (e.g., Biome, Husky configuration)
   - Configure and optimize **CI/CD Pipeline** (testing, building, deployment processes)
   - Monitor and optimize application **performance and availability**
 

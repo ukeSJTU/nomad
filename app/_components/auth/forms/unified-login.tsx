@@ -30,8 +30,8 @@ import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import {
   type OtpLoginData,
-  otpLoginSchema,
   type PasswordLoginData,
+  otpLoginSchema,
   passwordLoginSchema,
 } from "@/types/validations";
 

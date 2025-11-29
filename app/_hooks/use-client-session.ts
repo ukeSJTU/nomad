@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { getSessionUser, type SessionUser } from "@/actions/session";
+import { type SessionUser, getSessionUser } from "@/actions/session";
 
 interface UseClientSessionResult {
   data: SessionUser | null;

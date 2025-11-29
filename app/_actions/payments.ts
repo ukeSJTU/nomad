@@ -4,8 +4,8 @@ import { headers } from "next/headers";
 import { z } from "zod";
 
 import {
-  processPayment,
   type ProcessPaymentData,
+  processPayment,
 } from "@/domains/payments/payment.service";
 import { auth } from "@/infra/auth";
 import type { ActionResult } from "@/types/common";

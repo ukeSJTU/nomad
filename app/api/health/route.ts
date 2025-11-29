@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import { ApiResponse } from "@/infra/http";
 import {
   type HealthData,
-  healthDataSchema,
   type HealthResponse,
+  healthDataSchema,
 } from "@/types/api";
 
 export async function GET(): Promise<NextResponse<HealthResponse>> {
