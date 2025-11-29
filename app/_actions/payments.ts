@@ -3,11 +3,11 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 
-import { auth } from "@/domains/auth";
 import {
   processPayment,
   type ProcessPaymentData,
 } from "@/domains/payments/payment.service";
+import { auth } from "@/infra/auth";
 import type { ActionResult } from "@/types/common";
 
 /**

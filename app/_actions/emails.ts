@@ -9,8 +9,8 @@
 
 import { headers } from "next/headers";
 
-import { auth } from "@/domains/auth";
 import { resendOrderConfirmation } from "@/domains/notification/order-email.service";
+import { auth } from "@/infra/auth";
 import type { ActionResult } from "@/types/common";
 
 /**

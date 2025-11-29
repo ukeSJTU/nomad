@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { LLMCopyButton, ViewOptions } from "@/components/fumadocs/page-actions";
-import { getPageImage, source } from "@/config/docs";
+import { getPageImage, source } from "@/infra/fumadocs";
 import { getMDXComponents } from "@/mdx-components";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {

@@ -1,7 +1,8 @@
 import { GithubInfo } from "fumadocs-ui/components/github-info";
 import { DocsLayout, type DocsLayoutProps } from "fumadocs-ui/layouts/docs";
 
-import { baseOptions, source } from "@/config/docs";
+import { baseOptions } from "@/config/docs";
+import { source } from "@/infra/fumadocs";
 
 const docsOptions: DocsLayoutProps = {
   ...baseOptions(),

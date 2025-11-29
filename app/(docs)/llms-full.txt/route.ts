@@ -1,4 +1,4 @@
-import { getLLMText, source } from "@/config/docs";
+import { getLLMText, source } from "@/infra/fumadocs";
 
 // cached forever
 export const revalidate = false;

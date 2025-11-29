@@ -19,8 +19,8 @@ import type { z } from "zod";
 
 import { Markdown } from "@/components/fumadocs/markdown";
 import { Button } from "@/components/ui/button";
-import type { ProvideLinksToolSchema } from "@/config/docs";
 import { cn } from "@/lib/utils";
+import type { ProvideLinksToolSchema } from "@/types/inkeep-qa-schema";
 
 const Context = createContext<{
   open: boolean;

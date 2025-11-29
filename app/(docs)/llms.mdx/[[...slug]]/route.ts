@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { getLLMText, source } from "@/config/docs";
+import { getLLMText, source } from "@/infra/fumadocs";
 
 export const revalidate = false;
 

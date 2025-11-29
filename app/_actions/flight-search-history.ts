@@ -2,11 +2,11 @@
 
 import { headers } from "next/headers";
 
-import { auth } from "@/domains/auth";
 import {
   clearFlightSearchHistory,
   recordFlightSearch,
 } from "@/domains/flights/flight-search-history.service";
+import { auth } from "@/infra/auth";
 import { logger } from "@/infra/logging";
 import type { RecordFlightSearchData } from "@/types/validations";
 
