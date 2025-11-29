@@ -6,8 +6,10 @@
  * orders without requiring external cron services.
  */
 
+import "server-only";
+
 import { cancelExpiredOrders } from "@/domains/booking/orders.service";
-import logger from "@/lib/server/logger";
+import { logger } from "@/infra/logging";
 
 let orderCancellationTimer: NodeJS.Timeout | null = null;
 let isTaskRunning = false;

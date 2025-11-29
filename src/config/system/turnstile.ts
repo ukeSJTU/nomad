@@ -1,3 +1,5 @@
+import { isProduction } from "@/config/env";
+
 /**
  * Cloudflare Turnstile constants for shared use across server/client helpers.
  */
@@ -30,3 +32,30 @@ export const TURNSTILE_PROTECTED_ENDPOINTS = [
 
 export type TurnstileProtectedEndpoint =
   (typeof TURNSTILE_PROTECTED_ENDPOINTS)[number];
+
+/**
+ * Returns the public site key exposed to the browser.
+ * Prefers NEXT_PUBLIC_TURNSTILE_SITE_KEY, then TURNSTILE_SITE_KEY (for backwards compatibility),
+ * and finally the Cloudflare test key when not running in production.
+ *
+ * @throws {Error} When no site key is configured in production environment
+ * @returns The Turnstile site key for client-side validation
+ */
+export function getTurnstileSiteKey(): string {
+  const siteKey =
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ??
+    process.env.TURNSTILE_SITE_KEY;
+
+  if (siteKey) {
+    return siteKey;
+  }
+
+  if (isProduction()) {
+    throw new Error(
+      "NEXT_PUBLIC_TURNSTILE_SITE_KEY must be configured in production environment. " +
+        "Please set this environment variable with your Cloudflare Turnstile site key."
+    );
+  }
+
+  return TURNSTILE_TEST_SITE_KEY;
+}

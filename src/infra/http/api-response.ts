@@ -1,3 +1,5 @@
+import "server-only";
+
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 

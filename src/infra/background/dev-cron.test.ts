@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { cancelExpiredOrders } from "@/domains/booking/orders.service";
-import logger from "@/lib/server/logger";
+import { logger } from "@/infra/logging";
 
 import {
   startOrderCancellationTask,
@@ -13,8 +13,8 @@ vi.mock("@/domains/booking/orders.service", () => ({
   cancelExpiredOrders: vi.fn(),
 }));
 
-vi.mock("@/lib/server/logger", () => ({
-  default: {
+vi.mock("@/infra/logging", () => ({
+  logger: {
     info: vi.fn(),
     error: vi.fn(),
     debug: vi.fn(),

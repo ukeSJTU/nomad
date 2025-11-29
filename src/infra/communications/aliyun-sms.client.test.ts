@@ -24,7 +24,7 @@ vi.mock("@alicloud/tea-util", () => ({
 }));
 
 // Import after mocking
-import { sendSmsOtp } from "./client";
+import { sendSmsOtp } from "./aliyun-sms.client";
 
 describe("SMS Service", () => {
   beforeEach(() => {

@@ -11,15 +11,15 @@ vi.mock("resend", () => ({
 }));
 
 // Mock logger
-vi.mock("@/lib/server/logger", () => ({
-  default: {
+vi.mock("@/infra/logging", () => ({
+  logger: {
     info: vi.fn(),
     error: vi.fn(),
   },
 }));
 
 // Import the function we want to test after mocking dependencies
-import { sendEmailOtp } from "./client";
+import { sendEmailOtp } from "./resend.client";
 
 describe("Email Service", () => {
   beforeEach(() => {

@@ -1,5 +1,5 @@
 import { getOrderDetailById } from "@/domains/booking/orders.repository";
-import { sendOrderConfirmationEmail } from "@/domains/notification/email.service";
+import { sendOrderConfirmationEmail } from "@/infra/notifications";
 import { transformOrderDetailToEmailData } from "@/lib/notification/transformers";
 import type { ServiceResult } from "@/types/result";
 

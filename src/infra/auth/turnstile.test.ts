@@ -6,13 +6,13 @@ vi.mock("@better-fetch/fetch", () => ({
   betterFetch: betterFetchMock,
 }));
 
+import { getTurnstileSiteKey } from "@/config/system";
 import {
   getTurnstileSecretKey,
-  getTurnstileSiteKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
   TURNSTILE_TEST_SECRET_KEY,
   TURNSTILE_TEST_SITE_KEY,
-} from "@/integrations/turnstile/client";
+} from "@/infra/auth/turnstile";
 
 const createPlugin = async () => {
   const { captcha } = await import("better-auth/plugins");

@@ -1,7 +1,7 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { convertToModelMessages, streamText } from "ai";
 
-import { ProvideLinksToolSchema } from "@/integrations/fumadocs/inkeep-qa-schema";
+import { ProvideLinksToolSchema } from "@/config/docs";
 
 export const runtime = "edge";
 

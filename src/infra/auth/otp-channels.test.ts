@@ -5,18 +5,15 @@ import {
   sendAuthPhoneOtp,
   shouldEnableAliyunSms,
   shouldEnableResend,
-} from "./auth.integrations";
+} from "./otp-channels";
 
-vi.mock("@/integrations/aliyun-sms/client", () => ({
+vi.mock("@/infra/communications", () => ({
   sendSmsOtp: vi.fn().mockResolvedValue(true),
-}));
-
-vi.mock("@/integrations/resend/client", () => ({
   sendEmailOtp: vi.fn().mockResolvedValue(true),
 }));
 
-vi.mock("@/lib/server/logger", () => ({
-  default: {
+vi.mock("@/infra/logging", () => ({
+  logger: {
     info: vi.fn(),
     error: vi.fn(),
     warn: vi.fn(),
@@ -27,12 +24,12 @@ vi.mock("@/lib/server/logger", () => ({
 }));
 
 const mockSendSmsOtp = vi.mocked(
-  await import("@/integrations/aliyun-sms/client")
+  await import("@/infra/communications")
 ).sendSmsOtp;
 const mockSendEmailOtp = vi.mocked(
-  await import("@/integrations/resend/client")
+  await import("@/infra/communications")
 ).sendEmailOtp;
-const mockLogger = vi.mocked((await import("@/lib/server/logger")).default);
+const mockLogger = vi.mocked((await import("@/infra/logging")).logger);
 
 describe("Auth integrations toggles", () => {
   afterEach(() => {

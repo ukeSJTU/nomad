@@ -1,3 +1,5 @@
+import "server-only";
+
 import Credential from "@alicloud/credentials";
 import Dypnsapi20170525, * as $Dypnsapi20170525 from "@alicloud/dypnsapi20170525";
 import * as $OpenApi from "@alicloud/openapi-client";

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { faker } from "@faker-js/faker";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -8,10 +10,10 @@ import { db } from "@/db";
 import {
   getTurnstileSecretKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
-} from "@/integrations/turnstile/client";
-import logger from "@/lib/server/logger";
+} from "@/infra/auth/turnstile";
+import { logger } from "@/infra/logging";
 
-import { sendAuthEmailOtp, sendAuthPhoneOtp } from "./auth.integrations";
+import { sendAuthEmailOtp, sendAuthPhoneOtp } from "./otp-channels";
 
 const turnstileSecretKey = getTurnstileSecretKey();
 

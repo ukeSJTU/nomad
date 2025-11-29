@@ -12,9 +12,7 @@ export async function register() {
   if (process.env.NODE_ENV === "development") {
     // Only run on server (not in edge runtime)
     if (process.env.NEXT_RUNTIME === "nodejs") {
-      const { startOrderCancellationTask } = await import(
-        "@/services/dev-tools/dev-cron"
-      );
+      const { startOrderCancellationTask } = await import("@/infra/background");
       startOrderCancellationTask();
     }
   }

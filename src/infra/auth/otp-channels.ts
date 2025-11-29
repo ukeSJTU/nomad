@@ -1,7 +1,8 @@
+import "server-only";
+
 import { isProduction } from "@/config/env";
-import { sendSmsOtp } from "@/integrations/aliyun-sms/client";
-import { sendEmailOtp } from "@/integrations/resend/client";
-import logger from "@/lib/server/logger";
+import { sendEmailOtp, sendSmsOtp } from "@/infra/communications";
+import { logger } from "@/infra/logging";
 
 export function shouldEnableAliyunSms(): boolean {
   const enableSms = process.env.ENABLE_ALIYUN_SMS?.toLowerCase();

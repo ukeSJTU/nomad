@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createUnauthorizedResponse, verifyCronSecret } from "./cron";
+import { createUnauthorizedResponse, verifyCronSecret } from "./cron-auth";
 
 describe("cron-auth", () => {
   const VALID_SECRET = "test-secret-123";

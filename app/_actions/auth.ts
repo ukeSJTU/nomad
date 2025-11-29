@@ -10,7 +10,7 @@ import {
   setPasswordForOAuthUser,
   unlinkSocialAccount,
 } from "@/domains/auth/auth.service";
-import logger from "@/lib/server/logger";
+import { logger } from "@/infra/logging";
 import { validateAccount } from "@/lib/validation/account";
 import {
   updateUserEmailWorkflow,

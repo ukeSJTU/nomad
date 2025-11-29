@@ -1,6 +1,6 @@
 import type { InferPageType } from "fumadocs-core/source";
 
-import { source } from "@/integrations/fumadocs/source";
+import { source } from "@/config/docs/source";
 
 export async function getLLMText(page: InferPageType<typeof source>) {
   const processed = await page.data.getText("processed");

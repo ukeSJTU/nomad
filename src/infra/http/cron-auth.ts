@@ -20,6 +20,8 @@
  * ```
  */
 
+import "server-only";
+
 /**
  * Verify the cron secret from the request Authorization header
  *

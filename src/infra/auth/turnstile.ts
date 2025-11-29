@@ -1,4 +1,5 @@
-import { isProduction } from "@/config/env";
+import "server-only";
+
 import {
   TURNSTILE_PROTECTED_ENDPOINTS,
   TURNSTILE_TEST_SECRET_KEY,
@@ -28,7 +29,7 @@ export function getTurnstileSecretKey(): string {
     return secretKey;
   }
 
-  if (isProduction()) {
+  if (process.env.NODE_ENV === "production") {
     throw new Error(
       "TURNSTILE_SECRET_KEY must be configured in production environment. " +
         "Please set this environment variable with your Cloudflare Turnstile secret key."
@@ -36,31 +37,4 @@ export function getTurnstileSecretKey(): string {
   }
 
   return TURNSTILE_TEST_SECRET_KEY;
-}
-
-/**
- * Returns the public site key exposed to the browser.
- * Prefers NEXT_PUBLIC_TURNSTILE_SITE_KEY, then TURNSTILE_SITE_KEY (for backwards compatibility),
- * and finally the Cloudflare test key when not running in production.
- *
- * @throws {Error} When no site key is configured in production environment
- * @returns The Turnstile site key for client-side validation
- */
-export function getTurnstileSiteKey(): string {
-  const siteKey =
-    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ??
-    process.env.TURNSTILE_SITE_KEY;
-
-  if (siteKey) {
-    return siteKey;
-  }
-
-  if (isProduction()) {
-    throw new Error(
-      "NEXT_PUBLIC_TURNSTILE_SITE_KEY must be configured in production environment. " +
-        "Please set this environment variable with your Cloudflare Turnstile site key."
-    );
-  }
-
-  return TURNSTILE_TEST_SITE_KEY;
 }
