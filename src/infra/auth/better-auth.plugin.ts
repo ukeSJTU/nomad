@@ -7,15 +7,9 @@ import { nextCookies } from "better-auth/next-js";
 import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@/db";
-import {
-  TURNSTILE_PROTECTED_ENDPOINTS,
-  getTurnstileSecretKey,
-} from "@/infra/auth/turnstile";
 import { logger } from "@/infra/logging";
 
 import { sendAuthEmailOtp, sendAuthPhoneOtp } from "./otp-channels";
-
-const turnstileSecretKey = getTurnstileSecretKey();
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -27,8 +21,16 @@ export const auth = betterAuth({
   plugins: [
     captcha({
       provider: "cloudflare-turnstile",
-      secretKey: turnstileSecretKey,
-      endpoints: Array.from(TURNSTILE_PROTECTED_ENDPOINTS),
+      secretKey: process.env.TURNSTILE_SECRET_KEY!,
+      endpoints: [
+        "/sign-in/email",
+        "/sign-in/phone-number",
+        "/sign-in/email-otp",
+        "/phone-number/send-otp",
+        "/phone-number/verify",
+        "/email-otp/send-verification-otp",
+        "/email-otp/verify-email",
+      ],
     }),
     phoneNumber({
       sendOTP: async ({ phoneNumber, code }) => {

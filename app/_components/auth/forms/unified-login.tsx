@@ -1,13 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Turnstile } from "@marsidev/react-turnstile";
 import { AlertCircle, Github } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import {
+  type TurnstileInstance,
+  TurnstileWidget,
+} from "@/components/auth/turnstile";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,7 +27,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
-import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
@@ -127,9 +129,6 @@ function PasswordLoginForm({
   isLoading = false,
   className,
 }: PasswordLoginFormProps) {
-  const [showCaptcha, setShowCaptcha] = useState(false);
-  const { siteKey, turnstileRef, isVerifying, prepareCaptchaRequest } =
-    useTurnstileCaptcha();
   const form = useForm<PasswordLoginData>({
     resolver: zodResolver(passwordLoginSchema),
     mode: "onSubmit",
@@ -153,25 +152,11 @@ function PasswordLoginForm({
     const termsValid = await form.trigger("agreedToTerms");
     if (!termsValid) return;
 
-    setShowCaptcha(true);
-
-    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
-
     try {
-      // Require human verification before submit
-      context = await prepareCaptchaRequest();
-
-      if (!context) {
-        toast.error("人机验证失败，请重新完成人机验证");
-        return;
-      }
-
       // All validations passed, submit the form
-      await onSubmit(data, context.fetchOptions);
+      await onSubmit(data);
     } catch {
       toast.error("人机验证失败，请重试");
-    } finally {
-      context?.complete();
     }
   };
 
@@ -219,7 +204,7 @@ function PasswordLoginForm({
                   type="text"
                   placeholder="国内手机号/用户名/邮箱"
                   className="h-12"
-                  disabled={isLoading || isVerifying}
+                  disabled={isLoading}
                 />
               </FormControl>
             </FormItem>
@@ -239,7 +224,7 @@ function PasswordLoginForm({
                     type="password"
                     placeholder="登录密码"
                     className="h-12 pr-20"
-                    disabled={isLoading || isVerifying}
+                    disabled={isLoading}
                   />
                   <Link
                     href="/auth/forgot-password"
@@ -260,7 +245,7 @@ function PasswordLoginForm({
         <Button
           type="submit"
           className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
-          disabled={isLoading || isVerifying}
+          disabled={isLoading}
         >
           登 录
         </Button>
@@ -273,7 +258,7 @@ function PasswordLoginForm({
             <TermsCheckbox
               checked={field.value}
               onChange={field.onChange}
-              disabled={isLoading || isVerifying}
+              disabled={isLoading}
               error={
                 showTermsTooltip
                   ? form.formState.errors.agreedToTerms?.message
@@ -289,7 +274,7 @@ function PasswordLoginForm({
             type="button"
             variant="link"
             onClick={onSwitchToOtp}
-            disabled={isLoading || isVerifying}
+            disabled={isLoading}
             className="text-primary hover:text-primary/90 p-0 h-auto"
           >
             验证码登录
@@ -301,21 +286,6 @@ function PasswordLoginForm({
           >
             免费注册
           </Link>
-        </div>
-
-        {/* Turnstile Widget */}
-        <div className={cn(!showCaptcha && "hidden")}>
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={siteKey}
-            options={{
-              appearance: "always",
-              refreshExpired: "never",
-              size: "normal",
-              execution: "execute",
-              action: "login-password",
-            }}
-          />
         </div>
       </form>
     </Form>
@@ -362,10 +332,8 @@ function OtpLoginForm({
   className,
 }: OtpLoginFormProps) {
   const { countdown, start: startCountdown } = useOtpCountdown();
-  const [showCaptcha, setShowCaptcha] = useState(false); // Control widget visibility
-  const { siteKey, turnstileRef, isVerifying, prepareCaptchaRequest } =
-    useTurnstileCaptcha();
-
+  const [isVerifying, setIsVerifying] = useState(false);
+  const turnstileRef = useRef<TurnstileInstance | undefined>(null);
   const form = useForm<OtpLoginData>({
     resolver: zodResolver(otpLoginSchema),
     mode: "onSubmit",
@@ -388,22 +356,22 @@ function OtpLoginForm({
 
     const account = form.getValues("account");
 
-    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
-
+    // Get Turnstile token
+    setIsVerifying(true);
     try {
-      // Show Turnstile widget before triggering verification
-      setShowCaptcha(true);
+      // Use getResponsePromise to wait for the token (with 30s timeout)
+      const token = await turnstileRef.current?.getResponsePromise();
 
-      // Trigger Turnstile verification
-      context = await prepareCaptchaRequest();
-
-      if (!context) {
-        toast.error("人机验证失败，请重新完成验证");
+      if (!token) {
+        toast.error("人机验证失败，请重试");
+        turnstileRef.current?.reset();
         return;
       }
 
       // Call backend API to send OTP with captcha token
-      const success = await onSendOtp(account, context.fetchOptions);
+      const success = await onSendOtp(account, {
+        headers: { "x-captcha-token": token },
+      });
 
       // Start countdown only if backend returns success
       if (success) {
@@ -411,10 +379,14 @@ function OtpLoginForm({
       } else {
         toast.error("发送验证码失败，请重试");
       }
+
+      // Reset Turnstile for next use
+      turnstileRef.current?.reset();
     } catch {
-      toast.error("发送验证码失败，请重试");
+      toast.error("人机验证失败，请重试");
+      turnstileRef.current?.reset();
     } finally {
-      context?.complete();
+      setIsVerifying(false);
     }
   };
 
@@ -429,23 +401,11 @@ function OtpLoginForm({
     const termsValid = await form.trigger("agreedToTerms");
     if (!termsValid) return;
 
-    // Get captcha token before submitting
-    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
-
     try {
-      context = await prepareCaptchaRequest();
-
-      if (!context) {
-        toast.error("人机验证失败，请重新完成验证");
-        return;
-      }
-
       // All validations passed, submit the form with captcha token
-      await onSubmit(data, context.fetchOptions);
+      await onSubmit(data);
     } catch {
       toast.error("人机验证失败，请重试");
-    } finally {
-      context?.complete();
     }
   };
 
@@ -493,7 +453,7 @@ function OtpLoginForm({
                   type="text"
                   placeholder="国内手机号/邮箱"
                   className="h-12"
-                  disabled={isLoading || isVerifying}
+                  disabled={isLoading}
                 />
               </FormControl>
             </FormItem>
@@ -521,29 +481,21 @@ function OtpLoginForm({
           )}
         />
 
+        {/* Invisible Turnstile Widget for OTP verification */}
+        <TurnstileWidget
+          ref={turnstileRef}
+          action="send-otp"
+          size="invisible"
+        />
+
         {/* Error Display Area - Show form validation errors */}
         <ErrorDisplay message={firstError} />
-
-        {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP */}
-        <div className={cn(!showCaptcha && "hidden")}>
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={siteKey}
-            options={{
-              appearance: "always",
-              refreshExpired: "never",
-              size: "normal",
-              execution: "execute",
-              action: "login-send-otp",
-            }}
-          />
-        </div>
 
         {/* Submit Button */}
         <Button
           type="submit"
           className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
-          disabled={isLoading || isVerifying}
+          disabled={isLoading}
         >
           登 录
         </Button>
@@ -556,7 +508,7 @@ function OtpLoginForm({
             <TermsCheckbox
               checked={field.value}
               onChange={field.onChange}
-              disabled={isLoading || isVerifying}
+              disabled={isLoading}
               error={
                 showTermsTooltip
                   ? form.formState.errors.agreedToTerms?.message

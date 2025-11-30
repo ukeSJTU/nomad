@@ -6,13 +6,11 @@
  */
 
 // Forms
-export { default as EmailLoginForm } from "./forms/email-login";
-export { default as EmailOtpLoginForm } from "./forms/email-otp-login";
 export { default as EmailVerificationForm } from "./forms/email-verification";
 export { default as PasswordSetupForm } from "./forms/password-setup";
-export { default as PhoneLoginForm } from "./forms/phone-login";
-export { default as PhoneOtpLoginForm } from "./forms/phone-otp-login";
 export { default as PhoneVerificationForm } from "./forms/phone-verification";
+export { default as UnifiedLoginForm } from "./forms/unified-login";
+export { default as UnifiedSignUpForm } from "./forms/unified-signup";
 
 // Other components
 export { LinkButton } from "./link-button";
