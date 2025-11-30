@@ -66,7 +66,7 @@ describe("useSignUpFlow", () => {
     };
 
     await act(async () => {
-      await result.current.handlePhoneVerified(data, mockFetchOptions);
+      await result.current.handlePhoneVerified(data);
     });
 
     expect(mockSignInWithOtpAction).toHaveBeenCalled();
@@ -106,7 +106,7 @@ describe("useSignUpFlow", () => {
     };
 
     await act(async () => {
-      await result.current.handleEmailVerified(data, mockFetchOptions);
+      await result.current.handleEmailVerified(data);
     });
 
     expect(mockVerifyEmailOtpAction).toHaveBeenCalled();
