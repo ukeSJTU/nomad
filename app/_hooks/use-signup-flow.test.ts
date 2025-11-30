@@ -39,7 +39,7 @@ import { toast } from "sonner";
 const mockToastError = vi.mocked(toast.error);
 
 const mockFetchOptions = {
-  headers: { "x-captcha-response": "test-token" },
+  headers: { "x-captcha-token": "test-token" },
 };
 
 describe("useSignUpFlow", () => {

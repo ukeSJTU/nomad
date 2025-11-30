@@ -46,7 +46,7 @@ const mockToastError = vi.mocked(toast.error);
 const mockValidateAccount = vi.mocked(validateAccount);
 
 const mockFetchOptions = {
-  headers: { "x-captcha-response": "test-token" },
+  headers: { "x-captcha-token": "test-token" },
 };
 
 describe("useSignInFlow", () => {

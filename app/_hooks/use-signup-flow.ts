@@ -168,12 +168,7 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
         fetchOptions
       );
 
-      if (!result.success) {
-        toast.error(result.error || "发送验证码失败，请重试");
-        return false;
-      }
-
-      return true;
+      return result.success;
     } catch {
       return false;
     } finally {
@@ -202,12 +197,7 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
         fetchOptions
       );
 
-      if (!result.success) {
-        toast.error(result.error || "发送验证码失败，请重试");
-        return false;
-      }
-
-      return true;
+      return result.success;
     } catch {
       return false;
     } finally {

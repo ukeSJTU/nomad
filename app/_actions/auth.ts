@@ -61,9 +61,7 @@ function hasCaptchaHeader(fetchOptions?: FetchOptions): boolean {
   const headers = fetchOptions?.headers;
   if (!headers) return false;
 
-  return Boolean(
-    headers["x-captcha-response"] ?? headers["X-Captcha-Response"]
-  );
+  return Boolean(headers["x-captcha-token"] ?? headers["X-Captcha-Token"]);
 }
 
 function ensureCaptcha(fetchOptions?: FetchOptions): ActionResult | null {
@@ -88,11 +86,6 @@ export async function signInWithPasswordAction(
 
   if (!isPhone && !isEmail) {
     return { success: false, error: "请输入正确的手机号或邮箱格式" };
-  }
-
-  const captchaResult = ensureCaptcha(fetchOptions);
-  if (captchaResult) {
-    return captchaResult;
   }
 
   try {
@@ -139,11 +132,6 @@ export async function signInWithOtpAction(
 
   if (!isPhone && !isEmail) {
     return { success: false, error: "请输入正确的手机号或邮箱格式" };
-  }
-
-  const captchaResult = ensureCaptcha(fetchOptions);
-  if (captchaResult) {
-    return captchaResult;
   }
 
   try {
@@ -245,11 +233,6 @@ export async function verifyEmailOtpAction(
   data: EmailVerificationData,
   fetchOptions?: FetchOptions
 ): Promise<ActionResult> {
-  const captchaResult = ensureCaptcha(fetchOptions);
-  if (captchaResult) {
-    return captchaResult;
-  }
-
   try {
     const headersList = await buildHeaders(fetchOptions);
     await auth.api.verifyEmailOTP({
