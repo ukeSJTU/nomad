@@ -8,7 +8,7 @@
 
 import "server-only";
 
-import { cancelExpiredOrders } from "@/domains/booking/orders.service";
+import { cancelExpiredOrders } from "@/domains/booking";
 import { logger } from "@/infra/logging";
 
 let orderCancellationTimer: NodeJS.Timeout | null = null;

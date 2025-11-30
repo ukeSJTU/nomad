@@ -7,7 +7,7 @@ import {
   changePassword,
   setPasswordForOAuthUser,
   unlinkSocialAccount,
-} from "@/domains/auth/auth.service";
+} from "@/domains/auth";
 import { auth } from "@/infra/auth";
 import { logger } from "@/infra/logging";
 import { validateAccount } from "@/lib/validation/account";

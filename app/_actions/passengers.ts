@@ -2,17 +2,15 @@
 
 import { requireSessionUser } from "@/actions/session";
 import {
-  getPassengerById,
-  getPassengers,
-} from "@/domains/passengers/passenger-read.service";
-import {
   type PassengerInput,
   batchDeletePassengers,
   createPassenger,
   deletePassenger,
   getPassenger,
+  getPassengerById,
+  getPassengers,
   updatePassenger,
-} from "@/domains/passengers/passenger.service";
+} from "@/domains/passengers";
 import { dateToLocalDateString } from "@/lib/format/date";
 
 async function requireUserId(redirectTo?: string): Promise<string> {
@@ -29,7 +27,7 @@ async function requireUserId(redirectTo?: string): Promise<string> {
  * 3. Handle framework-specific operations (redirect, revalidatePath)
  * 4. Format responses
  *
- * All business logic is in the service layer (src/domains/passengers/passenger.service.ts)
+ * All business logic is in the service layer (src/domains/passengers)
  * which can be tested independently without mocking Next.js runtime.
  */
 

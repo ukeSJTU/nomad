@@ -13,7 +13,7 @@ import {
   updateUserEmail,
   updateUserPhoneNumber,
   updateUserProfile,
-} from "@/domains/user/user.repository";
+} from "@/domains/user";
 
 describe("user.repository", () => {
   it("returns masked user info", async () => {

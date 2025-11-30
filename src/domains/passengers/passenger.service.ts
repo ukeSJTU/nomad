@@ -1,3 +1,9 @@
+import type { PassengerDTO } from "@/types/dto";
+import type { ServiceResult } from "@/types/result";
+import type {
+  CreatePassengerData,
+  UpdatePassengerData,
+} from "@/types/validations";
 import {
   PassengerRow,
   batchSoftDeletePassengersForUser,
@@ -5,13 +11,7 @@ import {
   findPassengerForUser,
   softDeletePassengerForUser,
   updatePassengerRecord,
-} from "@/domains/passengers/passenger.repository";
-import type { PassengerDTO } from "@/types/dto";
-import type { ServiceResult } from "@/types/result";
-import type {
-  CreatePassengerData,
-  UpdatePassengerData,
-} from "@/types/validations";
+} from "./passenger.repository";
 
 /**
  * Service layer for passenger-related business logic

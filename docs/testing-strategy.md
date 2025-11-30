@@ -1101,7 +1101,7 @@ export async function seedStaticData() {
 ```typescript
 // tests/integration/services/orders.integration.test.ts
 import { describe, test, expect, beforeEach } from "vitest";
-import { cancelOrder } from "@/domains/booking/orders.service";
+import { cancelOrder } from "@/domains/booking";
 import {
   createTestUser,
   createTestFlight,
