@@ -38,6 +38,10 @@ import { toast } from "sonner";
 
 const mockToastError = vi.mocked(toast.error);
 
+const mockFetchOptions = {
+  headers: { "x-captcha-response": "test-token" },
+};
+
 describe("useSignUpFlow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -62,7 +66,7 @@ describe("useSignUpFlow", () => {
     };
 
     await act(async () => {
-      await result.current.handlePhoneVerified(data);
+      await result.current.handlePhoneVerified(data, mockFetchOptions);
     });
 
     expect(mockSignInWithOtpAction).toHaveBeenCalled();
@@ -82,7 +86,7 @@ describe("useSignUpFlow", () => {
     };
 
     await act(async () => {
-      await result.current.handlePhoneVerified(data);
+      await result.current.handlePhoneVerified(data, mockFetchOptions);
     });
 
     expect(mockToastError).toHaveBeenCalledWith("验证码错误");
@@ -102,7 +106,7 @@ describe("useSignUpFlow", () => {
     };
 
     await act(async () => {
-      await result.current.handleEmailVerified(data);
+      await result.current.handleEmailVerified(data, mockFetchOptions);
     });
 
     expect(mockVerifyEmailOtpAction).toHaveBeenCalled();
@@ -115,9 +119,15 @@ describe("useSignUpFlow", () => {
       data: undefined,
     });
     const { result } = renderHook(() => useSignUpFlow());
-    const success = await result.current.handleSendPhoneOtp("13800138000");
+    const success = await result.current.handleSendPhoneOtp(
+      "13800138000",
+      mockFetchOptions
+    );
     expect(success).toBe(true);
-    expect(mockSendPhoneOtpAction).toHaveBeenCalled();
+    expect(mockSendPhoneOtpAction).toHaveBeenCalledWith(
+      "+8613800138000",
+      mockFetchOptions
+    );
   });
 
   it("sends email OTP", async () => {
@@ -126,9 +136,16 @@ describe("useSignUpFlow", () => {
       data: undefined,
     });
     const { result } = renderHook(() => useSignUpFlow());
-    const success = await result.current.handleSendEmailOtp("user@example.com");
+    const success = await result.current.handleSendEmailOtp(
+      "user@example.com",
+      mockFetchOptions
+    );
     expect(success).toBe(true);
-    expect(mockSendEmailOtpAction).toHaveBeenCalled();
+    expect(mockSendEmailOtpAction).toHaveBeenCalledWith(
+      "user@example.com",
+      "email-verification",
+      mockFetchOptions
+    );
   });
 
   it("moves to step 3 after setting password", async () => {

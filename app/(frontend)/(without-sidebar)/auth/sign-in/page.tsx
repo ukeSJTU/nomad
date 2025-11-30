@@ -15,7 +15,7 @@ export default function SignInPage() {
       <div className="bg-secondary/10 py-2">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-2 text-xs">
-            {/* This is just text notification, out system will not implement this */}
+            {/* This is just text notification, our system will not implement this */}
             <AlertCircle className="text-secondary w-4 h-4" />
             <span>
               依据《网络安全法》，为保障您相关功能的正常使用，账号需绑定手机，如您未绑定则登录后会引导您操作绑定。新版《隐私政策》已上线，感谢您的支持。
@@ -31,8 +31,8 @@ export default function SignInPage() {
             src="/login_bg.png"
             alt="Login Background"
             fill
+            sizes="100vw"
             className="object-cover object-center"
-            priority
             quality={100}
           />
         </div>

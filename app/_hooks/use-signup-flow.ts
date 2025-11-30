@@ -168,7 +168,12 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
         fetchOptions
       );
 
-      return result.success;
+      if (!result.success) {
+        toast.error(result.error || "发送验证码失败，请重试");
+        return false;
+      }
+
+      return true;
     } catch {
       return false;
     } finally {
@@ -191,9 +196,18 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     setIsLoading(true);
 
     try {
-      const result = await sendEmailOtpAction(email, "sign-in", fetchOptions);
+      const result = await sendEmailOtpAction(
+        email,
+        "email-verification",
+        fetchOptions
+      );
 
-      return result.success;
+      if (!result.success) {
+        toast.error(result.error || "发送验证码失败，请重试");
+        return false;
+      }
+
+      return true;
     } catch {
       return false;
     } finally {

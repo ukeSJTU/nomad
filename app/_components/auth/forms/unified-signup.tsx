@@ -90,10 +90,12 @@ export default function UnifiedSignUpForm({
       return;
     }
 
+    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
+
     try {
       setShowCaptcha(true);
 
-      const context = await prepareCaptchaRequest();
+      context = await prepareCaptchaRequest();
       if (!context) {
         return;
       }
@@ -110,6 +112,8 @@ export default function UnifiedSignUpForm({
       }
     } catch {
       toast.error("发送验证码失败，请重试");
+    } finally {
+      context?.complete();
     }
   };
 
@@ -122,10 +126,12 @@ export default function UnifiedSignUpForm({
       return;
     }
 
+    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
+
     try {
       setShowCaptcha(true);
 
-      const context = await prepareCaptchaRequest();
+      context = await prepareCaptchaRequest();
       if (!context) {
         return;
       }
@@ -139,6 +145,8 @@ export default function UnifiedSignUpForm({
       }
     } catch {
       toast.error("发送验证码失败，请重试");
+    } finally {
+      context?.complete();
     }
   };
 
@@ -146,10 +154,12 @@ export default function UnifiedSignUpForm({
    * Handle phone verification form submission with CAPTCHA
    */
   const handlePhoneSubmit = async (data: PhoneVerificationData) => {
+    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
+
     try {
       setShowCaptcha(true);
 
-      const context = await prepareCaptchaRequest();
+      context = await prepareCaptchaRequest();
       if (!context) {
         return;
       }
@@ -157,6 +167,8 @@ export default function UnifiedSignUpForm({
       await onPhoneVerified(data, context.fetchOptions);
     } catch {
       toast.error("验证失败，请重试");
+    } finally {
+      context?.complete();
     }
   };
 
@@ -164,10 +176,12 @@ export default function UnifiedSignUpForm({
    * Handle email verification form submission with CAPTCHA
    */
   const handleEmailSubmit = async (data: EmailVerificationData) => {
+    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
+
     try {
       setShowCaptcha(true);
 
-      const context = await prepareCaptchaRequest();
+      context = await prepareCaptchaRequest();
       if (!context) {
         return;
       }
@@ -175,6 +189,8 @@ export default function UnifiedSignUpForm({
       await onEmailVerified(data, context.fetchOptions);
     } catch {
       toast.error("验证失败，请重试");
+    } finally {
+      context?.complete();
     }
   };
 

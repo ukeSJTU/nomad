@@ -24,6 +24,9 @@ export const TURNSTILE_TEST_SECRET_KEY =
  * These endpoints are protected against automated attacks and abuse.
  */
 export const TURNSTILE_PROTECTED_ENDPOINTS = [
+  "/sign-in/email",
+  "/sign-in/phone-number",
+  "/sign-in/email-otp",
   "/phone-number/send-otp",
   "/phone-number/verify",
   "/email-otp/send-verification-otp",

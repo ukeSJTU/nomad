@@ -106,7 +106,10 @@ function TermsCheckbox({
 
 interface PasswordLoginFormProps {
   /** Form submit callback */
-  onSubmit: (data: PasswordLoginData) => Promise<ActionResult>;
+  onSubmit: (
+    data: PasswordLoginData,
+    fetchOptions?: FetchOptions
+  ) => Promise<ActionResult>;
 
   /** Toggle to OTP login */
   onSwitchToOtp: () => void;
@@ -124,6 +127,9 @@ function PasswordLoginForm({
   isLoading = false,
   className,
 }: PasswordLoginFormProps) {
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const { siteKey, turnstileRef, isVerifying, prepareCaptchaRequest } =
+    useTurnstileCaptcha();
   const form = useForm<PasswordLoginData>({
     resolver: zodResolver(passwordLoginSchema),
     mode: "onSubmit",
@@ -147,8 +153,26 @@ function PasswordLoginForm({
     const termsValid = await form.trigger("agreedToTerms");
     if (!termsValid) return;
 
-    // All validations passed, submit the form
-    onSubmit(data);
+    setShowCaptcha(true);
+
+    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
+
+    try {
+      // Require human verification before submit
+      context = await prepareCaptchaRequest();
+
+      if (!context) {
+        toast.error("人机验证失败，请重新完成人机验证");
+        return;
+      }
+
+      // All validations passed, submit the form
+      await onSubmit(data, context.fetchOptions);
+    } catch {
+      toast.error("人机验证失败，请重试");
+    } finally {
+      context?.complete();
+    }
   };
 
   // Get the first error message in order: account -> password (skip agreedToTerms)
@@ -195,7 +219,7 @@ function PasswordLoginForm({
                   type="text"
                   placeholder="国内手机号/用户名/邮箱"
                   className="h-12"
-                  disabled={isLoading}
+                  disabled={isLoading || isVerifying}
                 />
               </FormControl>
             </FormItem>
@@ -215,7 +239,7 @@ function PasswordLoginForm({
                     type="password"
                     placeholder="登录密码"
                     className="h-12 pr-20"
-                    disabled={isLoading}
+                    disabled={isLoading || isVerifying}
                   />
                   <Link
                     href="/auth/forgot-password"
@@ -236,7 +260,7 @@ function PasswordLoginForm({
         <Button
           type="submit"
           className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
-          disabled={isLoading}
+          disabled={isLoading || isVerifying}
         >
           登 录
         </Button>
@@ -249,7 +273,7 @@ function PasswordLoginForm({
             <TermsCheckbox
               checked={field.value}
               onChange={field.onChange}
-              disabled={isLoading}
+              disabled={isLoading || isVerifying}
               error={
                 showTermsTooltip
                   ? form.formState.errors.agreedToTerms?.message
@@ -265,7 +289,7 @@ function PasswordLoginForm({
             type="button"
             variant="link"
             onClick={onSwitchToOtp}
-            disabled={isLoading}
+            disabled={isLoading || isVerifying}
             className="text-primary hover:text-primary/90 p-0 h-auto"
           >
             验证码登录
@@ -277,6 +301,21 @@ function PasswordLoginForm({
           >
             免费注册
           </Link>
+        </div>
+
+        {/* Turnstile Widget */}
+        <div className={cn(!showCaptcha && "hidden")}>
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={siteKey}
+            options={{
+              appearance: "always",
+              refreshExpired: "never",
+              size: "normal",
+              execution: "execute",
+              action: "login-password",
+            }}
+          />
         </div>
       </form>
     </Form>
@@ -349,12 +388,14 @@ function OtpLoginForm({
 
     const account = form.getValues("account");
 
+    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
+
     try {
       // Show Turnstile widget before triggering verification
       setShowCaptcha(true);
 
       // Trigger Turnstile verification
-      const context = await prepareCaptchaRequest();
+      context = await prepareCaptchaRequest();
 
       if (!context) {
         toast.error("人机验证失败，请重新完成验证");
@@ -372,6 +413,8 @@ function OtpLoginForm({
       }
     } catch {
       toast.error("发送验证码失败，请重试");
+    } finally {
+      context?.complete();
     }
   };
 
@@ -387,8 +430,10 @@ function OtpLoginForm({
     if (!termsValid) return;
 
     // Get captcha token before submitting
+    let context: Awaited<ReturnType<typeof prepareCaptchaRequest>> = null;
+
     try {
-      const context = await prepareCaptchaRequest();
+      context = await prepareCaptchaRequest();
 
       if (!context) {
         toast.error("人机验证失败，请重新完成验证");
@@ -396,9 +441,11 @@ function OtpLoginForm({
       }
 
       // All validations passed, submit the form with captcha token
-      onSubmit(data, context.fetchOptions);
+      await onSubmit(data, context.fetchOptions);
     } catch {
       toast.error("人机验证失败，请重试");
+    } finally {
+      context?.complete();
     }
   };
 
@@ -446,7 +493,7 @@ function OtpLoginForm({
                   type="text"
                   placeholder="国内手机号/邮箱"
                   className="h-12"
-                  disabled={isLoading}
+                  disabled={isLoading || isVerifying}
                 />
               </FormControl>
             </FormItem>
@@ -496,7 +543,7 @@ function OtpLoginForm({
         <Button
           type="submit"
           className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
-          disabled={isLoading}
+          disabled={isLoading || isVerifying}
         >
           登 录
         </Button>
@@ -509,7 +556,7 @@ function OtpLoginForm({
             <TermsCheckbox
               checked={field.value}
               onChange={field.onChange}
-              disabled={isLoading}
+              disabled={isLoading || isVerifying}
               error={
                 showTermsTooltip
                   ? form.formState.errors.agreedToTerms?.message
@@ -542,13 +589,19 @@ function OtpLoginForm({
 
 export interface UnifiedLoginFormProps {
   /** Form submit callback for password login */
-  onPasswordSubmit: (data: PasswordLoginData) => Promise<ActionResult>;
+  onPasswordSubmit: (
+    data: PasswordLoginData,
+    fetchOptions?: FetchOptions
+  ) => Promise<ActionResult>;
 
   /** Form submit callback for OTP login */
-  onOtpSubmit: (data: OtpLoginData) => Promise<ActionResult>;
+  onOtpSubmit: (
+    data: OtpLoginData,
+    fetchOptions?: FetchOptions
+  ) => Promise<ActionResult>;
 
   /** Send OTP callback - should return true if OTP was sent successfully */
-  onSendOtp: (account: string) => Promise<boolean>;
+  onSendOtp: (account: string, fetchOptions?: FetchOptions) => Promise<boolean>;
 
   /** Initial login method (optional, defaults to password) */
   initialLoginMethod?: "password" | "otp";

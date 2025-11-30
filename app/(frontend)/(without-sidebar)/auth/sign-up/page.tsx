@@ -73,20 +73,11 @@ export default function SignUpPage() {
   };
 
   const handleModalClose = () => {
-    router.push("/");
+    // If the modal is closed without agreeing (e.g. clicking outside), redirect to home
+    if (!agreedToTerms) {
+      router.push("/");
+    }
   };
-
-  // Show only modal if user hasn't agreed to terms
-  if (!agreedToTerms) {
-    return (
-      <SignUpModal
-        open={showAgreementModal}
-        onOpenChange={handleModalClose}
-        onAgree={handleAgreeToTerms}
-        onDisagree={handleDisagreeToTerms}
-      />
-    );
-  }
 
   // Get masked identifier for password setup step
   const getMaskedIdentifier = () => {
@@ -100,12 +91,20 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <SignUpModal
+        open={showAgreementModal}
+        onOpenChange={handleModalClose}
+        onAgree={handleAgreeToTerms}
+        onDisagree={handleDisagreeToTerms}
+      />
       <div className="max-w-md w-full space-y-8">
         {/* Page Header */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">注册账户</h1>
-          <p className="mt-2 text-sm text-gray-600">请按照以下步骤完成注册</p>
+          <h1 className="text-2xl font-bold text-foreground">注册账户</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            请按照以下步骤完成注册
+          </p>
         </div>
 
         {/* Progress Stepper */}

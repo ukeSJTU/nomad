@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
-import { requireSessionUser } from "@/actions/session";
 import {
   changePassword,
   setPasswordForOAuthUser,
@@ -58,11 +57,32 @@ async function buildHeaders(fetchOptions?: FetchOptions): Promise<Headers> {
   return new Headers(mergeHeaders(headersList, fetchOptions));
 }
 
+function hasCaptchaHeader(fetchOptions?: FetchOptions): boolean {
+  const headers = fetchOptions?.headers;
+  if (!headers) return false;
+
+  return Boolean(
+    headers["x-captcha-response"] ?? headers["X-Captcha-Response"]
+  );
+}
+
+function ensureCaptcha(fetchOptions?: FetchOptions): ActionResult | null {
+  if (hasCaptchaHeader(fetchOptions)) {
+    return null;
+  }
+
+  return {
+    success: false,
+    error: "人机验证失败，请重新完成人机验证后再试",
+  };
+}
+
 /**
  * Password-based sign-in for phone or email accounts.
  */
 export async function signInWithPasswordAction(
-  data: PasswordLoginData
+  data: PasswordLoginData,
+  fetchOptions?: FetchOptions
 ): Promise<ActionResult> {
   const { isPhone, isEmail, account } = resolveAccountType(data.account);
 
@@ -70,8 +90,13 @@ export async function signInWithPasswordAction(
     return { success: false, error: "请输入正确的手机号或邮箱格式" };
   }
 
+  const captchaResult = ensureCaptcha(fetchOptions);
+  if (captchaResult) {
+    return captchaResult;
+  }
+
   try {
-    const headersList = await buildHeaders();
+    const headersList = await buildHeaders(fetchOptions);
 
     if (isPhone) {
       await auth.api.signInPhoneNumber({
@@ -116,6 +141,11 @@ export async function signInWithOtpAction(
     return { success: false, error: "请输入正确的手机号或邮箱格式" };
   }
 
+  const captchaResult = ensureCaptcha(fetchOptions);
+  if (captchaResult) {
+    return captchaResult;
+  }
+
   try {
     const headersList = await buildHeaders(fetchOptions);
 
@@ -154,6 +184,11 @@ export async function sendPhoneOtpAction(
   phoneNumber: string,
   fetchOptions?: FetchOptions
 ): Promise<ActionResult> {
+  const captchaResult = ensureCaptcha(fetchOptions);
+  if (captchaResult) {
+    return captchaResult;
+  }
+
   try {
     const headersList = await buildHeaders(fetchOptions);
     await auth.api.sendPhoneNumberOTP({
@@ -178,6 +213,11 @@ export async function sendEmailOtpAction(
   type: "sign-in" | "forget-password" | "email-verification",
   fetchOptions?: FetchOptions
 ): Promise<ActionResult> {
+  const captchaResult = ensureCaptcha(fetchOptions);
+  if (captchaResult) {
+    return captchaResult;
+  }
+
   try {
     const headersList = await buildHeaders(fetchOptions);
     await auth.api.sendVerificationOTP({
@@ -205,6 +245,11 @@ export async function verifyEmailOtpAction(
   data: EmailVerificationData,
   fetchOptions?: FetchOptions
 ): Promise<ActionResult> {
+  const captchaResult = ensureCaptcha(fetchOptions);
+  if (captchaResult) {
+    return captchaResult;
+  }
+
   try {
     const headersList = await buildHeaders(fetchOptions);
     await auth.api.verifyEmailOTP({
@@ -319,7 +364,7 @@ export async function unlinkAccountAction(
     // 4. Return the result
     return result;
   } catch (error) {
-    console.error("Failed to unlink account:", error);
+    logger.error({ error }, "Failed to unlink account");
     return {
       success: false,
       error:
@@ -375,7 +420,7 @@ export async function setInitialPasswordAction(password: string) {
       message: validationResult.message ?? "Password set successfully",
     };
   } catch (error) {
-    console.error("Set password error:", error);
+    logger.error({ error }, "Set password error");
     return {
       success: false,
       error: "Failed to set password. Please try again.",
@@ -453,7 +498,7 @@ export async function changePasswordAction(
       message: "密码修改成功",
     };
   } catch (error) {
-    console.error("Change password error:", error);
+    logger.error({ error }, "Change password error");
     return {
       success: false,
       error: "修改密码失败，请重试",
@@ -516,7 +561,7 @@ export async function setPasswordForOAuthUserAction(password: string) {
       message: "密码设置成功",
     };
   } catch (error) {
-    console.error("Set password for OAuth user error:", error);
+    logger.error({ error }, "Set password for OAuth user error");
     return {
       success: false,
       error: "设置密码失败，请重试",
@@ -570,7 +615,7 @@ export async function updatePhoneNumberAction(phoneNumber: string) {
       message: "手机号更新成功",
     };
   } catch (error) {
-    console.error("Update phone number error:", error);
+    logger.error({ error }, "Update phone number error");
     return {
       success: false,
       error: "更新手机号失败，请重试",
@@ -621,20 +666,10 @@ export async function updateEmailAction(email: string) {
       message: "邮箱更新成功",
     };
   } catch (error) {
-    console.error("Update email error:", error);
+    logger.error({ error }, "Update email error");
     return {
       success: false,
       error: "更新邮箱失败，请重试",
     };
   }
-}
-
-export async function getLinkedAccountsAction() {
-  await requireSessionUser();
-  const headersList = await headers();
-  const accounts = await auth.api.listUserAccounts({
-    headers: headersList,
-  });
-
-  return accounts || [];
 }

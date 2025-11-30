@@ -11,12 +11,12 @@ vi.mock("@/hooks/use-turnstile-captcha", () => ({
     siteKey: "test-site-key",
     isVerifying: false,
     prepareCaptchaRequest: vi.fn().mockResolvedValue({
-      token: "test-token",
       fetchOptions: {
         headers: {
-          "X-Captcha-Token": "test-token",
+          "x-captcha-response": "test-token",
         },
       },
+      complete: vi.fn(),
     }),
   }),
 }));
@@ -227,11 +227,18 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
 
       // Should call submit with correct data
       await waitFor(() => {
-        expect(onPasswordSubmit).toHaveBeenCalledWith({
-          account: "test@example.com",
-          password: "Password123!",
-          agreedToTerms: true,
-        });
+        expect(onPasswordSubmit).toHaveBeenCalledWith(
+          {
+            account: "test@example.com",
+            password: "Password123!",
+            agreedToTerms: true,
+          },
+          expect.objectContaining({
+            headers: expect.objectContaining({
+              "x-captcha-response": "test-token",
+            }),
+          })
+        );
       });
     });
 
@@ -473,7 +480,7 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
           },
           {
             headers: {
-              "X-Captcha-Token": "test-token",
+              "x-captcha-response": "test-token",
             },
           }
         );
