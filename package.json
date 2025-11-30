@@ -34,10 +34,11 @@
     "db:studio:test": "cross-env NODE_ENV=test drizzle-kit studio",
     "db:seed": "cross-env NODE_ENV=development tsx src/db/data/seed.runner.ts",
     "db:seed:orders": "cross-env NODE_ENV=development tsx scripts/seed-test-orders.ts",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "biome check --diagnostic-level=error . && pnpm lint:boundary",
+    "lint:fix": "biome check --write . && pnpm lint:boundary",
+    "lint:boundary": "node scripts/check-app-boundary.mjs",
+    "format": "biome check --write --linter-enabled=false .",
+    "format:check": "biome check --linter-enabled=false .",
     "prepare": "husky",
     "postinstall": "fumadocs-mdx",
     "setup:dev": "node scripts/setup-dev.mjs",
@@ -137,10 +138,10 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@chromatic-com/storybook": "^4.1.1",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@eslint/eslintrc": "^3",
     "@faker-js/faker": "^10.0.0",
     "@inquirer/prompts": "^7.9.0",
     "@neondatabase/api-client": "^2.2.0",
@@ -162,19 +163,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/zxcvbn": "^4.4.5",
-    "@typescript-eslint/eslint-plugin": "^8.46.0",
-    "@typescript-eslint/parser": "^8.46.0",
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "3.2.4",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.5",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.4",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-storybook": "^9.1.15",
     "fishery": "^2.3.1",
     "husky": "^9.1.7",
     "jsdom": "25.0.1",
@@ -182,8 +176,6 @@
     "ora": "^8.2.0",
     "pino-pretty": "^13.1.2",
     "playwright": "^1.56.1",
-    "prettier": "^3.6.2",
-    "prettier-plugin-slidev": "^1.0.5",
     "react-email": "4.3.2",
     "storybook": "^9.1.15",
     "tailwindcss": "^4",
@@ -195,12 +187,6 @@
     "server-only": "^0.0.1"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,css,html,yml,yaml}": [
-      "prettier --write"
-    ]
+    "*.{js,jsx,ts,tsx,mjs,cjs,cts,mts,json,md,mdx}": ["biome check --write"]
   }
 }

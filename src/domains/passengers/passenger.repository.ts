@@ -8,7 +8,7 @@ import {
   maskEmail,
   maskPhoneNumber,
 } from "@/lib/security/mask-data";
-import type { PassengerDetailData, PassengerDTO } from "@/types/dto";
+import type { PassengerDTO, PassengerDetailData } from "@/types/dto";
 
 export type PassengerRow = typeof passengers.$inferSelect;
 type PassengerInsert = typeof passengers.$inferInsert;

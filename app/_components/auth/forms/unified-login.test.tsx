@@ -94,8 +94,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       );
 
       // Fill account field
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       await user.type(accountInput, "test@example.com");
 
       // Click login button without filling password
@@ -140,8 +141,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       );
 
       // Fill account field
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       await user.type(accountInput, "test@example.com");
 
       // Fill password field
@@ -195,8 +197,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       );
 
       // Fill account field
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       await user.type(accountInput, "test@example.com");
 
       // Fill password field
@@ -248,8 +251,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       );
 
       // Fill account field
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       await user.type(accountInput, "test@example.com");
 
       // Fill password field with invalid format (too short)
@@ -866,8 +870,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
         />
       );
 
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       const passwordInput = screen.getByPlaceholderText("登录密码");
       const loginButton = screen.getByRole("button", { name: "登 录" });
       const switchButton = screen.getByRole("button", { name: "验证码登录" });
@@ -925,8 +930,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
         />
       );
 
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       const passwordInput = screen.getByPlaceholderText("登录密码");
       const loginButton = screen.getByRole("button", { name: "登 录" });
       const switchButton = screen.getByRole("button", { name: "验证码登录" });
@@ -981,8 +987,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       );
 
       // Fill account with invalid format
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       await user.type(accountInput, "invalid");
 
       // Click login button
@@ -1013,8 +1020,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       );
 
       // Fill valid email
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       await user.type(accountInput, "test@example.com");
 
       // Fill password
@@ -1056,8 +1064,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       );
 
       // Fill valid phone number
-      const accountInput =
-        screen.getByPlaceholderText("国内手机号/用户名/邮箱");
+      const accountInput = screen.getByPlaceholderText(
+        "国内手机号/用户名/邮箱"
+      );
       await user.type(accountInput, "13800138000");
 
       // Fill password

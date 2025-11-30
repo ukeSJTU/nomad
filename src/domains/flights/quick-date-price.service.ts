@@ -1,7 +1,7 @@
 import { and, eq, gte, inArray, lt, sql } from "drizzle-orm";
 
 import { db } from "@/db";
-import { airports, cities, flights, flightSeatClasses } from "@/db/schema";
+import { airports, cities, flightSeatClasses, flights } from "@/db/schema";
 import { logger } from "@/infra/logging";
 import {
   addCurrency,

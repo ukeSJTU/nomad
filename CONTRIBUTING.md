@@ -181,10 +181,10 @@ pnpm e2e:ui           # 打开 Playwright UI
 ### 代码质量
 
 ```bash
-pnpm lint             # 运行 ESLint 检查
-pnpm lint:fix         # 自动修复 ESLint 问题
-pnpm format           # 格式化代码
-pnpm format:check     # 检查代码格式
+pnpm lint             # 运行 Biome 检查（不写入修改）
+pnpm lint:fix         # 使用 Biome 自动修复可修复问题
+pnpm format           # 仅使用 Biome 格式化代码
+pnpm format:check     # 检查格式（Biome）
 ```
 
 ### 组件开发
@@ -286,7 +286,7 @@ pnpm e2e
 # 代码格式正确
 pnpm format:check
 
-# 无 ESLint 错误
+# 无 Biome 错误
 pnpm lint
 ```
 
@@ -297,7 +297,7 @@ pnpm lint
 - [Auto Close Tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-close-tag) - 自动闭合 HTML/JSX 标签
 - [Console Ninja](https://marketplace.visualstudio.com/items?itemName=WallabyJs.console-ninja) - 增强的控制台输出
 - [ES7+ React/Redux/React-Native snippets](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets) - React 代码片段
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) - ESLint 集成
+- [Biome](https://marketplace.visualstudio.com/items?itemName=biomejs.biome) - Biome LSP + 格式化
 - [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) - Tailwind CSS 智能提示
 - [Vitest](https://marketplace.visualstudio.com/items?itemName=vitest.explorer) - Vitest 测试资源管理器
 

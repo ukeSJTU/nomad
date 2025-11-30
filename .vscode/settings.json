@@ -1,11 +1,11 @@
 {
   // Editor settings
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.formatOnType": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
+    "quickfix.biome": "always",
     "source.organizeImports": "never"
   },
   "editor.tabSize": 2,
@@ -43,8 +43,6 @@
     "**/.trae": true,
     "**/.gitmessage": true,
     "**/cli.json": true,
-    "**/.prettierignore": true,
-    "**/.prettierrc.json": true,
     "**/.nvmrc": true,
     "**/.pnpm-store": true,
     "**/drizzle": true,
@@ -60,40 +58,31 @@
 
   // Language-specific settings
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "biomejs.biome",
     "editor.rulers": [],
     "editor.wordWrap": "on"
   },
   "[mdx]": {
     "editor.formatOnSave": false,
-    "editor.defaultFormatter": "unifiedjs.vscode-mdx"
+    "editor.defaultFormatter": "biomejs.biome"
   },
 
   // TypeScript settings
@@ -101,20 +90,6 @@
   "typescript.preferences.includePackageJsonAutoImports": "auto",
   "typescript.suggest.autoImports": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
-
-  // ESLint settings
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  "eslint.format.enable": false,
-  "eslint.codeActionsOnSave.mode": "problems",
-
-  // Prettier settings
-  "prettier.requireConfig": true,
-  "prettier.useEditorConfig": false,
 
   // Tailwind CSS settings
   "tailwindCSS.includeLanguages": {
@@ -167,7 +142,5 @@
       "text": "Generate commit messages in English only"
     }
   ],
-  "slidev.include": ["content/slides/midterm-2.md"],
-  "prettier.configPath": "./.prettierrc.json",
-  "prettier.ignorePath": ".prettierignore"
+  "slidev.include": ["content/slides/midterm-2.md"]
 }

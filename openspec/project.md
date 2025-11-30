@@ -41,7 +41,7 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 ### Tooling & Utilities
 
 - **pnpm 10.17.1** (required by `packageManager` + `engines`) and **Node >= 22.21.0**.
-- **ESLint 9**, **Prettier 3.6.2**, **Husky 9.1.7**, **lint-staged 16.2.4**, and **Commitlint 20** enforce styling and Conventional Commits.
+- **Biome 1.9.x**, **Husky 9.1.7**, **lint-staged 16.2.4**, and **Commitlint 20** enforce styling and Conventional Commits.
 - **Vitest 3.2.4** (unit, integration, storybook projects), **Playwright 1.56.x**, **drizzle-kit**, **tsx**, and **cross-env** scripts orchestrate CI.
 - `scripts/setup-dev.mjs`, `scripts/seed-test-orders.ts`, and `src/db/seed.ts` bootstrap the dev database and dummy orders; `scripts/generate-dashboard.js` supports `pnpm test:report`.
 - **Playwright reports** automatically live under `playwright-report/` after `pnpm e2e`.
@@ -83,9 +83,9 @@ Nomad is a modern Online Travel Agency (OTA) built for budget-conscious, experie
 ## Project Conventions
 
 - **Naming:** files use kebab-case, components/types/enum names are PascalCase, functions/variables follow camelCase, constants are UPPER_SNAKE_CASE. Test files use `.test.ts[x]`.
-- **Imports:** order imports as Node built-ins → external packages → `@/` aliases → relative paths. Use `simple-import-sort` to enforce.
+- **Imports:** order imports as Node built-ins → external packages → `@/` aliases → relative paths. Biome organize-imports enforces ordering.
 - **Types:** TypeScript strict mode is enforced; avoid `any`. `_` prefix is allowed for intentionally unused variables. Prefer Zod for runtime validation.
-- **Linting & Formatting:** ESLint (with `eslint-config-next`), Prettier 3.6.2, and lint-staged (runs ESLint + Prettier pre-commit) keep formatting consistent. Logger usage (Pino/console.warn/console.error) replaces scattered `console.log`.
+- **Linting & Formatting:** Biome (lint + format) with lint-staged (runs Biome on staged files) keeps formatting一致. Logger usage (Pino/console.warn/console.error) replaces scattered `console.log`.
 - **Git Workflow:** Follow the simplified Git Flow described in `content/docs/contributing/git-workflow.mdx` (`develop`/`main`, `feat/*`, `fix/*`, etc.). Commit messages must follow Conventional Commits enforced by Husky + Commitlint. Pre-commit hooks run lint-staged; commit-msg hooks run commitlint.
 
 ## Domain Context

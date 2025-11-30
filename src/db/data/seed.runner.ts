@@ -32,9 +32,9 @@ import {
   airlines,
   airports,
   cities,
-  flights,
   flightSearchHistory,
   flightSeatClasses,
+  flights,
   orderPassengers,
   orders,
   passengers,
@@ -52,10 +52,10 @@ import { generateOrders } from "./generators/order";
 import { generateSearchHistory } from "./generators/search.history";
 import { generatePassengers, generateUsers } from "./generators/user";
 import {
+  type SeedConfig,
   displaySeedConfig,
   parseSeedConfig,
   promptForScenario,
-  type SeedConfig,
 } from "./seed.config";
 
 /**

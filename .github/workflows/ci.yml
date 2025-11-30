@@ -21,6 +21,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: Lint (Biome)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint (Biome)
+        run: pnpm lint
+
   # ========================================
   # Parallel Jobs: Build & Tests
   # ========================================
@@ -29,6 +55,7 @@ jobs:
     name: Build Check
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [lint]
 
     # PostgreSQL service container for SSG during build
     services:
@@ -96,6 +123,7 @@ jobs:
     name: Vitest Tests (Unit + Integration + Storybook)
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs: [lint]
 
     # PostgreSQL service container for integration tests
     services:
@@ -190,6 +218,7 @@ jobs:
     name: Playwright E2E (Shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    needs: [lint]
     strategy:
       fail-fast: false
       matrix:
@@ -246,6 +275,7 @@ jobs:
     name: Build Storybook
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: [lint]
 
     steps:
       - name: Checkout code

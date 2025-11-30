@@ -9,8 +9,8 @@ import {
   airlines,
   airports,
   cities,
-  flights,
   flightSeatClasses,
+  flights,
 } from "@/db/schema";
 import type {
   FlightSearchResult,

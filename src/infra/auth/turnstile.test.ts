@@ -8,10 +8,10 @@ vi.mock("@better-fetch/fetch", () => ({
 
 import { getTurnstileSiteKey } from "@/config/system";
 import {
-  getTurnstileSecretKey,
   TURNSTILE_PROTECTED_ENDPOINTS,
   TURNSTILE_TEST_SECRET_KEY,
   TURNSTILE_TEST_SITE_KEY,
+  getTurnstileSecretKey,
 } from "@/infra/auth/turnstile";
 
 const createPlugin = async () => {

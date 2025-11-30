@@ -11,7 +11,6 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import * as React from "react";
 
 import { formatCurrency as formatCurrencyUtil } from "@/lib/format/currency";
 
@@ -228,8 +227,7 @@ export const OrderConfirmationEmail = ({
               <Text style={noticeTitle}>重要提示</Text>
               <Text style={noticeText}>
                 • 请凭订单号和有效证件办理值机手续
-                <br />
-                • 建议提前 2 小时到达机场
+                <br />• 建议提前 2 小时到达机场
                 <br />• 如需更改或取消订单，请联系客服
               </Text>
             </Section>

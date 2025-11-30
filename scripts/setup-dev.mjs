@@ -203,7 +203,7 @@ async function setupPlaywright() {
     logInfo("正在下载 Playwright 浏览器（这可能需要几分钟）...");
     execCommand("pnpm exec playwright install chromium");
     logSuccess("Playwright 浏览器配置完成");
-  } catch (error) {
+  } catch (_error) {
     logWarning("Playwright 浏览器安装失败，但不影响基础开发");
     logInfo("稍后可以手动运行: pnpm exec playwright install");
   }
@@ -229,7 +229,7 @@ async function setupGitHooks() {
     logInfo("正在配置 Husky...");
     execCommand("pnpm run prepare");
     logSuccess("Git hooks 设置完成");
-  } catch (error) {
+  } catch (_error) {
     logWarning("Git hooks 设置失败，但不影响基本开发");
     logInfo("稍后可以手动运行: pnpm prepare");
   }
@@ -256,7 +256,7 @@ async function setupEnvFile() {
     fs.copyFileSync(envExamplePath, envPath);
     logSuccess(".env.local 文件已创建（基于 .env.example）");
     logWarning("请编辑 .env.local 文件并填写必要的配置信息");
-  } catch (error) {
+  } catch (_error) {
     logWarning(".env.local 文件创建失败，请手动复制 .env.example");
   }
 }
@@ -268,7 +268,7 @@ async function verifySetup() {
   const checks = {
     依赖安装: fs.existsSync(path.join(__dirname, "../node_modules")),
     "TypeScript 配置": checkTypeScript(),
-    "ESLint 配置": fs.existsSync(path.join(__dirname, "../eslint.config.mjs")),
+    "Biome 配置": fs.existsSync(path.join(__dirname, "../biome.json")),
     "Playwright 配置": fs.existsSync(
       path.join(__dirname, "../playwright.config.ts")
     ),
@@ -307,7 +307,7 @@ function checkTypeScript() {
 async function showNextSteps() {
   logStep("7/7", "配置完成");
 
-  log("\n" + "=".repeat(60), colors.green);
+  log(`\n${"=".repeat(60)}`, colors.green);
   log("* 开发环境初始化完成", colors.green + colors.bright);
   log("=".repeat(60), colors.green);
 
@@ -347,8 +347,8 @@ async function showNextSteps() {
     {
       title: "6. 代码检查和格式化",
       commands: [
-        "   pnpm lint          # 运行 ESLint",
-        "   pnpm format        # 格式化代码",
+        "   pnpm lint          # 运行 Biome 检查",
+        "   pnpm format        # 使用 Biome 格式化代码",
       ],
     },
   ];
@@ -360,18 +360,18 @@ async function showNextSteps() {
     }
   }
 
-  log("\n" + "=".repeat(60), colors.cyan);
+  log(`\n${"=".repeat(60)}`, colors.cyan);
   log("更多信息:", colors.cyan + colors.bright);
   log("  * 查看 README.md 了解项目详情", colors.cyan);
   log("  * 查看 docs/ 目录了解开发规范", colors.cyan);
-  log("=".repeat(60) + "\n", colors.cyan);
+  log(`${"=".repeat(60)}\n`, colors.cyan);
 }
 
 // Main function
 async function main() {
-  log("\n" + "=".repeat(60), colors.cyan);
+  log(`\n${"=".repeat(60)}`, colors.cyan);
   log("Nomad 开发环境初始化", colors.cyan + colors.bright);
-  log("=".repeat(60) + "\n", colors.cyan);
+  log(`${"=".repeat(60)}\n`, colors.cyan);
 
   try {
     await checkEnvironment();
@@ -384,7 +384,7 @@ async function main() {
 
     process.exit(0);
   } catch (error) {
-    log("\n" + "=".repeat(60), colors.red);
+    log(`\n${"=".repeat(60)}`, colors.red);
     log("* 初始化过程中发生错误", colors.red + colors.bright);
     log("=".repeat(60), colors.red);
     logError(error.message);

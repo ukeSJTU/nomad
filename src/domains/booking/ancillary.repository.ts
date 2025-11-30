@@ -11,8 +11,8 @@ import { z } from "zod";
 import { db } from "@/db";
 import {
   airlines,
-  flights,
   flightSeatClasses,
+  flights,
   orderPassengers,
   orders,
 } from "@/db/schema";

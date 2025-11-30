@@ -1,6 +1,6 @@
 import { authErrorConfigs } from "./auth";
 import { bookingErrorConfigs } from "./booking";
-import { commonErrorConfigs, DEFAULT_ERROR_CONFIG } from "./common";
+import { DEFAULT_ERROR_CONFIG, commonErrorConfigs } from "./common";
 import { flightErrorConfigs } from "./flight";
 import type { ErrorConfig, ErrorConfigMap, ErrorType } from "./types";
 

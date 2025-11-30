@@ -9,7 +9,7 @@
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-import type { flights, flightSeatClasses } from "@/db/schema";
+import type { flightSeatClasses, flights } from "@/db/schema";
 
 // ============================================================================
 // Flight Types
