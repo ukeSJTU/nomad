@@ -39,13 +39,13 @@ class AliyunSmsClient {
   }
 
   /**
-   * Format phone number by removing +86 prefix
+   * Format phone number by removing optional +86 prefix
    * @param phoneNumber Original phone number (may contain +86 prefix)
    * @returns Formatted phone number (pure numeric format)
    */
   private formatPhoneNumber(phoneNumber: string): string {
     // Remove +86 prefix as Aliyun SMS API requires pure numeric phone numbers
-    return phoneNumber.replace(/^\+86/, "");
+    return phoneNumber.trim().replace(/^\+86/, "");
   }
 
   /**

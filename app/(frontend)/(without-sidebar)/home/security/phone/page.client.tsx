@@ -61,10 +61,7 @@ export default function PhonePageClient({
     try {
       setIsLoading(true);
 
-      // Add +86 prefix for China mainland phone numbers
-      const fullPhoneNumber = `+86${phoneNumber}`;
-
-      const result = await sendPhoneOtpAction(fullPhoneNumber);
+      const result = await sendPhoneOtpAction(phoneNumber);
 
       if (!result.success) {
         console.error("发送验证码失败:", result.error);
@@ -89,12 +86,9 @@ export default function PhonePageClient({
     try {
       setIsLoading(true);
 
-      // Add +86 prefix for China mainland phone numbers
-      const fullPhoneNumber = `+86${data.phoneNumber}`;
-
       // 1. Verify OTP using server action
       const verifyResult = await signInWithOtpAction({
-        account: fullPhoneNumber,
+        account: data.phoneNumber,
         otp: data.otp,
         agreedToTerms: true,
       });
@@ -106,7 +100,7 @@ export default function PhonePageClient({
       }
 
       // 2. Update phone number in database using Server Action
-      const result = await updatePhoneNumberAction(fullPhoneNumber);
+      const result = await updatePhoneNumberAction(data.phoneNumber);
 
       if (!result.success) {
         toast.error(result.error || "更新手机号失败");

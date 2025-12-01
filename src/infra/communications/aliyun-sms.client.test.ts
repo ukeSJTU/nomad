@@ -54,12 +54,12 @@ describe("SMS Service", () => {
         },
       });
 
-      const result = await sendSmsOtp("+8613800138000", "123456");
+      const result = await sendSmsOtp("13800138000", "123456");
 
       expect(result).toBe(true);
       expect(mockSendSmsVerifyCodeWithOptions).toHaveBeenCalledWith(
         {
-          phoneNumber: "13800138000", // Should remove +86 prefix
+          phoneNumber: "13800138000",
           signName: "TestSign",
           templateCode: "SMS_123456",
           templateParam: JSON.stringify({ code: "123456", min: "5" }),

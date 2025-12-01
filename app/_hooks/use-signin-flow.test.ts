@@ -162,13 +162,13 @@ describe("useSignInFlow", () => {
 
       const { result } = renderHook(() => useSignInFlow());
       const success = await result.current.handleSendOtp(
-        "+8613800138000",
+        "13800138000",
         mockFetchOptions
       );
 
       expect(success).toBe(true);
       expect(mockSendPhoneOtpAction).toHaveBeenCalledWith(
-        "+8613800138000",
+        "13800138000",
         mockFetchOptions
       );
     });

@@ -39,7 +39,7 @@ const randomCode = (length: number) => {
 const uniqueSuffix = () => randomCode(3) + Math.floor(Math.random() * 1000);
 
 const uniquePhone = () =>
-  `+8613${randomInt(0, 1_0000_0000).toString().padStart(8, "0")}`;
+  `13${randomInt(0, 1_000_000_000).toString().padStart(9, "0")}`;
 
 const maxAirlineCodes = 26 * 26; // Two-letter space (A-Z)
 const usedAirlineCodes = new Set<string>();
@@ -289,7 +289,7 @@ export async function createPassengerForUser(
       gender: overrides.gender ?? "male",
       dateOfBirth: overrides.dateOfBirth ?? "1990-01-01",
       placeOfBirth: overrides.placeOfBirth ?? "上海",
-      phone: overrides.phone ?? "+8613812345678",
+      phone: overrides.phone ?? "13812345678",
       email: overrides.email ?? "passenger@example.com",
       documentType: overrides.documentType ?? "passport",
       documentNumber: overrides.documentNumber ?? `P${uniqueSuffix()}`,
@@ -340,7 +340,7 @@ export async function createOrderWithPassengers(params: {
       status: params.status ?? "PENDING_PAYMENT",
       paymentDeadline: params.paymentDeadline ?? addHours(new Date(), 2),
       passengerCount,
-      contactPhone: params.contactPhone ?? "+8613811111111",
+      contactPhone: params.contactPhone ?? "13811111111",
       contactEmail: params.contactEmail ?? "contact@example.com",
       pricePerTicket,
       baseAmount,
@@ -362,7 +362,7 @@ export async function createOrderWithPassengers(params: {
       name: `乘客-${index + 1}`,
       identityType: "passport",
       identityNumber: `P${uniqueSuffix()}${index}`,
-      phone: "+8613811111111",
+      phone: "13811111111",
       createdAt: new Date(),
     }));
 
@@ -373,7 +373,7 @@ export async function createOrderWithPassengers(params: {
       name: p.name ?? `乘客-${index + 1}`,
       identityType: p.identityType ?? "passport",
       identityNumber: p.identityNumber ?? `P${uniqueSuffix()}${index}`,
-      phone: p.phone ?? "+8613811111111",
+      phone: p.phone ?? "13811111111",
       createdAt: p.createdAt ?? new Date(),
     } satisfies typeof orderPassengers.$inferInsert;
 

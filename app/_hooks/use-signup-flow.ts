@@ -71,7 +71,7 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     try {
       const result = await signInWithOtpAction(
         {
-          account: `+86${data.phoneNumber}`,
+          account: data.phoneNumber,
           otp: data.otp,
           agreedToTerms: data.agreedToTerms,
         },
@@ -163,10 +163,7 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     setIsLoading(true);
 
     try {
-      const result = await sendPhoneOtpAction(
-        `+86${phoneNumber}`,
-        fetchOptions
-      );
+      const result = await sendPhoneOtpAction(phoneNumber, fetchOptions);
 
       return result.success;
     } catch {

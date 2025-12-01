@@ -119,7 +119,7 @@ export const PhoneUnverified: Story = {
     description:
       "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
     status: "unverified",
-    value: "+86138****5678",
+    value: "138****5678",
     actionHref: "/home/security/phone",
     actionLabel: "验证手机号",
   },
@@ -140,7 +140,7 @@ export const PhoneVerified: Story = {
     description:
       "绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。",
     status: "verified",
-    value: "+86138****5678",
+    value: "138****5678",
     actionHref: "/home/security/phone",
     actionLabel: "修改",
   },
@@ -228,7 +228,7 @@ export const StackedItems: StoryWithRender = {
         title="绑定手机"
         description="绑定手机后，您即可享受手机号登录、动态码登录、找回密码等，为了账号安全，建议您在更换手机号后第一时间更换绑定手机。"
         status="unverified"
-        value="+86138****5678"
+        value="138****5678"
         actionHref="/home/security/phone"
         actionLabel="验证手机号"
       />

@@ -47,7 +47,7 @@ describe("UserInfoForm Component", () => {
     nickname: "小张",
     email: "zhangsan@example.com",
     emailVerified: true,
-    phoneNumber: "+8613800138000",
+    phoneNumber: "13800138000",
     phoneNumberVerified: true,
     gender: "male",
     birthday: "1990-01-01",

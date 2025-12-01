@@ -25,17 +25,17 @@ import type {
 
 function resolveAccountType(account: string) {
   const trimmedAccount = account.trim();
-  const withoutCountryCode = trimmedAccount.startsWith("+86")
-    ? trimmedAccount.slice(3)
-    : trimmedAccount;
+  const withoutCountryCode = trimmedAccount.replace(/^\+86/, "");
 
   const directValidation = validateAccount(trimmedAccount);
   const normalizedValidation = validateAccount(withoutCountryCode);
 
-  const isPhone = directValidation.isPhone || normalizedValidation.isPhone;
+  const isPhone = normalizedValidation.isPhone || directValidation.isPhone;
   const isEmail = directValidation.isEmail;
 
-  return { isPhone, isEmail, account: trimmedAccount };
+  const normalizedAccount = isPhone ? withoutCountryCode : trimmedAccount;
+
+  return { isPhone, isEmail, account: normalizedAccount };
 }
 
 function mergeHeaders(base: Headers, fetchOptions?: FetchOptions): HeadersInit {
@@ -561,7 +561,7 @@ export async function setPasswordForOAuthUserAction(password: string) {
  * 3. Handles revalidation (Next.js specific)
  * 4. Formats the response
  *
- * @param phoneNumber - The new phone number (with +86 prefix)
+ * @param phoneNumber - The new phone number (11-digit)
  * @returns Result object with success status and message/error
  */
 export async function updatePhoneNumberAction(phoneNumber: string) {

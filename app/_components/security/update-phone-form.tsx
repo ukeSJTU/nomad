@@ -80,9 +80,7 @@ export default function UpdatePhoneForm({
     resolver: zodResolver(updatePhoneSchema),
     defaultValues: {
       phoneNumber:
-        mode === "verify" && currentPhoneNumber
-          ? currentPhoneNumber.replace("+86", "")
-          : "",
+        mode === "verify" && currentPhoneNumber ? currentPhoneNumber : "",
       otp: "",
     },
   });
@@ -98,7 +96,7 @@ export default function UpdatePhoneForm({
     // For verify mode, use current phone number
     const targetPhone =
       mode === "verify" && currentPhoneNumber
-        ? currentPhoneNumber.replace("+86", "")
+        ? currentPhoneNumber
         : form.getValues("phoneNumber");
 
     // Validate phone number before sending OTP (skip for verify mode since phone is fixed)
