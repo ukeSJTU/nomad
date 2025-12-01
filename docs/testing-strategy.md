@@ -784,7 +784,7 @@ beforeEach(() => {
 import {
   mockSendEmail,
   mockSendSms,
-} from "@tests/setup/mock-external-services";
+} from "@/tests/setup/mock-external-services";
 
 test("should send email when order is created", async () => {
   // ... 创建订单逻辑
@@ -1107,8 +1107,8 @@ import {
   createTestFlight,
   createTestOrder,
   generateTestNamespace,
-} from "@tests/helpers";
-import { mockSendEmail } from "@tests/setup/mock-external-services";
+} from "@/tests/helpers";
+import { mockSendEmail } from "@/tests/setup/mock-external-services";
 
 describe("Order Service - cancelOrder", () => {
   let namespace: string;
@@ -1231,7 +1231,7 @@ import {
   createTestUser,
   createTestPassenger,
   generateTestNamespace,
-} from "@tests/helpers";
+} from "@/tests/helpers";
 
 describe("Passenger Queries", () => {
   let namespace: string;
@@ -1754,7 +1754,7 @@ pnpm e2e:ui                  # E2E 测试 UI 模式
 ```typescript
 // tests/integration/services/my-service.integration.test.ts
 import { describe, test, expect, beforeEach } from "vitest";
-import { generateTestNamespace, createTestUser } from "@tests/helpers";
+import { generateTestNamespace, createTestUser } from "@/tests/helpers";
 
 describe("My Service", () => {
   let namespace: string;
