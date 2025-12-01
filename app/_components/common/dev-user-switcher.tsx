@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/sheet";
 import { env } from "@/config/env";
 import { useClientSession } from "@/hooks/use-client-session";
-import { getInitials } from "@/lib/format/string";
+import { getInitials } from "@/lib/format";
 
 type User = Extract<DevUserListResult, { success: true }>["users"][number];
 

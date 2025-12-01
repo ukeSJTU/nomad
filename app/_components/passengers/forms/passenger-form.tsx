@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { dateToLocalDateString } from "@/lib/format/date";
+import { dateToLocalDateString } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import {
   type PassengerFormData,

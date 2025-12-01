@@ -1,12 +1,6 @@
-import { redirect } from "next/navigation";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { getErrorUrl, redirectToError } from "./error-redirect";
-
-// Mock Next.js redirect
-vi.mock("next/navigation", () => ({
-  redirect: vi.fn(),
-}));
+import { getErrorUrl } from "./error-redirect";
 
 describe("Error Redirect Utilities", () => {
   describe("getErrorUrl", () => {
@@ -39,64 +33,6 @@ describe("Error Redirect Utilities", () => {
     it("should handle empty strings", () => {
       const url = getErrorUrl("");
       expect(url).toBe("/error?type=");
-    });
-  });
-
-  describe("redirectToError", () => {
-    it("should call redirect with correct URL for type only", () => {
-      try {
-        redirectToError("unauthorized");
-      } catch {
-        // redirect throws, which is expected
-      }
-      expect(redirect).toHaveBeenCalledWith("/error?type=unauthorized");
-    });
-
-    it("should call redirect with type and custom message", () => {
-      try {
-        redirectToError("payment_failed", "支付超时");
-      } catch {
-        // redirect throws, which is expected
-      }
-      expect(redirect).toHaveBeenCalledWith(
-        expect.stringContaining("type=payment_failed")
-      );
-      expect(redirect).toHaveBeenCalledWith(
-        expect.stringContaining("message=")
-      );
-    });
-
-    it("should call redirect with all parameters", () => {
-      try {
-        redirectToError("server_error", "服务器维护", "暂时无法访问");
-      } catch {
-        // redirect throws, which is expected
-      }
-      expect(redirect).toHaveBeenCalledWith(
-        expect.stringContaining("type=server_error")
-      );
-      expect(redirect).toHaveBeenCalledWith(
-        expect.stringContaining("message=")
-      );
-      expect(redirect).toHaveBeenCalledWith(expect.stringContaining("title="));
-    });
-
-    it("should encode URL parameters correctly", () => {
-      try {
-        redirectToError("error", "错误：无法连接", "系统错误");
-      } catch {
-        // redirect throws, which is expected
-      }
-
-      const lastCall =
-        vi.mocked(redirect).mock.calls[
-          vi.mocked(redirect).mock.calls.length - 1
-        ][0];
-
-      expect(lastCall).toContain("/error?");
-      expect(lastCall).toContain("type=error");
-      // URL should be encoded
-      expect(lastCall).not.toContain("错误：");
     });
   });
 

@@ -7,11 +7,11 @@ import { useEffect, useState, useTransition } from "react";
 import { getQuickDatePrices } from "@/app/_actions/quick-date-prices";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatCurrency } from "@/lib/format/currency";
 import {
   dateToLocalDateString,
+  formatCurrency,
   formatDateWithWeekday,
-} from "@/lib/format/date";
+} from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { type QuickDatePrice } from "@/types/dto";
 

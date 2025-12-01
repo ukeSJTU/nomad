@@ -7,7 +7,7 @@
 
 import type { InferInsertModel } from "drizzle-orm";
 
-import { airports } from "@/db/schema/airports";
+import { airports } from "@/db/schema";
 
 /**
  * Airport fixture type - derived from schema, excluding auto-generated fields

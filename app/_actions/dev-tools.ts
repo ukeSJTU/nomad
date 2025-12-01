@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import {
   listDevUsers,
   switchUser as switchUserService,
-} from "@/services/dev-tools/dev-users.service";
+} from "@/services/dev-tools";
 import type { User } from "@/types/db";
 
 // ============================================================================

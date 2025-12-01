@@ -11,7 +11,7 @@ import {
   getPassengers,
   updatePassenger,
 } from "@/domains/passengers";
-import { dateToLocalDateString } from "@/lib/format/date";
+import { dateToLocalDateString } from "@/lib/format";
 
 async function requireUserId(redirectTo?: string): Promise<string> {
   const user = await requireSessionUser(redirectTo);

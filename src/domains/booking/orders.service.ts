@@ -2,16 +2,19 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
 import { db } from "@/db";
-import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
-import { flightSeatClasses } from "@/db/schema/flight-seat-classes";
-import { orderPassengers, orders } from "@/db/schema/orders";
+import {
+  flightSeatClasses,
+  getAncillaryServiceByCode,
+  orderPassengers,
+  orders,
+} from "@/db/schema";
 import {
   addCurrency,
   getCurrencyValue,
   multiplyCurrency,
   parseCurrency,
   toDatabaseValue,
-} from "@/lib/format/currency";
+} from "@/lib/format";
 import type {
   CreateOrderPayload,
   UpdateOrderAncillaryPayload,

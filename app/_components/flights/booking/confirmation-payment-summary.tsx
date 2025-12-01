@@ -6,7 +6,7 @@ import {
   formatCurrencyWithoutSymbol,
   getCurrencyValue,
   parseCurrency,
-} from "@/lib/format/currency";
+} from "@/lib/format";
 
 interface ConfirmationPaymentSummaryProps {
   baseAmount: string;
