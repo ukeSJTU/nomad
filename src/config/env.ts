@@ -85,16 +85,25 @@ const envSchema = z
 
 export const env = envSchema.parse(process.env);
 
+type NodeEnv = "development" | "test" | "production";
+
+function getNodeEnv(): NodeEnv | undefined {
+  const s = process.env.NODE_ENV?.trim().toLowerCase();
+  return s === "development" || s === "test" || s === "production"
+    ? (s as NodeEnv)
+    : undefined;
+}
+
 export function isProduction(): boolean {
-  return env.NODE_ENV === "production";
+  return getNodeEnv() === "production";
 }
 
 export function isDevelopment(): boolean {
-  return env.NODE_ENV === "development";
+  return getNodeEnv() === "development";
 }
 
 export function isTest(): boolean {
-  return env.NODE_ENV === "test";
+  return getNodeEnv() === "test";
 }
 
 const publicEnvSchema = z.object({

@@ -1,15 +1,21 @@
 import "server-only";
 
-import { env, features } from "@/config/env";
+import { env, isProduction } from "@/config/env";
 import { sendEmailOtp, sendSmsOtp } from "@/infra/communications";
 import { logger } from "@/infra/logging";
 
 export function shouldEnableAliyunSms(): boolean {
-  return features.sms;
+  const v = process.env.ENABLE_ALIYUN_SMS?.toLowerCase();
+  if (v === "enabled" || v === "true") return true;
+  if (v === "disabled" || v === "false") return false;
+  return isProduction();
 }
 
 export function shouldEnableResend(): boolean {
-  return features.email;
+  const v = process.env.ENABLE_RESEND?.toLowerCase();
+  if (v === "enabled" || v === "true") return true;
+  if (v === "disabled" || v === "false") return false;
+  return isProduction();
 }
 
 export async function sendAuthPhoneOtp(

@@ -1,7 +1,7 @@
+import { createRequire } from "module";
 import pino from "pino";
-import pretty from "pino-pretty";
 
-import { env, isDevelopment, isProduction, isTest } from "@/config/env";
+import { isDevelopment, isProduction, isTest } from "@/config/env";
 
 // Environment detection flags for conditional logger configuration
 const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
@@ -27,13 +27,13 @@ const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
  */
 const getLogLevel = (): pino.LevelWithSilent => {
   if (isTest()) return "silent";
-  if (env.LOG_LEVEL) {
-    const envLevel = env.LOG_LEVEL as pino.LevelWithSilent;
-    // Validate the environment variable
+  const raw = process.env.LOG_LEVEL?.trim().toLowerCase();
+  if (raw) {
+    const envLevel = raw as pino.LevelWithSilent;
     if (VALID_LOG_LEVELS.includes(envLevel)) {
       return envLevel;
     }
-    console.warn(`Invalid LOG_LEVEL: ${env.LOG_LEVEL}, using default`);
+    console.warn(`Invalid LOG_LEVEL: ${raw}, using default`);
   }
   return isDevelopment() ? "debug" : "info";
 };
@@ -71,7 +71,8 @@ const pinoOptions: pino.LoggerOptions = {
  */
 const createLoggerStream = () => {
   if (isDevelopment() && !isTest()) {
-    // Development: Use pino-pretty stream for enhanced readability
+    const require = createRequire(import.meta.url);
+    const pretty = require("pino-pretty");
     return pretty({
       colorize: true, // Add colors to log levels
       ignore: "pid,hostname", // Hide process ID and hostname for cleaner output

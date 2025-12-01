@@ -21,7 +21,7 @@
  */
 
 import "server-only";
-import { env } from "@/config/env";
+// Read CRON_SECRET dynamically from process.env
 
 /**
  * Verify the cron secret from the request Authorization header
@@ -47,7 +47,7 @@ export function verifyCronSecret(request: Request): boolean {
   // Extract the token
   const token = authHeader.substring(7); // Remove "Bearer " prefix
 
-  const expectedSecret = env.CRON_SECRET;
+  const expectedSecret = process.env.CRON_SECRET;
 
   if (!expectedSecret) {
     console.error(

@@ -1,6 +1,4 @@
 import "server-only";
-
-import { env, features } from "@/config/env";
 import Credential from "@alicloud/credentials";
 import Dypnsapi20170525, * as $Dypnsapi20170525 from "@alicloud/dypnsapi20170525";
 import * as $OpenApi from "@alicloud/openapi-client";
@@ -57,8 +55,8 @@ class AliyunSmsClient {
    */
   public async sendSms(phoneNumber: string, code: string): Promise<boolean> {
     try {
-      const signName = env.ALIBABA_CLOUD_SMS_SIGN_NAME;
-      const templateCode = env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE;
+      const signName = process.env.ALIBABA_CLOUD_SMS_SIGN_NAME;
+      const templateCode = process.env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE;
 
       console.log(
         `Aliyun SMS config: signName=${signName}, templateCode=${templateCode}`
@@ -70,10 +68,8 @@ class AliyunSmsClient {
         `Sending SMS to ${formattedPhoneNumber} (original: ${phoneNumber}) with code ${code}`
       );
 
-      if (!features.sms || !signName || !templateCode) {
-        throw new Error(
-          "Missing required SMS configuration: ALIBABA_CLOUD_SMS_SIGN_NAME or ALIBABA_CLOUD_SMS_TEMPLATE_CODE"
-        );
+      if (!signName || !templateCode) {
+        return false;
       }
 
       // Construct request according to official example code
