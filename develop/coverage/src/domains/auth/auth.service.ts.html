@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.43% </span>
+                <span class="strong">16.21% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/149</span>
+                <span class='fraction'>24/148</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>5/6</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.43% </span>
+                <span class="strong">16.21% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/149</span>
+                <span class='fraction'>24/148</span>
             </div>
         
             
@@ -327,11 +327,9 @@
 <a name='L262'></a><a href='#L262'>262</a>
 <a name='L263'></a><a href='#L263'>263</a>
 <a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a>
-<a name='L266'></a><a href='#L266'>266</a>
-<a name='L267'></a><a href='#L267'>267</a>
-<a name='L268'></a><a href='#L268'>268</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L265'></a><a href='#L265'>265</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -569,20 +567,16 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -599,6 +593,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { runInTransaction } from "@/db/transaction";
 import type { ServiceResult } from "@/types/result";
+import { phoneNumberSchema } from "@/types/validations";
 import {
   deleteAccountById,
   findCredentialAccount,
@@ -829,26 +824,22 @@ export <span class="fstat-no" title="function not covered" >function validatePas
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 /**
- * Validate and normalize phone numbers for auth flows.
- * Returns the normalized phone number with +86 prefix on success.
+ * Validate phone numbers for auth flows (11-digit, no country prefix).
+ * Returns the normalized 11-digit phone number on success.
  */
 export function validatePhoneNumberFormat(
   phoneNumber: string
 ): ServiceResult&lt;string&gt; {
-  const trimmed = phoneNumber.trim();
-  const normalized = trimmed.startsWith("+86") ? trimmed : `+86${trimmed}`;
+  const parsed = phoneNumberSchema.safeParse(phoneNumber);
 &nbsp;
-  if (!normalized.startsWith("+86")) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >    return { success: false, error: "手机号格式错误" };</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-&nbsp;
-  const digits = normalized.replace("+86", "");
-&nbsp;
-  if (!/^[0-9]{11}$/.test(digits)) {
-    return { success: false, error: "手机号必须是11位数字" };
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.<span class="branch-0 cbranch-no" title="branch not covered" >message || "手机号格式不正确，请重新输入",</span>
+    };
   }
 &nbsp;
-  return { success: true, data: normalized };
+  return { success: true, data: parsed.data };
 }
 &nbsp;
 /**
@@ -871,7 +862,7 @@ export function validateEmailFormat(email: string): ServiceResult&lt;void&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-01T13:31:04.123Z
+                at 2025-12-01T23:28:10.126Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
