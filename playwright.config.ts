@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { env } from "./src/config/env";
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -7,19 +8,19 @@ export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: !!env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: env.CI ? 2 : 0,
   /* Optimize workers for CI and local development */
   workers: 4,
-  // workers: process.env.CI ? "50%" : undefined,
+  // workers: env.CI ? "50%" : undefined,
   /* Timeout settings */
   timeout: 60 * 1000, // 60 seconds per test
   expect: {
     timeout: 15 * 1000, // 15 seconds for assertions
   },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI
+  reporter: env.CI
     ? [["blob"], ["github"]]
     : [["html", { open: "on-failure" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -58,29 +59,27 @@ export default defineConfig({
     command: "pnpm dev",
     // url: "http://localhost:3000",
     port: 3000,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !env.CI,
     timeout: 120 * 1000, // 2 minutes to start the server
     // Show output in CI for debugging, ignore in local development
-    stdout: process.env.CI ? "pipe" : "ignore",
-    stderr: process.env.CI ? "pipe" : "ignore",
+    stdout: env.CI ? "pipe" : "ignore",
+    stderr: env.CI ? "pipe" : "ignore",
 
     env: {
       NODE_ENV: "test",
       ENABLE_ALIYUN_SMS: "false", // Explicitly disable Aliyun SMS in tests
       // Dummy DATABASE_URL for test environment (not used for actual DB operations)
       DATABASE_URL:
-        process.env.DATABASE_URL ||
-        "postgresql://dummy:dummy@localhost:5432/dummy",
+        env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy",
       // Dummy auth secrets for test environment
       BETTER_AUTH_SECRET:
-        process.env.BETTER_AUTH_SECRET || "dummy-secret-for-test-only",
-      BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+        env.BETTER_AUTH_SECRET || "dummy-secret-for-test-only",
+      BETTER_AUTH_URL: env.BETTER_AUTH_URL || "http://localhost:3000",
       TURNSTILE_SECRET_KEY:
-        process.env.TURNSTILE_SECRET_KEY ||
-        "1x0000000000000000000000000000000AA",
+        env.TURNSTILE_SECRET_KEY || "1x0000000000000000000000000000000AA",
       // Only enable Next.js debug logs in CI or when explicitly requested
-      ...(process.env.CI || process.env.DEBUG
-        ? { DEBUG: process.env.DEBUG || "next:error,next:router" }
+      ...(env.CI || env.DEBUG
+        ? { DEBUG: env.DEBUG || "next:error,next:router" }
         : {}),
     },
   },

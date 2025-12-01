@@ -7,7 +7,7 @@ export const runtime = "edge";
 
 const openai = createOpenAICompatible({
   name: "inkeep",
-  apiKey: process.env.INKEEP_API_KEY,
+  apiKey: env.INKEEP_API_KEY,
   baseURL: "https://api.inkeep.com/v1",
 });
 
@@ -29,3 +29,4 @@ export async function POST(req: Request) {
 
   return result.toUIMessageStreamResponse();
 }
+import { env } from "@/config/env";

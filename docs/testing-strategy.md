@@ -1525,11 +1525,11 @@ export default defineConfig({
   webServer: {
     command: "pnpm dev",
     url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !env.CI,
     env: {
       NODE_ENV: "test",
       DATABASE_URL:
-        process.env.DATABASE_URL || "postgresql://localhost:5432/nomad_test",
+        env.DATABASE_URL || "postgresql://localhost:5432/nomad_test",
       ENABLE_ALIYUN_SMS: "false",
       TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA", // 测试密钥
     },

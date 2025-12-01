@@ -1,7 +1,7 @@
 import pino from "pino";
 import pretty from "pino-pretty";
 
-import { isDevelopment, isProduction, isTest } from "@/config/env";
+import { env, isDevelopment, isProduction, isTest } from "@/config/env";
 
 // Environment detection flags for conditional logger configuration
 const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
@@ -27,13 +27,13 @@ const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
  */
 const getLogLevel = (): pino.LevelWithSilent => {
   if (isTest()) return "silent";
-  if (process.env.LOG_LEVEL) {
-    const envLevel = process.env.LOG_LEVEL as pino.LevelWithSilent;
+  if (env.LOG_LEVEL) {
+    const envLevel = env.LOG_LEVEL as pino.LevelWithSilent;
     // Validate the environment variable
     if (VALID_LOG_LEVELS.includes(envLevel)) {
       return envLevel;
     }
-    console.warn(`Invalid LOG_LEVEL: ${process.env.LOG_LEVEL}, using default`);
+    console.warn(`Invalid LOG_LEVEL: ${env.LOG_LEVEL}, using default`);
   }
   return isDevelopment() ? "debug" : "info";
 };

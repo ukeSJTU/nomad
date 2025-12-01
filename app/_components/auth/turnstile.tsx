@@ -1,3 +1,4 @@
+import { publicEnv } from "@/config/env";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { forwardRef } from "react";
 
@@ -42,7 +43,7 @@ export const TurnstileWidget = forwardRef<
   return (
     <Turnstile
       ref={ref}
-      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+      siteKey={publicEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
       className={className}
       options={{
         action,

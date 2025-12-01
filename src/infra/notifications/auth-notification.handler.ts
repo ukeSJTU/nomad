@@ -2,11 +2,12 @@ import "server-only";
 
 import { Resend } from "resend";
 
+import { env, features } from "@/config/env";
 import { logger } from "@/infra/logging";
 import { onAuthEvent } from "@/services/auth-events";
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const resendFrom = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+const resendApiKey = env.RESEND_API_KEY;
+const resendFrom = env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 const resendClient = resendApiKey ? new Resend(resendApiKey) : null;
 
 async function sendSecurityNotificationEmail(
@@ -21,7 +22,7 @@ async function sendSecurityNotificationEmail(
     return;
   }
 
-  if (!resendClient) {
+  if (!features.email || !resendClient) {
     logger.info(
       `[Auth Notification] ${subject} -> ${to}: ${message} (simulated, missing RESEND_API_KEY)`
     );

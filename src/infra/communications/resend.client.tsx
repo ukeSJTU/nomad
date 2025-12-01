@@ -3,6 +3,7 @@ import "server-only";
 import { Resend } from "resend";
 
 import { OrderConfirmationEmail, OtpEmailTemplate } from "@/components/emails";
+import { env, features } from "@/config/env";
 import type { OrderConfirmationEmailData } from "@/types/dto";
 
 /**
@@ -14,11 +15,11 @@ export class ResendEmailClient {
   private client: Resend;
 
   private constructor() {
-    const apiKey = process.env.RESEND_API_KEY;
+    const apiKey = env.RESEND_API_KEY;
 
-    if (!apiKey) {
+    if (!apiKey || !features.email) {
       console.warn(
-        "RESEND_API_KEY is not set. Email sending will be simulated in console."
+        "Email feature disabled or RESEND_API_KEY missing. Simulation mode enabled."
       );
       // Create a dummy client - we'll handle the missing key in sendEmail
       this.client = new Resend("dummy-key");
@@ -49,8 +50,7 @@ export class ResendEmailClient {
     code: string
   ): Promise<boolean> {
     try {
-      const fromEmail =
-        process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+      const fromEmail = env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
       console.log(
         `Resend Email config: fromEmail=${fromEmail}, toEmail=${emailAddr}`
@@ -60,7 +60,7 @@ export class ResendEmailClient {
         `Sending verification email to ${emailAddr} with code ${code}`
       );
 
-      if (!process.env.RESEND_API_KEY) {
+      if (!env.RESEND_API_KEY || !features.email) {
         throw new Error("Missing required email configuration: RESEND_API_KEY");
       }
 
@@ -101,14 +101,13 @@ export class ResendEmailClient {
     orderData: OrderConfirmationEmailData
   ): Promise<boolean> {
     try {
-      const fromEmail =
-        process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+      const fromEmail = env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
       console.log(
         `Sending order confirmation email to ${orderData.user.email} for order ${orderData.orderNumber}`
       );
 
-      if (!process.env.RESEND_API_KEY) {
+      if (!env.RESEND_API_KEY || !features.email) {
         throw new Error("Missing required email configuration: RESEND_API_KEY");
       }
 

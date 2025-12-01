@@ -35,6 +35,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { env } from "@/config/env";
 import { useClientSession } from "@/hooks/use-client-session";
 import { getInitials } from "@/lib/format/string";
 
@@ -87,7 +88,7 @@ export default function DevUserSwitcher() {
   };
 
   // Environment check after all hooks
-  if (process.env.NODE_ENV !== "development") {
+  if (env.NODE_ENV !== "development") {
     return null;
   }
 

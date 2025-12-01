@@ -771,7 +771,7 @@ Cloudflare Turnstile人机验证集成失败
 ```tsx
 // AI生成的代码
 <Turnstile
-  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+  siteKey={env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
   onVerify={token => {
     setToken(token);
   }}
@@ -808,7 +808,7 @@ Cloudflare Turnstile人机验证集成失败
 ```tsx
 // 正确的实现
 <Turnstile
-  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+  siteKey={env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
   onVerify={token => {
     setToken(token);
   }}

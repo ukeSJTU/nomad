@@ -42,6 +42,7 @@
     "prepare": "husky",
     "postinstall": "fumadocs-mdx",
     "setup:dev": "node scripts/setup-dev.mjs",
+    "checkenv": "tsx scripts/check-env.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "email": "email dev --dir ./app/_components/emails --port 6007"

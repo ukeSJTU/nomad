@@ -69,8 +69,8 @@ icon: Flag
 describe("sendEmailOtp", () => {
   it("should send email successfully with valid configuration", async () => {
     // Setup environment variables
-    process.env.RESEND_API_KEY = "re_test_key";
-    process.env.RESEND_FROM_EMAIL = "test@example.com";
+    env.RESEND_API_KEY = "re_test_key";
+    env.RESEND_FROM_EMAIL = "test@example.com";
 
     // Mock successful response
     mockSendEmail.mockResolvedValue({

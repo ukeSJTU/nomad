@@ -2,6 +2,7 @@ import { getSessionCookie } from "better-auth/cookies";
 import { isMarkdownPreferred, rewritePath } from "fumadocs-core/negotiation";
 import { NextRequest, NextResponse } from "next/server";
 
+import { env } from "@/config/env";
 import { logger } from "@/infra/logging";
 
 const { rewrite: rewriteLLM } = rewritePath("/docs/*path", "/llms.mdx/*path");
@@ -70,7 +71,7 @@ export function middleware(request: NextRequest) {
   }
 
   // 5. Log all requests in development environment
-  if (process.env.NODE_ENV === "development") {
+  if (env.NODE_ENV === "development") {
     logger.info(`[Middleware] ${request.method} ${pathname}`);
   }
 

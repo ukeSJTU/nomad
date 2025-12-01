@@ -10,7 +10,9 @@ import * as schema from "@/db/schema";
 // - NODE_ENV=production → loads .env.production
 loadEnvConfig(process.cwd());
 
-if (!process.env.DATABASE_URL) {
+const { env: localEnv } = await import("@/config/env");
+
+if (!localEnv.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is not set.");
 }
 
@@ -30,7 +32,7 @@ const dbLogger = new EnhancedQueryLogger({
  */
 function shouldUseSSL(): boolean {
   // Check explicit DATABASE_SSL environment variable
-  const explicitSSL = process.env.DATABASE_SSL?.toLowerCase();
+  const explicitSSL = localEnv.DATABASE_SSL?.toLowerCase();
   if (explicitSSL === "true" || explicitSSL === "enabled") {
     return true;
   }
@@ -39,7 +41,7 @@ function shouldUseSSL(): boolean {
   }
 
   // Auto-detect from DATABASE_URL sslmode parameter
-  const databaseUrl = process.env.DATABASE_URL;
+  const databaseUrl = localEnv.DATABASE_URL;
   if (databaseUrl?.includes("sslmode=require")) {
     return true;
   }
@@ -48,14 +50,14 @@ function shouldUseSSL(): boolean {
   }
 
   // Default: use SSL in production, disable in development/test
-  return process.env.NODE_ENV === "production";
+  return localEnv.NODE_ENV === "production";
 }
 
 export const db = drizzle({
   connection: {
-    connectionString: process.env.DATABASE_URL,
+    connectionString: localEnv.DATABASE_URL,
     ssl: shouldUseSSL(),
   },
   schema,
-  logger: process.env.NODE_ENV === "development" ? dbLogger : false,
+  logger: localEnv.NODE_ENV === "development" ? dbLogger : false,
 });

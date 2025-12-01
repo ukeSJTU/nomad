@@ -7,11 +7,12 @@
  * @see https://nextjs.org/docs/15/app/guides/instrumentation
  */
 
+import { env } from "@/config/env";
+
 export async function register() {
-  // Only run in development mode
-  if (process.env.NODE_ENV === "development") {
+  if (env.NODE_ENV === "development") {
     // Only run on server (not in edge runtime)
-    if (process.env.NEXT_RUNTIME === "nodejs") {
+    if (env.NEXT_RUNTIME === "nodejs") {
       const { startOrderCancellationTask } = await import("@/infra/background");
       startOrderCancellationTask();
     }

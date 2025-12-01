@@ -1,5 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 
+import { env } from "@/config/env";
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
 import { auth } from "@/infra/auth";
@@ -7,7 +8,7 @@ import type { User } from "@/types/db";
 import type { ServiceResult } from "@/types/result";
 
 export async function listDevUsers(): Promise<ServiceResult<User[]>> {
-  if (process.env.NODE_ENV !== "development") {
+  if (env.NODE_ENV !== "development") {
     return { success: false, error: "Not available" };
   }
 
@@ -24,7 +25,7 @@ export async function switchUser(params: {
   userId: string;
   headers: HeadersInit;
 }): Promise<ServiceResult> {
-  if (process.env.NODE_ENV !== "development") {
+  if (env.NODE_ENV !== "development") {
     return { success: false, error: "Not available in production" };
   }
 
