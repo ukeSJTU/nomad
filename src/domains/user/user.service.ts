@@ -1,6 +1,11 @@
 import type { ServiceResult } from "@/types/result";
 import type { UserInfoUpdateData } from "@/types/validations";
-import { rechargeUserBalance, updateUserProfile } from "./user.repository";
+import {
+  rechargeUserBalance,
+  updateUserEmail as updateUserEmailInRepo,
+  updateUserPhoneNumber as updateUserPhoneNumberInRepo,
+  updateUserProfile,
+} from "./user.repository";
 
 /**
  * Service layer for user-related business logic
@@ -126,4 +131,18 @@ export async function rechargeBalance(
       error: error instanceof Error ? error.message : "充值失败，请稍后重试",
     };
   }
+}
+
+export async function updateUserPhoneNumber(
+  userId: string,
+  phoneNumber: string
+): Promise<void> {
+  return updateUserPhoneNumberInRepo(userId, phoneNumber);
+}
+
+export async function updateUserEmail(
+  userId: string,
+  email: string
+): Promise<void> {
+  return updateUserEmailInRepo(userId, email);
 }

@@ -12,7 +12,7 @@ import {
   getPassengers,
   softDeletePassengerForUser,
   updatePassengerRecord,
-} from "@/domains/passengers";
+} from "./passenger.repository";
 
 describe("passenger.repository", () => {
   it("returns only non-deleted passengers for the given user", async () => {
