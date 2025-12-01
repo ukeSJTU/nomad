@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/53</span>
+                <span class='fraction'>48/48</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>53/53</span>
+                <span class='fraction'>48/48</span>
             </div>
         
             
@@ -125,29 +125,17 @@
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -156,6 +144,8 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -181,6 +171,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -195,24 +187,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import "server-only";
-&nbsp;
-import { env, isProduction } from "@/config/env";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { getEnv, getFeatures } from "@/config/env";
 import { sendEmailOtp, sendSmsOtp } from "@/infra/communications";
 import { logger } from "@/infra/logging";
 &nbsp;
 export function shouldEnableAliyunSms(): boolean {
-  const v = process.env.ENABLE_ALIYUN_SMS?.toLowerCase();
-  if (v === "enabled" || v === "true") return true;
-  if (v === "disabled" || v === "false") return false;
-  return isProduction();
+  return getFeatures().sms;
 }
 &nbsp;
 export function shouldEnableResend(): boolean {
-  const v = process.env.ENABLE_RESEND?.toLowerCase();
-  if (v === "enabled" || v === "true") return true;
-  if (v === "disabled" || v === "false") return false;
-  return isProduction();
+  return getFeatures().email;
 }
 &nbsp;
 export async function sendAuthPhoneOtp(
@@ -222,6 +206,8 @@ export async function sendAuthPhoneOtp(
   const useAliyunSms = shouldEnableAliyunSms();
 &nbsp;
   if (!useAliyunSms) {
+    const env = getEnv();
+&nbsp;
     logger.info(`[SMS SIMULATION] Sending OTP to ${phoneNumber}`);
     logger.info(
       `[SMS SIMULATION] Environment: ${env.NODE_ENV}, ENABLE_ALIYUN_SMS: ${env.ENABLE_ALIYUN_SMS}`
@@ -246,6 +232,8 @@ export async function sendAuthEmailOtp(
   const useResend = shouldEnableResend();
 &nbsp;
   if (!useResend) {
+    const env = getEnv();
+&nbsp;
     logger.info(`[EMAIL SIMULATION] Sending OTP to ${email} (type: ${type})`);
     logger.info(
       `[EMAIL SIMULATION] Environment: ${env.NODE_ENV}, ENABLE_RESEND: ${env.ENABLE_RESEND}`
@@ -268,7 +256,7 @@ export async function sendAuthEmailOtp(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-01T12:17:20.860Z
+                at 2025-12-01T15:35:17.074Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

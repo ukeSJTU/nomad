@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.59% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/376</span>
+                <span class='fraction'>0/376</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.59% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/376</span>
+                <span class='fraction'>0/376</span>
             </div>
         
             
@@ -619,17 +619,17 @@
 <a name='L554'></a><a href='#L554'>554</a>
 <a name='L555'></a><a href='#L555'>555</a>
 <a name='L556'></a><a href='#L556'>556</a>
-<a name='L557'></a><a href='#L557'>557</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L557'></a><a href='#L557'>557</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -641,7 +641,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1175,17 +1175,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { and, eq, inArray, sql } from "drizzle-orm";
-import { nanoid } from "nanoid";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { and, eq, inArray, sql } from "drizzle-orm";<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cstat-no" title="statement not covered" >import { nanoid } from "nanoid";</span>
 &nbsp;
-import { db } from "@/db";
-import {
+<span class="cstat-no" title="statement not covered" >import { db } from "@/db";</span>
+<span class="cstat-no" title="statement not covered" >import {</span>
   flightSeatClasses,
   getAncillaryServiceByCode,
   orderPassengers,
   orders,
 } from "@/db/schema";
-import {
+<span class="cstat-no" title="statement not covered" >import {</span>
   addCurrency,
   getCurrencyValue,
   multiplyCurrency,
@@ -1197,7 +1197,7 @@ import type {
   UpdateOrderAncillaryPayload,
 } from "@/types/dto";
 import type { ServiceResult } from "@/types/result";
-import {
+<span class="cstat-no" title="statement not covered" >import {</span>
   type OrderRefundData,
   cancelExpiredOrdersAndReleaseSeats,
   cancelOrderAndReleaseSeats,
@@ -1237,7 +1237,7 @@ export interface CreateOrderInput {
   };
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function generateOrderNumber(): string {</span></span>
+<span class="cstat-no" title="statement not covered" >function generateOrderNumber(): string {</span>
 <span class="cstat-no" title="statement not covered" >  const now = new Date();</span>
 <span class="cstat-no" title="statement not covered" >  const year = now.getFullYear();</span>
 <span class="cstat-no" title="statement not covered" >  const month = String(now.getMonth() + 1).padStart(2, "0");</span>
@@ -1248,13 +1248,13 @@ export interface CreateOrderInput {
 <span class="cstat-no" title="statement not covered" >  return `NMD${dateStr}${randomSuffix}`;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function calculatePaymentDeadline(): Date {</span></span>
+<span class="cstat-no" title="statement not covered" >function calculatePaymentDeadline(): Date {</span>
 <span class="cstat-no" title="statement not covered" >  const deadline = new Date();</span>
 <span class="cstat-no" title="statement not covered" >  deadline.setMinutes(deadline.getMinutes() + 15);</span>
 <span class="cstat-no" title="statement not covered" >  return deadline;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function createOrder(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function createOrder(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  payload: CreateOrderInput</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;CreateOrderPayload&gt;&gt; {</span>
@@ -1376,7 +1376,7 @@ export interface CreateOrderInput {
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function updateOrderAncillary(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function updateOrderAncillary(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  params: {</span>
     orderId: string;
@@ -1436,7 +1436,7 @@ export interface CreateOrderInput {
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function deleteOrder(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function deleteOrder(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  orderId: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&gt; {</span>
@@ -1513,7 +1513,7 @@ export interface CreateOrderInput {
  * @param userId - User UUID (for ownership validation)
  * @returns Result object with success/error
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function cancelOrder(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function cancelOrder(</span>
 <span class="cstat-no" title="statement not covered" >  orderId: string,</span>
 <span class="cstat-no" title="statement not covered" >  userId: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&gt; {</span>
@@ -1592,7 +1592,7 @@ export interface RefundOrderData {
  *
  * @returns Result object with cancellation statistics or error
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function cancelExpiredOrders(): Promise&lt;</span></span>
+<span class="cstat-no" title="statement not covered" >export async function cancelExpiredOrders(): Promise&lt;</span>
   ServiceResult&lt;CancelExpiredOrdersData&gt;
 <span class="cstat-no" title="statement not covered" >&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
@@ -1630,7 +1630,7 @@ export interface RefundOrderData {
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function hasFlightDeparted(</span></span>
+<span class="cstat-no" title="statement not covered" >function hasFlightDeparted(</span>
 <span class="cstat-no" title="statement not covered" >  flight: OrderRefundData["outboundFlightSeatClass"],</span>
 <span class="cstat-no" title="statement not covered" >  now: Date</span>
 <span class="cstat-no" title="statement not covered" >): boolean {</span>
@@ -1660,7 +1660,7 @@ export interface RefundOrderData {
  * @param userId - User UUID (for ownership validation)
  * @returns Result object with success/error and refund amount
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function refundOrder(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function refundOrder(</span>
 <span class="cstat-no" title="statement not covered" >  orderId: string,</span>
 <span class="cstat-no" title="statement not covered" >  userId: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;RefundOrderData&gt;&gt; {</span>
@@ -1738,7 +1738,7 @@ export interface RefundOrderData {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-01T12:17:20.860Z
+                at 2025-12-01T15:35:17.074Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.38% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/216</span>
+                <span class='fraction'>0/216</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">1.38% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/216</span>
+                <span class='fraction'>0/216</span>
             </div>
         
             
@@ -426,7 +426,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -449,8 +449,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -783,7 +783,7 @@ import type {
   CreatePassengerData,
   UpdatePassengerData,
 } from "@/types/validations";
-import {
+<span class="cstat-no" title="statement not covered" >import {</span>
   PassengerRow,
   batchSoftDeletePassengersForUser,
   createPassengerRecord,
@@ -806,15 +806,15 @@ import {
  * UUID validation regex pattern
  * Matches standard UUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
  */
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+<span class="cstat-no" title="statement not covered" >const UUID_REGEX =</span>
+<span class="cstat-no" title="statement not covered" >  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;</span>
 &nbsp;
 /**
  * Validate if a string is a valid UUID format
  * @param id - The string to validate
  * @returns true if valid UUID format, false otherwise
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function isValidUUID(id: string): boolean {</span></span>
+<span class="cstat-no" title="statement not covered" >function isValidUUID(id: string): boolean {</span>
 <span class="cstat-no" title="statement not covered" >  return UUID_REGEX.test(id);</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
@@ -823,7 +823,7 @@ const UUID_REGEX =
  */
 export type PassengerInput = CreatePassengerData;
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function toPassengerDto(row: PassengerRow): PassengerDTO {</span></span>
+<span class="cstat-no" title="statement not covered" >function toPassengerDto(row: PassengerRow): PassengerDTO {</span>
 <span class="cstat-no" title="statement not covered" >  return {</span>
 <span class="cstat-no" title="statement not covered" >    id: row.id,</span>
 <span class="cstat-no" title="statement not covered" >    name: row.name,</span>
@@ -854,7 +854,7 @@ export type PassengerInput = CreatePassengerData;
  * @param data - Passenger data to create
  * @returns ServiceResult with created passenger data or error
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function createPassenger(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function createPassenger(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  data: PassengerInput</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;PassengerDTO&gt;&gt; {</span>
@@ -915,7 +915,7 @@ export type PassengerInput = CreatePassengerData;
  * @param data - Partial passenger data to update
  * @returns ServiceResult with updated passenger data or error
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function updatePassenger(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function updatePassenger(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  id: string,</span>
 <span class="cstat-no" title="statement not covered" >  data: UpdatePassengerData</span>
@@ -1001,7 +1001,7 @@ export type PassengerInput = CreatePassengerData;
  * @param id - The passenger ID to retrieve
  * @returns ServiceResult with passenger data or null if not found
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function getPassenger(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function getPassenger(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  id: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;PassengerDTO | null&gt;&gt; {</span>
@@ -1051,7 +1051,7 @@ export type PassengerInput = CreatePassengerData;
  * @param id - The passenger ID to delete
  * @returns ServiceResult with success status
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function deletePassenger(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function deletePassenger(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  id: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;void&gt;&gt; {</span>
@@ -1104,7 +1104,7 @@ export type PassengerInput = CreatePassengerData;
  * @param ids - Array of passenger IDs to delete
  * @returns ServiceResult with number of deleted passengers
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function batchDeletePassengers(</span></span>
+<span class="cstat-no" title="statement not covered" >export async function batchDeletePassengers(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string,</span>
 <span class="cstat-no" title="statement not covered" >  ids: string[]</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;number&gt;&gt; {</span>
@@ -1141,7 +1141,7 @@ export type PassengerInput = CreatePassengerData;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-01T12:17:20.960Z
+                at 2025-12-01T15:35:17.175Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
