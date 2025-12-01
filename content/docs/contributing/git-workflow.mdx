@@ -14,27 +14,29 @@ import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 ### 主要分支
 
 **`main` 分支**
+
 - 生产环境代码，保持稳定
 - 禁止直接推送，需通过 PR
 - 至少 1 人审查，通过所有 CI
 - 仅接受来自 `develop` 的合并
 
 **`develop` 分支**
+
 - 开发主分支，最新开发进度
 - 禁止直接推送，需通过 PR
 - 必须通过 CI 检查
 
 ### 临时分支
 
-| 类型 | 命名 | 示例 | 来源/合并目标 |
-| :--- | :--- | :--- | :--- |
-| 功能分支 | `feat/描述` | `feat/user-authentication` | 从 `develop` 创建并合并回 |
-| 修复分支 | `fix/描述` | `fix/login-button-styling` | 从 `develop` 创建并合并回 |
-| 热修复 | `hotfix/描述` | `hotfix/critical-security-patch` | 从 `main` 创建，合并回 `main` 和 `develop` |
-| 文档 | `docs/描述` | `docs/update-readme` | 从 `develop` 创建并合并回 |
-| 重构 | `refactor/描述` | `refactor/auth-module` | 从 `develop` 创建并合并回 |
-| 测试 | `test/描述` | `test/add-unit-tests` | 从 `develop` 创建并合并回 |
-| 其他 | `chore/描述` | `chore/update-dependencies` | 从 `develop` 创建并合并回 |
+| 类型     | 命名            | 示例                             | 来源/合并目标                              |
+| :------- | :-------------- | :------------------------------- | :----------------------------------------- |
+| 功能分支 | `feat/描述`     | `feat/user-authentication`       | 从 `develop` 创建并合并回                  |
+| 修复分支 | `fix/描述`      | `fix/login-button-styling`       | 从 `develop` 创建并合并回                  |
+| 热修复   | `hotfix/描述`   | `hotfix/critical-security-patch` | 从 `main` 创建，合并回 `main` 和 `develop` |
+| 文档     | `docs/描述`     | `docs/update-readme`             | 从 `develop` 创建并合并回                  |
+| 重构     | `refactor/描述` | `refactor/auth-module`           | 从 `develop` 创建并合并回                  |
+| 测试     | `test/描述`     | `test/add-unit-tests`            | 从 `develop` 创建并合并回                  |
+| 其他     | `chore/描述`    | `chore/update-dependencies`      | 从 `develop` 创建并合并回                  |
 
 ## Commit 提交规范
 
@@ -48,15 +50,15 @@ import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 
 ### Type 类型
 
-| Type | 说明 | 示例 |
-| :--- | :--- | :--- |
-| `feat` | 新功能 | `feat(auth): add GitHub OAuth login` |
-| `fix` | Bug 修复 | `fix(search): resolve date validation issue` |
-| `docs` | 文档 | `docs: update git workflow guide` |
-| `style` | 代码格式 | `style: format code with prettier` |
-| `refactor` | 重构 | `refactor(api): simplify error handling` |
-| `test` | 测试 | `test: add unit tests for utils` |
-| `chore` | 其他 | `chore: update dependencies` |
+| Type       | 说明     | 示例                                         |
+| :--------- | :------- | :------------------------------------------- |
+| `feat`     | 新功能   | `feat(auth): add GitHub OAuth login`         |
+| `fix`      | Bug 修复 | `fix(search): resolve date validation issue` |
+| `docs`     | 文档     | `docs: update git workflow guide`            |
+| `style`    | 代码格式 | `style: format code with prettier`           |
+| `refactor` | 重构     | `refactor(api): simplify error handling`     |
+| `test`     | 测试     | `test: add unit tests for utils`             |
+| `chore`    | 其他     | `chore: update dependencies`                 |
 
 ### Scope（可选）
 
@@ -65,9 +67,8 @@ import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 ### Subject 规则
 
 <Callout type="warn">
-- ✅ 使用祈使句，首字母小写
-- ✅ 不超过 100 字符，末尾不加句号
-- ❌ 避免过去式（added、updated）
+  - ✅ 使用祈使句，首字母小写 - ✅ 不超过 100 字符，末尾不加句号 - ❌
+  避免过去式（added、updated）
 </Callout>
 
 ### 示例
@@ -108,6 +109,7 @@ git commit -m "feat(module): add new feature"
 ```
 
 提交时自动运行 lint-staged 和 commitlint 检查。
+
 </Step>
 
 <Step>
@@ -118,6 +120,7 @@ git push --set-upstream origin feat/your-feature-name
 ```
 
 在 GitHub 创建 PR，填写描述，等待 CI 和代码审查。
+
 </Step>
 
 <Step>
@@ -135,17 +138,17 @@ git branch -d feat/your-feature-name
 
 项目使用 Husky 管理 Git Hooks：
 
-- **Pre-commit**: 自动运行 lint-staged（Biome）
+- **Pre-commit**: 自动运行 lint-staged（Prettier + Biome lint）
 - **Commit-msg**: 验证提交信息格式（commitlint）
 
 ## CI/CD 流程
 
-| 工作流 | 触发条件 | 任务 |
-| :--- | :--- | :--- |
-| Build Check | PR 到 `main`/`develop` | 构建检查 |
-| Unit Tests | Push/PR 到 `main`/`develop` | 单元测试 + 覆盖率 |
-| E2E Tests | Push/PR 到 `main`/`develop` | Playwright 测试 |
-| Deploy | Push 到 `main` | 部署到生产环境 |
+| 工作流      | 触发条件                    | 任务              |
+| :---------- | :-------------------------- | :---------------- |
+| Build Check | PR 到 `main`/`develop`      | 构建检查          |
+| Unit Tests  | Push/PR 到 `main`/`develop` | 单元测试 + 覆盖率 |
+| E2E Tests   | Push/PR 到 `main`/`develop` | Playwright 测试   |
+| Deploy      | Push 到 `main`              | 部署到生产环境    |
 
 ## 常用 Git 命令
 
@@ -213,11 +216,13 @@ git commit -m "feat(api): implement order management actions"
 ### Pull Request
 
 **创建前**：
+
 - 本地测试通过
 - 从 `develop` 同步并解决冲突
 - 整理提交历史（如需要）
 
 **PR 内容**：
+
 - 清晰说明变更原因
 - 添加截图展示 UI 变化
 - 关联相关 Issue
@@ -226,17 +231,20 @@ git commit -m "feat(api): implement order management actions"
 ### 代码审查
 
 **审查者关注点**：
+
 - 代码质量和可读性
 - 测试覆盖和功能正确性
 - 性能和安全问题
 
 **反馈技巧**：
+
 - 提供建设性具体的反馈
 - 区分"必须修复"和"建议改进"
 
 ## 总结
 
 核心要点：
+
 1. 使用 `main`、`develop` 和功能分支的 Git Flow
 2. 遵循 Conventional Commits 规范
 3. 通过 Husky 和 GitHub Actions 自动检查

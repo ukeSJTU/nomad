@@ -269,6 +269,7 @@ async function verifySetup() {
     依赖安装: fs.existsSync(path.join(__dirname, "../node_modules")),
     "TypeScript 配置": checkTypeScript(),
     "Biome 配置": fs.existsSync(path.join(__dirname, "../biome.json")),
+    "Prettier 配置": fs.existsSync(path.join(__dirname, "../.prettierrc")),
     "Playwright 配置": fs.existsSync(
       path.join(__dirname, "../playwright.config.ts")
     ),
@@ -348,7 +349,8 @@ async function showNextSteps() {
       title: "6. 代码检查和格式化",
       commands: [
         "   pnpm lint          # 运行 Biome 检查",
-        "   pnpm format        # 使用 Biome 格式化代码",
+        "   pnpm format        # 使用 Prettier 格式化代码",
+        "   pnpm format:check  # 检查 Prettier 格式",
       ],
     },
   ];

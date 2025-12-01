@@ -60,14 +60,14 @@ import "./styles.css";
 
 ## 命名规范
 
-| 类型 | 规范 | 示例 |
-| :--- | :--- | :--- |
-| 文件 | kebab-case | `user-profile.tsx` |
-| 变量/函数 | camelCase | `userName`, `handleSubmit()` |
-| 常量 | UPPER_SNAKE_CASE | `API_BASE_URL` |
-| 类型/接口 | PascalCase | `UserProfile`, `ApiResponse` |
-| 组件 | PascalCase | `UserProfile`, `SignUpForm` |
-| 测试文件 | `*.test.ts` | `utils.test.ts` |
+| 类型      | 规范             | 示例                         |
+| :-------- | :--------------- | :--------------------------- |
+| 文件      | kebab-case       | `user-profile.tsx`           |
+| 变量/函数 | camelCase        | `userName`, `handleSubmit()` |
+| 常量      | UPPER_SNAKE_CASE | `API_BASE_URL`               |
+| 类型/接口 | PascalCase       | `UserProfile`, `ApiResponse` |
+| 组件      | PascalCase       | `UserProfile`, `SignUpForm`  |
+| 测试文件  | `*.test.ts`      | `utils.test.ts`              |
 
 ## 领域常量与错误配置
 
@@ -116,5 +116,6 @@ export type SignUpData = z.infer<typeof SignUpSchema>;
 - **目录层级**：不超过 3-4 层嵌套
 
 <Callout type="info">
-代码质量工具（Biome、Husky）已通过 `pnpm setup:dev` 配置完成。
+  代码质量工具（Biome lint、Prettier format、Husky）已通过 `pnpm setup:dev`
+  配置完成。
 </Callout>

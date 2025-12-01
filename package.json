@@ -35,10 +35,10 @@
     "db:seed": "cross-env NODE_ENV=development tsx src/db/data/seed.runner.ts",
     "db:seed:orders": "cross-env NODE_ENV=development tsx scripts/seed-test-orders.ts",
     "lint": "biome check --diagnostic-level=error . && pnpm lint:boundary",
-    "lint:fix": "biome check --write . && pnpm lint:boundary",
+    "lint:fix": "biome check --write --diagnostic-level=error . && pnpm lint:boundary",
     "lint:boundary": "node scripts/check-app-boundary.mjs",
-    "format": "biome check --write --linter-enabled=false .",
-    "format:check": "biome check --linter-enabled=false .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepare": "husky",
     "postinstall": "fumadocs-mdx",
     "setup:dev": "node scripts/setup-dev.mjs",
@@ -176,6 +176,7 @@
     "lint-staged": "^16.2.4",
     "ora": "^8.2.0",
     "pino-pretty": "^13.1.2",
+    "prettier": "^3.6.2",
     "playwright": "^1.56.1",
     "react-email": "4.3.2",
     "server-only": "^0.0.1",
@@ -188,6 +189,12 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs,cts,mts,json,md,mdx}": ["biome check --write"]
+    "*.{js,jsx,ts,tsx,mjs,cjs,cts,mts}": [
+      "biome check --write --diagnostic-level=error",
+      "prettier --write"
+    ],
+    "*.{json,md,mdx,css,scss,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
