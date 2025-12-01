@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>0/38</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>0/38</span>
             </div>
         
             
@@ -97,7 +97,29 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -128,10 +150,32 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { UserInfo, UserSecurityStatus } from "@/types/dto";
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { UserInfo, UserProfile, UserSecurityStatus } from "@/types/dto";
 &nbsp;
 import type { UserRow } from "./user.repository";
 <span class="cstat-no" title="statement not covered" >import {</span>
@@ -160,11 +204,33 @@ import type { UserRow } from "./user.repository";
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export async function getUserById(</span>
 <span class="cstat-no" title="statement not covered" >  userId: string</span>
-<span class="cstat-no" title="statement not covered" >): Promise&lt;UserRow | undefined&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  return getUserByIdFromRepo(userId);</span>
+<span class="cstat-no" title="statement not covered" >): Promise&lt;UserProfile | undefined&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  const user = await getUserByIdFromRepo(userId);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (!user) {</span>
+<span class="cstat-no" title="statement not covered" >    return undefined;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return mapUserToProfile(user);</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-export type { UserRow };
+<span class="cstat-no" title="statement not covered" >function mapUserToProfile(user: UserRow): UserProfile {</span>
+<span class="cstat-no" title="statement not covered" >  return {</span>
+<span class="cstat-no" title="statement not covered" >    id: user.id,</span>
+<span class="cstat-no" title="statement not covered" >    name: user.name,</span>
+<span class="cstat-no" title="statement not covered" >    nickname: user.nickname ?? null,</span>
+<span class="cstat-no" title="statement not covered" >    email: user.email,</span>
+<span class="cstat-no" title="statement not covered" >    emailVerified: user.emailVerified,</span>
+<span class="cstat-no" title="statement not covered" >    phoneNumber: user.phoneNumber ?? null,</span>
+<span class="cstat-no" title="statement not covered" >    phoneNumberVerified: user.phoneNumberVerified ?? false,</span>
+<span class="cstat-no" title="statement not covered" >    gender: user.gender ?? null,</span>
+<span class="cstat-no" title="statement not covered" >    birthday: user.birthday ?? null,</span>
+<span class="cstat-no" title="statement not covered" >    image: user.image ?? null,</span>
+<span class="cstat-no" title="statement not covered" >    balance: user.balance,</span>
+<span class="cstat-no" title="statement not covered" >    createdAt: user.createdAt.toISOString(),</span>
+<span class="cstat-no" title="statement not covered" >    updatedAt: user.updatedAt.toISOString(),</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -172,7 +238,7 @@ export type { UserRow };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-01T12:14:00.926Z
+                at 2025-12-01T12:52:32.220Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
