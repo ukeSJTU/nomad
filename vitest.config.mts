@@ -69,7 +69,7 @@ export default defineConfig({
         extends: true,
         test: {
           name: { label: "unit", color: "green" },
-          environment: "happy-dom",
+          environment: "jsdom",
           include: ["src/**/*.test.ts", "app/**/*.test.ts"],
           exclude: [
             "**/node_modules/**",
@@ -83,7 +83,7 @@ export default defineConfig({
         extends: true,
         test: {
           name: { label: "components", color: "white" },
-          environment: "happy-dom",
+          environment: "jsdom",
           include: ["src/**/*.test.tsx", "app/**/*.test.tsx"],
           exclude: ["**/node_modules/**", "**/dist/**"],
           setupFiles: ["./tests/setup/global.ts"],
@@ -132,21 +132,5 @@ export default defineConfig({
         },
       },
     ],
-    // 1. 禁用线程隔离 (极大提升速度，但需注意测试间污染)
-    // 如果你的测试代码清理做得好，这是最有效的提速手段
-    isolate: false,
-
-    // 2. 调整线程池
-    // 对于大型项目，'forks' 有时比默认的 'threads' 更快且更稳定
-    pool: "forks",
-
-    // 3. 限制并发数
-    // 在 CI 环境中，CPU 核心数往往有限，设置过高反而会导致上下文切换开销
-    // 建议设置为 CPU 核心数的 50% - 75%
-    maxConcurrency: 5,
-
-    // 4. 替换测试环境
-    // 如果不需要完整的浏览器 API，用 happy-dom 替代 jsdom (速度快约 2-3 倍)
-    environment: "happy-dom",
   },
 });
