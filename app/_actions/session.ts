@@ -68,7 +68,7 @@ export async function getAuthenticatedUserId(): Promise<AuthResult> {
       userId: user.id,
     };
   } catch (error) {
-    console.error("Authentication error:", error);
+    logger.error({ err: error }, "Authentication error:");
     return {
       success: false,
       error: "Failed to verify authentication. Please try again.",
