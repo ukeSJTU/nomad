@@ -1,5 +1,6 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { __resetEnvForTests } from "@/config/env";
 import {
   sendAuthEmailOtp,
   sendAuthPhoneOtp,
@@ -31,28 +32,50 @@ const mockSendEmailOtp = vi.mocked(
 ).sendEmailOtp;
 const mockLogger = vi.mocked((await import("@/infra/logging")).logger);
 
-describe("Auth integrations toggles", () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.clearAllMocks();
-  });
+beforeEach(() => {
+  vi.unstubAllEnvs();
+  __resetEnvForTests();
+  vi.clearAllMocks();
+});
 
+describe("Auth integrations toggles", () => {
   describe("shouldEnableAliyunSms", () => {
     it("returns true when explicitly enabled", () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "enabled");
+      vi.stubEnv("ALIBABA_CLOUD_SMS_SIGN_NAME", "dummy-sign");
+      vi.stubEnv("ALIBABA_CLOUD_SMS_TEMPLATE_CODE", "dummy-template");
+      // NODE_ENV 任意，此处主要验证显式 enable 覆盖环境
+      vi.stubEnv("NODE_ENV", "development");
+
       expect(shouldEnableAliyunSms()).toBe(true);
     });
 
     it("returns false when explicitly disabled", () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "disabled");
+      vi.stubEnv("NODE_ENV", "production"); // 即使 prod，只要显式 disabled 就 false
+
       expect(shouldEnableAliyunSms()).toBe(false);
     });
 
-    it("defaults to production true, non-prod false", () => {
+    it("defaults to true in production when flag is empty", () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "");
       vi.stubEnv("NODE_ENV", "production");
+
       expect(shouldEnableAliyunSms()).toBe(true);
+    });
+
+    it("defaults to false in non-production when flag is empty", () => {
+      vi.stubEnv("ENABLE_ALIYUN_SMS", "");
       vi.stubEnv("NODE_ENV", "development");
+
+      expect(shouldEnableAliyunSms()).toBe(false);
+
+      vi.unstubAllEnvs();
+      __resetEnvForTests();
+
+      vi.stubEnv("ENABLE_ALIYUN_SMS", "");
+      vi.stubEnv("NODE_ENV", "test");
+
       expect(shouldEnableAliyunSms()).toBe(false);
     });
   });
@@ -60,33 +83,49 @@ describe("Auth integrations toggles", () => {
   describe("shouldEnableResend", () => {
     it("returns true when explicitly enabled", () => {
       vi.stubEnv("ENABLE_RESEND", "enabled");
+      vi.stubEnv("RESEND_API_KEY", "test-key");
+      vi.stubEnv("NODE_ENV", "development");
+
       expect(shouldEnableResend()).toBe(true);
     });
 
     it("returns false when explicitly disabled", () => {
       vi.stubEnv("ENABLE_RESEND", "disabled");
+      vi.stubEnv("NODE_ENV", "production");
+
       expect(shouldEnableResend()).toBe(false);
     });
 
-    it("defaults to production true, non-prod false", () => {
+    it("defaults to true in production when flag is empty", () => {
       vi.stubEnv("ENABLE_RESEND", "");
       vi.stubEnv("NODE_ENV", "production");
+
       expect(shouldEnableResend()).toBe(true);
+    });
+
+    it("defaults to false in non-production when flag is empty", () => {
+      vi.stubEnv("ENABLE_RESEND", "");
       vi.stubEnv("NODE_ENV", "development");
+
+      expect(shouldEnableResend()).toBe(false);
+
+      vi.unstubAllEnvs();
+      __resetEnvForTests();
+
+      vi.stubEnv("ENABLE_RESEND", "");
+      vi.stubEnv("NODE_ENV", "test");
+
       expect(shouldEnableResend()).toBe(false);
     });
   });
 });
 
 describe("Auth OTP senders", () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.clearAllMocks();
-  });
-
   describe("sendAuthPhoneOtp", () => {
     it("uses Aliyun when enabled", async () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "true");
+      vi.stubEnv("ALIBABA_CLOUD_SMS_SIGN_NAME", "dummy-sign");
+      vi.stubEnv("ALIBABA_CLOUD_SMS_TEMPLATE_CODE", "dummy-template");
 
       await sendAuthPhoneOtp("+8613812345678", "123456");
 
@@ -104,6 +143,9 @@ describe("Auth OTP senders", () => {
 
     it("throws when provider reports failure", async () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "true");
+      vi.stubEnv("ALIBABA_CLOUD_SMS_SIGN_NAME", "dummy-sign");
+      vi.stubEnv("ALIBABA_CLOUD_SMS_TEMPLATE_CODE", "dummy-template");
+
       mockSendSmsOtp.mockResolvedValueOnce(false);
 
       await expect(
@@ -115,6 +157,7 @@ describe("Auth OTP senders", () => {
   describe("sendAuthEmailOtp", () => {
     it("uses Resend when enabled", async () => {
       vi.stubEnv("ENABLE_RESEND", "true");
+      vi.stubEnv("RESEND_API_KEY", "test-key");
 
       await sendAuthEmailOtp("user@example.com", "123456", "sign-in");
 
@@ -135,6 +178,8 @@ describe("Auth OTP senders", () => {
 
     it("throws when provider reports failure", async () => {
       vi.stubEnv("ENABLE_RESEND", "true");
+      vi.stubEnv("RESEND_API_KEY", "test-key");
+
       mockSendEmailOtp.mockResolvedValueOnce(false);
 
       await expect(

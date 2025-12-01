@@ -1,18 +1,17 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  __resetEnvForTests,
+  isDevelopment,
+  isProduction,
+  isTest,
+} from "@/config/env"; // 如果路径不是这个，按你项目实际改
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { isDevelopment, isProduction, isTest } from "./env";
+beforeEach(() => {
+  vi.unstubAllEnvs();
+  __resetEnvForTests();
+});
 
 describe("Environment utility functions", () => {
-  const originalEnv = process.env.NODE_ENV;
-
-  beforeEach(() => {
-    vi.stubEnv("NODE_ENV", originalEnv);
-  });
-
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
-
   describe("isProduction", () => {
     it("should return true when NODE_ENV is production", () => {
       vi.stubEnv("NODE_ENV", "production");
@@ -30,7 +29,7 @@ describe("Environment utility functions", () => {
     });
 
     it("should return false when NODE_ENV is undefined", () => {
-      vi.stubEnv("NODE_ENV", undefined);
+      vi.stubEnv("NODE_ENV", undefined as any);
       expect(isProduction()).toBe(false);
     });
 
@@ -57,7 +56,7 @@ describe("Environment utility functions", () => {
     });
 
     it("should return false when NODE_ENV is undefined", () => {
-      vi.stubEnv("NODE_ENV", undefined);
+      vi.stubEnv("NODE_ENV", undefined as any);
       expect(isDevelopment()).toBe(false);
     });
 
@@ -73,18 +72,18 @@ describe("Environment utility functions", () => {
       expect(isTest()).toBe(true);
     });
 
-    it("should return false when NODE_ENV is production", () => {
-      vi.stubEnv("NODE_ENV", "production");
-      expect(isTest()).toBe(false);
-    });
-
     it("should return false when NODE_ENV is development", () => {
       vi.stubEnv("NODE_ENV", "development");
       expect(isTest()).toBe(false);
     });
 
+    it("should return false when NODE_ENV is production", () => {
+      vi.stubEnv("NODE_ENV", "production");
+      expect(isTest()).toBe(false);
+    });
+
     it("should return false when NODE_ENV is undefined", () => {
-      vi.stubEnv("NODE_ENV", undefined);
+      vi.stubEnv("NODE_ENV", undefined as any);
       expect(isTest()).toBe(false);
     });
 
@@ -95,17 +94,21 @@ describe("Environment utility functions", () => {
   });
 
   describe("Environment functions integration", () => {
-    it("should only have one environment true at a time", () => {
+    it("should only have one environment true at a time for production", () => {
       vi.stubEnv("NODE_ENV", "production");
       expect(isProduction()).toBe(true);
       expect(isDevelopment()).toBe(false);
       expect(isTest()).toBe(false);
+    });
 
+    it("should only have one environment true at a time for development", () => {
       vi.stubEnv("NODE_ENV", "development");
       expect(isProduction()).toBe(false);
       expect(isDevelopment()).toBe(true);
       expect(isTest()).toBe(false);
+    });
 
+    it("should only have one environment true at a time for test", () => {
       vi.stubEnv("NODE_ENV", "test");
       expect(isProduction()).toBe(false);
       expect(isDevelopment()).toBe(false);
@@ -113,7 +116,7 @@ describe("Environment utility functions", () => {
     });
 
     it("should all return false for unknown environment", () => {
-      vi.stubEnv("NODE_ENV", "staging");
+      vi.stubEnv("NODE_ENV", "staging" as any);
       expect(isProduction()).toBe(false);
       expect(isDevelopment()).toBe(false);
       expect(isTest()).toBe(false);

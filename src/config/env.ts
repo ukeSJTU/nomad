@@ -1,7 +1,3 @@
-/**
- * Checks if the current environment is production.
- * @returns True if NODE_ENV is set to "production"
- */
 import { z } from "zod";
 
 function valueEnabled(v: string | undefined): boolean {
@@ -11,7 +7,9 @@ function valueEnabled(v: string | undefined): boolean {
 
 const envSchema = z
   .object({
-    NODE_ENV: z.enum(["development", "test", "production"]).optional(),
+    // 不再用 enum，任意字符串都让它通过，逻辑判断放在运行时
+    NODE_ENV: z.string().optional(),
+
     NEXT_RUNTIME: z
       .string()
       .optional()
@@ -83,46 +81,146 @@ const envSchema = z
     { message: "Aliyun SMS requires SIGN_NAME and TEMPLATE_CODE when enabled" }
   );
 
-export const env = envSchema.parse(process.env);
+const publicEnvSchema = z.object({
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
+});
+
+export type AppEnv = z.infer<typeof envSchema>;
+export type PublicEnv = z.infer<typeof publicEnvSchema>;
 
 type NodeEnv = "development" | "test" | "production";
 
-function getNodeEnv(): NodeEnv | undefined {
-  const s = process.env.NODE_ENV?.trim().toLowerCase();
+type Features = {
+  email: boolean;
+  sms: boolean;
+};
+
+/**
+ * Lazy caches
+ */
+let envLoaded = false;
+let cachedEnv: AppEnv | null = null;
+let cachedPublicEnv: PublicEnv | null = null;
+let cachedFeatures: Features | null = null;
+
+/**
+ * 在 Node 环境里尝试加载 .env
+ * 浏览器 / Storybook / Playwright 等环境下 require 不存在，会直接被 catch 吃掉
+ */
+function ensureEnvLoaded() {
+  if (envLoaded) return;
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { loadEnvConfig } = require("@next/env") as typeof import(
+      "@next/env"
+    );
+    loadEnvConfig(process.cwd());
+  } catch {
+    // 非 Node CJS 环境（浏览器、ESM）下不用额外处理
+  }
+
+  envLoaded = true;
+}
+
+function getParsedEnv(): AppEnv {
+  if (!cachedEnv) {
+    ensureEnvLoaded();
+    cachedEnv = envSchema.parse(process.env);
+  }
+  return cachedEnv;
+}
+
+function getParsedPublicEnv(): PublicEnv {
+  if (!cachedPublicEnv) {
+    cachedPublicEnv = publicEnvSchema.parse(process.env);
+  }
+  return cachedPublicEnv;
+}
+
+function getNodeEnvFromEnv(e: AppEnv): NodeEnv | undefined {
+  const s = e.NODE_ENV?.trim().toLowerCase();
   return s === "development" || s === "test" || s === "production"
     ? (s as NodeEnv)
     : undefined;
 }
 
+function buildFeatures(e: AppEnv): Features {
+  const nodeEnv = getNodeEnvFromEnv(e);
+  const isProd = nodeEnv === "production";
+
+  const emailValue = e.ENABLE_RESEND?.toLowerCase();
+  const smsValue = e.ENABLE_ALIYUN_SMS?.toLowerCase();
+
+  const email =
+    emailValue === "enabled" || emailValue === "true"
+      ? true
+      : emailValue === "disabled" || emailValue === "false"
+        ? false
+        : isProd;
+
+  const sms =
+    smsValue === "enabled" || smsValue === "true"
+      ? true
+      : smsValue === "disabled" || smsValue === "false"
+        ? false
+        : isProd;
+
+  return { email, sms };
+}
+
+/**
+ * Public API
+ */
+export function getEnv(): AppEnv {
+  return getParsedEnv();
+}
+
+export function getPublicEnv(): PublicEnv {
+  return getParsedPublicEnv();
+}
+
+export function getFeatures(): Features {
+  if (!cachedFeatures) {
+    cachedFeatures = buildFeatures(getParsedEnv());
+  }
+  return cachedFeatures;
+}
+
+/**
+ * 兼容导出：老代码可以继续用，之后可以逐步删
+ * @deprecated Prefer getEnv()
+ */
+export const env = getEnv();
+/** @deprecated Prefer getPublicEnv() */
+export const publicEnv = getPublicEnv();
+/** @deprecated Prefer getFeatures() */
+export const features = getFeatures();
+
+/**
+ * 环境判断工具函数
+ */
 export function isProduction(): boolean {
-  return getNodeEnv() === "production";
+  const nodeEnv = getNodeEnvFromEnv(getParsedEnv());
+  return nodeEnv === "production";
 }
 
 export function isDevelopment(): boolean {
-  return getNodeEnv() === "development";
+  const nodeEnv = getNodeEnvFromEnv(getParsedEnv());
+  return nodeEnv === "development";
 }
 
 export function isTest(): boolean {
-  return getNodeEnv() === "test";
+  const nodeEnv = getNodeEnvFromEnv(getParsedEnv());
+  return nodeEnv === "test";
 }
 
-const publicEnvSchema = z.object({
-  NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
-});
-
-export const publicEnv = publicEnvSchema.parse(process.env);
-
-export const features = {
-  email: (() => {
-    const v = env.ENABLE_RESEND?.toLowerCase();
-    if (v === "enabled" || v === "true") return true;
-    if (v === "disabled" || v === "false") return false;
-    return isProduction();
-  })(),
-  sms: (() => {
-    const v = env.ENABLE_ALIYUN_SMS?.toLowerCase();
-    if (v === "enabled" || v === "true") return true;
-    if (v === "disabled" || v === "false") return false;
-    return isProduction();
-  })(),
-};
+/**
+ * 测试专用：清理缓存，让 vi.stubEnv 后能重新解析 env
+ */
+export function __resetEnvForTests() {
+  cachedEnv = null;
+  cachedPublicEnv = null;
+  cachedFeatures = null;
+  envLoaded = false;
+}

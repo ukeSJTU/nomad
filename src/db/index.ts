@@ -1,12 +1,13 @@
-import "server-only";
-import { env as localEnv } from "@/config/env";
+import { getEnv } from "@/config/env";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { EnhancedQueryLogger } from "drizzle-query-logger";
 
 import * as schema from "@/db/schema";
-// Environment variables are loaded by Next.js automatically; using parsed env from config
 
-if (!localEnv.DATABASE_URL) {
+// 通过集中化的 getEnv() 读取配置（内部已经处理 @next/env 加载）
+const env = getEnv();
+
+if (!env.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is not set.");
 }
 
@@ -25,8 +26,8 @@ const dbLogger = new EnhancedQueryLogger({
  * 3. Default based on NODE_ENV (production = true, others = false)
  */
 function shouldUseSSL(): boolean {
-  // Check explicit DATABASE_SSL environment variable
-  const explicitSSL = localEnv.DATABASE_SSL?.toLowerCase();
+  // 1. 显式 DATABASE_SSL
+  const explicitSSL = env.DATABASE_SSL?.toLowerCase();
   if (explicitSSL === "true" || explicitSSL === "enabled") {
     return true;
   }
@@ -34,8 +35,8 @@ function shouldUseSSL(): boolean {
     return false;
   }
 
-  // Auto-detect from DATABASE_URL sslmode parameter
-  const databaseUrl = localEnv.DATABASE_URL;
+  // 2. 从 DATABASE_URL 自动检测 sslmode
+  const databaseUrl = env.DATABASE_URL;
   if (databaseUrl?.includes("sslmode=require")) {
     return true;
   }
@@ -43,15 +44,16 @@ function shouldUseSSL(): boolean {
     return false;
   }
 
-  // Default: use SSL in production, disable in development/test
-  return localEnv.NODE_ENV === "production";
+  // 3. 默认：生产环境启用 SSL，开发/测试关闭
+  return env.NODE_ENV === "production";
 }
 
 export const db = drizzle({
   connection: {
-    connectionString: localEnv.DATABASE_URL,
+    // 上面已经检查过为空就抛错了，这里用 non-null 断言
+    connectionString: env.DATABASE_URL!,
     ssl: shouldUseSSL(),
   },
   schema,
-  logger: localEnv.NODE_ENV === "development" ? dbLogger : false,
+  logger: env.NODE_ENV === "development" ? dbLogger : false,
 });

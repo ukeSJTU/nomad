@@ -1,10 +1,7 @@
-import "server-only";
-import { createRequire } from "module";
 import pino from "pino";
 
-import { isDevelopment, isProduction, isTest } from "@/config/env";
+import { getEnv, isDevelopment, isProduction, isTest } from "@/config/env";
 
-// Environment detection flags for conditional logger configuration
 const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
   "fatal",
   "error",
@@ -18,95 +15,101 @@ const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
 /**
  * Determines the appropriate log level based on the current environment.
  *
- * @returns The log level to use for the pino logger
- *
  * Priority order:
  * 1. Test environment: silent (no logs during tests)
- * 2. LOG_LEVEL environment variable if set
- * 3. Development: debug level for detailed logging
- * 4. Production: info level for essential logs only
+ * 2. LOG_LEVEL from parsed env if valid
+ * 3. Development: debug
+ * 4. Production / others: info
  */
-const getLogLevel = (): pino.LevelWithSilent => {
+export const getLogLevel = (): pino.LevelWithSilent => {
+  // 1) 测试环境：完全静音，避免干扰 Vitest
   if (isTest()) return "silent";
-  const raw = process.env.LOG_LEVEL?.trim().toLowerCase();
-  if (raw) {
-    const envLevel = raw as pino.LevelWithSilent;
-    if (VALID_LOG_LEVELS.includes(envLevel)) {
-      return envLevel;
-    }
-    console.warn(`Invalid LOG_LEVEL: ${raw}, using default`);
+
+  const env = getEnv();
+
+  // 2) 显式 LOG_LEVEL 优先（同时保证是合法值）
+  const raw = env.LOG_LEVEL?.trim().toLowerCase();
+  if (raw && VALID_LOG_LEVELS.includes(raw as pino.LevelWithSilent)) {
+    return raw as pino.LevelWithSilent;
   }
-  return isDevelopment() ? "debug" : "info";
-};
 
-// Configuration object for the pino logger with environment-specific settings
-const pinoOptions: pino.LoggerOptions = {
-  level: getLogLevel(),
+  // 3) 按 NODE_ENV 默认值
+  const nodeEnv = env.NODE_ENV?.trim().toLowerCase();
+  if (nodeEnv === "development") return "debug";
 
-  // Production environment configuration
-  // Optimized for structured logging in production systems
-  ...(isProduction() && {
-    formatters: {
-      // Use simple level labels instead of numeric values
-      level: label => ({ level: label }),
-    },
-    // Use ISO timestamp format for better log aggregation
-    timestamp: pino.stdTimeFunctions.isoTime,
-  }),
-
-  // Development environment configuration
-  // Enhanced with request/response/error serializers for debugging
-  ...(isDevelopment() && {
-    serializers: {
-      req: pino.stdSerializers.req, // HTTP request serializer
-      res: pino.stdSerializers.res, // HTTP response serializer
-      err: pino.stdSerializers.err, // Error object serializer
-    },
-  }),
+  // 默认：包括 production / undefined / 其他未知环境
+  return "info";
 };
 
 /**
  * Creates the appropriate stream for the logger based on environment.
- * Uses pino-pretty stream in development for better readability.
- * Uses standard process.stdout in production for structured logging.
+ * - development（非 test）下尝试使用 pino-pretty
+ * - 其他环境直接用 stdout（结构化日志）
+ *
+ * 注意：这里对 require("pino-pretty") 做了 try/catch，
+ * 以避免在 ESM / 浏览器打包环境里直接崩溃。
  */
-const createLoggerStream = () => {
+export const createLoggerStream = () => {
+  // 只在开发环境且非 test 时尝试 pretty 输出
   if (isDevelopment() && !isTest()) {
-    const require = createRequire(import.meta.url);
-    const pretty = require("pino-pretty");
-    return pretty({
-      colorize: true, // Add colors to log levels
-      ignore: "pid,hostname", // Hide process ID and hostname for cleaner output
-      translateTime: "yyyy-mm-dd HH:MM:ss", // Human-readable timestamp format
-      singleLine: false, // Multi-line formatting for better readability
-      hideObject: false, // Show log objects in full detail
-    });
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const pretty = require("pino-pretty") as typeof import("pino-pretty");
+      return pretty({
+        colorize: true,
+        ignore: "pid,hostname",
+        translateTime: "yyyy-mm-dd HH:MM:ss",
+        singleLine: false,
+        hideObject: false,
+      });
+    } catch {
+      // 在 Storybook / Playwright / 浏览器构建等环境里 require 失败时，退回 stdout
+      return process.stdout;
+    }
   }
 
-  // Production/Test: Use standard output for structured logging
+  // Production / Test / 其他环境：统一走 stdout
   return process.stdout;
 };
 
 /**
- * Configured pino logger instance.
- *
- * Features:
- * - Environment-aware log levels (debug in dev, info in prod, silent in test)
- * - Pretty printing in development using streams (avoids worker thread issues)
- * - Structured logging in production with ISO timestamps
- * - Built-in serializers for HTTP requests, responses, and errors
- * - Configurable via LOG_LEVEL environment variable
- * - Stream-based approach prevents pnpm/ESM module resolution issues
- *
- * Usage:
- * ```typescript
- * import logger from './utils/logger';
- *
- * logger.info('Application started');
- * logger.error({ err: error }, 'Something went wrong');
- * logger.debug({ req, res }, 'Request processed');
- * ```
+ * pino 配置，根据环境做差异化配置。
  */
-const logger = pino(pinoOptions, createLoggerStream());
+const pinoOptions: pino.LoggerOptions = {
+  level: getLogLevel(),
 
+  // Production：结构化日志 + ISO 时间戳
+  ...(isProduction() && {
+    formatters: {
+      level: label => ({ level: label }),
+    },
+    timestamp: pino.stdTimeFunctions.isoTime,
+  }),
+
+  // Development：增加 HTTP / Error 序列化，便于调试
+  ...(isDevelopment() && {
+    serializers: {
+      req: pino.stdSerializers.req,
+      res: pino.stdSerializers.res,
+      err: pino.stdSerializers.err,
+    },
+  }),
+
+  // Test 环境下 pino 本身就会因为 level=silent 而不输出，
+  // 这里不需要额外配置；如果你想更彻底，也可以加 enabled: !isTest()
+  ...(isTest() && {
+    enabled: false,
+  }),
+};
+
+/**
+ * 全局 logger 实例。
+ *
+ * - test: level=silent + enabled=false，不产生多余输出/异步句柄
+ * - dev: pretty 输出 + debug 级别
+ * - prod: 结构化 JSON 日志 + info 级别
+ */
+export const logger = pino(pinoOptions, createLoggerStream());
+
+// 保留 default export，兼容老代码 `import logger from "@/infra/logging"`
 export default logger;

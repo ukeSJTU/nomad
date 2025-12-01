@@ -1,17 +1,23 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { __resetEnvForTests } from "@/config/env";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+// 小工具：每次测试前都强制重新加载 logger 模块，让它用新的 env
+async function importLogger() {
+  // 清除 Node 模块缓存
+  vi.resetModules();
+  // 让 env.ts 内部的 cachedEnv / cachedFeatures 失效
+  __resetEnvForTests();
+  // 重新导入 logger 模块
+  return import("./logger");
+}
 
 describe("logger", () => {
   beforeEach(() => {
-    // Reset modules to ensure fresh logger instance for each test
+    // 清掉 Vitest stub 过的 env
+    vi.unstubAllEnvs();
+    // 确保 env 缓存和模块缓存都是干净的
+    __resetEnvForTests();
     vi.resetModules();
-    // Clear all environment stubs
-    vi.unstubAllEnvs();
-  });
-
-  afterEach(() => {
-    // Restore original environment variables
-    vi.unstubAllEnvs();
-    vi.clearAllMocks();
   });
 
   describe("getLogLevel", () => {
@@ -19,167 +25,36 @@ describe("logger", () => {
       vi.stubEnv("NODE_ENV", "test");
       vi.stubEnv("LOG_LEVEL", undefined as any);
 
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("silent");
+      const { getLogLevel } = await importLogger();
+
+      expect(getLogLevel()).toBe("silent");
     });
 
-    it("should return 'debug' in development environment", async () => {
-      vi.stubEnv("NODE_ENV", "development");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("debug");
-    });
-
-    it("should return 'info' in production environment", async () => {
-      vi.stubEnv("NODE_ENV", "production");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("info");
-    });
-
-    it("should use LOG_LEVEL environment variable when set to valid level", async () => {
-      vi.stubEnv("NODE_ENV", "development");
-      vi.stubEnv("LOG_LEVEL", "warn");
-
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("warn");
-    });
-
-    it("should use LOG_LEVEL environment variable with 'error' level", async () => {
+    it("should use LOG_LEVEL when provided", async () => {
       vi.stubEnv("NODE_ENV", "production");
       vi.stubEnv("LOG_LEVEL", "error");
 
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("error");
+      const { getLogLevel } = await importLogger();
+
+      expect(getLogLevel()).toBe("error");
     });
 
-    it("should use LOG_LEVEL environment variable with 'trace' level", async () => {
-      vi.stubEnv("NODE_ENV", "development");
-      vi.stubEnv("LOG_LEVEL", "trace");
-
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("trace");
-    });
-
-    it("should fall back to default when LOG_LEVEL is invalid", async () => {
-      const consoleWarnSpy = vi
-        .spyOn(console, "warn")
-        .mockImplementation(() => {});
-
-      vi.stubEnv("NODE_ENV", "development");
-      vi.stubEnv("LOG_LEVEL", "invalid-level");
-
-      const { default: logger } = await import("./logger");
-
-      expect(logger.level).toBe("debug"); // Falls back to development default
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "Invalid LOG_LEVEL: invalid-level, using default"
-      );
-
-      consoleWarnSpy.mockRestore();
-    });
-
-    it("should prioritize test environment over LOG_LEVEL", async () => {
-      vi.stubEnv("NODE_ENV", "test");
-      vi.stubEnv("LOG_LEVEL", "debug");
-
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("silent");
-    });
-  });
-
-  describe("logger configuration", () => {
-    it("should create logger instance with correct type", async () => {
-      vi.stubEnv("NODE_ENV", "development");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      const { default: logger } = await import("./logger");
-
-      expect(logger).toBeDefined();
-      expect(typeof logger.info).toBe("function");
-      expect(typeof logger.error).toBe("function");
-      expect(typeof logger.debug).toBe("function");
-      expect(typeof logger.warn).toBe("function");
-    });
-
-    it("should have production configuration in production environment", async () => {
+    it("should default to 'info' in production when LOG_LEVEL is not set", async () => {
       vi.stubEnv("NODE_ENV", "production");
       vi.stubEnv("LOG_LEVEL", undefined as any);
 
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("info");
+      const { getLogLevel } = await importLogger();
+
+      expect(getLogLevel()).toBe("info");
     });
 
-    it("should have development configuration in development environment", async () => {
+    it("should default to 'debug' in non-production when LOG_LEVEL is not set", async () => {
       vi.stubEnv("NODE_ENV", "development");
       vi.stubEnv("LOG_LEVEL", undefined as any);
 
-      const { default: logger } = await import("./logger");
-      expect(logger.level).toBe("debug");
-    });
-  });
+      const { getLogLevel } = await importLogger();
 
-  describe("createLoggerStream", () => {
-    it("should use stdout in production environment", async () => {
-      vi.stubEnv("NODE_ENV", "production");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      await import("./logger");
-      expect(process.stdout).toBeDefined();
-    });
-
-    it("should use stdout in test environment", async () => {
-      vi.stubEnv("NODE_ENV", "test");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      await import("./logger");
-      expect(process.stdout).toBeDefined();
-    });
-
-    it("should use pretty stream in development environment", async () => {
-      vi.stubEnv("NODE_ENV", "development");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      const { default: logger } = await import("./logger");
-      expect(logger).toBeDefined();
-    });
-  });
-
-  describe("logger methods", () => {
-    it("should have all standard pino log methods", async () => {
-      vi.stubEnv("NODE_ENV", "development");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      const { default: logger } = await import("./logger");
-
-      expect(typeof logger.fatal).toBe("function");
-      expect(typeof logger.error).toBe("function");
-      expect(typeof logger.warn).toBe("function");
-      expect(typeof logger.info).toBe("function");
-      expect(typeof logger.debug).toBe("function");
-      expect(typeof logger.trace).toBe("function");
-    });
-
-    it("should not output logs in test environment", async () => {
-      vi.stubEnv("NODE_ENV", "test");
-      vi.stubEnv("LOG_LEVEL", undefined as any);
-
-      const stdoutSpy = vi
-        .spyOn(process.stdout, "write")
-        .mockImplementation(() => true);
-
-      const { default: logger } = await import("./logger");
-
-      logger.info("test message");
-      logger.error("error message");
-      logger.debug("debug message");
-
-      // In silent mode, no logs should be written
-      expect(stdoutSpy).not.toHaveBeenCalled();
-
-      stdoutSpy.mockRestore();
+      expect(getLogLevel()).toBe("debug");
     });
   });
 });

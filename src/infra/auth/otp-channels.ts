@@ -1,21 +1,13 @@
-import "server-only";
-
-import { env, isProduction } from "@/config/env";
+import { getEnv, getFeatures } from "@/config/env";
 import { sendEmailOtp, sendSmsOtp } from "@/infra/communications";
 import { logger } from "@/infra/logging";
 
 export function shouldEnableAliyunSms(): boolean {
-  const v = process.env.ENABLE_ALIYUN_SMS?.toLowerCase();
-  if (v === "enabled" || v === "true") return true;
-  if (v === "disabled" || v === "false") return false;
-  return isProduction();
+  return getFeatures().sms;
 }
 
 export function shouldEnableResend(): boolean {
-  const v = process.env.ENABLE_RESEND?.toLowerCase();
-  if (v === "enabled" || v === "true") return true;
-  if (v === "disabled" || v === "false") return false;
-  return isProduction();
+  return getFeatures().email;
 }
 
 export async function sendAuthPhoneOtp(
@@ -25,6 +17,8 @@ export async function sendAuthPhoneOtp(
   const useAliyunSms = shouldEnableAliyunSms();
 
   if (!useAliyunSms) {
+    const env = getEnv();
+
     logger.info(`[SMS SIMULATION] Sending OTP to ${phoneNumber}`);
     logger.info(
       `[SMS SIMULATION] Environment: ${env.NODE_ENV}, ENABLE_ALIYUN_SMS: ${env.ENABLE_ALIYUN_SMS}`
@@ -49,6 +43,8 @@ export async function sendAuthEmailOtp(
   const useResend = shouldEnableResend();
 
   if (!useResend) {
+    const env = getEnv();
+
     logger.info(`[EMAIL SIMULATION] Sending OTP to ${email} (type: ${type})`);
     logger.info(
       `[EMAIL SIMULATION] Environment: ${env.NODE_ENV}, ENABLE_RESEND: ${env.ENABLE_RESEND}`
