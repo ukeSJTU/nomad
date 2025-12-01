@@ -1,3 +1,4 @@
+import "server-only";
 import { createRequire } from "module";
 import pino from "pino";
 
