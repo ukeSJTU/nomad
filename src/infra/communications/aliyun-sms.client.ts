@@ -5,6 +5,8 @@ import Dypnsapi20170525, * as $Dypnsapi20170525 from "@alicloud/dypnsapi20170525
 import * as $OpenApi from "@alicloud/openapi-client";
 import * as $Util from "@alicloud/tea-util";
 
+import { phoneNumberSchema } from "@/types/validations";
+
 /**
  * Aliyun SMS service client class
  * Uses singleton pattern and default credential chain for secure and convenient authentication
@@ -39,13 +41,20 @@ class AliyunSmsClient {
   }
 
   /**
-   * Format phone number by removing +86 prefix
-   * @param phoneNumber Original phone number (may contain +86 prefix)
-   * @returns Formatted phone number (pure numeric format)
+   * Validate phone number format (11 digits, no country prefix)
+   * @param phoneNumber Original phone number input
+   * @returns Normalized phone number
    */
-  private formatPhoneNumber(phoneNumber: string): string {
-    // Remove +86 prefix as Aliyun SMS API requires pure numeric phone numbers
-    return phoneNumber.replace(/^\+86/, "");
+  private normalizePhoneNumber(phoneNumber: string): string {
+    const parsed = phoneNumberSchema.safeParse(phoneNumber);
+
+    if (!parsed.success) {
+      throw new Error(
+        "Invalid phone number format. Expect 11-digit number without country code."
+      );
+    }
+
+    return parsed.data;
   }
 
   /**
@@ -63,10 +72,10 @@ class AliyunSmsClient {
         `Aliyun SMS config: signName=${signName}, templateCode=${templateCode}`
       );
 
-      // Format phone number
-      const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber);
+      // Validate phone number before sending
+      const normalizedPhoneNumber = this.normalizePhoneNumber(phoneNumber);
       console.log(
-        `Sending SMS to ${formattedPhoneNumber} (original: ${phoneNumber}) with code ${code}`
+        `Sending SMS to ${normalizedPhoneNumber} (original: ${phoneNumber}) with code ${code}`
       );
 
       if (!signName || !templateCode) {
@@ -78,7 +87,7 @@ class AliyunSmsClient {
       // Construct request according to official example code
       const sendSmsVerifyCodeRequest =
         new $Dypnsapi20170525.SendSmsVerifyCodeRequest({
-          phoneNumber: formattedPhoneNumber,
+          phoneNumber: normalizedPhoneNumber,
           signName,
           templateCode,
           templateParam: JSON.stringify({ code, min: "5" }),

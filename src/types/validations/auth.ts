@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const phoneNumberSchema = z
   .string()
+  .trim()
   .regex(/^1[3-9]\d{9}$/, "手机号格式不正确，请重新输入");
 
 export const emailSchema = z.email({ error: "邮箱格式不正确" });

@@ -1,5 +1,6 @@
 import { runInTransaction } from "@/db/transaction";
 import type { ServiceResult } from "@/types/result";
+import { phoneNumberSchema } from "@/types/validations";
 import {
   deleteAccountById,
   findCredentialAccount,
@@ -230,26 +231,22 @@ export async function setPasswordForOAuthUser(
 }
 
 /**
- * Validate and normalize phone numbers for auth flows.
- * Returns the normalized phone number with +86 prefix on success.
+ * Validate phone numbers for auth flows (11-digit, no country prefix).
+ * Returns the normalized 11-digit phone number on success.
  */
 export function validatePhoneNumberFormat(
   phoneNumber: string
 ): ServiceResult<string> {
-  const trimmed = phoneNumber.trim();
-  const normalized = trimmed.startsWith("+86") ? trimmed : `+86${trimmed}`;
+  const parsed = phoneNumberSchema.safeParse(phoneNumber);
 
-  if (!normalized.startsWith("+86")) {
-    return { success: false, error: "手机号格式错误" };
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message || "手机号格式不正确，请重新输入",
+    };
   }
 
-  const digits = normalized.replace("+86", "");
-
-  if (!/^[0-9]{11}$/.test(digits)) {
-    return { success: false, error: "手机号必须是11位数字" };
-  }
-
-  return { success: true, data: normalized };
+  return { success: true, data: parsed.data };
 }
 
 /**
