@@ -37,8 +37,8 @@
     "lint": "biome check --diagnostic-level=error . && pnpm lint:boundary",
     "lint:fix": "biome check --write . && pnpm lint:boundary",
     "lint:boundary": "node scripts/check-app-boundary.mjs",
-    "format": "biome check --write --linter-enabled=false .",
-    "format:check": "biome check --linter-enabled=false .",
+    "format": "biome check --write --linter-enabled=false . && prettier --write \"**/*.{md,mdx}\"",
+    "format:check": "biome check --linter-enabled=false . && prettier --check \"**/*.{md,mdx}\"",
     "prepare": "husky",
     "postinstall": "fumadocs-mdx",
     "setup:dev": "node scripts/setup-dev.mjs",
@@ -177,6 +177,7 @@
     "ora": "^8.2.0",
     "pino-pretty": "^13.1.2",
     "playwright": "^1.56.1",
+    "prettier": "^3.7.3",
     "react-email": "4.3.2",
     "server-only": "^0.0.1",
     "storybook": "^9.1.15",
@@ -188,6 +189,7 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs,cts,mts,json,md,mdx}": ["biome check --write"]
+    "*.{js,jsx,ts,tsx,mjs,cjs,cts,mts,json}": ["biome check --write"],
+    "*.{md,mdx}": ["prettier --write"]
   }
 }
