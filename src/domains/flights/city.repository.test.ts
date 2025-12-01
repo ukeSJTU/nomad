@@ -1,8 +1,8 @@
 import { createCity } from "@/tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
 
-import { getAllCities } from "@/domains/flights";
 import { vi } from "vitest";
+import { getAllCities } from "./city.repository";
 
 vi.mock("server-only", () => {
   return {}; // 返回空对象，不做任何检查

@@ -13,7 +13,7 @@ import {
   getRecentSearchHistory,
   softDeleteSearchHistoryByUser,
   updateSearchHistory,
-} from "@/domains/flights";
+} from "./flight-search-history.repository";
 
 import { vi } from "vitest";
 

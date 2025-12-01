@@ -9,7 +9,7 @@ import { addDays } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 import { describe, expect, it } from "vitest";
 
-import { searchFlights, searchRoundTripFlights } from "@/domains/flights";
+import { searchFlights, searchRoundTripFlights } from "./flight.repository";
 
 import { vi } from "vitest";
 
