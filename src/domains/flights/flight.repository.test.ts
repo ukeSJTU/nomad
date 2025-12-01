@@ -4,7 +4,7 @@ import {
   createCity,
   createFlight,
   createSeatClass,
-} from "@tests/integration/helpers/factories";
+} from "@/tests/integration/helpers/factories";
 import { addDays } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 import { describe, expect, it } from "vitest";

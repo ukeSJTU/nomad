@@ -3,7 +3,7 @@ import {
   createFlightWithSeatClass,
   createPassengerForUser,
   createUser,
-} from "@tests/integration/helpers/factories";
+} from "@/tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
 
 import {

@@ -1,7 +1,7 @@
 import {
   createSearchHistoryRecord as createHistoryRecord,
   createUser,
-} from "@tests/integration/helpers/factories";
+} from "@/tests/integration/helpers/factories";
 import { eq } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 
