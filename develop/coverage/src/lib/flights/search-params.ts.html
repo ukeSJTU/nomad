@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,7 +97,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -105,28 +105,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Flight search URL parameter utilities (frontend-safe)
  */
 &nbsp;
 import type { SearchFormData } from "@/components/flights/search";
-<span class="cstat-no" title="statement not covered" >import { dateToLocalDateString } from "@/lib/format/date";</span>
+import { dateToLocalDateString } from "@/lib/format";
 &nbsp;
 /**
  * Build flight search URL from form data
@@ -134,22 +134,22 @@ import type { SearchFormData } from "@/components/flights/search";
  * @param data - Search form data
  * @returns Flight search URL with query parameters
  */
-<span class="cstat-no" title="statement not covered" >export function buildFlightSearchUrl(data: SearchFormData): string {</span>
-<span class="cstat-no" title="statement not covered" >  const params = new URLSearchParams();</span>
+export function buildFlightSearchUrl(data: SearchFormData): string {
+  const params = new URLSearchParams();
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  params.set("tripType", data.tripType);</span>
-<span class="cstat-no" title="statement not covered" >  params.set("from", data.departureCity!.iataCode);</span>
-<span class="cstat-no" title="statement not covered" >  params.set("to", data.arrivalCity!.iataCode);</span>
-<span class="cstat-no" title="statement not covered" >  params.set("departDate", dateToLocalDateString(data.departureDate!));</span>
+  params.set("tripType", data.tripType);
+  params.set("from", data.departureCity!.iataCode);
+  params.set("to", data.arrivalCity!.iataCode);
+  params.set("departDate", dateToLocalDateString(data.departureDate!));
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (data.returnDate &amp;&amp; data.tripType === "round-trip") {</span>
-<span class="cstat-no" title="statement not covered" >    params.set("returnDate", dateToLocalDateString(data.returnDate));</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  if (data.returnDate &amp;&amp; data.tripType === "round-trip") {
+    params.set("returnDate", dateToLocalDateString(data.returnDate));
+  }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  params.set("class", data.seatClass);</span>
+  params.set("class", data.seatClass);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return `/flights/search?${params.toString()}`;</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+  return `/flights/search?${params.toString()}`;
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -157,7 +157,7 @@ import type { SearchFormData } from "@/components/flights/search";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-01T10:32:05.779Z
+                at 2025-12-01T12:06:44.468Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
