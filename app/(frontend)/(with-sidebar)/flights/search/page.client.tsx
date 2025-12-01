@@ -17,8 +17,8 @@ import {
 } from "@/components/flights/search";
 import { SEAT_CLASS_TYPE_MAP } from "@/config/ui";
 import { useFlightSearchState } from "@/hooks/use-flight-search-state";
-import { buildFlightSearchUrl } from "@/lib/flights/search-params";
-import { dateToLocalDateString } from "@/lib/format/date";
+import { buildFlightSearchUrl } from "@/lib/flights";
+import { dateToLocalDateString } from "@/lib/format";
 import type {
   CityData,
   FlightSearchResult,

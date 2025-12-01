@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 
-import { getRelativeDateLabel, getWeekdayLabel } from "@/lib/format/date";
+import { getRelativeDateLabel, getWeekdayLabel } from "@/lib/format";
 
 export interface DateDisplayProps {
   date: Date | null;

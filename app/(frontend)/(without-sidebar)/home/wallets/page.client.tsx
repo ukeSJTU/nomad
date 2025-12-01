@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency } from "@/lib/format";
 import {
   type RechargeBalanceData,
   rechargeBalanceSchema,

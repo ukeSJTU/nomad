@@ -25,7 +25,7 @@ import {
   formatCurrency,
   getCurrencyValue,
   parseCurrency,
-} from "@/lib/format/currency";
+} from "@/lib/format";
 import type { AncillaryPageOrder } from "@/types/dto";
 
 interface BookingAncillaryPageClientProps {

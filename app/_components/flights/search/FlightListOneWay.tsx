@@ -22,7 +22,7 @@ import {
   formatAirportDisplay,
   formatDuration,
   formatFlightTime,
-} from "@/lib/flights/flight";
+} from "@/lib/flights";
 import type { FlightSearchResult } from "@/types/dto";
 import type { SeatClass } from "@/types/validations";
 

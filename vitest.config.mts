@@ -4,17 +4,12 @@ import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
-const dirname =
-  typeof __dirname !== "undefined"
-    ? __dirname
-    : path.dirname(fileURLToPath(import.meta.url));
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    // Base configuration for all test projects
-    // Each project can override these settings
     globals: true,
     exclude: [
       "**/node_modules/**",
@@ -26,7 +21,6 @@ export default defineConfig({
       // Exclude Playwright E2E tests (*.spec.ts files in tests/)
       "**/test-results/**",
       "**/playwright-report/**",
-      "src/lib/fumadocs/**", // These are fumadocs configuration files
     ],
     coverage: {
       provider: "v8",
@@ -39,43 +33,21 @@ export default defineConfig({
         "**/*.d.ts",
         "**/*.config.*",
         "**/*.test.*",
-        "**/*.spec.*",
-        "**/tests/**",
+        // Frontend files
         "app/(docs)/**",
         "app/(frontend)/**",
-        "app/(site)/**",
         "app/api/**",
-        "app/_actions/**",
         "app/layout.tsx",
         "app/not-found.tsx",
         // Next.js app routes and entrypoints
-        "**/.next/**",
-        "**/playwright-report/**",
-        "**/test-results/**",
-        "src/lib/auth.ts",
-        // Better Auth configuration
-        "src/lib/auth/**",
-        // Better Auth client
-        "src/db/**",
+        "**/index.**",
         // Database connection and seed files
-        "src/lib/fumadocs/**",
-        // Fumadocs configuration files
+        "src/db/**",
+        // UI components
         "app/_components/ui/**",
-        // Shadcn/UI components (third-party)
         "app/_components/fumadocs/**",
-        // Fumadocs components
-        "app/_components/auth/index.tsx",
-        // Re-export file
-        "app/_components/common/index.tsx",
-        // Re-export file
-        "app/_components/passengers/index.ts",
-        // Re-export file
-        "src/types/api/index.ts",
-        // Re-export file
-        "app/_hooks/**",
-        // React hooks (can be tested separately if needed)
-        "src/middleware.ts",
         // Next.js middleware
+        "src/middleware.ts",
         "src/instrumentation.ts", // Next.js instrumentation
       ],
       include: ["src/**/*.{ts,tsx,js,jsx}", "app/**/*.{ts,tsx,js,jsx}"],
@@ -102,7 +74,6 @@ export default defineConfig({
           exclude: [
             "**/node_modules/**",
             "**/dist/**",
-            "**/*.stories.tsx", // Exclude Storybook files from unit tests
             "**/*.repository.test.ts", // Integration repository tests run in the integration project
           ],
           setupFiles: ["./tests/setup/global.ts"],
@@ -114,11 +85,7 @@ export default defineConfig({
           name: { label: "components", color: "white" },
           environment: "jsdom",
           include: ["src/**/*.test.tsx", "app/**/*.test.tsx"],
-          exclude: [
-            "**/node_modules/**",
-            "**/dist/**",
-            "**/*.stories.tsx", // Exclude Storybook files from component tests
-          ],
+          exclude: ["**/node_modules/**", "**/dist/**"],
           setupFiles: ["./tests/setup/global.ts"],
         },
       },
@@ -130,8 +97,6 @@ export default defineConfig({
           include: ["src/**/*.repository.test.ts"],
           setupFiles: ["./tests/setup/integration-db.ts"],
           pool: "threads",
-          minThreads: 1,
-          maxThreads: 1,
           sequence: {
             concurrent: false,
           },
