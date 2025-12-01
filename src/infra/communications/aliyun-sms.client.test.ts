@@ -69,7 +69,7 @@ describe("SMS Service", () => {
       );
     });
 
-    it("should handle phone number formatting correctly", async () => {
+    it("should reject phone numbers with country prefixes", async () => {
       process.env.ALIBABA_CLOUD_SMS_SIGN_NAME = "TestSign";
       process.env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE = "SMS_123456";
 
@@ -77,20 +77,25 @@ describe("SMS Service", () => {
         body: { code: "OK", requestId: "test-request-id" },
       });
 
-      // Test with +86 prefix
-      await sendSmsOtp("+8613800138000", "123456");
-      expect(mockSendSmsVerifyCodeWithOptions).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          phoneNumber: "13800138000", // Should remove +86 prefix
-        }),
-        {}
-      );
+      const result = await sendSmsOtp("+8613800138000", "123456");
 
-      // Test without +86 prefix
-      await sendSmsOtp("13800138001", "654321");
+      expect(result).toBe(false);
+      expect(mockSendSmsVerifyCodeWithOptions).not.toHaveBeenCalled();
+    });
+
+    it("should trim whitespace before sending phone numbers", async () => {
+      process.env.ALIBABA_CLOUD_SMS_SIGN_NAME = "TestSign";
+      process.env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE = "SMS_123456";
+
+      mockSendSmsVerifyCodeWithOptions.mockResolvedValue({
+        body: { code: "OK", requestId: "test-request-id" },
+      });
+
+      await sendSmsOtp(" 13800138000 ", "123456");
+
       expect(mockSendSmsVerifyCodeWithOptions).toHaveBeenLastCalledWith(
         expect.objectContaining({
-          phoneNumber: "13800138001", // Should remain unchanged
+          phoneNumber: "13800138000",
         }),
         {}
       );

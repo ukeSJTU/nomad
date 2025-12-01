@@ -11,18 +11,18 @@ describe("Auth Service Validation", () => {
       expect(result.data).toBe("13812345678");
     });
 
-    it("strips optional +86 prefix", () => {
+    it("rejects numbers with country prefix", () => {
       const result = validatePhoneNumberFormat("+8613812345678");
 
-      expect(result.success).toBe(true);
-      expect(result.data).toBe("13812345678");
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("手机号格式不正确，请重新输入");
     });
 
     it("rejects invalid lengths", () => {
       const result = validatePhoneNumberFormat("123");
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe("手机号必须是11位数字");
+      expect(result.error).toBe("手机号格式不正确，请重新输入");
     });
   });
 
