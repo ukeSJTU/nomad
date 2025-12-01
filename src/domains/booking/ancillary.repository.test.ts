@@ -1,4 +1,4 @@
-import { createOrderScenario } from "@tests/integration/helpers/factories";
+import { createOrderScenario } from "@/tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
 
 import { getOrderForAncillary } from "@/domains/booking";
