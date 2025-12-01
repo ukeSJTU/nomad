@@ -191,7 +191,11 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     setIsLoading(true);
 
     try {
-      const result = await sendEmailOtpAction(email, "sign-in", fetchOptions);
+      const result = await sendEmailOtpAction(
+        email,
+        "email-verification",
+        fetchOptions
+      );
 
       return result.success;
     } catch {

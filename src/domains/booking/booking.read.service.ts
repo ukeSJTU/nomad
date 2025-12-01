@@ -1,15 +1,12 @@
-import { getOrderForAncillary } from "@/domains/booking/ancillary.repository";
+import { getOrderForAncillary } from "./ancillary.repository";
 import {
   getFlightSeatClassById,
   getFlightSeatClassesByIds,
   getSavedPassengers,
-} from "@/domains/booking/booking-passengers.repository";
-import { getOrderConfirmation } from "@/domains/booking/confirmation.repository";
-import {
-  getAllOrdersByUserId,
-  getOrderDetailById,
-} from "@/domains/booking/orders.repository";
-import { getOrderForPayment } from "@/domains/booking/payment.repository";
+} from "./booking-passengers.repository";
+import { getOrderConfirmation } from "./confirmation.repository";
+import { getAllOrdersByUserId, getOrderDetailById } from "./orders.repository";
+import { getOrderForPayment } from "./payment.repository";
 
 export {
   getAllOrdersByUserId,

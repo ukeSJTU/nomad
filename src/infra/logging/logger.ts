@@ -1,5 +1,3 @@
-import "server-only";
-
 import pino from "pino";
 import pretty from "pino-pretty";
 

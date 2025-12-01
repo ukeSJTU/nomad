@@ -1,4 +1,4 @@
 export {
   getPassengerById,
   getPassengers,
-} from "@/domains/passengers/passenger.repository";
+} from "./passenger.repository";

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { cancelExpiredOrders } from "@/domains/booking/orders.service";
+import { cancelExpiredOrders } from "@/domains/booking";
 import { logger } from "@/infra/logging";
 
 import {
@@ -9,7 +9,7 @@ import {
 } from "./dev-cron";
 
 // Mock dependencies
-vi.mock("@/domains/booking/orders.service", () => ({
+vi.mock("@/domains/booking", () => ({
   cancelExpiredOrders: vi.fn(),
 }));
 

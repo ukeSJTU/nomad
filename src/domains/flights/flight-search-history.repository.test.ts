@@ -13,7 +13,13 @@ import {
   getRecentSearchHistory,
   softDeleteSearchHistoryByUser,
   updateSearchHistory,
-} from "@/domains/flights/flight-search-history.repository";
+} from "@/domains/flights";
+
+import { vi } from "vitest";
+
+vi.mock("server-only", () => {
+  return {}; // 返回空对象，不做任何检查
+});
 
 describe("flight-search-history.repository", () => {
   it("returns recent search history ordered by last searched and limited", async () => {

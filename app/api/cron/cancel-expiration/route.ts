@@ -1,4 +1,4 @@
-import { cancelExpiredOrders } from "@/domains/booking/orders.service";
+import { cancelExpiredOrders } from "@/domains/booking";
 import { createUnauthorizedResponse, verifyCronSecret } from "@/infra/http";
 
 /**

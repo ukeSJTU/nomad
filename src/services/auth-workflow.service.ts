@@ -1,12 +1,9 @@
-import {
-  validateEmailFormat,
-  validatePhoneNumberFormat,
-} from "@/domains/auth/auth.service";
+import { validateEmailFormat, validatePhoneNumberFormat } from "@/domains/auth";
 import {
   getUserById,
   updateUserEmail,
   updateUserPhoneNumber,
-} from "@/domains/user/user.repository";
+} from "@/domains/user";
 import { logger } from "@/infra/logging";
 import { registerAuthNotificationHandlers } from "@/infra/notifications";
 import type { ServiceResult } from "@/types/result";

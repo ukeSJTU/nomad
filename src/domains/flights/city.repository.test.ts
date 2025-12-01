@@ -1,7 +1,12 @@
 import { createCity } from "@tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
 
-import { getAllCities } from "@/domains/flights/city.repository";
+import { getAllCities } from "@/domains/flights";
+import { vi } from "vitest";
+
+vi.mock("server-only", () => {
+  return {}; // 返回空对象，不做任何检查
+});
 
 describe("city.repository", () => {
   it("returns active cities ordered by displayOrder then name", async () => {

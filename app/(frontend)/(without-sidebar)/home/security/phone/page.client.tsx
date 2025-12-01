@@ -1,6 +1,5 @@
 "use client";
 
-import { Turnstile } from "@marsidev/react-turnstile";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -17,7 +16,6 @@ import {
 } from "@/components/security";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
-import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 
 /**
  * Props for the PhonePageClient component
@@ -46,18 +44,7 @@ export default function PhonePageClient({
 }: PhonePageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [showCaptcha, setShowCaptcha] = useState(false);
   const { countdown, start: startCountdown } = useOtpCountdown();
-  const {
-    siteKey,
-    turnstileRef,
-    isVerifying,
-    setError: setCaptchaError,
-    prepareCaptchaRequest,
-  } = useTurnstileCaptcha();
-  const isCaptchaValidationError = (error?: { message?: string }) =>
-    typeof error?.message === "string" &&
-    error.message.toLowerCase().includes("captcha");
 
   // Determine form mode based on current status
   const mode: PhoneFormMode =
@@ -72,26 +59,12 @@ export default function PhonePageClient({
    */
   const handleSendOtp = async (phoneNumber: string) => {
     try {
-      // Show Turnstile widget before triggering verification
-      setShowCaptcha(true);
-
-      // Trigger Turnstile verification
-      const captchaRequest = await prepareCaptchaRequest();
-
-      if (!captchaRequest) {
-        toast.error("人机验证失败，请重新完成验证");
-        return;
-      }
-
       setIsLoading(true);
 
       // Add +86 prefix for China mainland phone numbers
       const fullPhoneNumber = `+86${phoneNumber}`;
 
-      const result = await sendPhoneOtpAction(
-        fullPhoneNumber,
-        captchaRequest.fetchOptions
-      );
+      const result = await sendPhoneOtpAction(fullPhoneNumber);
 
       if (!result.success) {
         console.error("发送验证码失败:", result.error);
@@ -114,38 +87,19 @@ export default function PhonePageClient({
    */
   const handleSubmit = async (data: { phoneNumber: string; otp: string }) => {
     try {
-      // Show Turnstile widget before triggering verification
-      setShowCaptcha(true);
-
-      // Trigger Turnstile verification
-      const captchaRequest = await prepareCaptchaRequest();
-
-      if (!captchaRequest) {
-        toast.error("人机验证失败，请重新完成验证");
-        return;
-      }
-
       setIsLoading(true);
 
       // Add +86 prefix for China mainland phone numbers
       const fullPhoneNumber = `+86${data.phoneNumber}`;
 
       // 1. Verify OTP using server action
-      const verifyResult = await signInWithOtpAction(
-        {
-          account: fullPhoneNumber,
-          otp: data.otp,
-          agreedToTerms: true,
-        },
-        captchaRequest.fetchOptions
-      );
+      const verifyResult = await signInWithOtpAction({
+        account: fullPhoneNumber,
+        otp: data.otp,
+        agreedToTerms: true,
+      });
 
       if (!verifyResult.success) {
-        if (isCaptchaValidationError({ message: verifyResult.error })) {
-          setCaptchaError("人机验证失败，请重新完成人机验证");
-          toast.error("人机验证失败，请重试");
-          return;
-        }
         console.error("验证码验证失败:", verifyResult.error);
         toast.error(verifyResult.error || "验证码错误，请重试");
         return;
@@ -196,24 +150,8 @@ export default function PhonePageClient({
           onSubmit={handleSubmit}
           onSendOtp={handleSendOtp}
           isLoading={isLoading}
-          isVerifying={isVerifying}
           countdown={countdown}
         />
-
-        {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP or submit */}
-        <div className={showCaptcha ? "mt-6" : "hidden"}>
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={siteKey}
-            options={{
-              appearance: "always",
-              refreshExpired: "never",
-              size: "normal",
-              execution: "execute",
-              action: "update-phone",
-            }}
-          />
-        </div>
       </CardContent>
     </Card>
   );

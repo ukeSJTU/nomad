@@ -3,17 +3,14 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 
-import {
-  type ProcessPaymentData,
-  processPayment,
-} from "@/domains/payments/payment.service";
+import { type ProcessPaymentData, processPayment } from "@/domains/payments";
 import { auth } from "@/infra/auth";
 import type { ActionResult } from "@/types/common";
 
 /**
  * Process payment action result data
  */
-// export type { ProcessPaymentData } from "@/domains/payments/payment.service";
+// export type { ProcessPaymentData } from "@/domains/payments";
 
 export type ProcessPaymentResult = ActionResult<ProcessPaymentData>;
 

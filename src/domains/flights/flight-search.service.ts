@@ -5,11 +5,6 @@
  * This service layer abstracts the complexity of searching flights and recording history.
  */
 
-import { recordFlightSearch } from "@/domains/flights/flight-search-history.service";
-import {
-  searchOneWayFlights,
-  searchRoundTripFlights,
-} from "@/domains/flights/flight.repository";
 import { logger } from "@/infra/logging";
 import { calculateLowestPrice } from "@/lib/flights/calculations";
 import type {
@@ -17,6 +12,11 @@ import type {
   RoundTripFlightSearchResult,
 } from "@/types/dto";
 import type { SeatClass, TripType, UpperSeatClass } from "@/types/validations";
+import { recordFlightSearch } from "./flight-search-history.service";
+import {
+  searchOneWayFlights,
+  searchRoundTripFlights,
+} from "./flight.repository";
 
 /**
  * Parameters for searching one-way flights

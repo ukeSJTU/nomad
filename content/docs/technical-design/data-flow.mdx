@@ -85,7 +85,7 @@ import { redirect } from "next/navigation";
 
 import { PassengersPageClient } from "@/components/passengers/passengers-page-client";
 import { auth } from "@/infra/auth";
-import { getPassengers } from "@/domains/passengers/passenger.repository";
+import { getPassengers } from "@/domains/passengers";
 
 export default async function PassengersPage() {
   // 1. 获取请求头（用于身份验证）

@@ -1,13 +1,13 @@
+import { logger } from "@/infra/logging";
+import type { ServiceResult } from "@/types/result";
+import type { RecordFlightSearchData } from "@/types/validations";
 import {
   createSearchHistoryRecord,
   findCityByIataCode,
   findExistingSearchHistory,
   softDeleteSearchHistoryByUser,
   updateSearchHistory,
-} from "@/domains/flights/flight-search-history.repository";
-import { logger } from "@/infra/logging";
-import type { ServiceResult } from "@/types/result";
-import type { RecordFlightSearchData } from "@/types/validations";
+} from "./flight-search-history.repository";
 
 /**
  * Service layer for flight search history business logic

@@ -1,13 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Turnstile } from "@marsidev/react-turnstile";
 import { AlertCircle, Github } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import {
+  type TurnstileInstance,
+  TurnstileWidget,
+} from "@/components/auth/turnstile";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,7 +27,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
-import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
@@ -106,7 +108,10 @@ function TermsCheckbox({
 
 interface PasswordLoginFormProps {
   /** Form submit callback */
-  onSubmit: (data: PasswordLoginData) => Promise<ActionResult>;
+  onSubmit: (
+    data: PasswordLoginData,
+    fetchOptions?: FetchOptions
+  ) => Promise<ActionResult>;
 
   /** Toggle to OTP login */
   onSwitchToOtp: () => void;
@@ -147,8 +152,12 @@ function PasswordLoginForm({
     const termsValid = await form.trigger("agreedToTerms");
     if (!termsValid) return;
 
-    // All validations passed, submit the form
-    onSubmit(data);
+    try {
+      // All validations passed, submit the form
+      await onSubmit(data);
+    } catch {
+      toast.error("人机验证失败，请重试");
+    }
   };
 
   // Get the first error message in order: account -> password (skip agreedToTerms)
@@ -323,10 +332,8 @@ function OtpLoginForm({
   className,
 }: OtpLoginFormProps) {
   const { countdown, start: startCountdown } = useOtpCountdown();
-  const [showCaptcha, setShowCaptcha] = useState(false); // Control widget visibility
-  const { siteKey, turnstileRef, isVerifying, prepareCaptchaRequest } =
-    useTurnstileCaptcha();
-
+  const [isVerifying, setIsVerifying] = useState(false);
+  const turnstileRef = useRef<TurnstileInstance | undefined>(null);
   const form = useForm<OtpLoginData>({
     resolver: zodResolver(otpLoginSchema),
     mode: "onSubmit",
@@ -349,20 +356,22 @@ function OtpLoginForm({
 
     const account = form.getValues("account");
 
+    // Get Turnstile token
+    setIsVerifying(true);
     try {
-      // Show Turnstile widget before triggering verification
-      setShowCaptcha(true);
+      // Use getResponsePromise to wait for the token (with 30s timeout)
+      const token = await turnstileRef.current?.getResponsePromise();
 
-      // Trigger Turnstile verification
-      const context = await prepareCaptchaRequest();
-
-      if (!context) {
-        toast.error("人机验证失败，请重新完成验证");
+      if (!token) {
+        toast.error("人机验证失败，请重试");
+        turnstileRef.current?.reset();
         return;
       }
 
       // Call backend API to send OTP with captcha token
-      const success = await onSendOtp(account, context.fetchOptions);
+      const success = await onSendOtp(account, {
+        headers: { "x-captcha-token": token },
+      });
 
       // Start countdown only if backend returns success
       if (success) {
@@ -370,8 +379,14 @@ function OtpLoginForm({
       } else {
         toast.error("发送验证码失败，请重试");
       }
+
+      // Reset Turnstile for next use
+      turnstileRef.current?.reset();
     } catch {
-      toast.error("发送验证码失败，请重试");
+      toast.error("人机验证失败，请重试");
+      turnstileRef.current?.reset();
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -386,17 +401,9 @@ function OtpLoginForm({
     const termsValid = await form.trigger("agreedToTerms");
     if (!termsValid) return;
 
-    // Get captcha token before submitting
     try {
-      const context = await prepareCaptchaRequest();
-
-      if (!context) {
-        toast.error("人机验证失败，请重新完成验证");
-        return;
-      }
-
       // All validations passed, submit the form with captcha token
-      onSubmit(data, context.fetchOptions);
+      await onSubmit(data);
     } catch {
       toast.error("人机验证失败，请重试");
     }
@@ -474,23 +481,15 @@ function OtpLoginForm({
           )}
         />
 
+        {/* Invisible Turnstile Widget for OTP verification */}
+        <TurnstileWidget
+          ref={turnstileRef}
+          action="send-otp"
+          size="invisible"
+        />
+
         {/* Error Display Area - Show form validation errors */}
         <ErrorDisplay message={firstError} />
-
-        {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP */}
-        <div className={cn(!showCaptcha && "hidden")}>
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={siteKey}
-            options={{
-              appearance: "always",
-              refreshExpired: "never",
-              size: "normal",
-              execution: "execute",
-              action: "login-send-otp",
-            }}
-          />
-        </div>
 
         {/* Submit Button */}
         <Button
@@ -542,13 +541,19 @@ function OtpLoginForm({
 
 export interface UnifiedLoginFormProps {
   /** Form submit callback for password login */
-  onPasswordSubmit: (data: PasswordLoginData) => Promise<ActionResult>;
+  onPasswordSubmit: (
+    data: PasswordLoginData,
+    fetchOptions?: FetchOptions
+  ) => Promise<ActionResult>;
 
   /** Form submit callback for OTP login */
-  onOtpSubmit: (data: OtpLoginData) => Promise<ActionResult>;
+  onOtpSubmit: (
+    data: OtpLoginData,
+    fetchOptions?: FetchOptions
+  ) => Promise<ActionResult>;
 
   /** Send OTP callback - should return true if OTP was sent successfully */
-  onSendOtp: (account: string) => Promise<boolean>;
+  onSendOtp: (account: string, fetchOptions?: FetchOptions) => Promise<boolean>;
 
   /** Initial login method (optional, defaults to password) */
   initialLoginMethod?: "password" | "otp";

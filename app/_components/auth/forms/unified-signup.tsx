@@ -1,12 +1,10 @@
 "use client";
 
-import { Turnstile } from "@marsidev/react-turnstile";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
-import { useTurnstileCaptcha } from "@/hooks/use-turnstile-captcha";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
@@ -15,6 +13,7 @@ import type {
   PhoneVerificationData,
 } from "@/types/validations";
 
+import { type TurnstileInstance, TurnstileWidget } from "../turnstile";
 import EmailVerificationForm from "./email-verification";
 import PhoneVerificationForm from "./phone-verification";
 
@@ -68,12 +67,10 @@ export default function UnifiedSignUpForm({
 }: UnifiedSignUpFormProps) {
   const [_method, setMethod] = useState<"phone" | "email">(initialMethod);
   const { countdown, start: startCountdown } = useOtpCountdown();
-  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
   const [currentEmail, setCurrentEmail] = useState("");
-
-  const { siteKey, turnstileRef, isVerifying, prepareCaptchaRequest } =
-    useTurnstileCaptcha();
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const handleMethodChange = (value: string) => {
     const newMethod = value as "phone" | "email";
@@ -90,18 +87,24 @@ export default function UnifiedSignUpForm({
       return;
     }
 
-    try {
-      setShowCaptcha(true);
+    setIsVerifying(true);
 
-      const context = await prepareCaptchaRequest();
-      if (!context) {
+    try {
+      // Get captcha token from Turnstile
+      const token = await turnstileRef.current?.getResponsePromise();
+
+      if (!token) {
+        toast.error("人机验证失败，请重试");
         return;
       }
 
-      const success = await onSendPhoneOtp(
-        currentPhoneNumber,
-        context.fetchOptions
-      );
+      const fetchOptions: FetchOptions = {
+        headers: {
+          "x-captcha-token": token,
+        },
+      };
+
+      const success = await onSendPhoneOtp(currentPhoneNumber, fetchOptions);
 
       if (success) {
         startCountdown();
@@ -110,6 +113,9 @@ export default function UnifiedSignUpForm({
       }
     } catch {
       toast.error("发送验证码失败，请重试");
+    } finally {
+      setIsVerifying(false);
+      turnstileRef.current?.reset();
     }
   };
 
@@ -122,15 +128,24 @@ export default function UnifiedSignUpForm({
       return;
     }
 
-    try {
-      setShowCaptcha(true);
+    setIsVerifying(true);
 
-      const context = await prepareCaptchaRequest();
-      if (!context) {
+    try {
+      // Get captcha token from Turnstile
+      const token = await turnstileRef.current?.getResponsePromise();
+
+      if (!token) {
+        toast.error("人机验证失败，请重试");
         return;
       }
 
-      const success = await onSendEmailOtp(currentEmail, context.fetchOptions);
+      const fetchOptions: FetchOptions = {
+        headers: {
+          "x-captcha-token": token,
+        },
+      };
+
+      const success = await onSendEmailOtp(currentEmail, fetchOptions);
 
       if (success) {
         startCountdown();
@@ -139,40 +154,29 @@ export default function UnifiedSignUpForm({
       }
     } catch {
       toast.error("发送验证码失败，请重试");
+    } finally {
+      setIsVerifying(false);
+      turnstileRef.current?.reset();
     }
   };
 
   /**
-   * Handle phone verification form submission with CAPTCHA
+   * Handle phone verification form submission (no CAPTCHA - only for OTP send)
    */
   const handlePhoneSubmit = async (data: PhoneVerificationData) => {
     try {
-      setShowCaptcha(true);
-
-      const context = await prepareCaptchaRequest();
-      if (!context) {
-        return;
-      }
-
-      await onPhoneVerified(data, context.fetchOptions);
+      await onPhoneVerified(data);
     } catch {
       toast.error("验证失败，请重试");
     }
   };
 
   /**
-   * Handle email verification form submission with CAPTCHA
+   * Handle email verification form submission (no CAPTCHA - only for OTP send)
    */
   const handleEmailSubmit = async (data: EmailVerificationData) => {
     try {
-      setShowCaptcha(true);
-
-      const context = await prepareCaptchaRequest();
-      if (!context) {
-        return;
-      }
-
-      await onEmailVerified(data, context.fetchOptions);
+      await onEmailVerified(data);
     } catch {
       toast.error("验证失败，请重试");
     }
@@ -213,20 +217,12 @@ export default function UnifiedSignUpForm({
         </TabsContent>
       </Tabs>
 
-      {/* Turnstile Widget - Hidden by default, shown when user clicks send OTP */}
-      <div className={cn(!showCaptcha && "hidden")}>
-        <Turnstile
-          ref={turnstileRef}
-          siteKey={siteKey}
-          options={{
-            appearance: "always",
-            refreshExpired: "never",
-            size: "normal",
-            execution: "execute",
-            action: "sign-up-send-otp",
-          }}
-        />
-      </div>
+      {/* Turnstile Widget - invisible mode for OTP sending */}
+      <TurnstileWidget
+        ref={turnstileRef}
+        action="signup-otp"
+        size="invisible"
+      />
     </div>
   );
 }

@@ -9,7 +9,7 @@
 
 import { headers } from "next/headers";
 
-import { resendOrderConfirmation } from "@/domains/notification/order-email.service";
+import { resendOrderConfirmation } from "@/domains/notification";
 import { auth } from "@/infra/auth";
 import type { ActionResult } from "@/types/common";
 

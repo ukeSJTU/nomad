@@ -1,5 +1,8 @@
-import { getLinkedAccountsAction } from "@/actions/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 import { LinkButton, SocialAccountCard, UnlinkButton } from "@/components/auth";
+import { auth } from "@/infra/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -33,15 +36,25 @@ const PROVIDERS: ProviderConfig[] = [
  * - Link/unlink functionality via Client Component buttons
  */
 export default async function AccountsPage() {
-  const accounts = await getLinkedAccountsAction();
+  const headersList = await headers();
+  const session = await auth.api.getSession({
+    headers: headersList,
+  });
+
+  if (!session?.user?.id) {
+    redirect("/auth/sign-in?redirect=/home/accounts");
+  }
+
+  const accounts =
+    (await auth.api.listUserAccounts({
+      headers: headersList,
+    })) ?? [];
 
   /**
    * Create a map of linked accounts for efficient O(1) lookup
    * This avoids O(n) traversal for each provider in the render loop
    */
-  const linkedAccountsMap = new Map(
-    (accounts || []).map(acc => [acc.providerId, acc])
-  );
+  const linkedAccountsMap = new Map(accounts.map(acc => [acc.providerId, acc]));
 
   return (
     <div className="container mx-auto py-8 px-4">

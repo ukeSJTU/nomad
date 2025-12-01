@@ -18,7 +18,7 @@ import {
   getOrderForCancellation,
   getOrderForRefund,
   refundOrderAndReleaseSeats,
-} from "@/domains/booking/orders.repository";
+} from "@/domains/booking";
 
 describe("booking.orders.repository", () => {
   it("returns all orders for user ordered by creation time", async () => {

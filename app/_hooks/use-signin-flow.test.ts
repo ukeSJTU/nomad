@@ -45,6 +45,10 @@ import { validateAccount } from "@/lib/validation/account";
 const mockToastError = vi.mocked(toast.error);
 const mockValidateAccount = vi.mocked(validateAccount);
 
+const mockFetchOptions = {
+  headers: { "x-captcha-token": "test-token" },
+};
+
 describe("useSignInFlow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -70,11 +74,15 @@ describe("useSignInFlow", () => {
 
       const { result } = renderHook(() => useSignInFlow());
       await act(async () => {
-        await result.current.handlePasswordLogin(mockPasswordData);
+        await result.current.handlePasswordLogin(
+          mockPasswordData,
+          mockFetchOptions
+        );
       });
 
       expect(mockSignInWithPasswordAction).toHaveBeenCalledWith(
-        mockPasswordData
+        mockPasswordData,
+        mockFetchOptions
       );
       expect(mockRouterPush).toHaveBeenCalledWith("/");
       expect(result.current.isLoading).toBe(false);
@@ -88,7 +96,10 @@ describe("useSignInFlow", () => {
 
       const { result } = renderHook(() => useSignInFlow());
       await act(async () => {
-        await result.current.handlePasswordLogin(mockPasswordData);
+        await result.current.handlePasswordLogin(
+          mockPasswordData,
+          mockFetchOptions
+        );
       });
 
       expect(mockToastError).toHaveBeenCalledWith("登录失败");
@@ -111,12 +122,12 @@ describe("useSignInFlow", () => {
 
       const { result } = renderHook(() => useSignInFlow());
       await act(async () => {
-        await result.current.handleOtpLogin(mockOtpData);
+        await result.current.handleOtpLogin(mockOtpData, mockFetchOptions);
       });
 
       expect(mockSignInWithOtpAction).toHaveBeenCalledWith(
         mockOtpData,
-        undefined
+        mockFetchOptions
       );
       expect(mockRouterPush).toHaveBeenCalledWith("/");
     });
@@ -129,7 +140,7 @@ describe("useSignInFlow", () => {
 
       const { result } = renderHook(() => useSignInFlow());
       await act(async () => {
-        await result.current.handleOtpLogin(mockOtpData);
+        await result.current.handleOtpLogin(mockOtpData, mockFetchOptions);
       });
 
       expect(mockToastError).toHaveBeenCalledWith("验证码错误");
@@ -150,10 +161,16 @@ describe("useSignInFlow", () => {
       });
 
       const { result } = renderHook(() => useSignInFlow());
-      const success = await result.current.handleSendOtp("+8613800138000");
+      const success = await result.current.handleSendOtp(
+        "+8613800138000",
+        mockFetchOptions
+      );
 
       expect(success).toBe(true);
-      expect(mockSendPhoneOtpAction).toHaveBeenCalled();
+      expect(mockSendPhoneOtpAction).toHaveBeenCalledWith(
+        "+8613800138000",
+        mockFetchOptions
+      );
     });
 
     it("sends email OTP when account is email", async () => {
@@ -168,10 +185,17 @@ describe("useSignInFlow", () => {
       });
 
       const { result } = renderHook(() => useSignInFlow());
-      const success = await result.current.handleSendOtp("user@example.com");
+      const success = await result.current.handleSendOtp(
+        "user@example.com",
+        mockFetchOptions
+      );
 
       expect(success).toBe(true);
-      expect(mockSendEmailOtpAction).toHaveBeenCalled();
+      expect(mockSendEmailOtpAction).toHaveBeenCalledWith(
+        "user@example.com",
+        "sign-in",
+        mockFetchOptions
+      );
     });
 
     it("returns false for invalid account format", async () => {

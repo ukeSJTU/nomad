@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import {
   clearFlightSearchHistory,
   recordFlightSearch,
-} from "@/domains/flights/flight-search-history.service";
+} from "@/domains/flights";
 import { auth } from "@/infra/auth";
 import { logger } from "@/infra/logging";
 import type { RecordFlightSearchData } from "@/types/validations";
@@ -18,7 +18,7 @@ import type { RecordFlightSearchData } from "@/types/validations";
  * 2. Call service layer for business logic
  * 3. Format responses
  *
- * All business logic is in the service layer (src/domains/flights/flight-search-history.service.ts)
+ * All business logic is in the service layer (src/domains/flights)
  * which can be tested independently without mocking Next.js runtime.
  */
 

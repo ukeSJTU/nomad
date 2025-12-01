@@ -4,20 +4,17 @@ import { describe, expect, it, vi } from "vitest";
 
 import UnifiedLoginForm from "./unified-login";
 
-// Mock the Turnstile captcha hook
-vi.mock("@/hooks/use-turnstile-captcha", () => ({
-  useTurnstileCaptcha: () => ({
-    turnstileRef: { current: null },
-    siteKey: "test-site-key",
-    isVerifying: false,
-    prepareCaptchaRequest: vi.fn().mockResolvedValue({
-      token: "test-token",
-      fetchOptions: {
-        headers: {
-          "X-Captcha-Token": "test-token",
-        },
-      },
-    }),
+// Mock the TurnstileWidget component
+vi.mock("../turnstile", () => ({
+  TurnstileWidget: vi.fn(({ ref }) => {
+    // Simulate ref methods for testing
+    if (ref) {
+      ref.current = {
+        getResponsePromise: vi.fn().mockResolvedValue("test-captcha-token"),
+        reset: vi.fn(),
+      };
+    }
+    return null;
   }),
 }));
 
@@ -225,7 +222,7 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
         ).not.toBeInTheDocument();
       });
 
-      // Should call submit with correct data
+      // Should call submit with correct data (no captcha token for login submit)
       await waitFor(() => {
         expect(onPasswordSubmit).toHaveBeenCalledWith({
           account: "test@example.com",
@@ -463,20 +460,13 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
         ).not.toBeInTheDocument();
       });
 
-      // Should call submit with correct data and fetchOptions
+      // Should call submit with correct data (no captcha token for login submit, only for OTP send)
       await waitFor(() => {
-        expect(onOtpSubmit).toHaveBeenCalledWith(
-          {
-            account: "test@example.com",
-            otp: "123456",
-            agreedToTerms: true,
-          },
-          {
-            headers: {
-              "X-Captcha-Token": "test-token",
-            },
-          }
-        );
+        expect(onOtpSubmit).toHaveBeenCalledWith({
+          account: "test@example.com",
+          otp: "123456",
+          agreedToTerms: true,
+        });
       });
     });
   });

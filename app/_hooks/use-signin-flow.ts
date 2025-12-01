@@ -15,7 +15,10 @@ import type { OtpLoginData, PasswordLoginData } from "@/types/validations";
 
 export interface UseSignInFlowReturn {
   isLoading: boolean;
-  handlePasswordLogin: (data: PasswordLoginData) => Promise<ActionResult>;
+  handlePasswordLogin: (
+    data: PasswordLoginData,
+    fetchOptions?: FetchOptions
+  ) => Promise<ActionResult>;
   handleOtpLogin: (
     data: OtpLoginData,
     fetchOptions?: FetchOptions
@@ -36,14 +39,16 @@ export function useSignInFlow(): UseSignInFlowReturn {
 
   /**
    * Handles password login (supports phone/email only)
+   * Receives fetchOptions with Turnstile captcha token
    */
   const handlePasswordLogin = async (
-    data: PasswordLoginData
+    data: PasswordLoginData,
+    fetchOptions?: FetchOptions
   ): Promise<ActionResult> => {
     setIsLoading(true);
 
     try {
-      const result = await signInWithPasswordAction(data);
+      const result = await signInWithPasswordAction(data, fetchOptions);
 
       if (!result.success) {
         toast.error(result.error || "登录失败，请检查账号和密码");
