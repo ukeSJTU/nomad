@@ -2,8 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
 import { db } from "@/db";
-import { user } from "@/db/schema";
-import { orders, payments } from "@/db/schema/orders";
+import { orders, payments, user } from "@/db/schema";
 import { getOrderDetailById } from "@/domains/booking";
 import { sendOrderConfirmationEmail } from "@/infra/notifications";
 import {
@@ -11,8 +10,8 @@ import {
   parseCurrency,
   subtractCurrency,
   toDatabaseValue,
-} from "@/lib/format/currency";
-import { transformOrderDetailToEmailData } from "@/lib/notification/transformers";
+} from "@/lib/format";
+import { transformOrderDetailToEmailData } from "@/lib/notification";
 import type { ServiceResult } from "@/types/result";
 import type {
   ProcessPaymentData,

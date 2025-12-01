@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { FLIGHT_UI_TEXT, ROUND_TRIP_STEPS } from "@/config/ui";
-import { formatDateWithWeekday, formatTime } from "@/lib/format/date";
+import { formatDateWithWeekday, formatTime } from "@/lib/format";
 import type { CityData } from "@/types/dto";
 import type { TripType } from "@/types/validations";
 

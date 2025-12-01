@@ -15,7 +15,7 @@ import {
   type AncillaryService,
   getAncillaryServicesByCategory,
 } from "@/db/schema/ancillary";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency } from "@/lib/format";
 
 export interface AncillarySelectionProps {
   /**

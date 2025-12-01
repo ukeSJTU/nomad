@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { useClientSession } from "@/hooks/use-client-session";
-import { getInitials } from "@/lib/format/string";
+import { getInitials } from "@/lib/format";
 
 /**
  * UserMenu component displays user authentication status and navigation options.

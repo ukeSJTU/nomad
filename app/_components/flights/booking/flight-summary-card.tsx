@@ -5,11 +5,11 @@ import { Separator } from "@/components/ui/separator";
 import {
   addCurrency,
   formatCurrency,
+  formatDateWithWeekday,
   getCurrencyValue,
   multiplyCurrency,
   parseCurrency,
-} from "@/lib/format/currency";
-import { formatDateWithWeekday } from "@/lib/format/date";
+} from "@/lib/format";
 import type { PassengerPageFlight } from "@/types/dto";
 
 type FlightSummaryCardProps = {

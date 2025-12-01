@@ -1,11 +1,9 @@
 import { and, desc, eq, isNull, lt, sql } from "drizzle-orm";
 
 import { db } from "@/db";
-import { user } from "@/db/schema";
-import { flightSeatClasses } from "@/db/schema/flight-seat-classes";
-import { orders } from "@/db/schema/orders";
+import { flightSeatClasses, orders, user } from "@/db/schema";
 import { runInTransaction } from "@/db/transaction";
-import { maskEmail, maskPhoneNumber } from "@/lib/security/mask-data";
+import { maskEmail, maskPhoneNumber } from "@/lib/security";
 import { OrderDetailFull, OrderListItem } from "@/types/dto";
 
 export type OrderRow = typeof orders.$inferSelect;

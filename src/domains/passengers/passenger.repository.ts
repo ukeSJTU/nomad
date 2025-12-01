@@ -3,11 +3,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { passengers } from "@/db/schema";
 import type { DbExecutor } from "@/db/transaction";
-import {
-  maskDocumentNumber,
-  maskEmail,
-  maskPhoneNumber,
-} from "@/lib/security/mask-data";
+import { maskDocumentNumber, maskEmail, maskPhoneNumber } from "@/lib/security";
 import type { PassengerDTO, PassengerDetailData } from "@/types/dto";
 
 export type PassengerRow = typeof passengers.$inferSelect;

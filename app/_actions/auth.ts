@@ -10,7 +10,7 @@ import {
 } from "@/domains/auth";
 import { auth } from "@/infra/auth";
 import { logger } from "@/infra/logging";
-import { validateAccount } from "@/lib/validation/account";
+import { validateAccount } from "@/lib/validation";
 import {
   updateUserEmailWorkflow,
   updateUserPhoneNumberWorkflow,
