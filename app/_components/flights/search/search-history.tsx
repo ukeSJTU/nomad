@@ -8,9 +8,9 @@ import { Card } from "@/components/ui/card";
 import {
   compareCurrency,
   formatCurrencyWithoutSymbol,
+  getWeekdayLabel,
   parseCurrency,
-} from "@/lib/format/currency";
-import { getWeekdayLabel } from "@/lib/format/date";
+} from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { SearchHistoryRecord } from "@/types/dto";
 

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export interface SeatClassOption {

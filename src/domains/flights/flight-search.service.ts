@@ -6,7 +6,7 @@
  */
 
 import { logger } from "@/infra/logging";
-import { calculateLowestPrice } from "@/lib/flights/calculations";
+import { calculateLowestPrice } from "@/lib/flights";
 import type {
   FlightSearchResult,
   RoundTripFlightSearchResult,

@@ -12,7 +12,7 @@ import {
   Text,
 } from "@react-email/components";
 
-import { formatCurrency as formatCurrencyUtil } from "@/lib/format/currency";
+import { formatCurrency as formatCurrencyUtil } from "@/lib/format";
 
 interface PassengerInfo {
   name: string;

@@ -3,7 +3,7 @@ import { Plane } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency } from "@/lib/format";
 
 interface PaymentPriceBreakdownProps {
   orderNumber: string;

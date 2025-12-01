@@ -15,8 +15,10 @@ import type { InferInsertModel } from "drizzle-orm";
 import {
   type AncillaryService,
   availableAncillaryServices,
-} from "@/db/schema/ancillary";
-import { orderPassengers, orders, payments } from "@/db/schema/orders";
+  orderPassengers,
+  orders,
+  payments,
+} from "@/db/schema";
 
 type OrderInsert = InferInsertModel<typeof orders>;
 type OrderPassengerInsert = InferInsertModel<typeof orderPassengers>;

@@ -8,7 +8,7 @@ import UnifiedSignUpForm from "@/components/auth/forms/unified-signup";
 import RegistrationSuccess from "@/components/auth/registration-success";
 import { Stepper, type StepperStep } from "@/components/common";
 import { useSignUpFlow } from "@/hooks/use-signup-flow";
-import { maskEmail, maskPhoneNumber } from "@/lib/security/mask-data";
+import { maskEmail, maskPhoneNumber } from "@/lib/security";
 
 /**
  * Get stepper steps based on sign-up method

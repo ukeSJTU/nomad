@@ -7,8 +7,7 @@
 import { faker } from "@faker-js/faker";
 import type { InferInsertModel } from "drizzle-orm";
 
-import type { user } from "@/db/schema";
-import type { passengers } from "@/db/schema/passengers";
+import type { passengers, user } from "@/db/schema";
 
 type UserInsert = Omit<
   InferInsertModel<typeof user>,
