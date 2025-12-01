@@ -27,15 +27,17 @@ function resolveAccountType(account: string) {
   const trimmedAccount = account.trim();
   const withoutCountryCode = trimmedAccount.replace(/^\+86/, "");
 
-  const directValidation = validateAccount(trimmedAccount);
   const normalizedValidation = validateAccount(withoutCountryCode);
+  if (normalizedValidation.isPhone || normalizedValidation.isEmail) {
+    return {
+      ...normalizedValidation,
+      account: withoutCountryCode,
+    };
+  }
 
-  const isPhone = normalizedValidation.isPhone || directValidation.isPhone;
-  const isEmail = directValidation.isEmail;
-
-  const normalizedAccount = isPhone ? withoutCountryCode : trimmedAccount;
-
-  return { isPhone, isEmail, account: normalizedAccount };
+  // handle special case like (+86xxx@xxx.com)
+  const directValidation = validateAccount(trimmedAccount);
+  return { ...directValidation, account: trimmedAccount };
 }
 
 function mergeHeaders(base: Headers, fetchOptions?: FetchOptions): HeadersInit {
