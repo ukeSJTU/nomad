@@ -8,21 +8,21 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("redirectToError (server)", () => {
-  it("calls redirect with correct URL for type only", () => {
-    redirectToError("unauthorized");
+  it("calls redirect with correct URL for type only", async () => {
+    await redirectToError("unauthorized");
     expect(redirect).toHaveBeenCalledWith("/error?type=unauthorized");
   });
 
-  it("calls redirect with type and custom message", () => {
-    redirectToError("payment_failed", "支付超时");
+  it("calls redirect with type and custom message", async () => {
+    await redirectToError("payment_failed", "支付超时");
     expect(redirect).toHaveBeenCalledWith(
       expect.stringContaining("type=payment_failed")
     );
     expect(redirect).toHaveBeenCalledWith(expect.stringContaining("message="));
   });
 
-  it("calls redirect with all parameters", () => {
-    redirectToError("server_error", "服务器维护", "暂时无法访问");
+  it("calls redirect with all parameters", async () => {
+    await redirectToError("server_error", "服务器维护", "暂时无法访问");
     expect(redirect).toHaveBeenCalledWith(
       expect.stringContaining("type=server_error")
     );
@@ -30,8 +30,8 @@ describe("redirectToError (server)", () => {
     expect(redirect).toHaveBeenCalledWith(expect.stringContaining("title="));
   });
 
-  it("encodes URL parameters correctly", () => {
-    redirectToError("error", "错误：无法连接", "系统错误");
+  it("encodes URL parameters correctly", async () => {
+    await redirectToError("error", "错误：无法连接", "系统错误");
 
     const lastCall =
       vi.mocked(redirect).mock.calls[

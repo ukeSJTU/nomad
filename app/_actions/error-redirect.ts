@@ -11,11 +11,11 @@ import { getErrorUrl } from "@/lib/error-redirect";
  * @param customMessage - Optional custom error message to override default
  * @param customTitle - Optional custom error title to override default
  */
-export function redirectToError(
+export async function redirectToError(
   type: string,
   customMessage?: string,
   customTitle?: string
-): never {
+): Promise<never> {
   const errorUrl = getErrorUrl(type, customMessage, customTitle);
   redirect(errorUrl);
 }
