@@ -22,7 +22,12 @@ export const auth = betterAuth({
     captcha({
       provider: "cloudflare-turnstile",
       secretKey: process.env.TURNSTILE_SECRET_KEY ?? "",
-      endpoints: ["/phone-number/send-otp", "/email-otp/send-verification-otp"],
+      endpoints: [
+        "/phone-number/send-otp",
+        "/email-otp/send-verification-otp",
+        "/phone-number/request-password-reset",
+        "/forget-password/email-otp",
+      ],
     }),
     phoneNumber({
       sendOTP: async ({ phoneNumber, code }) => {
