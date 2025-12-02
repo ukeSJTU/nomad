@@ -98,6 +98,7 @@ export default function BoardingProcessPage() {
               <div className="space-y-6">
                 {group.processes.map(process => (
                   <Image
+                    key={process.id}
                     src={process.src}
                     alt={process.title}
                     width={1200}
