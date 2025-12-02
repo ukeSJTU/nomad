@@ -1,5 +1,6 @@
-import { getUserSecurityStatusAction } from "@/actions/user";
 import { SecurityItem, type SecurityStatus } from "@/components/security";
+import { getUserSecurityStatus } from "@/domains/user";
+import { requireSessionUser } from "@/infra/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,8 @@ const SECURITY_ITEMS = {
  * - Action buttons for each security item
  */
 export default async function SecurityPage() {
-  const securityStatus = await getUserSecurityStatusAction();
+  const { id: userId } = await requireSessionUser("/home/security");
+  const securityStatus = await getUserSecurityStatus(userId);
 
   if (!securityStatus) {
     return null;

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { getUserSecurityStatusAction } from "@/actions/user";
+import { getUserSecurityStatus } from "@/domains/user";
+import { requireSessionUser } from "@/infra/auth/session";
 
 import PasswordPageClient from "./page.client";
 
@@ -19,7 +20,8 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function PasswordPage() {
-  const securityStatus = await getUserSecurityStatusAction();
+  const { id: userId } = await requireSessionUser("/home/security/password");
+  const securityStatus = await getUserSecurityStatus(userId);
 
   if (!securityStatus) {
     return null;

@@ -1,7 +1,8 @@
 import Link from "next/link";
 
-import { getUserSecurityStatusAction } from "@/actions/user";
 import type { SecurityStatus } from "@/components/security";
+import { getUserSecurityStatus } from "@/domains/user";
+import { requireSessionUser } from "@/infra/auth/session";
 
 import EmailPageClient from "./page.client";
 
@@ -18,7 +19,8 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function EmailPage() {
-  const securityStatus = await getUserSecurityStatusAction();
+  const { id: userId } = await requireSessionUser("/home/security/email");
+  const securityStatus = await getUserSecurityStatus(userId);
 
   if (!securityStatus) {
     return null;

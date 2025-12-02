@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { getUserInfoAction } from "@/actions/user";
 import { Separator } from "@/components/ui/separator";
 import { UserInfoForm } from "@/components/user";
+import { getUserInfo } from "@/domains/user";
+import { requireSessionUser } from "@/infra/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,8 @@ export const dynamic = "force-dynamic";
  * - Update functionality via Server Actions
  */
 export default async function UserInfoPage() {
-  const userData = await getUserInfoAction();
+  const user = await requireSessionUser("/home/info");
+  const userData = await getUserInfo(user.id);
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!userData) {

@@ -7,3 +7,4 @@ export {
   shouldEnableAliyunSms,
   shouldEnableResend,
 } from "./otp-channels";
+export { getSessionUser, requireSessionUser } from "./session";
