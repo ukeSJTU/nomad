@@ -62,3 +62,33 @@ export async function getCityByIataCode(iataCode: string) {
     where: (cities, { eq }) => eq(cities.iataCode, iataCode),
   });
 }
+
+/**
+ * Get airport by IATA code with its city information
+ * Used in airport detail page
+ */
+export async function getAirportByIataCode(iataCode: string) {
+  const result = await db.query.airports.findFirst({
+    where: (airports, { eq, and }) =>
+      and(eq(airports.iataCode, iataCode), eq(airports.isDeleted, false)),
+    with: {
+      city: true,
+    },
+  });
+
+  if (!result) {
+    return null;
+  }
+
+  return {
+    id: result.id,
+    iataCode: result.iataCode,
+    name: result.name,
+    city: {
+      id: result.city.id,
+      iataCode: result.city.iataCode,
+      name: result.city.name,
+      isDomestic: result.city.isDomestic,
+    },
+  };
+}
