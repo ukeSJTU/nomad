@@ -2,6 +2,14 @@ import { getPopularAirportsAction } from "@/actions/airport-guide";
 import { ArrowRight, Plane } from "lucide-react";
 import Link from "next/link";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function AirportGuidePage() {
@@ -33,13 +41,17 @@ export default async function AirportGuidePage() {
   return (
     <div className="container mx-auto pb-4 px-4 flex gap-6 min-h-screen bg-background">
       <div className="flex-1">
-        {/* Breadcrumb */}
-        <div className="text-muted-foreground mb-4 text-xs">
-          <Link href="/flights" className="hover:text-primary">
-            机票首页
-          </Link>{" "}
-          &gt; 机场攻略
-        </div>
+        <Breadcrumb className="mb-4">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/flights">机票首页</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>机场攻略</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         <div className="space-y-8">
           <h1 className="text-2xl font-normal text-foreground bg-muted p-3 mb-6 border-l-4 border-primary">
