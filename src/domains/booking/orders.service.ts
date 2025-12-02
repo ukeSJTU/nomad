@@ -8,6 +8,7 @@ import {
   orderPassengers,
   orders,
 } from "@/db/schema";
+import { createScopedLogger } from "@/infra/logging/logger";
 import {
   addCurrency,
   getCurrencyValue,
@@ -29,6 +30,8 @@ import {
   getOrderForRefund,
   refundOrderAndReleaseSeats,
 } from "./orders.repository";
+
+const logger = createScopedLogger({ module: "orders.service" });
 
 /**
  * Order Service Layer
@@ -191,7 +194,7 @@ export async function createOrder(
       },
     };
   } catch (error) {
-    console.error("Error creating order:", error);
+    logger.error({ err: error }, "Error creating order");
     return {
       success: false,
       error: "Failed to create order. Please try again.",
@@ -251,7 +254,7 @@ export async function updateOrderAncillary(
       },
     };
   } catch (error) {
-    console.error("Error updating order ancillary:", error);
+    logger.error({ err: error }, "Error updating order ancillary");
     return {
       success: false,
       error: "Failed to update order. Please try again.",
@@ -310,7 +313,7 @@ export async function deleteOrder(
       success: true,
     };
   } catch (error) {
-    console.error("Error deleting order:", error);
+    logger.error({ err: error }, "Error deleting order");
     return {
       success: false,
       error: "Failed to delete order. Please try again.",
@@ -372,7 +375,7 @@ export async function cancelOrder(
       message: "Order cancelled successfully",
     };
   } catch (error) {
-    console.error("Error cancelling order:", error);
+    logger.error({ err: error }, "Error cancelling order");
 
     return {
       success: false,
@@ -441,7 +444,7 @@ export async function cancelExpiredOrders(): Promise<
       message: `Successfully cancelled ${result.cancelledCount} expired order(s) and released ${result.releasedSeats} seat(s)`,
     };
   } catch (error) {
-    console.error("Error cancelling expired orders:", error);
+    logger.error({ err: error }, "Error cancelling expired orders");
 
     return {
       success: false,
@@ -543,7 +546,7 @@ export async function refundOrder(
       },
     };
   } catch (error) {
-    console.error("Error refunding order:", error);
+    logger.error({ err: error }, "Error refunding order");
 
     return {
       success: false,

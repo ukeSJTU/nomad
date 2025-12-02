@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 
 import ChangePasswordForm from "@/components/security/change-password-form";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {
   title: "Security/ChangePasswordForm",
@@ -25,7 +26,7 @@ export const Default: Story = {
     <div className="w-[500px] p-6">
       <ChangePasswordForm
         onSubmit={async data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
       />
     </div>
@@ -41,7 +42,7 @@ export const Loading: Story = {
     <div className="w-[500px] p-6">
       <ChangePasswordForm
         onSubmit={async data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         isLoading={true}
       />
@@ -69,7 +70,7 @@ export const HappyPath: Story = {
     <div className="w-[500px] p-6">
       <ChangePasswordForm
         onSubmit={async data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
       />
     </div>

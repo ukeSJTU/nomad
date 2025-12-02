@@ -26,11 +26,11 @@ const mockSignInWithOtpAction = vi.fn();
 const mockSendPhoneOtpAction = vi.fn();
 const mockSendEmailOtpAction = vi.fn();
 vi.mock("@/app/_actions/auth", () => ({
-  signInWithPasswordAction: (...args: any[]) =>
+  signInWithPasswordAction: (...args: unknown[]) =>
     mockSignInWithPasswordAction(...args),
-  signInWithOtpAction: (...args: any[]) => mockSignInWithOtpAction(...args),
-  sendPhoneOtpAction: (...args: any[]) => mockSendPhoneOtpAction(...args),
-  sendEmailOtpAction: (...args: any[]) => mockSendEmailOtpAction(...args),
+  signInWithOtpAction: (...args: unknown[]) => mockSignInWithOtpAction(...args),
+  sendPhoneOtpAction: (...args: unknown[]) => mockSendPhoneOtpAction(...args),
+  sendEmailOtpAction: (...args: unknown[]) => mockSendEmailOtpAction(...args),
 }));
 
 // Mock validateAccount utility

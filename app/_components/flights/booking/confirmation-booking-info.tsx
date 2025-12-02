@@ -95,8 +95,8 @@ export function ConfirmationBookingInfo({
                   key={idx}
                   className="flex items-center justify-between text-sm"
                 >
-                  <span>{service!.name}</span>
-                  <span className="font-medium">¥{service!.price}</span>
+                  <span>{service?.name}</span>
+                  <span className="font-medium">¥{service?.price}</span>
                 </div>
               ))}
             </div>

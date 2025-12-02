@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 
 import PassengerForm from "@/components/passengers/forms/passenger-form";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {
   title: "Passengers/PassengerForm",
@@ -25,10 +26,10 @@ export const Default: Story = {
     <div className="w-[700px] p-6">
       <PassengerForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onCancel={() => {
-          console.log("Form cancelled");
+          storyLogger.info("Form cancelled");
         }}
       />
     </div>
@@ -44,10 +45,10 @@ export const WithInitialData: Story = {
     <div className="w-[700px] p-6">
       <PassengerForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onCancel={() => {
-          console.log("Form cancelled");
+          storyLogger.info("Form cancelled");
         }}
         initialData={{
           name: "张三",
@@ -83,10 +84,10 @@ export const HappyPath: Story = {
     <div className="w-[700px] p-6">
       <PassengerForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onCancel={() => {
-          console.log("Form cancelled");
+          storyLogger.info("Form cancelled");
         }}
       />
     </div>

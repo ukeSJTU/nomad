@@ -17,6 +17,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import pino from "pino";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,30 +32,43 @@ const colors = {
   red: "\x1b[31m",
   cyan: "\x1b[36m",
 };
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "yyyy-mm-dd HH:MM:ss",
+      ignore: "pid,hostname",
+    },
+  },
+});
 
 // Logging helper functions
 function log(message, color = colors.reset) {
-  console.log(`${color}${message}${colors.reset}`);
+  logger.info(`${color}${message}${colors.reset}`);
 }
 
 function logStep(step, message) {
-  log(`\n[${step}] ${message}`, colors.blue + colors.bright);
+  logger.info(
+    `${colors.blue}${colors.bright}[${step}] ${message}${colors.reset}`
+  );
 }
 
 function logSuccess(message) {
-  log(`* ${message}`, colors.green);
+  logger.info(`${colors.green}* ${message}${colors.reset}`);
 }
 
 function logWarning(message) {
-  log(`* ${message}`, colors.yellow);
+  logger.warn(`${colors.yellow}* ${message}${colors.reset}`);
 }
 
 function logError(message) {
-  log(`* ${message}`, colors.red);
+  logger.error(`${colors.red}* ${message}${colors.reset}`);
 }
 
 function logInfo(message) {
-  log(`  ${message}`, colors.cyan);
+  logger.info(`${colors.cyan}  ${message}${colors.reset}`);
 }
 
 // Helper function to execute commands
@@ -391,7 +405,7 @@ async function main() {
 
     if (error.stack) {
       log("\n详细错误信息:", colors.red);
-      console.error(error.stack);
+      logger.error(error.stack);
     }
 
     log("\n如需帮助，请:", colors.yellow);

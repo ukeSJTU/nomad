@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { FlightCard } from "@/components/flights/results/flight-card";
 import { FlightCardSkeleton } from "@/components/flights/results/flight-card-skeleton";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {
   title: "Flights/Results/FlightCard",
@@ -262,7 +263,7 @@ export const MultiSeatClass: Story = {
     lowestPrice: 804,
     buttonText: "预订",
     onSeatClassClick: seatClass => {
-      console.log("Selected seat class:", seatClass);
+      storyLogger.info("Selected seat class:", seatClass);
     },
   },
 };
@@ -293,7 +294,7 @@ export const SingleSeatClass: Story = {
     lowestPrice: 1250,
     buttonText: "预订",
     onSeatClassClick: seatClass => {
-      console.log("Selected seat class:", seatClass);
+      storyLogger.info("Selected seat class:", seatClass);
     },
   },
 };

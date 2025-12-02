@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 
 import UpdatePhoneForm from "@/components/security/update-phone-form";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {
   title: "Security/UpdatePhoneForm",
@@ -32,10 +33,10 @@ export const BindMode: Story = {
         currentPhoneNumber={null}
         mode="bind"
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onSendOtp={phoneNumber => {
-          console.log("OTP sent to:", phoneNumber);
+          storyLogger.info("OTP sent to:", phoneNumber);
         }}
       />
     </div>
@@ -81,10 +82,10 @@ export const VerifyMode: Story = {
         currentPhoneNumber="13812345678"
         mode="verify"
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onSendOtp={phoneNumber => {
-          console.log("OTP sent to:", phoneNumber);
+          storyLogger.info("OTP sent to:", phoneNumber);
         }}
       />
     </div>
@@ -126,10 +127,10 @@ export const UpdateMode: Story = {
         currentPhoneNumber="13812345678"
         mode="update"
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onSendOtp={phoneNumber => {
-          console.log("OTP sent to:", phoneNumber);
+          storyLogger.info("OTP sent to:", phoneNumber);
         }}
       />
     </div>

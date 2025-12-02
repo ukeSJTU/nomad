@@ -36,6 +36,7 @@ beforeEach(async () => {
 afterAll(async () => {
   const client =
     // drizzle v0.44 exposes the pg client on session.client when using the connection config
+    // biome-ignore lint/suspicious/noExplicitAny: Accessing internal properties for cleanup
     (db as any).session?.client ?? (db as any).$client;
 
   if (client?.end) {

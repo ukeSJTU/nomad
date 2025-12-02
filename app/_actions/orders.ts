@@ -20,6 +20,7 @@ import {
 } from "@/domains/booking";
 import { getUserBalance } from "@/domains/user";
 import { auth } from "@/infra/auth";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { ActionResult } from "@/types/common";
 import type {
   AncillaryPageOrder,
@@ -60,6 +61,8 @@ const contactInfoSchema = z.object({
   phone: z.string().optional(),
 });
 
+const logger = createScopedLogger({ module: "actions.orders" });
+
 /**
  * Validation schema for create order request
  */
@@ -84,9 +87,17 @@ const createOrderSchema = z.object({
 export async function createOrderAction(
   formData: unknown
 ): Promise<CreateOrderResult> {
+  let session:
+    | {
+        user: {
+          id: string;
+        };
+      }
+    | null
+    | undefined;
   try {
     const headersList = await headers();
-    const session = await auth.api.getSession({
+    session = await auth.api.getSession({
       headers: headersList,
     });
 
@@ -144,7 +155,10 @@ export async function createOrderAction(
       data: createResult.data,
     };
   } catch (error) {
-    console.error("Error creating order:", error);
+    logger.error(
+      { err: error, userId: session?.user.id },
+      "Error creating order action"
+    );
     return {
       success: false as const,
       error: "Failed to create order. Please try again.",
@@ -171,6 +185,13 @@ const updateOrderAncillarySchema = z.object({
 export async function updateOrderAncillaryAction(
   formData: unknown
 ): Promise<UpdateOrderAncillaryResult> {
+  let session:
+    | {
+        user: { id: string };
+      }
+    | null
+    | undefined;
+  let orderId: string | undefined;
   try {
     const result = updateOrderAncillarySchema.safeParse(formData);
     if (!result.success) {
@@ -181,10 +202,11 @@ export async function updateOrderAncillaryAction(
       };
     }
 
-    const { orderId, ancillaryServiceCodes } = result.data;
+    const { orderId: parsedOrderId, ancillaryServiceCodes } = result.data;
+    orderId = parsedOrderId;
 
     const headersList = await headers();
-    const session = await auth.api.getSession({
+    session = await auth.api.getSession({
       headers: headersList,
     });
 
@@ -213,7 +235,10 @@ export async function updateOrderAncillaryAction(
       data: updateResult.data,
     };
   } catch (error) {
-    console.error("Error updating order ancillary:", error);
+    logger.error(
+      { err: error, userId: session?.user.id, orderId },
+      "Error updating order ancillary action"
+    );
     return {
       success: false as const,
       error: "Failed to update order. Please try again.",
@@ -234,10 +259,16 @@ export async function updateOrderAncillaryAction(
 export async function cancelOrderAction(
   orderId: string
 ): Promise<ActionResult<void>> {
+  let session:
+    | {
+        user: { id: string };
+      }
+    | null
+    | undefined;
   try {
     // 1. Check authentication
     const headersList = await headers();
-    const session = await auth.api.getSession({
+    session = await auth.api.getSession({
       headers: headersList,
     });
 
@@ -263,7 +294,10 @@ export async function cancelOrderAction(
       data: undefined,
     };
   } catch (error) {
-    console.error("Error in cancelOrderAction:", error);
+    logger.error(
+      { err: error, userId: session?.user.id, orderId },
+      "Error in cancelOrderAction"
+    );
     return {
       success: false as const,
       error: "Failed to cancel order. Please try again.",
@@ -290,10 +324,16 @@ export async function cancelOrderAction(
 export async function refundOrderAction(
   orderId: string
 ): Promise<ActionResult<void>> {
+  let session:
+    | {
+        user: { id: string };
+      }
+    | null
+    | undefined;
   try {
     // 1. Check authentication
     const headersList = await headers();
-    const session = await auth.api.getSession({
+    session = await auth.api.getSession({
       headers: headersList,
     });
 
@@ -319,7 +359,10 @@ export async function refundOrderAction(
       data: undefined,
     };
   } catch (error) {
-    console.error("Error in refundOrderAction:", error);
+    logger.error(
+      { err: error, userId: session?.user.id, orderId },
+      "Error in refundOrderAction"
+    );
     return {
       success: false as const,
       error: "Failed to refund order. Please try again.",
@@ -349,6 +392,13 @@ const deleteOrderSchema = z.object({
 export async function deleteOrderAction(
   formData: unknown
 ): Promise<DeleteOrderResult> {
+  let session:
+    | {
+        user: { id: string };
+      }
+    | null
+    | undefined;
+  let orderId: string | undefined;
   try {
     const result = deleteOrderSchema.safeParse(formData);
 
@@ -360,10 +410,10 @@ export async function deleteOrderAction(
       };
     }
 
-    const { orderId } = result.data;
+    orderId = result.data.orderId;
 
     const headersList = await headers();
-    const session = await auth.api.getSession({ headers: headersList });
+    session = await auth.api.getSession({ headers: headersList });
 
     if (!session?.user?.id) {
       return {
@@ -387,7 +437,10 @@ export async function deleteOrderAction(
       data: undefined,
     };
   } catch (error) {
-    console.error("Error deleting order:", error);
+    logger.error(
+      { err: error, userId: session?.user.id, orderId },
+      "Error deleting order action"
+    );
     return {
       success: false as const,
       error: "Failed to delete order. Please try again.",

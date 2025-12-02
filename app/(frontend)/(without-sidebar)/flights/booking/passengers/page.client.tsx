@@ -97,7 +97,7 @@ export function BookingPassengersPageClient({
 
       // Create order
       const result = await createOrderAction({
-        outboundSeatClassId: seatClassId || outboundSeatClassId!,
+        outboundSeatClassId: seatClassId ?? outboundSeatClassId ?? "",
         inboundSeatClassId,
         passengers,
         contactInfo,

@@ -3,7 +3,10 @@ import "server-only";
 import { Resend } from "resend";
 
 import { OrderConfirmationEmail, OtpEmailTemplate } from "@/components/emails";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { OrderConfirmationEmailData } from "@/types/dto";
+
+const logger = createScopedLogger({ module: "resend-client" });
 
 /**
  * Resend Email Client for sending verification emails
@@ -17,7 +20,7 @@ export class ResendEmailClient {
     const apiKey = process.env.RESEND_API_KEY;
 
     if (!apiKey) {
-      console.warn(
+      logger.warn(
         "RESEND_API_KEY is not set. Email sending will be simulated in console."
       );
       // Create a dummy client - we'll handle the missing key in sendEmail
@@ -52,12 +55,9 @@ export class ResendEmailClient {
       const fromEmail =
         process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
-      console.log(
-        `Resend Email config: fromEmail=${fromEmail}, toEmail=${emailAddr}`
-      );
-
-      console.log(
-        `Sending verification email to ${emailAddr} with code ${code}`
+      logger.debug(
+        { fromEmail, email: emailAddr },
+        "Sending verification email"
       );
 
       if (!process.env.RESEND_API_KEY) {
@@ -73,20 +73,17 @@ export class ResendEmailClient {
       });
 
       if (error) {
-        console.error("Email sending failed:", error);
+        logger.error({ err: error }, "Email sending failed");
         return false;
       }
 
-      console.log(
-        `Email sent successfully to ${emailAddr}, Email ID: ${data?.id}`
+      logger.info(
+        { email: emailAddr, emailId: data?.id },
+        "Email sent successfully"
       );
       return true;
     } catch (error: unknown) {
-      console.error("Error sending email:", error);
-
-      if (error instanceof Error && error.message) {
-        console.error("Error message:", error.message);
-      }
+      logger.error({ err: error }, "Error sending verification email");
 
       return false;
     }
@@ -104,8 +101,12 @@ export class ResendEmailClient {
       const fromEmail =
         process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
-      console.log(
-        `Sending order confirmation email to ${orderData.user.email} for order ${orderData.orderNumber}`
+      logger.info(
+        {
+          email: orderData.user.email,
+          orderNumber: orderData.orderNumber,
+        },
+        "Sending order confirmation email"
       );
 
       if (!process.env.RESEND_API_KEY) {
@@ -134,20 +135,27 @@ export class ResendEmailClient {
       });
 
       if (error) {
-        console.error("Order confirmation email sending failed:", error);
+        logger.error(
+          { err: error, orderNumber: orderData.orderNumber },
+          "Order confirmation email sending failed"
+        );
         return false;
       }
 
-      console.log(
-        `Order confirmation email sent successfully to ${orderData.user.email}, Email ID: ${data?.id}`
+      logger.info(
+        {
+          email: orderData.user.email,
+          orderNumber: orderData.orderNumber,
+          emailId: data?.id,
+        },
+        "Order confirmation email sent successfully"
       );
       return true;
     } catch (error: unknown) {
-      console.error("Error sending order confirmation email:", error);
-
-      if (error instanceof Error && error.message) {
-        console.error("Error message:", error.message);
-      }
+      logger.error(
+        { err: error, orderNumber: orderData.orderNumber },
+        "Error sending order confirmation email"
+      );
 
       return false;
     }

@@ -111,8 +111,8 @@ export function PaymentOrderSummary({ order }: PaymentOrderSummaryProps) {
                     key={idx}
                     className="text-sm flex items-center justify-between"
                   >
-                    <span>{service!.name}</span>
-                    <span>¥{service!.price}</span>
+                    <span>{service?.name}</span>
+                    <span>¥{service?.price}</span>
                   </div>
                 ))}
               </div>

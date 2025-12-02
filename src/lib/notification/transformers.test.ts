@@ -225,6 +225,7 @@ describe("email-transformers", () => {
         ...mockOrderDetail,
         outboundFlight: {
           ...mockOrderDetail.outboundFlight,
+          // biome-ignore lint/suspicious/noExplicitAny: Testing with arbitrary values
           seatClassType: "premium_economy" as any,
         },
       };
@@ -243,6 +244,7 @@ describe("email-transformers", () => {
         passengers: [
           {
             name: "王五",
+            // biome-ignore lint/suspicious/noExplicitAny: Testing with arbitrary values
             idType: "drivers_license" as any,
             idNumber: "DL123456",
           },

@@ -1,7 +1,29 @@
+import "server-only";
+
 import pino from "pino";
 import pretty from "pino-pretty";
 
-import { isDevelopment, isProduction, isTest } from "@/config/env";
+import { isDevelopment, isTest } from "@/config/env";
+
+const bootstrapLogger = pino({
+  level: "warn",
+  base: {
+    service: "nomad",
+    environment: process.env.NODE_ENV ?? "development",
+  },
+  messageKey: "message",
+});
+
+const REDACT_PATHS = [
+  "req.headers.authorization",
+  "req.headers.cookie",
+  "headers.authorization",
+  "headers.cookie",
+  "password",
+  "token",
+  "otp",
+  "verificationCode",
+];
 
 // Environment detection flags for conditional logger configuration
 const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
@@ -33,7 +55,10 @@ const getLogLevel = (): pino.LevelWithSilent => {
     if (VALID_LOG_LEVELS.includes(envLevel)) {
       return envLevel;
     }
-    console.warn(`Invalid LOG_LEVEL: ${process.env.LOG_LEVEL}, using default`);
+    bootstrapLogger.warn(
+      { envLevel: process.env.LOG_LEVEL },
+      "Invalid LOG_LEVEL provided, falling back to default"
+    );
   }
   return isDevelopment() ? "debug" : "info";
 };
@@ -41,17 +66,24 @@ const getLogLevel = (): pino.LevelWithSilent => {
 // Configuration object for the pino logger with environment-specific settings
 const pinoOptions: pino.LoggerOptions = {
   level: getLogLevel(),
+  base: {
+    service: "nomad",
+    environment: process.env.NODE_ENV ?? "development",
+  },
+  messageKey: "message",
+  redact: {
+    paths: REDACT_PATHS,
+    censor: "[REDACTED]",
+  },
 
   // Production environment configuration
   // Optimized for structured logging in production systems
-  ...(isProduction() && {
-    formatters: {
-      // Use simple level labels instead of numeric values
-      level: label => ({ level: label }),
-    },
-    // Use ISO timestamp format for better log aggregation
-    timestamp: pino.stdTimeFunctions.isoTime,
-  }),
+  formatters: {
+    // Use simple level labels instead of numeric values
+    level: label => ({ level: label }),
+  },
+  // Use ISO timestamp format for better log aggregation
+  timestamp: pino.stdTimeFunctions.isoTime,
 
   // Development environment configuration
   // Enhanced with request/response/error serializers for debugging
@@ -73,6 +105,7 @@ const createLoggerStream = () => {
   if (isDevelopment() && !isTest()) {
     // Development: Use pino-pretty stream for enhanced readability
     return pretty({
+      messageKey: "message",
       colorize: true, // Add colors to log levels
       ignore: "pid,hostname", // Hide process ID and hostname for cleaner output
       translateTime: "yyyy-mm-dd HH:MM:ss", // Human-readable timestamp format
@@ -106,5 +139,8 @@ const createLoggerStream = () => {
  * ```
  */
 const logger = pino(pinoOptions, createLoggerStream());
+
+export const createScopedLogger = (bindings?: pino.Bindings) =>
+  logger.child(bindings ?? {});
 
 export default logger;

@@ -3,6 +3,18 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 // Create a mock function that we can control
 const mockSendSmsVerifyCodeWithOptions = vi.fn();
 
+const { mockLogger } = vi.hoisted(() => {
+  const logger = {
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(),
+  };
+  logger.child.mockReturnValue(logger);
+  return { mockLogger: logger };
+});
+
 // Mock the Aliyun SDK modules
 vi.mock("@alicloud/credentials", () => ({
   default: vi.fn(),
@@ -23,6 +35,11 @@ vi.mock("@alicloud/tea-util", () => ({
   RuntimeOptions: vi.fn().mockImplementation(params => params),
 }));
 
+vi.mock("@/infra/logging/logger", () => ({
+  createScopedLogger: () => mockLogger,
+  default: mockLogger,
+}));
+
 // Import after mocking
 import { sendSmsOtp } from "./aliyun-sms.client";
 
@@ -30,14 +47,15 @@ describe("SMS Service", () => {
   beforeEach(() => {
     // Clear all mocks before each test
     vi.clearAllMocks();
+    mockLogger.info.mockClear();
+    mockLogger.error.mockClear();
+    mockLogger.warn.mockClear();
+    mockLogger.debug.mockClear();
+    mockLogger.child.mockClear();
 
     // Reset environment variables
     delete process.env.ALIBABA_CLOUD_SMS_SIGN_NAME;
     delete process.env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE;
-
-    // Mock console methods to avoid noise in test output
-    vi.spyOn(console, "log").mockImplementation(() => {});
-    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   describe("sendSmsOtp", () => {
@@ -155,9 +173,11 @@ describe("SMS Service", () => {
       const result = await sendSmsOtp("13800138000", "123456");
 
       expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith(
-        "Diagnostic URL:",
-        "https://error.aliyun.com/diagnostic"
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.objectContaining({
+          diagnosticUrl: "https://error.aliyun.com/diagnostic",
+        }),
+        "Error sending SMS verification code"
       );
     });
   });

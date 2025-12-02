@@ -8,10 +8,13 @@ import {
   signInWithOtpAction,
   signInWithPasswordAction,
 } from "@/app/_actions/auth";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import { validateAccount } from "@/lib/validation";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type { OtpLoginData, PasswordLoginData } from "@/types/validations";
+
+const logger = createClientLogger({ module: "use-signin-flow" });
 
 export interface UseSignInFlowReturn {
   isLoading: boolean;
@@ -59,7 +62,7 @@ export function useSignInFlow(): UseSignInFlowReturn {
       router.push("/");
       return { success: true, data: undefined };
     } catch (error) {
-      console.error("登录异常:", error);
+      logger.error({ err: error }, "登录异常");
       const errorMessage = "登录失败，请稍后重试";
       toast.error(errorMessage);
       return {
@@ -93,7 +96,7 @@ export function useSignInFlow(): UseSignInFlowReturn {
       router.push("/");
       return { success: true, data: undefined };
     } catch (error) {
-      console.error("验证码登录异常:", error);
+      logger.error({ err: error }, "验证码登录异常");
       const errorMessage = "登录失败，请稍后重试";
       toast.error(errorMessage);
       return {
@@ -129,14 +132,14 @@ export function useSignInFlow(): UseSignInFlowReturn {
         : await sendEmailOtpAction(account, "sign-in", fetchOptions);
 
       if (!result.success) {
-        console.error("发送验证码失败:", result.error);
+        logger.error({ error: result.error }, "发送验证码失败");
         toast.error("发送验证码失败，请重试");
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error("发送验证码异常:", error);
+      logger.error({ err: error }, "发送验证码异常");
       toast.error("发送验证码失败，请重试");
       return false;
     } finally {

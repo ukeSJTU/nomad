@@ -29,6 +29,7 @@ const Context = createContext<{
 } | null>(null);
 
 function useChatContext() {
+  // biome-ignore lint/style/noNonNullAssertion: Context is provided by AISearchTrigger
   return use(Context)!.chat;
 }
 

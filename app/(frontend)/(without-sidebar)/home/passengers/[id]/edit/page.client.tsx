@@ -6,7 +6,10 @@ import { toast } from "sonner";
 
 import { updatePassengerAction } from "@/app/_actions";
 import PassengerForm from "@/components/passengers/forms/passenger-form";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import type { PassengerDTO } from "@/types/dto";
+
+const logger = createClientLogger({ module: "passengers-edit-page" });
 
 interface EditPassengerClientProps {
   passenger: PassengerDTO;
@@ -29,7 +32,10 @@ export function EditPassengerClient({ passenger }: EditPassengerClientProps) {
         toast.error(result.error || "更新失败");
       }
     } catch (error) {
-      console.error("Failed to update passenger:", error);
+      logger.error(
+        { err: error, passengerId: passenger.id },
+        "Failed to update passenger"
+      );
       toast.error("更新失败");
     } finally {
       setIsLoading(false);

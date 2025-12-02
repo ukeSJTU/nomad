@@ -2,6 +2,7 @@ import { execSync } from "node:child_process";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import pino from "pino";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
@@ -14,6 +15,17 @@ const IGNORED_DIRECTORIES = [
   path.join(appDir, "api"),
 ];
 const TARGET_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx"]);
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "yyyy-mm-dd HH:MM:ss",
+      ignore: "pid,hostname",
+    },
+  },
+});
 
 const args = new Set(process.argv.slice(2));
 const useStagedFiles = args.has("--staged");
@@ -125,19 +137,19 @@ function main() {
   }
 
   if (errors.length > 0) {
-    console.error(
+    logger.error(
       "App boundary check failed. Use server actions/API clients instead of importing domains/DB modules directly."
     );
     errors.forEach(error => {
       const relative = path.relative(repoRoot, error.file);
-      console.error(`- ${relative}:${error.line} → ${error.specifier}`);
+      logger.error(`- ${relative}:${error.line} → ${error.specifier}`);
     });
     process.exitCode = 1;
     return;
   }
 
   if (!useStagedFiles) {
-    console.log("✅ App boundary check passed.");
+    logger.info("✅ App boundary check passed.");
   }
 }
 

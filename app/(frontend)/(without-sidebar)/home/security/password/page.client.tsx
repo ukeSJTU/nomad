@@ -11,7 +11,10 @@ import {
 import PasswordSetupForm from "@/components/auth/forms/password-setup";
 import ChangePasswordForm from "@/components/security/change-password-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import { type PasswordSetupData } from "@/types/validations";
+
+const logger = createClientLogger({ module: "security-password-page" });
 
 /**
  * Props for the PasswordPageClient component
@@ -65,7 +68,7 @@ export default function PasswordPageClient({
         router.push("/home/security");
       }, 1000);
     } catch (error) {
-      console.error("Change password error:", error);
+      logger.error({ err: error }, "Change password error");
       toast.error("网络错误，请稍后重试");
     } finally {
       setIsLoading(false);
@@ -93,7 +96,7 @@ export default function PasswordPageClient({
         router.push("/home/security");
       }, 1000);
     } catch (error) {
-      console.error("Set password error:", error);
+      logger.error({ err: error }, "Set password error");
       toast.error("网络错误，请稍后重试");
     } finally {
       setIsLoading(false);

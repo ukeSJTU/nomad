@@ -9,6 +9,7 @@ import { Mermaid } from "@/components/fumadocs/mermaid";
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
+    // biome-ignore lint/suspicious/noExplicitAny: Prop compatibility workaround
     img: props => <ImageZoom {...(props as any)} />,
     Mermaid,
     ...Twoslash,

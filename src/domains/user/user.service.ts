@@ -1,3 +1,4 @@
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { ServiceResult } from "@/types/result";
 import type { UserInfoUpdateData } from "@/types/validations";
 import {
@@ -6,6 +7,8 @@ import {
   updateUserPhoneNumber as updateUserPhoneNumberInRepo,
   updateUserProfile,
 } from "./user.repository";
+
+const logger = createScopedLogger({ module: "user.service" });
 
 /**
  * Service layer for user-related business logic
@@ -124,7 +127,7 @@ export async function rechargeBalance(
       },
     };
   } catch (error) {
-    console.error("Recharge balance error:", error);
+    logger.error({ err: error }, "Recharge balance error");
 
     return {
       success: false,
