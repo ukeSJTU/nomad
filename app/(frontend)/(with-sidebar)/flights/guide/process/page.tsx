@@ -5,10 +5,26 @@ export const dynamic = "force-dynamic";
 
 export default function BoardingProcessPage() {
   const processes = [
-    { id: 1, title: "国内出发流程", src: "/flights-process/process-1.png" },
-    { id: 2, title: "国际出发流程", src: "/flights-process/process-2.png" },
-    { id: 3, title: "国内到达流程", src: "/flights-process/process-3.png" },
-    { id: 4, title: "国际到达流程", src: "/flights-process/process-4.png" },
+    {
+      id: 1,
+      title: "国内出发流程",
+      src: "/flights-process/domestic-departure.png",
+    },
+    {
+      id: 2,
+      title: "国际出发流程",
+      src: "/flights-process/international-departure.png",
+    },
+    {
+      id: 3,
+      title: "国内到达流程",
+      src: "/flights-process/domestic-arrival.png",
+    },
+    {
+      id: 4,
+      title: "国际到达流程",
+      src: "/flights-process/international-arrival.png",
+    },
   ];
 
   return (
