@@ -101,6 +101,28 @@ export const passwordSetupSchema = z
     path: ["confirmPassword"],
   });
 
+// Forgot password schemas
+export const forgotPasswordAccountSchema = z.object({
+  account: accountSchema,
+});
+
+export const forgotPasswordVerifySchema = z.object({
+  account: accountSchema,
+  otp: otpCodeSchema,
+});
+
+export const forgotPasswordResetSchema = z
+  .object({
+    account: accountSchema,
+    otp: otpCodeSchema,
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "两次输入的密码不一致",
+    path: ["confirmPassword"],
+  });
+
 // Security/Update schemas (without agreedToTerms)
 export const updatePhoneSchema = z.object({
   phoneNumber: phoneNumberSchema,
@@ -162,6 +184,13 @@ export type PasswordSetupData = z.infer<typeof passwordSetupSchema>;
 export type UpdatePhoneData = z.infer<typeof updatePhoneSchema>;
 export type UpdateEmailData = z.infer<typeof updateEmailSchema>;
 export type ChangePasswordData = z.infer<typeof changePasswordSchema>;
+export type ForgotPasswordAccountData = z.infer<
+  typeof forgotPasswordAccountSchema
+>;
+export type ForgotPasswordVerifyData = z.infer<
+  typeof forgotPasswordVerifySchema
+>;
+export type ForgotPasswordResetData = z.infer<typeof forgotPasswordResetSchema>;
 
 // Legacy types for backward compatibility (deprecated)
 export type PhoneLoginData = z.infer<typeof phoneLoginSchema>;
