@@ -7,6 +7,7 @@ import { useEffect, useState, useTransition } from "react";
 import { getQuickDatePrices } from "@/app/_actions/quick-date-prices";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import {
   dateToLocalDateString,
   formatCurrency,
@@ -14,6 +15,8 @@ import {
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { type QuickDatePrice } from "@/types/dto";
+
+const logger = createClientLogger({ module: "quick-date-selector" });
 
 interface QuickDateSelectorProps {
   from: string; // Departure city IATA code
@@ -53,7 +56,10 @@ export function QuickDateSelector({
         });
         setPrices(result);
       } catch (error) {
-        console.error("Failed to fetch quick date prices:", error);
+        logger.error(
+          { err: error, from, to, departureDate: currentCenterDate },
+          "Failed to fetch quick date prices"
+        );
         setPrices([]);
       } finally {
         setIsLoading(false);
@@ -185,7 +191,7 @@ export function QuickDateSelector({
                 <div className="text-sm font-medium mt-0.5">
                   {isAvailable ? (
                     <span className="font-bold text-orange-500">
-                      {formatCurrency(Math.round(price.lowestPrice!))}
+                      {formatCurrency(Math.round(price.lowestPrice ?? 0))}
                     </span>
                   ) : (
                     <span className="text-muted-foreground">无</span>

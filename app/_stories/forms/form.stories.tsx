@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 // Simple form schema for demonstration
 const formSchema = z.object({
@@ -205,7 +206,7 @@ export const WithValidationErrors: Story = {
 export const WithSubmitHandler: Story = {
   args: {
     onSubmit: (data: FormValues) => {
-      console.log("Form submitted:", data);
+      storyLogger.info("Form submitted:", data);
       alert(`表单已提交！\n用户名: ${data.username}\n邮箱: ${data.email}`);
     },
   },

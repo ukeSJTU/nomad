@@ -64,21 +64,23 @@ describe("logger", () => {
     });
 
     it("should fall back to default when LOG_LEVEL is invalid", async () => {
-      const consoleWarnSpy = vi
-        .spyOn(console, "warn")
-        .mockImplementation(() => {});
-
       vi.stubEnv("NODE_ENV", "development");
       vi.stubEnv("LOG_LEVEL", "invalid-level");
+
+      const stdoutSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
 
       const { default: logger } = await import("./logger");
 
       expect(logger.level).toBe("debug"); // Falls back to development default
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "Invalid LOG_LEVEL: invalid-level, using default"
-      );
+      expect(
+        stdoutSpy.mock.calls.some(call =>
+          String(call[0]).includes("Invalid LOG_LEVEL provided")
+        )
+      ).toBe(true);
 
-      consoleWarnSpy.mockRestore();
+      stdoutSpy.mockRestore();
     });
 
     it("should prioritize test environment over LOG_LEVEL", async () => {

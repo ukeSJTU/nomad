@@ -1,7 +1,10 @@
 import { getOrderDetailById } from "@/domains/booking";
+import { createScopedLogger } from "@/infra/logging/logger";
 import { sendOrderConfirmationEmail } from "@/infra/notifications";
 import { transformOrderDetailToEmailData } from "@/lib/notification";
 import type { ServiceResult } from "@/types/result";
+
+const logger = createScopedLogger({ module: "notification.order-email" });
 
 export async function resendOrderConfirmation(params: {
   orderId: string;
@@ -51,7 +54,7 @@ export async function resendOrderConfirmation(params: {
       success: true,
     };
   } catch (error) {
-    console.error("[resendOrderConfirmation] Error:", error);
+    logger.error({ err: error }, "[resendOrderConfirmation] Error");
 
     return {
       success: false,

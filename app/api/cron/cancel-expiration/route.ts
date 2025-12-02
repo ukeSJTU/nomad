@@ -1,5 +1,8 @@
 import { cancelExpiredOrders } from "@/domains/booking";
 import { createUnauthorizedResponse, verifyCronSecret } from "@/infra/http";
+import { createScopedLogger } from "@/infra/logging/logger";
+
+const logger = createScopedLogger({ module: "api.cancel-expiration" });
 
 /**
  * Cron Job: Cancel Expired Orders
@@ -51,7 +54,10 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     // Unexpected error
-    console.error("Unexpected error in cancel-expired-orders cron:", error);
+    logger.error(
+      { err: error },
+      "Unexpected error in cancel-expired-orders cron"
+    );
 
     return Response.json(
       {

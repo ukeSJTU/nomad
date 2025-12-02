@@ -21,6 +21,9 @@
  */
 
 import "server-only";
+import { createScopedLogger } from "@/infra/logging/logger";
+
+const logger = createScopedLogger({ module: "cron-auth" });
 
 /**
  * Verify the cron secret from the request Authorization header
@@ -33,13 +36,13 @@ export function verifyCronSecret(request: Request): boolean {
   const authHeader = request.headers.get("authorization");
 
   if (!authHeader) {
-    console.warn("Cron auth failed: Missing Authorization header");
+    logger.warn("Cron auth failed: Missing Authorization header");
     return false;
   }
 
   // Check if it's a Bearer token
   if (!authHeader.startsWith("Bearer ")) {
-    console.warn("Cron auth failed: Invalid Authorization header format");
+    logger.warn("Cron auth failed: Invalid Authorization header format");
     return false;
   }
 
@@ -50,7 +53,7 @@ export function verifyCronSecret(request: Request): boolean {
   const expectedSecret = process.env.CRON_SECRET;
 
   if (!expectedSecret) {
-    console.error(
+    logger.error(
       "Cron auth failed: CRON_SECRET environment variable is not set"
     );
     return false;

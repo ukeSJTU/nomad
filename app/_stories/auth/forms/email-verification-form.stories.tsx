@@ -3,6 +3,7 @@ import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 
 import EmailVerificationForm from "@/components/auth/forms/email-verification";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {
   title: "Auth/Forms/EmailVerificationForm",
@@ -25,7 +26,7 @@ export const Default: Story = {
     <div className="w-[400px] p-6">
       <EmailVerificationForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
       />
     </div>
@@ -44,10 +45,10 @@ export const WithCountdown: Story = {
       <div className="w-[400px] p-6">
         <EmailVerificationForm
           onSubmit={data => {
-            console.log("Form submitted:", data);
+            storyLogger.info("Form submitted:", data);
           }}
           onSendOtp={() => {
-            console.log("OTP sent");
+            storyLogger.info("OTP sent");
             setCountdown(60);
           }}
           countdown={countdown}
@@ -77,10 +78,10 @@ export const HappyPath: Story = {
     <div className="w-[400px] p-6">
       <EmailVerificationForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onSendOtp={() => {
-          console.log("OTP sent");
+          storyLogger.info("OTP sent");
         }}
       />
     </div>

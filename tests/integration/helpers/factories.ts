@@ -311,7 +311,7 @@ export async function createOrderWithPassengers(params: {
   orderNumber?: string;
   contactPhone?: string | null;
   contactEmail?: string | null;
-  ancillaryDetails?: any;
+  ancillaryDetails?: unknown;
   ancillaryAmount?: string;
   pricePerTicket?: string;
   baseAmount?: string;
@@ -501,7 +501,7 @@ export async function createOrderScenario(
     baseAmount?: string;
     ancillaryAmount?: string;
     totalAmount?: string;
-    ancillaryDetails?: any;
+    ancillaryDetails?: unknown;
     paymentDeadline?: Date;
     contactPhone?: string;
     contactEmail?: string;

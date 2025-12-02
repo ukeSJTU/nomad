@@ -5,7 +5,9 @@ import { z } from "zod";
 
 import { type ProcessPaymentData, processPayment } from "@/domains/payments";
 import { auth } from "@/infra/auth";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { ActionResult } from "@/types/common";
+import type { ServiceResult } from "@/types/result";
 
 /**
  * Process payment action result data
@@ -22,6 +24,8 @@ const processPaymentSchema = z.object({
   paymentMethod: z.enum(["balance", "wechat", "alipay"]),
 });
 
+const logger = createScopedLogger({ module: "actions.payments" });
+
 /**
  * Server action to process payment
  *
@@ -34,6 +38,8 @@ const processPaymentSchema = z.object({
 export async function processPaymentAction(
   formData: unknown
 ): Promise<ProcessPaymentResult> {
+  let paymentResult: ServiceResult<ProcessPaymentData> | undefined;
+  let parsedOrderId: string | undefined;
   try {
     const result = processPaymentSchema.safeParse(formData);
     if (!result.success) {
@@ -45,6 +51,7 @@ export async function processPaymentAction(
     }
 
     const { orderId, paymentMethod } = result.data;
+    parsedOrderId = orderId;
 
     const headersList = await headers();
     const session = await auth.api.getSession({
@@ -58,27 +65,42 @@ export async function processPaymentAction(
       };
     }
 
-    const paymentResult = await processPayment(session.user.id, {
+    paymentResult = await processPayment(session.user.id, {
       orderId,
       paymentMethod,
       userEmail: session.user.email,
       userName: session.user.name,
     });
 
-    if (!paymentResult.success || !paymentResult.data) {
+    if (!paymentResult?.success || !paymentResult.data) {
       return {
         success: false as const,
         error:
-          paymentResult.error || "Failed to process payment. Please try again.",
+          paymentResult?.error ||
+          paymentResult?.message ||
+          "Failed to process payment. Please try again.",
+      };
+    }
+
+    if (paymentResult?.success && paymentResult.data) {
+      return {
+        success: true as const,
+        data: paymentResult.data,
       };
     }
 
     return {
-      success: true as const,
-      data: paymentResult.data,
+      success: false as const,
+      error: "Failed to process payment. Please try again.",
     };
   } catch (error) {
-    console.error("Error processing payment:", error);
+    logger.error(
+      {
+        err: error,
+        orderId: paymentResult?.data?.orderId ?? parsedOrderId,
+      },
+      "Error processing payment action"
+    );
 
     // Return user-friendly error message
     if (error instanceof Error) {

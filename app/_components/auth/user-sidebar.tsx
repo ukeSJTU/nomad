@@ -111,7 +111,7 @@ export default function UserSidebar() {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="ml-2 space-y-1 mt-1">
-                {item.children!.map(child => renderMenuItem(child))}
+                {item.children?.map(child => renderMenuItem(child))}
               </div>
             </CollapsibleContent>
           </div>

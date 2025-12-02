@@ -42,7 +42,7 @@ vi.mock("@/hooks/use-client-session", () => ({
   useClientSession: () => mockUseSession(),
 }));
 vi.mock("@/app/_actions/auth", () => ({
-  signOutAction: (...args: any[]) => mockSignOutAction(...args),
+  signOutAction: (...args: unknown[]) => mockSignOutAction(...args),
 }));
 
 describe("UserMenu Component", () => {

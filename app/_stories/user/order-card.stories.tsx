@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import OrderCard from "@/components/user/order-card";
+import storyLogger from "@/infra/logging/storybook-logger";
 import type { OrderListItem } from "@/types/dto";
 
 const meta = {
@@ -46,13 +47,13 @@ export const OneWayPendingPayment: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
     onActionClick: () => {
-      console.log("Go to payment clicked");
+      storyLogger.info("Go to payment clicked");
     },
   },
 };
@@ -87,13 +88,13 @@ export const OneWayConfirmed: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
     onActionClick: () => {
-      console.log("Resend confirmation clicked");
+      storyLogger.info("Resend confirmation clicked");
     },
   },
 };
@@ -128,10 +129,10 @@ export const OneWayCancelled: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
   },
 };
@@ -166,10 +167,10 @@ export const OneWayRefunded: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
   },
 };
@@ -220,13 +221,13 @@ export const RoundTripPendingPayment: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
     onActionClick: () => {
-      console.log("Go to payment clicked");
+      storyLogger.info("Go to payment clicked");
     },
   },
 };
@@ -275,13 +276,13 @@ export const RoundTripConfirmed: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
     onActionClick: () => {
-      console.log("Resend confirmation clicked");
+      storyLogger.info("Resend confirmation clicked");
     },
   },
 };
@@ -330,10 +331,10 @@ export const RoundTripCancelled: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
   },
 };
@@ -382,10 +383,10 @@ export const RoundTripRefunded: Story = {
     } as OrderListItem,
     isChecked: false,
     onCheckChange: () => {
-      console.log("Check changed");
+      storyLogger.info("Check changed");
     },
     onDelete: () => {
-      console.log("Delete clicked");
+      storyLogger.info("Delete clicked");
     },
   },
 };

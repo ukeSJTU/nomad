@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 
 import { type SessionUser, getSessionUser } from "@/actions/session";
+import { createClientLogger } from "@/infra/logging/client-logger";
+
+const logger = createClientLogger({ module: "use-client-session" });
 
 interface UseClientSessionResult {
   data: SessionUser | null;
@@ -29,7 +32,7 @@ export function useClientSession(): UseClientSessionResult {
           setData(session);
         }
       } catch (err) {
-        console.error("Failed to load session", err);
+        logger.error({ err }, "Failed to load session");
         if (!cancelled) {
           setError("加载会话失败");
         }

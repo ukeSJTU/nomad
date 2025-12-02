@@ -1,3 +1,4 @@
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { PassengerDTO } from "@/types/dto";
 import type { ServiceResult } from "@/types/result";
 import type {
@@ -43,6 +44,8 @@ function isValidUUID(id: string): boolean {
  * Passenger input type for create/update operations
  */
 export type PassengerInput = CreatePassengerData;
+
+const logger = createScopedLogger({ module: "passenger.service" });
 
 function toPassengerDto(row: PassengerRow): PassengerDTO {
   return {
@@ -113,7 +116,7 @@ export async function createPassenger(
       message: "Passenger created successfully",
     };
   } catch (error) {
-    console.error("Create passenger error:", error);
+    logger.error({ err: error }, "Create passenger error");
     return {
       success: false,
       error:
@@ -201,7 +204,7 @@ export async function updatePassenger(
       message: "Passenger updated successfully",
     };
   } catch (error) {
-    console.error("Update passenger error:", error);
+    logger.error({ err: error }, "Update passenger error");
     return {
       success: false,
       error:
@@ -252,7 +255,7 @@ export async function getPassenger(
       data: toPassengerDto(passenger),
     };
   } catch (error) {
-    console.error("Get passenger error:", error);
+    logger.error({ err: error }, "Get passenger error");
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to get passenger",
@@ -303,7 +306,7 @@ export async function deletePassenger(
       message: "Passenger deleted successfully",
     };
   } catch (error) {
-    console.error("Delete passenger error:", error);
+    logger.error({ err: error }, "Delete passenger error");
     return {
       success: false,
       error:
@@ -347,7 +350,7 @@ export async function batchDeletePassengers(
       message: `Successfully deleted ${deletedCount} passenger(s)`,
     };
   } catch (error) {
-    console.error("Batch delete passengers error:", error);
+    logger.error({ err: error }, "Batch delete passengers error");
     return {
       success: false,
       error:

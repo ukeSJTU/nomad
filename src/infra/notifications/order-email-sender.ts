@@ -8,8 +8,11 @@
 import "server-only";
 
 import { sendOrderConfirmationEmail as sendEmailViaClient } from "@/infra/communications";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { OrderConfirmationEmailData } from "@/types/dto";
 import type { ServiceResult } from "@/types/result";
+
+const logger = createScopedLogger({ module: "order-email-sender" });
 
 /**
  * Send order confirmation email
@@ -24,9 +27,9 @@ import type { ServiceResult } from "@/types/result";
  * ```typescript
  * const result = await sendOrderConfirmationEmail(emailData);
  * if (result.success) {
- *   console.log("Email sent successfully");
+ *   logger.info("Email sent successfully");
  * } else {
- *   console.error("Failed to send email:", result.error);
+ *   logger.error({ err: result.error }, "Failed to send email");
  * }
  * ```
  */
@@ -34,16 +37,21 @@ export async function sendOrderConfirmationEmail(
   emailData: OrderConfirmationEmailData
 ): Promise<ServiceResult<void>> {
   try {
-    console.log(
-      `[Email Service] Sending order confirmation email for order ${emailData.orderNumber} to ${emailData.user.email}`
+    logger.info(
+      {
+        orderNumber: emailData.orderNumber,
+        email: emailData.user.email,
+      },
+      "[Email Service] Sending order confirmation email"
     );
 
     // Send email via client
     const success = await sendEmailViaClient(emailData);
 
     if (!success) {
-      console.error(
-        `[Email Service] Failed to send order confirmation email for order ${emailData.orderNumber}`
+      logger.error(
+        { orderNumber: emailData.orderNumber },
+        "[Email Service] Failed to send order confirmation email"
       );
       return {
         success: false,
@@ -51,8 +59,9 @@ export async function sendOrderConfirmationEmail(
       };
     }
 
-    console.log(
-      `[Email Service] Order confirmation email sent successfully for order ${emailData.orderNumber}`
+    logger.info(
+      { orderNumber: emailData.orderNumber },
+      "[Email Service] Order confirmation email sent successfully"
     );
 
     return {
@@ -60,9 +69,9 @@ export async function sendOrderConfirmationEmail(
       message: "订单确认邮件已发送",
     };
   } catch (error) {
-    console.error(
-      `[Email Service] Error sending order confirmation email:`,
-      error
+    logger.error(
+      { err: error, orderNumber: emailData.orderNumber },
+      "[Email Service] Error sending order confirmation email"
     );
 
     return {

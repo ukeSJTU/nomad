@@ -117,6 +117,7 @@ describe("AppSidebar Component", () => {
     it("should have a toggle sidebar button", () => {
       renderAppSidebar();
 
+      // biome-ignore lint/style/noNonNullAssertion: Validating existence in test
       const toggleButton = screen
         .getAllByLabelText("Toggle Sidebar")
         .find(el => el.getAttribute("data-slot") === "sidebar-menu-button")!;
@@ -127,6 +128,7 @@ describe("AppSidebar Component", () => {
       const user = userEvent.setup();
       renderAppSidebar();
 
+      // biome-ignore lint/style/noNonNullAssertion: Validating existence in test
       const toggleButton = screen
         .getAllByLabelText("Toggle Sidebar")
         .find(el => el.getAttribute("data-slot") === "sidebar-menu-button")!;

@@ -11,7 +11,10 @@ import {
   getPassengers,
   updatePassenger,
 } from "@/domains/passengers";
+import { createScopedLogger } from "@/infra/logging/logger";
 import { dateToLocalDateString } from "@/lib/format";
+
+const logger = createScopedLogger({ module: "actions.passengers" });
 
 async function requireUserId(redirectTo?: string): Promise<string> {
   const user = await requireSessionUser(redirectTo);
@@ -48,6 +51,7 @@ export async function createPassengerAction(formData: unknown) {
     const userId = await requireUserId();
 
     // 2. Convert form data to service input format
+    // biome-ignore lint/suspicious/noExplicitAny: Input validation pending
     const data = formData as any;
     const passengerInput: PassengerInput = {
       name: data.name,
@@ -72,7 +76,11 @@ export async function createPassengerAction(formData: unknown) {
     // 4. Return result
     return result;
   } catch (error) {
-    console.error("Create passenger action error:", error);
+    logger.error(
+      // biome-ignore lint/suspicious/noExplicitAny: Logging error context
+      { err: error, passengerName: (formData as any)?.name },
+      "Create passenger action error"
+    );
     return {
       success: false,
       error:
@@ -99,6 +107,7 @@ export async function updatePassengerAction(id: string, formData: unknown) {
     const userId = await requireUserId();
 
     // 2. Convert form data to service input format
+    // biome-ignore lint/suspicious/noExplicitAny: Input validation pending
     const data = formData as any;
     const passengerInput: Partial<PassengerInput> = {
       name: data.name,
@@ -123,7 +132,10 @@ export async function updatePassengerAction(id: string, formData: unknown) {
     // 4. Return result
     return result;
   } catch (error) {
-    console.error("Update passenger action error:", error);
+    logger.error(
+      { err: error, passengerId: id },
+      "Update passenger action error"
+    );
     return {
       success: false,
       error:
@@ -157,7 +169,7 @@ export async function getPassengerAction(id: string) {
 
     return result.data;
   } catch (error) {
-    console.error("Get passenger action error:", error);
+    logger.error({ err: error, passengerId: id }, "Get passenger action error");
     return null;
   }
 }
@@ -183,7 +195,10 @@ export async function deletePassengerAction(id: string) {
     // 3. Return result
     return result;
   } catch (error) {
-    console.error("Delete passenger action error:", error);
+    logger.error(
+      { err: error, passengerId: id },
+      "Delete passenger action error"
+    );
     return {
       success: false,
       error:
@@ -211,7 +226,10 @@ export async function batchDeletePassengersAction(ids: string[]) {
     // 3. Return result
     return result;
   } catch (error) {
-    console.error("Batch delete passengers action error:", error);
+    logger.error(
+      { err: error, passengerIds: ids },
+      "Batch delete passengers action error"
+    );
     return {
       success: false,
       error:

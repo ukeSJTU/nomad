@@ -11,7 +11,10 @@ import { headers } from "next/headers";
 
 import { resendOrderConfirmation } from "@/domains/notification";
 import { auth } from "@/infra/auth";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { ActionResult } from "@/types/common";
+
+const logger = createScopedLogger({ module: "actions.emails" });
 
 /**
  * Server action to resend order confirmation email
@@ -38,9 +41,15 @@ import type { ActionResult } from "@/types/common";
 export async function resendOrderConfirmationAction(
   orderId: string
 ): Promise<ActionResult<void>> {
+  let session:
+    | {
+        user: { id: string; email: string | null; name: string | null };
+      }
+    | null
+    | undefined;
   try {
     const headersList = await headers();
-    const session = await auth.api.getSession({ headers: headersList });
+    session = await auth.api.getSession({ headers: headersList });
 
     if (!session?.user?.id) {
       return {
@@ -68,7 +77,10 @@ export async function resendOrderConfirmationAction(
       data: undefined,
     };
   } catch (error) {
-    console.error("[resendOrderConfirmationAction] Error:", error);
+    logger.error(
+      { err: error, orderId, userId: session?.user?.id },
+      "[resendOrderConfirmationAction] Error"
+    );
 
     return {
       success: false as const,

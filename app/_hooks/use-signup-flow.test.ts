@@ -24,14 +24,15 @@ const mockSendEmailOtpAction = vi.fn();
 const mockVerifyEmailOtpAction = vi.fn();
 const mockSetInitialPasswordAction = vi.fn();
 vi.mock("@/app/_actions", () => ({
-  setInitialPasswordAction: (...args: any[]) =>
+  setInitialPasswordAction: (...args: unknown[]) =>
     mockSetInitialPasswordAction(...args),
 }));
 vi.mock("@/app/_actions/auth", () => ({
-  signInWithOtpAction: (...args: any[]) => mockSignInWithOtpAction(...args),
-  sendPhoneOtpAction: (...args: any[]) => mockSendPhoneOtpAction(...args),
-  sendEmailOtpAction: (...args: any[]) => mockSendEmailOtpAction(...args),
-  verifyEmailOtpAction: (...args: any[]) => mockVerifyEmailOtpAction(...args),
+  signInWithOtpAction: (...args: unknown[]) => mockSignInWithOtpAction(...args),
+  sendPhoneOtpAction: (...args: unknown[]) => mockSendPhoneOtpAction(...args),
+  sendEmailOtpAction: (...args: unknown[]) => mockSendEmailOtpAction(...args),
+  verifyEmailOtpAction: (...args: unknown[]) =>
+    mockVerifyEmailOtpAction(...args),
 }));
 
 import { toast } from "sonner";

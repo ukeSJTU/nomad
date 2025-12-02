@@ -13,6 +13,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
+import storyLogger from "@/infra/logging/storybook-logger";
 import { getInitials } from "@/lib/format";
 
 // Mock component that accepts props to control login state
@@ -28,11 +29,11 @@ function HeaderStory({
   userImage = "https://github.com/shadcn.png",
 }: HeaderStoryProps) {
   const handleThemeToggle = () => {
-    console.log("Theme toggle clicked");
+    storyLogger.info("Theme toggle clicked");
   };
 
   const handleSignOut = () => {
-    console.log("Sign out clicked");
+    storyLogger.info("Sign out clicked");
   };
 
   return (

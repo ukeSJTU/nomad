@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 
 import PasswordSetupForm from "@/components/auth/forms/password-setup";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {
   title: "Auth/Forms/PasswordSetupForm",
@@ -24,7 +25,7 @@ export const Default: Story = {
     <div className="w-[400px] p-6">
       <PasswordSetupForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
       />
     </div>
@@ -40,7 +41,7 @@ export const WithMaskedIdentifier: Story = {
     <div className="w-[400px] p-6">
       <PasswordSetupForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         maskedIdentifier="138****5678"
       />
@@ -64,7 +65,7 @@ export const HappyPath: Story = {
     <div className="w-[400px] p-6">
       <PasswordSetupForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         maskedIdentifier="138****5678"
       />
@@ -107,7 +108,7 @@ export const Loading: Story = {
     <div className="w-[400px] p-6">
       <PasswordSetupForm
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         isLoading={true}
         maskedIdentifier="138****5678"

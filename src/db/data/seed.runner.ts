@@ -42,6 +42,7 @@ import {
   user,
 } from "@/db/schema";
 import { generateAirlineLogoForSeed } from "@/domains/flights";
+import { createScopedLogger } from "@/infra/logging/logger";
 
 import { db } from "../index";
 import { REAL_AIRLINES } from "./fixtures/base/airlines";
@@ -57,6 +58,8 @@ import {
   parseSeedConfig,
   promptForScenario,
 } from "./seed.config";
+
+const logger = createScopedLogger({ module: "seed.runner" });
 
 /**
  * Main seed function
@@ -74,7 +77,7 @@ async function seed() {
     config = parseSeedConfig();
   }
 
-  console.log("[SEED] Starting database seeding...");
+  logger.info("[SEED] Starting database seeding...");
   displaySeedConfig(config);
 
   try {
@@ -82,7 +85,7 @@ async function seed() {
     if (config.mode === "full") {
       await clearDatabase();
     } else {
-      console.log("[SEED] Incremental mode - keeping existing data");
+      logger.info("[SEED] Incremental mode - keeping existing data");
     }
 
     // Seed based on data source
@@ -92,9 +95,9 @@ async function seed() {
       await seedWithFixtureAndFaker(config);
     }
 
-    console.log("\n[SEED] Database seeding completed successfully!\n");
+    logger.info("\n[SEED] Database seeding completed successfully!\n");
   } catch (error) {
-    console.error("[SEED] Error seeding database:", error);
+    logger.error({ err: error }, "[SEED] Error seeding database");
     throw error;
   } finally {
     // Keep connection alive test
@@ -134,7 +137,7 @@ async function seedFromScenario(config: SeedConfig) {
     throw new Error("Scenario file is required for scenario mode");
   }
 
-  console.log(`\n[SEED] Loading scenario: ${config.scenarioFile}`);
+  logger.info(`\n[SEED] Loading scenario: ${config.scenarioFile}`);
 
   // Dynamically import the scenario file
   const scenarioModule = await import(
@@ -260,14 +263,14 @@ async function seedFromScenario(config: SeedConfig) {
   }
 
   // Summary
-  console.log("\nSummary:");
-  console.log(`   - Users: ${insertedUsers.length}`);
-  console.log(`   - Passengers: ${insertedPassengers.length}`);
-  console.log(`   - Cities: ${insertedCities.length}`);
-  console.log(`   - Airports: ${insertedAirports.length}`);
-  console.log(`   - Airlines: ${insertedAirlines.length}`);
-  console.log(`   - Flights: ${insertedFlights.length}`);
-  console.log(`   - Seat Classes: ${insertedSeatClasses.length}`);
+  logger.info("\nSummary:");
+  logger.info(`   - Users: ${insertedUsers.length}`);
+  logger.info(`   - Passengers: ${insertedPassengers.length}`);
+  logger.info(`   - Cities: ${insertedCities.length}`);
+  logger.info(`   - Airports: ${insertedAirports.length}`);
+  logger.info(`   - Airlines: ${insertedAirlines.length}`);
+  logger.info(`   - Flights: ${insertedFlights.length}`);
+  logger.info(`   - Seat Classes: ${insertedSeatClasses.length}`);
 }
 
 /**
@@ -277,7 +280,7 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
   // Set Faker seed for reproducible data generation
   faker.seed(config.seed);
 
-  console.log(
+  logger.info(
     "\n[SEED] Using fixture-faker mode (real data + generated flights)"
   );
 
@@ -506,18 +509,18 @@ async function seedWithFixtureAndFaker(config: SeedConfig) {
   );
 
   // Summary
-  console.log("\nSummary:");
-  console.log(`   - Users: ${insertedUsers.length}`);
-  console.log(`   - Passengers: ${insertedPassengers.length}`);
-  console.log(`   - Cities: ${insertedCities.length}`);
-  console.log(`   - Airports: ${insertedAirports.length}`);
-  console.log(`   - Airlines: ${insertedAirlines.length}`);
-  console.log(`   - Flights: ${insertedFlights.length}`);
-  console.log(`   - Seat Classes: ${insertedSeatClasses.length}`);
-  console.log(`   - Orders: ${insertedOrders.length}`);
-  console.log(`   - Order Passengers: ${insertedOrderPassengers.length}`);
-  console.log(`   - Payments: ${insertedPayments.length}`);
-  console.log(`   - Search History: ${insertedSearchHistory.length}`);
+  logger.info("\nSummary:");
+  logger.info(`   - Users: ${insertedUsers.length}`);
+  logger.info(`   - Passengers: ${insertedPassengers.length}`);
+  logger.info(`   - Cities: ${insertedCities.length}`);
+  logger.info(`   - Airports: ${insertedAirports.length}`);
+  logger.info(`   - Airlines: ${insertedAirlines.length}`);
+  logger.info(`   - Flights: ${insertedFlights.length}`);
+  logger.info(`   - Seat Classes: ${insertedSeatClasses.length}`);
+  logger.info(`   - Orders: ${insertedOrders.length}`);
+  logger.info(`   - Order Passengers: ${insertedOrderPassengers.length}`);
+  logger.info(`   - Payments: ${insertedPayments.length}`);
+  logger.info(`   - Search History: ${insertedSearchHistory.length}`);
 }
 
 // Run the seed function

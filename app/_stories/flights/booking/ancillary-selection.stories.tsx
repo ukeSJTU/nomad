@@ -6,6 +6,7 @@ import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,
 } from "@/db/schema/ancillary";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 // Helper function to create the toggle handler with single-selection logic
 const createToggleHandler = (
@@ -85,7 +86,7 @@ export const Default: Story = {
 export const Interactive: Story = {
   args: {
     selectedServices: [],
-    onToggleService: (code: string) => console.log("Toggled:", code),
+    onToggleService: (code: string) => storyLogger.info("Toggled:", code),
   },
   render: args => {
     const [selectedServices, setSelectedServices] = useState<string[]>([]);

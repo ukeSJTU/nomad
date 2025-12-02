@@ -16,10 +16,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import {
   type PasswordSetupData,
   passwordSetupSchema,
 } from "@/types/validations";
+
+const logger = createClientLogger({ module: "password-setup-form" });
 
 /**
  * Props for the PasswordSetupForm component
@@ -58,7 +61,7 @@ export default function PasswordSetupForm({
     },
   });
 
-  console.log("PasswordSetupForm - maskedIdentifier:", maskedIdentifier);
+  logger.debug({ maskedIdentifier }, "PasswordSetupForm props");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
