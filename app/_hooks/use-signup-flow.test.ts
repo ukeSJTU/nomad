@@ -120,11 +120,11 @@ describe("useSignUpFlow", () => {
       data: undefined,
     });
     const { result } = renderHook(() => useSignUpFlow());
-    const success = await result.current.handleSendPhoneOtp(
+    const response = await result.current.handleSendPhoneOtp(
       "13800138000",
       mockFetchOptions
     );
-    expect(success).toBe(true);
+    expect(response.success).toBe(true);
     expect(mockSendPhoneOtpAction).toHaveBeenCalledWith(
       "13800138000",
       mockFetchOptions
@@ -137,11 +137,11 @@ describe("useSignUpFlow", () => {
       data: undefined,
     });
     const { result } = renderHook(() => useSignUpFlow());
-    const success = await result.current.handleSendEmailOtp(
+    const response = await result.current.handleSendEmailOtp(
       "user@example.com",
       mockFetchOptions
     );
-    expect(success).toBe(true);
+    expect(response.success).toBe(true);
     expect(mockSendEmailOtpAction).toHaveBeenCalledWith(
       "user@example.com",
       "email-verification",

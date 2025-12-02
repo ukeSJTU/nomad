@@ -161,12 +161,12 @@ describe("useSignInFlow", () => {
       });
 
       const { result } = renderHook(() => useSignInFlow());
-      const success = await result.current.handleSendOtp(
+      const response = await result.current.handleSendOtp(
         "13800138000",
         mockFetchOptions
       );
 
-      expect(success).toBe(true);
+      expect(response.success).toBe(true);
       expect(mockSendPhoneOtpAction).toHaveBeenCalledWith(
         "13800138000",
         mockFetchOptions
@@ -185,12 +185,12 @@ describe("useSignInFlow", () => {
       });
 
       const { result } = renderHook(() => useSignInFlow());
-      const success = await result.current.handleSendOtp(
+      const response = await result.current.handleSendOtp(
         "user@example.com",
         mockFetchOptions
       );
 
-      expect(success).toBe(true);
+      expect(response.success).toBe(true);
       expect(mockSendEmailOtpAction).toHaveBeenCalledWith(
         "user@example.com",
         "sign-in",
@@ -206,9 +206,9 @@ describe("useSignInFlow", () => {
       });
 
       const { result } = renderHook(() => useSignInFlow());
-      const success = await result.current.handleSendOtp("invalid");
+      const response = await result.current.handleSendOtp("invalid");
 
-      expect(success).toBe(false);
+      expect(response.success).toBe(false);
       expect(mockToastError).toHaveBeenCalledWith("无效的账号格式");
       expect(mockSendPhoneOtpAction).not.toHaveBeenCalled();
       expect(mockSendEmailOtpAction).not.toHaveBeenCalled();

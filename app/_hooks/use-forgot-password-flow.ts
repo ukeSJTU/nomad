@@ -8,7 +8,9 @@ import {
   sendResetEmailOtpAction,
   sendResetPhoneOtpAction,
 } from "@/app/_actions/auth";
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
+import { buildOtpStorageKey } from "@/lib/otp";
 import { maskEmail, maskPhoneNumber } from "@/lib/security";
 import { validateAccount } from "@/lib/validation";
 import type { ActionResult } from "@/types/common";
@@ -51,11 +53,17 @@ export function useForgotPasswordFlow(): UseForgotPasswordFlowReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
+  const countdownKey = useMemo(() => {
+    if (!account || !method) return null;
+    return buildOtpStorageKey(method, account);
+  }, [account, method]);
   const {
     countdown,
     start: startCountdown,
     reset: resetCountdown,
-  } = useOtpCountdown();
+  } = useOtpCountdown({
+    storageKey: countdownKey,
+  });
 
   const maskedAccount = useMemo(() => {
     if (!account || !method) return null;
@@ -66,7 +74,7 @@ export function useForgotPasswordFlow(): UseForgotPasswordFlowReturn {
     targetAccount: string,
     targetMethod: ResetMethod,
     fetchOptions?: FetchOptions
-  ): Promise<ActionResult> => {
+  ): Promise<OtpSendActionResult> => {
     if (targetMethod === "phone") {
       return sendResetPhoneOtpAction(targetAccount, fetchOptions);
     }
@@ -111,6 +119,9 @@ export function useForgotPasswordFlow(): UseForgotPasswordFlowReturn {
       );
 
       if (!sendResult.success) {
+        if (sendResult.retryAfterSeconds) {
+          startCountdown(sendResult.retryAfterSeconds);
+        }
         toast.error(sendResult.error || "发送验证码失败，请重试");
         return sendResult;
       }
@@ -170,6 +181,9 @@ export function useForgotPasswordFlow(): UseForgotPasswordFlowReturn {
       const result = await sendOtp(account, method, fetchOptions);
 
       if (!result.success) {
+        if (result.retryAfterSeconds) {
+          startCountdown(result.retryAfterSeconds);
+        }
         toast.error(result.error || "发送验证码失败，请重试");
         return false;
       }

@@ -1,10 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
+import { buildOtpStorageKey } from "@/lib/otp";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
@@ -34,13 +36,13 @@ export interface UnifiedSignUpFormProps {
   onSendPhoneOtp: (
     phoneNumber: string,
     fetchOptions?: FetchOptions
-  ) => Promise<boolean>;
+  ) => Promise<OtpSendActionResult>;
 
   /** Callback to send email OTP */
   onSendEmailOtp: (
     email: string,
     fetchOptions?: FetchOptions
-  ) => Promise<boolean>;
+  ) => Promise<OtpSendActionResult>;
 
   /** Loading state from parent */
   isLoading?: boolean;
@@ -66,10 +68,23 @@ export default function UnifiedSignUpForm({
   className,
 }: UnifiedSignUpFormProps) {
   const [_method, setMethod] = useState<"phone" | "email">(initialMethod);
-  const { countdown, start: startCountdown } = useOtpCountdown();
   const [isVerifying, setIsVerifying] = useState(false);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
   const [currentEmail, setCurrentEmail] = useState("");
+  const countdownKey = useMemo(() => {
+    if (_method === "phone" && currentPhoneNumber) {
+      return buildOtpStorageKey("phone", currentPhoneNumber);
+    }
+
+    if (_method === "email" && currentEmail) {
+      return buildOtpStorageKey("email", currentEmail);
+    }
+
+    return null;
+  }, [_method, currentEmail, currentPhoneNumber]);
+  const { countdown, start: startCountdown } = useOtpCountdown({
+    storageKey: countdownKey,
+  });
   const turnstileRef = useRef<TurnstileInstance>(null);
 
   const handleMethodChange = (value: string) => {
@@ -104,12 +119,15 @@ export default function UnifiedSignUpForm({
         },
       };
 
-      const success = await onSendPhoneOtp(currentPhoneNumber, fetchOptions);
+      const result = await onSendPhoneOtp(currentPhoneNumber, fetchOptions);
 
-      if (success) {
+      if (result.success) {
         startCountdown();
       } else {
-        toast.error("发送验证码失败，请重试");
+        if (result.retryAfterSeconds) {
+          startCountdown(result.retryAfterSeconds);
+        }
+        toast.error(result.error || "发送验证码失败，请重试");
       }
     } catch {
       toast.error("发送验证码失败，请重试");
@@ -145,12 +163,15 @@ export default function UnifiedSignUpForm({
         },
       };
 
-      const success = await onSendEmailOtp(currentEmail, fetchOptions);
+      const result = await onSendEmailOtp(currentEmail, fetchOptions);
 
-      if (success) {
+      if (result.success) {
         startCountdown();
       } else {
-        toast.error("发送验证码失败，请重试");
+        if (result.retryAfterSeconds) {
+          startCountdown(result.retryAfterSeconds);
+        }
+        toast.error(result.error || "发送验证码失败，请重试");
       }
     } catch {
       toast.error("发送验证码失败，请重试");
