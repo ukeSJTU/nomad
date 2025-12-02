@@ -4,17 +4,34 @@ import Link from "next/link";
 
 import { Card, CardContent } from "@/components/ui/card";
 
-export const dynamic = "force-dynamic";
-
 export default async function AirportGuidePage() {
-  // Fetch popular cities from DB
+  // Fetch popular cities with their airports from DB
   const popularCities = await getPopularAirportsAction();
 
-  const domesticAirports = popularCities.filter(c => c.isDomestic);
-  const internationalAirports = popularCities.filter(c => !c.isDomestic);
+  const domesticCities = popularCities.filter(c => c.isDomestic);
+  const internationalCities = popularCities.filter(c => !c.isDomestic);
+
+  // Flatten cities and airports for display
+  const domesticAirports = domesticCities.flatMap(city =>
+    city.airports.map(airport => ({
+      cityName: city.name,
+      airportName: airport.name,
+      airportCode: airport.iataCode,
+      key: airport.id,
+    }))
+  );
+
+  const internationalAirports = internationalCities.flatMap(city =>
+    city.airports.map(airport => ({
+      cityName: city.name,
+      airportName: airport.name,
+      airportCode: airport.iataCode,
+      key: airport.id,
+    }))
+  );
 
   return (
-    <div className="container mx-auto py-8 px-4 flex gap-6 min-h-screen bg-background">
+    <div className="container mx-auto pb-4 px-4 flex gap-6 min-h-screen bg-background">
       <div className="flex-1">
         {/* Breadcrumb */}
         <div className="text-muted-foreground mb-4 text-xs">
@@ -39,17 +56,14 @@ export default async function AirportGuidePage() {
 
             <div className="bg-white p-4 border border-gray-100">
               <div className="grid grid-cols-5 gap-y-3 gap-x-4">
-                {domesticAirports.map(city => (
+                {domesticAirports.map(airport => (
                   <Link
-                    key={city.id}
-                    href={`/flights/guide/airport-${city.iataCode}`}
-                    className="flex items-center gap-1 cursor-pointer hover:text-[#0066cc] group text-sm"
+                    key={airport.key}
+                    href={`/flights/guide/airport-${airport.airportCode}`}
+                    className="cursor-pointer hover:text-[#0066cc] group text-sm"
                   >
                     <span className="text-gray-700 group-hover:text-[#0066cc]">
-                      {city.name}
-                    </span>
-                    <span className="text-gray-400 text-xs group-hover:text-[#0066cc]">
-                      ({city.iataCode})
+                      {airport.cityName} {airport.airportName}
                     </span>
                   </Link>
                 ))}
@@ -72,17 +86,14 @@ export default async function AirportGuidePage() {
 
             <div className="bg-white p-4 border border-gray-100">
               <div className="grid grid-cols-5 gap-y-3 gap-x-4">
-                {internationalAirports.map(city => (
+                {internationalAirports.map(airport => (
                   <Link
-                    key={city.id}
-                    href={`/flights/guide/airport-${city.iataCode}`}
-                    className="flex items-center gap-1 cursor-pointer hover:text-[#0066cc] group text-sm"
+                    key={airport.key}
+                    href={`/flights/guide/airport-${airport.airportCode}`}
+                    className="cursor-pointer hover:text-[#0066cc] group text-sm"
                   >
                     <span className="text-gray-700 group-hover:text-[#0066cc]">
-                      {city.name}
-                    </span>
-                    <span className="text-gray-400 text-xs group-hover:text-[#0066cc]">
-                      ({city.iataCode})
+                      {airport.cityName} {airport.airportName}
                     </span>
                   </Link>
                 ))}
