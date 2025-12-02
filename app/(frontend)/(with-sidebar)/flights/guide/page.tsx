@@ -67,7 +67,7 @@ export default async function AirportGuidePage() {
             </div>
 
             <div className="bg-white p-4 border border-gray-100">
-              <div className="grid grid-cols-5 gap-y-3 gap-x-4">
+              <div className="grid grid-cols-4 gap-y-3 gap-x-4">
                 {domesticAirports.map(airport => (
                   <Link
                     key={airport.key}
@@ -80,7 +80,7 @@ export default async function AirportGuidePage() {
                   </Link>
                 ))}
                 {domesticAirports.length === 0 && (
-                  <div className="col-span-5 text-muted-foreground text-sm">
+                  <div className="col-span-4 text-muted-foreground text-sm">
                     暂无热门国内机场数据
                   </div>
                 )}
@@ -97,7 +97,7 @@ export default async function AirportGuidePage() {
             </div>
 
             <div className="bg-white p-4 border border-gray-100">
-              <div className="grid grid-cols-5 gap-y-3 gap-x-4">
+              <div className="grid grid-cols-4 gap-y-3 gap-x-4">
                 {internationalAirports.map(airport => (
                   <Link
                     key={airport.key}
@@ -110,7 +110,7 @@ export default async function AirportGuidePage() {
                   </Link>
                 ))}
                 {internationalAirports.length === 0 && (
-                  <div className="col-span-5 text-muted-foreground text-sm">
+                  <div className="col-span-4 text-muted-foreground text-sm">
                     暂无热门国际机场数据
                   </div>
                 )}
