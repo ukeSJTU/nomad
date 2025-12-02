@@ -3,11 +3,6 @@ import pretty from "pino-pretty";
 
 import { isDevelopment, isTest } from "@/config/env";
 
-// Ensure this module is never bundled or executed in the browser
-if (typeof window !== "undefined") {
-  throw new Error("Logger is server-only and cannot run in the browser.");
-}
-
 const bootstrapLogger = pino({
   level: "warn",
   base: {
