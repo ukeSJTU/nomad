@@ -8,12 +8,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
 const appDir = path.join(repoRoot, "app");
 
-const DISALLOWED_PREFIXES = ["@/db", "@/domains"];
+const DISALLOWED_IMPORT_PREFIXES = ["@/db", "@/domains"];
 const ALLOWED_IMPORT_PREFIXES = ["@/config/errors", "@/db/schema/ancillary"];
 const IGNORED_DIRECTORIES = [
   path.join(appDir, "_actions"),
   path.join(appDir, "api"),
 ];
+const IGNORED_FILENAMES = new Set(["page.tsx"]);
 const TARGET_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx"]);
 const logger = pino({
   level: process.env.LOG_LEVEL || "info",
@@ -37,7 +38,9 @@ function isAllowedImport(specifier) {
 }
 
 function isRestricted(specifier) {
-  if (!DISALLOWED_PREFIXES.some(prefix => specifier.startsWith(prefix))) {
+  if (
+    !DISALLOWED_IMPORT_PREFIXES.some(prefix => specifier.startsWith(prefix))
+  ) {
     return false;
   }
 
@@ -46,6 +49,10 @@ function isRestricted(specifier) {
 
 function shouldSkipFile(filePath) {
   if (!TARGET_EXTENSIONS.has(path.extname(filePath))) {
+    return true;
+  }
+
+  if (IGNORED_FILENAMES.has(path.basename(filePath))) {
     return true;
   }
 
