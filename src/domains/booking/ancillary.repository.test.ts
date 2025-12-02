@@ -1,7 +1,7 @@
 import { createOrderScenario } from "@/tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
 
-import { getOrderForAncillary } from "@/domains/booking";
+import { getOrderForAncillary } from "./ancillary.repository";
 
 describe("booking.ancillary.repository", () => {
   it("returns order with passengers and parsed ancillary details", async () => {

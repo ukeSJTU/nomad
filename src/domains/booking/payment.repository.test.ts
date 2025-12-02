@@ -1,7 +1,7 @@
 import { createOrderScenario } from "@/tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
 
-import { getOrderForPayment } from "@/domains/booking";
+import { getOrderForPayment } from "./payment.repository";
 
 describe("booking.payment.repository", () => {
   it("returns payment page data with flights, passengers, and ancillary details", async () => {

@@ -78,7 +78,7 @@ export const VerifyMode: Story = {
   render: () => (
     <div className="w-[500px] p-6">
       <UpdatePhoneForm
-        currentPhoneNumber="+8613812345678"
+        currentPhoneNumber="13812345678"
         mode="verify"
         onSubmit={data => {
           console.log("Form submitted:", data);
@@ -123,7 +123,7 @@ export const UpdateMode: Story = {
   render: () => (
     <div className="w-[500px] p-6">
       <UpdatePhoneForm
-        currentPhoneNumber="+8613812345678"
+        currentPhoneNumber="13812345678"
         mode="update"
         onSubmit={data => {
           console.log("Form submitted:", data);

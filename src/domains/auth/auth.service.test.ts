@@ -4,25 +4,25 @@ import { validateEmailFormat, validatePhoneNumberFormat } from "./auth.service";
 
 describe("Auth Service Validation", () => {
   describe("validatePhoneNumberFormat", () => {
-    it("accepts +86-prefixed numbers and returns normalized value", () => {
-      const result = validatePhoneNumberFormat("+8613812345678");
-
-      expect(result.success).toBe(true);
-      expect(result.data).toBe("+8613812345678");
-    });
-
-    it("prefixes +86 when missing and trims whitespace", () => {
+    it("accepts 11-digit numbers and trims whitespace", () => {
       const result = validatePhoneNumberFormat(" 13812345678 ");
 
       expect(result.success).toBe(true);
-      expect(result.data).toBe("+8613812345678");
+      expect(result.data).toBe("13812345678");
+    });
+
+    it("rejects numbers with country prefix", () => {
+      const result = validatePhoneNumberFormat("+8613812345678");
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("手机号格式不正确，请重新输入");
     });
 
     it("rejects invalid lengths", () => {
-      const result = validatePhoneNumberFormat("+86123");
+      const result = validatePhoneNumberFormat("123");
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe("手机号必须是11位数字");
+      expect(result.error).toBe("手机号格式不正确，请重新输入");
     });
   });
 

@@ -1,7 +1,7 @@
 import { createOrderScenario } from "@/tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
 
-import { getOrderConfirmation } from "@/domains/booking";
+import { getOrderConfirmation } from "./confirmation.repository";
 
 describe("confirmation.repository", () => {
   it("returns confirmation data with payment and flight details", async () => {

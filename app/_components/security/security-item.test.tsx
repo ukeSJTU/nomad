@@ -72,11 +72,11 @@ describe("SecurityItem Component", () => {
         <SecurityItem
           {...defaultProps}
           status="unverified"
-          value="+86138****5678"
+          value="138****5678"
         />
       );
       expect(
-        screen.getByText("已设置但未验证 +86138****5678")
+        screen.getByText("已设置但未验证 138****5678")
       ).toBeInTheDocument();
     });
   });
@@ -89,13 +89,9 @@ describe("SecurityItem Component", () => {
 
     it("should display '已绑定' with value when provided", () => {
       render(
-        <SecurityItem
-          {...defaultProps}
-          status="verified"
-          value="+86138****5678"
-        />
+        <SecurityItem {...defaultProps} status="verified" value="138****5678" />
       );
-      expect(screen.getByText("已绑定 +86138****5678")).toBeInTheDocument();
+      expect(screen.getByText("已绑定 138****5678")).toBeInTheDocument();
     });
   });
 
@@ -106,7 +102,7 @@ describe("SecurityItem Component", () => {
           title="绑定手机"
           description="绑定手机后，您即可享受手机号登录。"
           status="verified"
-          value="+86138****5678"
+          value="138****5678"
           actionHref="/home/security/phone"
           actionLabel="修改"
         />
@@ -116,7 +112,7 @@ describe("SecurityItem Component", () => {
       expect(
         screen.getByText("绑定手机后，您即可享受手机号登录。")
       ).toBeInTheDocument();
-      expect(screen.getByText("已绑定 +86138****5678")).toBeInTheDocument();
+      expect(screen.getByText("已绑定 138****5678")).toBeInTheDocument();
       const button = screen.getByRole("link", { name: "修改" });
       expect(button).toHaveAttribute("href", "/home/security/phone");
     });
@@ -127,7 +123,7 @@ describe("SecurityItem Component", () => {
           title="绑定手机"
           description="绑定手机后，您即可享受手机号登录。"
           status="unverified"
-          value="+86138****5678"
+          value="138****5678"
           actionHref="/home/security/phone"
           actionLabel="验证"
         />
@@ -135,7 +131,7 @@ describe("SecurityItem Component", () => {
 
       expect(screen.getByText("绑定手机")).toBeInTheDocument();
       expect(
-        screen.getByText("已设置但未验证 +86138****5678")
+        screen.getByText("已设置但未验证 138****5678")
       ).toBeInTheDocument();
       const button = screen.getByRole("link", { name: "验证" });
       expect(button).toHaveAttribute("href", "/home/security/phone");

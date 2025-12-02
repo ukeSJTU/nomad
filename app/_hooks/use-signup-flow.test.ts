@@ -125,7 +125,7 @@ describe("useSignUpFlow", () => {
     );
     expect(success).toBe(true);
     expect(mockSendPhoneOtpAction).toHaveBeenCalledWith(
-      "+8613800138000",
+      "13800138000",
       mockFetchOptions
     );
   });

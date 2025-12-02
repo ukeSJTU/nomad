@@ -127,15 +127,15 @@ describe("Auth OTP senders", () => {
       vi.stubEnv("ALIBABA_CLOUD_SMS_SIGN_NAME", "dummy-sign");
       vi.stubEnv("ALIBABA_CLOUD_SMS_TEMPLATE_CODE", "dummy-template");
 
-      await sendAuthPhoneOtp("+8613812345678", "123456");
+      await sendAuthPhoneOtp("13812345678", "123456");
 
-      expect(mockSendSmsOtp).toHaveBeenCalledWith("+8613812345678", "123456");
+      expect(mockSendSmsOtp).toHaveBeenCalledWith("13812345678", "123456");
     });
 
     it("simulates send when disabled", async () => {
       vi.stubEnv("ENABLE_ALIYUN_SMS", "false");
 
-      await sendAuthPhoneOtp("+8613812345678", "123456");
+      await sendAuthPhoneOtp("13812345678", "123456");
 
       expect(mockSendSmsOtp).not.toHaveBeenCalled();
       expect(mockLogger.info).toHaveBeenCalled();
@@ -148,9 +148,9 @@ describe("Auth OTP senders", () => {
 
       mockSendSmsOtp.mockResolvedValueOnce(false);
 
-      await expect(
-        sendAuthPhoneOtp("+8613812345678", "123456")
-      ).rejects.toThrow("Failed to send SMS");
+      await expect(sendAuthPhoneOtp("13812345678", "123456")).rejects.toThrow(
+        "Failed to send SMS"
+      );
     });
   });
 

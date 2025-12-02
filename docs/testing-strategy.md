@@ -162,8 +162,8 @@ email: `${namespace}-${sequence}@test.example.com`;
 **用户手机号：**
 
 ```typescript
-phoneNumber: `+86138${hashToDigits(namespace, 4)}${sequence.toString().padStart(4, "0")}`;
-// 示例：'+8613812340001'
+phoneNumber: `138${hashToDigits(namespace, 4)}${sequence.toString().padStart(4, "0")}`;
+// 示例：'13812340001'
 
 function hashToDigits(str: string, length: number): string {
   const hash = crypto.createHash("md5").update(str).digest("hex");
@@ -311,7 +311,7 @@ export const userFactory = defineFactory<typeof user.$inferInsert>(
       name: faker.person.fullName(),
       email: `${namespace}-${sequence}@test.example.com`,
       emailVerified: false,
-      phoneNumber: `+86138${hashToDigits(namespace, 4)}${sequence.toString().padStart(4, "0")}`,
+      phoneNumber: `138${hashToDigits(namespace, 4)}${sequence.toString().padStart(4, "0")}`,
       balance: "10000.00",
       createdAt: new Date(),
       updatedAt: new Date(),

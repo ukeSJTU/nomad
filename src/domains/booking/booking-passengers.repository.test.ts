@@ -10,7 +10,7 @@ import {
   getFlightSeatClassById,
   getFlightSeatClassesByIds,
   getSavedPassengers,
-} from "@/domains/booking";
+} from "./booking-passengers.repository";
 
 describe("booking-passengers.repository", () => {
   it("returns seat class details with flight, airline, and city info", async () => {

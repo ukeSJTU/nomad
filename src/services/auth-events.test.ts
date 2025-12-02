@@ -24,7 +24,7 @@ describe("auth-events", () => {
 
     const payload = {
       userId: "user-2",
-      phoneNumber: "+8613812345678",
+      phoneNumber: "13812345678",
       userEmail: "notify@example.com",
     };
 

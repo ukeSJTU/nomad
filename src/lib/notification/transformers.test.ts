@@ -70,7 +70,7 @@ describe("email-transformers", () => {
         },
       ],
       contact: {
-        contactPhone: "+86 138 0000 0000",
+        contactPhone: "138 0000 0000",
         contactEmail: "contact@example.com",
       },
       payment: {
@@ -181,7 +181,7 @@ describe("email-transformers", () => {
       const result = transformOrderDetailToEmailData(mockOrderDetail, mockUser);
 
       expect(result.contact).toEqual({
-        phone: "+86 138 0000 0000",
+        phone: "138 0000 0000",
         email: "contact@example.com",
       });
     });
