@@ -1,5 +1,12 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import Image from "next/image";
-import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -28,18 +35,22 @@ export default function BoardingProcessPage() {
   ];
 
   return (
-    <div className="container mx-auto py-8 px-4 min-h-screen bg-background">
-      {/* Breadcrumb */}
-      <div className="text-muted-foreground mb-6 text-xs">
-        <Link href="/flights" className="hover:text-primary">
-          首页
-        </Link>{" "}
-        &gt;{" "}
-        <Link href="/flights/guide" className="hover:text-primary">
-          机场攻略
-        </Link>{" "}
-        &gt; 乘机流程
-      </div>
+    <div className="container mx-auto px-4 min-h-screen bg-background">
+      <Breadcrumb className="mb-6">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/flights">首页</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/flights/guide">机场攻略</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>乘机流程图</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       <h1 className="text-2xl font-bold text-foreground mb-8 text-center">
         乘机流程指南
