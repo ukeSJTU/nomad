@@ -10,6 +10,7 @@ import {
   signInWithOtpAction,
   verifyEmailOtpAction,
 } from "@/app/_actions/auth";
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
@@ -40,11 +41,11 @@ export interface UseSignUpFlowReturn {
   handleSendPhoneOtp: (
     phoneNumber: string,
     fetchOptions?: FetchOptions
-  ) => Promise<boolean>;
+  ) => Promise<OtpSendActionResult>;
   handleSendEmailOtp: (
     email: string,
     fetchOptions?: FetchOptions
-  ) => Promise<boolean>;
+  ) => Promise<OtpSendActionResult>;
 }
 
 export function useSignUpFlow(): UseSignUpFlowReturn {
@@ -154,10 +155,10 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
   const handleSendPhoneOtp = async (
     phoneNumber: string,
     fetchOptions?: FetchOptions
-  ): Promise<boolean> => {
+  ): Promise<OtpSendActionResult> => {
     if (!phoneNumber) {
       toast.error("请先输入手机号");
-      return false;
+      return { success: false, error: "请先输入手机号" };
     }
 
     setIsLoading(true);
@@ -165,9 +166,13 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     try {
       const result = await sendPhoneOtpAction(phoneNumber, fetchOptions);
 
-      return result.success;
+      if (!result.success) {
+        toast.error(result.error || "发送验证码失败，请重试");
+      }
+
+      return result;
     } catch {
-      return false;
+      return { success: false, error: "发送验证码失败，请重试" };
     } finally {
       setIsLoading(false);
     }
@@ -179,10 +184,10 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
   const handleSendEmailOtp = async (
     email: string,
     fetchOptions?: FetchOptions
-  ): Promise<boolean> => {
+  ): Promise<OtpSendActionResult> => {
     if (!email) {
       toast.error("请先输入邮箱地址");
-      return false;
+      return { success: false, error: "请先输入邮箱地址" };
     }
 
     setIsLoading(true);
@@ -194,9 +199,13 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
         fetchOptions
       );
 
-      return result.success;
+      if (!result.success) {
+        toast.error(result.error || "发送验证码失败，请重试");
+      }
+
+      return result;
     } catch {
-      return false;
+      return { success: false, error: "发送验证码失败，请重试" };
     } finally {
       setIsLoading(false);
     }

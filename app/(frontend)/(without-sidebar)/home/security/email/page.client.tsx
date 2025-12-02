@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -20,6 +20,7 @@ import UpdateEmailForm, {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { createClientLogger } from "@/infra/logging/client-logger";
+import { buildOtpStorageKey } from "@/lib/otp";
 
 const logger = createClientLogger({ module: "security-email-page" });
 
@@ -51,7 +52,14 @@ export default function EmailPageClient({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const { countdown, start: startCountdown } = useOtpCountdown();
+  const [otpTarget, setOtpTarget] = useState(currentEmail);
+  const countdownKey = useMemo(
+    () => (otpTarget ? buildOtpStorageKey("email", otpTarget) : null),
+    [otpTarget]
+  );
+  const { countdown, start: startCountdown } = useOtpCountdown({
+    storageKey: countdownKey,
+  });
   const turnstileRef = useRef<TurnstileInstance | undefined>(null);
 
   // Determine form mode based on current status
@@ -67,6 +75,7 @@ export default function EmailPageClient({
    * Requires Turnstile verification before sending
    */
   const handleSendOtp = async (email: string) => {
+    setOtpTarget(email);
     setIsVerifying(true);
     try {
       // Get Turnstile token
@@ -86,6 +95,9 @@ export default function EmailPageClient({
 
       if (!result.success) {
         logger.error({ error: result.error }, "发送验证码失败");
+        if (result.retryAfterSeconds) {
+          startCountdown(result.retryAfterSeconds);
+        }
         toast.error(result.error || "发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送到新邮箱");

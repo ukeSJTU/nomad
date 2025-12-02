@@ -1,15 +1,55 @@
 import { act, renderHook } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { useOtpCountdown } from "./use-otp-countdown";
+
+const mockStorage = (() => {
+  let store: Record<string, string> = {};
+
+  return {
+    getItem: (key: string) => (key in store ? store[key] : null),
+    setItem: (key: string, value: string) => {
+      store[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+  };
+})();
+
+beforeAll(() => {
+  Object.defineProperty(globalThis, "localStorage", {
+    value: mockStorage,
+    writable: true,
+  });
+});
 
 describe("useOtpCountdown", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    if (typeof window !== "undefined" && window.localStorage?.clear) {
+      window.localStorage.clear();
+    }
+    document.cookie = "";
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    if (typeof window !== "undefined" && window.localStorage?.clear) {
+      window.localStorage.clear();
+    }
+    document.cookie = "";
   });
 
   describe("Initial State", () => {
@@ -159,6 +199,38 @@ describe("useOtpCountdown", () => {
       });
 
       expect(result.current.countdown).toBe(2);
+      expect(result.current.isActive).toBe(true);
+    });
+  });
+
+  describe("persistence", () => {
+    it("should persist expiration when countdown starts", () => {
+      vi.setSystemTime(new Date("2024-01-01T00:00:00Z"));
+      const storageKey = "otp-countdown:test";
+      const { result } = renderHook(() =>
+        useOtpCountdown({ duration: 10, storageKey })
+      );
+
+      act(() => {
+        result.current.start();
+      });
+
+      const expectedExpiresAt = Date.now() + 10_000;
+      expect(localStorage.getItem(storageKey)).toBe(
+        expectedExpiresAt.toString()
+      );
+      expect(document.cookie).toContain(`${encodeURIComponent(storageKey)}=`);
+    });
+
+    it("should restore countdown from persisted expiration", () => {
+      vi.setSystemTime(new Date("2024-01-01T00:00:00Z"));
+      const storageKey = "otp-countdown:test";
+      const expiresAt = Date.now() + 15_000;
+      localStorage.setItem(storageKey, expiresAt.toString());
+
+      const { result } = renderHook(() => useOtpCountdown({ storageKey }));
+
+      expect(result.current.countdown).toBe(15);
       expect(result.current.isActive).toBe(true);
     });
   });

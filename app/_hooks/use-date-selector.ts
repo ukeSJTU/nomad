@@ -75,48 +75,40 @@ export function useDateSelector({
         const range = date as DateRange | undefined;
 
         if (activeField === "departure") {
-          if (range?.from && range?.to) {
+          if (range?.from) {
             onDepartureDateChange(range.from);
-            onReturnDateChange(range.to);
-            setCalendarOpen(false);
-          } else if (range?.from && !range?.to) {
-            const newDepartureDate = range.from;
-            onDepartureDateChange(newDepartureDate);
-
-            if (returnDate) {
-              if (newDepartureDate <= returnDate) {
-                setCalendarOpen(false);
-              } else {
-                onReturnDateChange(newDepartureDate);
-              }
-            } else {
-              onReturnDateChange(newDepartureDate);
+            if (range.to && range.to.getTime() !== range.from.getTime()) {
+              onReturnDateChange(range.to);
             }
           }
-        } else {
-          if (range?.from && range?.to) {
-            onDepartureDateChange(range.from);
-            onReturnDateChange(range.to);
-            setCalendarOpen(false);
-          } else if (range?.from && !range?.to) {
-            const newReturnDate = range.from;
-
-            if (departureDate) {
-              if (newReturnDate >= departureDate) {
-                onReturnDateChange(newReturnDate);
-                setCalendarOpen(false);
-              } else {
-                onDepartureDateChange(newReturnDate);
-                onReturnDateChange(departureDate);
-                setCalendarOpen(false);
-              }
-            } else {
-              onDepartureDateChange(newReturnDate);
-              onReturnDateChange(newReturnDate);
-              setCalendarOpen(false);
-            }
-          }
+          setCalendarOpen(false);
+          return;
         }
+
+        const newReturnDate = range?.to ?? range?.from;
+
+        if (!newReturnDate) {
+          return;
+        }
+
+        // If no departure yet, mirror return into both
+        if (!departureDate) {
+          onDepartureDateChange(newReturnDate);
+          onReturnDateChange(newReturnDate);
+          setCalendarOpen(false);
+          return;
+        }
+
+        if (newReturnDate >= departureDate) {
+          onReturnDateChange(newReturnDate);
+          setCalendarOpen(false);
+          return;
+        }
+
+        // Swap when selecting an earlier return
+        onDepartureDateChange(newReturnDate);
+        onReturnDateChange(departureDate);
+        setCalendarOpen(false);
       } else {
         if (date && !(date as DateRange).from) {
           if (activeField === "departure") {

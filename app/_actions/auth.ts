@@ -15,6 +15,10 @@ import {
   updateUserEmailWorkflow,
   updateUserPhoneNumberWorkflow,
 } from "@/services/auth-workflow.service";
+import {
+  getOtpCooldownState,
+  markOtpCooldown,
+} from "@/services/otp-cooldown.service";
 import type { ActionResult, ServiceResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
@@ -74,6 +78,25 @@ function ensureCaptcha(fetchOptions?: FetchOptions): ActionResult | null {
   return {
     success: false,
     error: "人机验证失败，请重新完成人机验证后再试",
+  };
+}
+
+export type OtpSendActionResult = ActionResult & {
+  retryAfterSeconds?: number;
+};
+
+function buildCooldownError(remainingSeconds: number): OtpSendActionResult {
+  if (remainingSeconds > 0) {
+    return {
+      success: false,
+      error: `验证码发送过于频繁，请在${remainingSeconds}秒后重试`,
+      retryAfterSeconds: remainingSeconds,
+    };
+  }
+
+  return {
+    success: false,
+    error: "验证码发送过于频繁，请稍后再试",
   };
 }
 
@@ -173,10 +196,15 @@ export async function signInWithOtpAction(
 export async function sendPhoneOtpAction(
   phoneNumber: string,
   fetchOptions?: FetchOptions
-): Promise<ActionResult> {
+): Promise<OtpSendActionResult> {
   const captchaResult = ensureCaptcha(fetchOptions);
   if (captchaResult) {
     return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("phone", phoneNumber);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
   }
 
   try {
@@ -185,6 +213,7 @@ export async function sendPhoneOtpAction(
       body: { phoneNumber },
       headers: headersList,
     });
+    await markOtpCooldown(cooldown.key);
     return { success: true, data: undefined };
   } catch (error) {
     logger.error({ error }, "Send phone OTP failed");
@@ -202,10 +231,15 @@ export async function sendEmailOtpAction(
   email: string,
   type: "sign-in" | "forget-password" | "email-verification",
   fetchOptions?: FetchOptions
-): Promise<ActionResult> {
+): Promise<OtpSendActionResult> {
   const captchaResult = ensureCaptcha(fetchOptions);
   if (captchaResult) {
     return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("email", email);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
   }
 
   try {
@@ -218,12 +252,82 @@ export async function sendEmailOtpAction(
       headers: headersList,
     });
 
+    await markOtpCooldown(cooldown.key);
     return { success: true, data: undefined };
   } catch (error) {
     logger.error({ error }, "Send email OTP failed");
     return {
       success: false,
       error: "发送验证码失败，请重试",
+    };
+  }
+}
+
+/**
+ * Send phone OTP for password reset via server boundary.
+ */
+export async function sendResetPhoneOtpAction(
+  phoneNumber: string,
+  fetchOptions?: FetchOptions
+): Promise<OtpSendActionResult> {
+  const captchaResult = ensureCaptcha(fetchOptions);
+  if (captchaResult) {
+    return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("phone", phoneNumber);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
+  }
+
+  try {
+    const headersList = await buildHeaders(fetchOptions);
+    await auth.api.requestPasswordResetPhoneNumber({
+      body: { phoneNumber },
+      headers: headersList,
+    });
+    await markOtpCooldown(cooldown.key);
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Send reset phone OTP failed");
+    return {
+      success: false,
+      error: "该账号未注册，请检查后重试",
+    };
+  }
+}
+
+/**
+ * Send email OTP for password reset via server boundary.
+ */
+export async function sendResetEmailOtpAction(
+  email: string,
+  fetchOptions?: FetchOptions
+): Promise<OtpSendActionResult> {
+  const captchaResult = ensureCaptcha(fetchOptions);
+  if (captchaResult) {
+    return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("email", email);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
+  }
+
+  try {
+    const headersList = await buildHeaders(fetchOptions);
+    await auth.api.forgetPasswordEmailOTP({
+      body: { email },
+      headers: headersList,
+    });
+
+    await markOtpCooldown(cooldown.key);
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Send reset email OTP failed");
+    return {
+      success: false,
+      error: "该账号未注册，请检查后重试",
     };
   }
 }
@@ -251,6 +355,59 @@ export async function verifyEmailOtpAction(
     return {
       success: false,
       error: "验证码错误，请重试",
+    };
+  }
+}
+
+/**
+ * Reset password using OTP for phone or email accounts.
+ */
+export async function resetPasswordWithOtpAction(
+  data: { account: string; otp: string; newPassword: string },
+  fetchOptions?: FetchOptions
+): Promise<ActionResult> {
+  const { isPhone, isEmail, account } = resolveAccountType(data.account);
+
+  if (!isPhone && !isEmail) {
+    return { success: false, error: "请输入正确的手机号或邮箱格式" };
+  }
+
+  try {
+    const headersList = await buildHeaders(fetchOptions);
+
+    if (isPhone) {
+      await auth.api.resetPasswordPhoneNumber({
+        body: {
+          phoneNumber: account,
+          otp: data.otp,
+          newPassword: data.newPassword,
+        },
+        headers: headersList,
+      });
+    } else {
+      await auth.api.resetPasswordEmailOTP({
+        body: {
+          email: account,
+          otp: data.otp,
+          password: data.newPassword,
+        },
+        headers: headersList,
+      });
+    }
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    logger.error({ error }, "Reset password with OTP failed");
+    const message =
+      error instanceof Error ? error.message.toLowerCase() : undefined;
+
+    if (message?.includes("expire")) {
+      return { success: false, error: "验证码已过期，请重新获取" };
+    }
+
+    return {
+      success: false,
+      error: "验证码错误，请重新输入",
     };
   }
 }
