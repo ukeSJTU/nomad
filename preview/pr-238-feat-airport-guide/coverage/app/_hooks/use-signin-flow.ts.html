@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.41% </span>
+                <span class="strong">77.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>72/93</span>
+                <span class='fraction'>74/95</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.41% </span>
+                <span class="strong">77.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>72/93</span>
+                <span class='fraction'>74/95</span>
             </div>
         
             
@@ -216,7 +216,10 @@
 <a name='L151'></a><a href='#L151'>151</a>
 <a name='L152'></a><a href='#L152'>152</a>
 <a name='L153'></a><a href='#L153'>153</a>
-<a name='L154'></a><a href='#L154'>154</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,9 +230,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -379,10 +385,13 @@ import {
   signInWithOtpAction,
   signInWithPasswordAction,
 } from "@/app/_actions/auth";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import { validateAccount } from "@/lib/validation";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type { OtpLoginData, PasswordLoginData } from "@/types/validations";
+&nbsp;
+const logger = createClientLogger({ module: "use-signin-flow" });
 &nbsp;
 export interface UseSignInFlowReturn {
   isLoading: boolean;
@@ -430,7 +439,7 @@ export function useSignInFlow(): UseSignInFlowReturn {
       router.push("/");
       return { success: true, data: undefined };
 <span class="branch-0 cbranch-no" title="branch not covered" >    } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >      console.error("登录异常:", error);</span>
+<span class="cstat-no" title="statement not covered" >      logger.error({ err: error }, "登录异常");</span>
 <span class="cstat-no" title="statement not covered" >      const errorMessage = "登录失败，请稍后重试";</span>
 <span class="cstat-no" title="statement not covered" >      toast.error(errorMessage);</span>
 <span class="cstat-no" title="statement not covered" >      return {</span>
@@ -464,7 +473,7 @@ export function useSignInFlow(): UseSignInFlowReturn {
       router.push("/");
       return { success: true, data: undefined };
 <span class="branch-0 cbranch-no" title="branch not covered" >    } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >      console.error("验证码登录异常:", error);</span>
+<span class="cstat-no" title="statement not covered" >      logger.error({ err: error }, "验证码登录异常");</span>
 <span class="cstat-no" title="statement not covered" >      const errorMessage = "登录失败，请稍后重试";</span>
 <span class="cstat-no" title="statement not covered" >      toast.error(errorMessage);</span>
 <span class="cstat-no" title="statement not covered" >      return {</span>
@@ -500,14 +509,14 @@ export function useSignInFlow(): UseSignInFlowReturn {
         : await sendEmailOtpAction(account, "sign-in", fetchOptions);
 &nbsp;
       if (!result.success) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >        console.error("发送验证码失败:", result.error);</span>
+<span class="cstat-no" title="statement not covered" >        logger.error({ error: result.error }, "发送验证码失败");</span>
 <span class="cstat-no" title="statement not covered" >        toast.error("发送验证码失败，请重试");</span>
 <span class="cstat-no" title="statement not covered" >        return false;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 &nbsp;
       return true;
 <span class="branch-0 cbranch-no" title="branch not covered" >    } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >      console.error("发送验证码异常:", error);</span>
+<span class="cstat-no" title="statement not covered" >      logger.error({ err: error }, "发送验证码异常");</span>
 <span class="cstat-no" title="statement not covered" >      toast.error("发送验证码失败，请重试");</span>
 <span class="cstat-no" title="statement not covered" >      return false;</span>
     } finally {
@@ -529,7 +538,7 @@ export function useSignInFlow(): UseSignInFlowReturn {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T05:53:17.588Z
+                at 2025-12-02T07:54:38.331Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

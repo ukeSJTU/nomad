@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/38</span>
+                <span class='fraction'>0/46</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/38</span>
+                <span class='fraction'>0/46</span>
             </div>
         
             
@@ -137,7 +137,16 @@
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,8 +156,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -176,20 +188,26 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -221,8 +239,11 @@
 <span class="cstat-no" title="statement not covered" >import "server-only";</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >import { sendOrderConfirmationEmail as sendEmailViaClient } from "@/infra/communications";</span>
+<span class="cstat-no" title="statement not covered" >import { createScopedLogger } from "@/infra/logging/logger";</span>
 import type { OrderConfirmationEmailData } from "@/types/dto";
 import type { ServiceResult } from "@/types/result";
+&nbsp;
+<span class="cstat-no" title="statement not covered" >const logger = createScopedLogger({ module: "order-email-sender" });</span>
 &nbsp;
 /**
  * Send order confirmation email
@@ -237,9 +258,9 @@ import type { ServiceResult } from "@/types/result";
  * ```typescript
  * const result = await sendOrderConfirmationEmail(emailData);
  * if (result.success) {
- *   console.log("Email sent successfully");
+ *   logger.info("Email sent successfully");
  * } else {
- *   console.error("Failed to send email:", result.error);
+ *   logger.error({ err: result.error }, "Failed to send email");
  * }
  * ```
  */
@@ -247,16 +268,21 @@ import type { ServiceResult } from "@/types/result";
 <span class="cstat-no" title="statement not covered" >  emailData: OrderConfirmationEmailData</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ServiceResult&lt;void&gt;&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
-<span class="cstat-no" title="statement not covered" >    console.log(</span>
-<span class="cstat-no" title="statement not covered" >      `[Email Service] Sending order confirmation email for order ${emailData.orderNumber} to ${emailData.user.email}`</span>
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+<span class="cstat-no" title="statement not covered" >      {</span>
+<span class="cstat-no" title="statement not covered" >        orderNumber: emailData.orderNumber,</span>
+<span class="cstat-no" title="statement not covered" >        email: emailData.user.email,</span>
+<span class="cstat-no" title="statement not covered" >      },</span>
+<span class="cstat-no" title="statement not covered" >      "[Email Service] Sending order confirmation email"</span>
 <span class="cstat-no" title="statement not covered" >    );</span>
 &nbsp;
     // Send email via client
 <span class="cstat-no" title="statement not covered" >    const success = await sendEmailViaClient(emailData);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (!success) {</span>
-<span class="cstat-no" title="statement not covered" >      console.error(</span>
-<span class="cstat-no" title="statement not covered" >        `[Email Service] Failed to send order confirmation email for order ${emailData.orderNumber}`</span>
+<span class="cstat-no" title="statement not covered" >      logger.error(</span>
+<span class="cstat-no" title="statement not covered" >        { orderNumber: emailData.orderNumber },</span>
+<span class="cstat-no" title="statement not covered" >        "[Email Service] Failed to send order confirmation email"</span>
 <span class="cstat-no" title="statement not covered" >      );</span>
 <span class="cstat-no" title="statement not covered" >      return {</span>
 <span class="cstat-no" title="statement not covered" >        success: false,</span>
@@ -264,8 +290,9 @@ import type { ServiceResult } from "@/types/result";
 <span class="cstat-no" title="statement not covered" >      };</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    console.log(</span>
-<span class="cstat-no" title="statement not covered" >      `[Email Service] Order confirmation email sent successfully for order ${emailData.orderNumber}`</span>
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+<span class="cstat-no" title="statement not covered" >      { orderNumber: emailData.orderNumber },</span>
+<span class="cstat-no" title="statement not covered" >      "[Email Service] Order confirmation email sent successfully"</span>
 <span class="cstat-no" title="statement not covered" >    );</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return {</span>
@@ -273,9 +300,9 @@ import type { ServiceResult } from "@/types/result";
 <span class="cstat-no" title="statement not covered" >      message: "订单确认邮件已发送",</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
 <span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >    console.error(</span>
-<span class="cstat-no" title="statement not covered" >      `[Email Service] Error sending order confirmation email:`,</span>
-<span class="cstat-no" title="statement not covered" >      error</span>
+<span class="cstat-no" title="statement not covered" >    logger.error(</span>
+<span class="cstat-no" title="statement not covered" >      { err: error, orderNumber: emailData.orderNumber },</span>
+<span class="cstat-no" title="statement not covered" >      "[Email Service] Error sending order confirmation email"</span>
 <span class="cstat-no" title="statement not covered" >    );</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return {</span>
@@ -292,7 +319,7 @@ import type { ServiceResult } from "@/types/result";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T05:53:17.685Z
+                at 2025-12-02T07:54:38.433Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
