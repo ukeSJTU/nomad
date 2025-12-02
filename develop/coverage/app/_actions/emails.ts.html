@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/42</span>
+                <span class='fraction'>0/48</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/42</span>
+                <span class='fraction'>0/48</span>
             </div>
         
             
@@ -144,7 +144,19 @@
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -157,7 +169,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -185,6 +200,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -209,6 +230,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -238,7 +262,10 @@
 &nbsp;
 <span class="cstat-no" title="statement not covered" >import { resendOrderConfirmation } from "@/domains/notification";</span>
 <span class="cstat-no" title="statement not covered" >import { auth } from "@/infra/auth";</span>
+<span class="cstat-no" title="statement not covered" >import { createScopedLogger } from "@/infra/logging/logger";</span>
 import type { ActionResult } from "@/types/common";
+&nbsp;
+<span class="cstat-no" title="statement not covered" >const logger = createScopedLogger({ module: "actions.emails" });</span>
 &nbsp;
 /**
  * Server action to resend order confirmation email
@@ -265,9 +292,15 @@ import type { ActionResult } from "@/types/common";
 <span class="cstat-no" title="statement not covered" >export async function resendOrderConfirmationAction(</span>
 <span class="cstat-no" title="statement not covered" >  orderId: string</span>
 <span class="cstat-no" title="statement not covered" >): Promise&lt;ActionResult&lt;void&gt;&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  let session:</span>
+    | {
+        user: { id: string; email: string | null; name: string | null };
+      }
+    | null
+    | undefined;
 <span class="cstat-no" title="statement not covered" >  try {</span>
 <span class="cstat-no" title="statement not covered" >    const headersList = await headers();</span>
-<span class="cstat-no" title="statement not covered" >    const session = await auth.api.getSession({ headers: headersList });</span>
+<span class="cstat-no" title="statement not covered" >    session = await auth.api.getSession({ headers: headersList });</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (!session?.user?.id) {</span>
 <span class="cstat-no" title="statement not covered" >      return {</span>
@@ -295,7 +328,10 @@ import type { ActionResult } from "@/types/common";
 <span class="cstat-no" title="statement not covered" >      data: undefined,</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
 <span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >    console.error("[resendOrderConfirmationAction] Error:", error);</span>
+<span class="cstat-no" title="statement not covered" >    logger.error(</span>
+<span class="cstat-no" title="statement not covered" >      { err: error, orderId, userId: session?.user?.id },</span>
+<span class="cstat-no" title="statement not covered" >      "[resendOrderConfirmationAction] Error"</span>
+<span class="cstat-no" title="statement not covered" >    );</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return {</span>
 <span class="cstat-no" title="statement not covered" >      success: false as const,</span>
@@ -313,7 +349,7 @@ import type { ActionResult } from "@/types/common";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T04:26:23.340Z
+                at 2025-12-02T07:49:55.122Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

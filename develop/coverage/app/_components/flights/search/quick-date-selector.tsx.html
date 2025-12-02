@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/159</span>
+                <span class='fraction'>0/164</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/159</span>
+                <span class='fraction'>0/164</span>
             </div>
         
             
@@ -281,7 +281,13 @@
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
 <a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -291,8 +297,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -306,7 +316,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -322,6 +331,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -508,6 +520,7 @@
 <span class="cstat-no" title="statement not covered" >import { getQuickDatePrices } from "@/app/_actions/quick-date-prices";</span>
 <span class="cstat-no" title="statement not covered" >import { Button } from "@/components/ui/button";</span>
 <span class="cstat-no" title="statement not covered" >import { Skeleton } from "@/components/ui/skeleton";</span>
+<span class="cstat-no" title="statement not covered" >import { createClientLogger } from "@/infra/logging/client-logger";</span>
 <span class="cstat-no" title="statement not covered" >import {</span>
   dateToLocalDateString,
   formatCurrency,
@@ -515,6 +528,8 @@
 } from "@/lib/format";
 <span class="cstat-no" title="statement not covered" >import { cn } from "@/lib/utils";</span>
 import { type QuickDatePrice } from "@/types/dto";
+&nbsp;
+<span class="cstat-no" title="statement not covered" >const logger = createClientLogger({ module: "quick-date-selector" });</span>
 &nbsp;
 interface QuickDateSelectorProps {
   from: string; // Departure city IATA code
@@ -554,7 +569,10 @@ interface QuickDateSelectorProps {
 <span class="cstat-no" title="statement not covered" >        });</span>
 <span class="cstat-no" title="statement not covered" >        setPrices(result);</span>
 <span class="cstat-no" title="statement not covered" >      } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >        console.error("Failed to fetch quick date prices:", error);</span>
+<span class="cstat-no" title="statement not covered" >        logger.error(</span>
+<span class="cstat-no" title="statement not covered" >          { err: error, from, to, departureDate: currentCenterDate },</span>
+<span class="cstat-no" title="statement not covered" >          "Failed to fetch quick date prices"</span>
+<span class="cstat-no" title="statement not covered" >        );</span>
 <span class="cstat-no" title="statement not covered" >        setPrices([]);</span>
 <span class="cstat-no" title="statement not covered" >      } finally {</span>
 <span class="cstat-no" title="statement not covered" >        setIsLoading(false);</span>
@@ -686,7 +704,7 @@ interface QuickDateSelectorProps {
 <span class="cstat-no" title="statement not covered" >                &lt;div className="text-sm font-medium mt-0.5"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  {isAvailable ? (</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;span className="font-bold text-orange-500"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                      {formatCurrency(Math.round(price.lowestPrice!))}</span>
+<span class="cstat-no" title="statement not covered" >                      {formatCurrency(Math.round(price.lowestPrice ?? 0))}</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;/span&gt;</span>
                   ) : (
 <span class="cstat-no" title="statement not covered" >                    &lt;span className="text-muted-foreground"&gt;无&lt;/span&gt;</span>
@@ -724,7 +742,7 @@ interface QuickDateSelectorProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T04:26:23.340Z
+                at 2025-12-02T07:49:55.122Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
