@@ -20,8 +20,8 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function PasswordPage() {
-  const { id: userId } = await requireSessionUser("/home/security/password");
-  const securityStatus = await getUserSecurityStatus(userId);
+  const user = await requireSessionUser("/home/security/password");
+  const securityStatus = await getUserSecurityStatus(user.id);
 
   if (!securityStatus) {
     return null;

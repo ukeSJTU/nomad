@@ -51,8 +51,8 @@ const SECURITY_ITEMS = {
  * - Action buttons for each security item
  */
 export default async function SecurityPage() {
-  const { id: userId } = await requireSessionUser("/home/security");
-  const securityStatus = await getUserSecurityStatus(userId);
+  const user = await requireSessionUser("/home/security");
+  const securityStatus = await getUserSecurityStatus(user.id);
 
   if (!securityStatus) {
     return null;

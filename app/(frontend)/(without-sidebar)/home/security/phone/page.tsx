@@ -22,8 +22,8 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function PhonePage() {
-  const { id: userId } = await requireSessionUser("/home/security/phone");
-  const securityStatus = await getUserSecurityStatus(userId);
+  const user = await requireSessionUser("/home/security/phone");
+  const securityStatus = await getUserSecurityStatus(user.id);
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!securityStatus) {

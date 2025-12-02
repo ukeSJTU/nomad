@@ -19,8 +19,8 @@ export const dynamic = "force-dynamic";
  * - Delegates to client component for form handling
  */
 export default async function EmailPage() {
-  const { id: userId } = await requireSessionUser("/home/security/email");
-  const securityStatus = await getUserSecurityStatus(userId);
+  const user = await requireSessionUser("/home/security/email");
+  const securityStatus = await getUserSecurityStatus(user.id);
 
   if (!securityStatus) {
     return null;
