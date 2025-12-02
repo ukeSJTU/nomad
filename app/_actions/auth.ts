@@ -15,6 +15,10 @@ import {
   updateUserEmailWorkflow,
   updateUserPhoneNumberWorkflow,
 } from "@/services/auth-workflow.service";
+import {
+  getOtpCooldownState,
+  markOtpCooldown,
+} from "@/services/otp-cooldown.service";
 import type { ActionResult, ServiceResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
@@ -74,6 +78,25 @@ function ensureCaptcha(fetchOptions?: FetchOptions): ActionResult | null {
   return {
     success: false,
     error: "人机验证失败，请重新完成人机验证后再试",
+  };
+}
+
+export type OtpSendActionResult = ActionResult & {
+  retryAfterSeconds?: number;
+};
+
+function buildCooldownError(remainingSeconds: number): OtpSendActionResult {
+  if (remainingSeconds > 0) {
+    return {
+      success: false,
+      error: `验证码发送过于频繁，请在${remainingSeconds}秒后重试`,
+      retryAfterSeconds: remainingSeconds,
+    };
+  }
+
+  return {
+    success: false,
+    error: "验证码发送过于频繁，请稍后再试",
   };
 }
 
@@ -173,10 +196,15 @@ export async function signInWithOtpAction(
 export async function sendPhoneOtpAction(
   phoneNumber: string,
   fetchOptions?: FetchOptions
-): Promise<ActionResult> {
+): Promise<OtpSendActionResult> {
   const captchaResult = ensureCaptcha(fetchOptions);
   if (captchaResult) {
     return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("phone", phoneNumber);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
   }
 
   try {
@@ -185,6 +213,7 @@ export async function sendPhoneOtpAction(
       body: { phoneNumber },
       headers: headersList,
     });
+    await markOtpCooldown(cooldown.key);
     return { success: true, data: undefined };
   } catch (error) {
     logger.error({ error }, "Send phone OTP failed");
@@ -202,10 +231,15 @@ export async function sendEmailOtpAction(
   email: string,
   type: "sign-in" | "forget-password" | "email-verification",
   fetchOptions?: FetchOptions
-): Promise<ActionResult> {
+): Promise<OtpSendActionResult> {
   const captchaResult = ensureCaptcha(fetchOptions);
   if (captchaResult) {
     return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("email", email);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
   }
 
   try {
@@ -218,6 +252,7 @@ export async function sendEmailOtpAction(
       headers: headersList,
     });
 
+    await markOtpCooldown(cooldown.key);
     return { success: true, data: undefined };
   } catch (error) {
     logger.error({ error }, "Send email OTP failed");
@@ -234,10 +269,15 @@ export async function sendEmailOtpAction(
 export async function sendResetPhoneOtpAction(
   phoneNumber: string,
   fetchOptions?: FetchOptions
-): Promise<ActionResult> {
+): Promise<OtpSendActionResult> {
   const captchaResult = ensureCaptcha(fetchOptions);
   if (captchaResult) {
     return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("phone", phoneNumber);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
   }
 
   try {
@@ -246,6 +286,7 @@ export async function sendResetPhoneOtpAction(
       body: { phoneNumber },
       headers: headersList,
     });
+    await markOtpCooldown(cooldown.key);
     return { success: true, data: undefined };
   } catch (error) {
     logger.error({ error }, "Send reset phone OTP failed");
@@ -262,10 +303,15 @@ export async function sendResetPhoneOtpAction(
 export async function sendResetEmailOtpAction(
   email: string,
   fetchOptions?: FetchOptions
-): Promise<ActionResult> {
+): Promise<OtpSendActionResult> {
   const captchaResult = ensureCaptcha(fetchOptions);
   if (captchaResult) {
     return captchaResult;
+  }
+
+  const cooldown = await getOtpCooldownState("email", email);
+  if (cooldown.remainingSeconds > 0) {
+    return buildCooldownError(cooldown.remainingSeconds);
   }
 
   try {
@@ -275,6 +321,7 @@ export async function sendResetEmailOtpAction(
       headers: headersList,
     });
 
+    await markOtpCooldown(cooldown.key);
     return { success: true, data: undefined };
   } catch (error) {
     logger.error({ error }, "Send reset email OTP failed");

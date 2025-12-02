@@ -3,10 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Github } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import {
   type TurnstileInstance,
   TurnstileWidget,
@@ -27,6 +28,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
+import { buildOtpStorageKeyFromAccount } from "@/lib/otp";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
@@ -312,7 +314,10 @@ interface OtpLoginFormProps {
    * @param account - User's phone number or email
    * @param fetchOptions - Optional fetch options (e.g., headers with captcha token)
    */
-  onSendOtp: (account: string, fetchOptions?: FetchOptions) => Promise<boolean>;
+  onSendOtp: (
+    account: string,
+    fetchOptions?: FetchOptions
+  ) => Promise<OtpSendActionResult>;
 
   /** Switch to password login */
   onSwitchToPassword: () => void;
@@ -331,7 +336,6 @@ function OtpLoginForm({
   isLoading = false,
   className,
 }: OtpLoginFormProps) {
-  const { countdown, start: startCountdown } = useOtpCountdown();
   const [isVerifying, setIsVerifying] = useState(false);
   const turnstileRef = useRef<TurnstileInstance | undefined>(null);
   const form = useForm<OtpLoginData>({
@@ -344,6 +348,14 @@ function OtpLoginForm({
       otp: "",
       agreedToTerms: false,
     },
+  });
+  const accountValue = form.watch("account");
+  const countdownKey = useMemo(
+    () => buildOtpStorageKeyFromAccount(accountValue),
+    [accountValue]
+  );
+  const { countdown, start: startCountdown } = useOtpCountdown({
+    storageKey: countdownKey,
   });
 
   const handleSendOtp = async () => {
@@ -369,15 +381,18 @@ function OtpLoginForm({
       }
 
       // Call backend API to send OTP with captcha token
-      const success = await onSendOtp(account, {
+      const result = await onSendOtp(account, {
         headers: { "x-captcha-token": token },
       });
 
       // Start countdown only if backend returns success
-      if (success) {
+      if (result.success) {
         startCountdown();
       } else {
-        toast.error("发送验证码失败，请重试");
+        if (result.retryAfterSeconds) {
+          startCountdown(result.retryAfterSeconds);
+        }
+        toast.error(result.error || "发送验证码失败，请重试");
       }
 
       // Reset Turnstile for next use
@@ -553,7 +568,10 @@ export interface UnifiedLoginFormProps {
   ) => Promise<ActionResult>;
 
   /** Send OTP callback - should return true if OTP was sent successfully */
-  onSendOtp: (account: string, fetchOptions?: FetchOptions) => Promise<boolean>;
+  onSendOtp: (
+    account: string,
+    fetchOptions?: FetchOptions
+  ) => Promise<OtpSendActionResult>;
 
   /** Initial login method (optional, defaults to password) */
   initialLoginMethod?: "password" | "otp";
