@@ -3,6 +3,7 @@ import "server-only";
 import { Resend } from "resend";
 
 import { OrderConfirmationEmail, OtpEmailTemplate } from "@/components/emails";
+import { getParsedEnv } from "@/config/env";
 import { createScopedLogger } from "@/infra/logging/logger";
 import type { OrderConfirmationEmailData } from "@/types/dto";
 
@@ -17,7 +18,8 @@ export class ResendEmailClient {
   private client: Resend;
 
   private constructor() {
-    const apiKey = process.env.RESEND_API_KEY;
+    const env = getParsedEnv();
+    const apiKey = env.RESEND_API_KEY;
 
     if (!apiKey) {
       logger.warn(
@@ -52,15 +54,15 @@ export class ResendEmailClient {
     code: string
   ): Promise<boolean> {
     try {
-      const fromEmail =
-        process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+      const env = getParsedEnv();
+      const fromEmail = (env as any).RESEND_FROM_EMAIL;
 
       logger.debug(
         { fromEmail, email: emailAddr },
         "Sending verification email"
       );
 
-      if (!process.env.RESEND_API_KEY) {
+      if (!env.RESEND_API_KEY) {
         throw new Error("Missing required email configuration: RESEND_API_KEY");
       }
 
@@ -98,8 +100,8 @@ export class ResendEmailClient {
     orderData: OrderConfirmationEmailData
   ): Promise<boolean> {
     try {
-      const fromEmail =
-        process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+      const env = getParsedEnv();
+      const fromEmail = (env as any).RESEND_FROM_EMAIL;
 
       logger.info(
         {
@@ -109,7 +111,7 @@ export class ResendEmailClient {
         "Sending order confirmation email"
       );
 
-      if (!process.env.RESEND_API_KEY) {
+      if (!env.RESEND_API_KEY) {
         throw new Error("Missing required email configuration: RESEND_API_KEY");
       }
 

@@ -1,35 +1,17 @@
 import "server-only";
 
-import { isProduction } from "@/config/env";
+import { getFeatureToggles, getParsedEnv } from "@/config/env";
 import { sendEmailOtp, sendSmsOtp } from "@/infra/communications";
 import { logger } from "@/infra/logging";
 
 export function shouldEnableAliyunSms(): boolean {
-  const enableSms = process.env.ENABLE_ALIYUN_SMS?.toLowerCase();
-
-  if (enableSms === "enabled" || enableSms === "true") {
-    return true;
-  }
-
-  if (enableSms === "disabled" || enableSms === "false") {
-    return false;
-  }
-
-  return isProduction();
+  const { sms } = getFeatureToggles();
+  return sms;
 }
 
 export function shouldEnableResend(): boolean {
-  const enableEmail = process.env.ENABLE_RESEND?.toLowerCase();
-
-  if (enableEmail === "enabled" || enableEmail === "true") {
-    return true;
-  }
-
-  if (enableEmail === "disabled" || enableEmail === "false") {
-    return false;
-  }
-
-  return isProduction();
+  const { email } = getFeatureToggles();
+  return email;
 }
 
 export async function sendAuthPhoneOtp(
@@ -40,15 +22,19 @@ export async function sendAuthPhoneOtp(
 
   if (!useAliyunSms) {
     logger.info(`[SMS SIMULATION] Sending OTP to ${phoneNumber}`);
+    const env = getParsedEnv();
     logger.info(
-      `[SMS SIMULATION] Environment: ${process.env.NODE_ENV}, ENABLE_ALIYUN_SMS: ${process.env.ENABLE_ALIYUN_SMS}`
+      `[SMS SIMULATION] Environment: ${env.NODE_ENV}, ENABLE_ALIYUN_SMS: ${env.ENABLE_ALIYUN_SMS as unknown as string}`
     );
     return;
   }
 
-  const success = await sendSmsOtp(phoneNumber, code);
-
-  if (!success) {
+  try {
+    const success = await sendSmsOtp(phoneNumber, code);
+    if (!success) {
+      throw new Error("Failed to send SMS");
+    }
+  } catch {
     throw new Error("Failed to send SMS");
   }
 
@@ -64,15 +50,19 @@ export async function sendAuthEmailOtp(
 
   if (!useResend) {
     logger.info(`[EMAIL SIMULATION] Sending OTP to ${email} (type: ${type})`);
+    const env = getParsedEnv();
     logger.info(
-      `[EMAIL SIMULATION] Environment: ${process.env.NODE_ENV}, ENABLE_RESEND: ${process.env.ENABLE_RESEND}`
+      `[EMAIL SIMULATION] Environment: ${env.NODE_ENV}, ENABLE_RESEND: ${env.ENABLE_RESEND as unknown as string}`
     );
     return;
   }
 
-  const success = await sendEmailOtp(email, otp);
-
-  if (!success) {
+  try {
+    const success = await sendEmailOtp(email, otp);
+    if (!success) {
+      throw new Error("Failed to send email");
+    }
+  } catch {
     throw new Error("Failed to send email");
   }
 

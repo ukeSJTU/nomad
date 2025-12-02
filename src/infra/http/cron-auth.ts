@@ -21,6 +21,7 @@
  */
 
 import "server-only";
+import { getParsedEnv } from "@/config/env";
 import { createScopedLogger } from "@/infra/logging/logger";
 
 const logger = createScopedLogger({ module: "cron-auth" });
@@ -50,7 +51,8 @@ export function verifyCronSecret(request: Request): boolean {
   const token = authHeader.substring(7); // Remove "Bearer " prefix
 
   // Get the expected secret from environment
-  const expectedSecret = process.env.CRON_SECRET;
+  const env = getParsedEnv();
+  const expectedSecret = (env as any).CRON_SECRET;
 
   if (!expectedSecret) {
     logger.error(

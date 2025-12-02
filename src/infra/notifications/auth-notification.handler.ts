@@ -2,11 +2,13 @@ import "server-only";
 
 import { Resend } from "resend";
 
+import { getParsedEnv } from "@/config/env";
 import { logger } from "@/infra/logging";
 import { onAuthEvent } from "@/services/auth-events";
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const resendFrom = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+const env = getParsedEnv();
+const resendApiKey = env.RESEND_API_KEY;
+const resendFrom = (env as any).RESEND_FROM_EMAIL || "onboarding@resend.dev";
 const resendClient = resendApiKey ? new Resend(resendApiKey) : null;
 
 async function sendSecurityNotificationEmail(

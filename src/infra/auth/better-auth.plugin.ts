@@ -6,6 +6,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";
 
+import { getParsedEnv } from "@/config/env";
 import { db } from "@/db";
 import { logger } from "@/infra/logging";
 
@@ -21,7 +22,7 @@ export const auth = betterAuth({
   plugins: [
     captcha({
       provider: "cloudflare-turnstile",
-      secretKey: process.env.TURNSTILE_SECRET_KEY ?? "",
+      secretKey: getParsedEnv().TURNSTILE_SECRET_KEY ?? "",
       endpoints: ["/phone-number/send-otp", "/email-otp/send-verification-otp"],
     }),
     phoneNumber({
@@ -65,8 +66,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      clientId: (getParsedEnv() as any).GITHUB_CLIENT_ID as string,
+      clientSecret: (getParsedEnv() as any).GITHUB_CLIENT_SECRET as string,
     },
   },
   rateLimit: {
