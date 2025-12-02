@@ -61,6 +61,7 @@ export function DateSelector({
           tripDuration={tripDuration}
           calendarOpen={calendarOpen}
           onCalendarOpenChange={setCalendarOpen}
+          activeField={activeField}
           onDepartureClick={handleDepartureClick}
           onReturnClick={handleReturnClick}
           onDateSelect={handleDateSelect}
