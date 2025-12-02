@@ -1,15 +1,12 @@
-import { redirect } from "next/navigation";
-
-import { getUserBalanceAction } from "@/actions/user";
+import { getUserBalance } from "@/domains/user";
+import { requireSessionUser } from "@/infra/auth/session";
 
 import { WalletPageClient } from "./page.client";
 
 export default async function WalletPage() {
-  const balance = await getUserBalanceAction();
+  const user = await requireSessionUser("/home/wallets");
 
-  if (!balance) {
-    redirect("/error?type=unauthorized");
-  }
+  const balance = await getUserBalance(user.id);
 
   return <WalletPageClient initialBalance={balance} />;
 }

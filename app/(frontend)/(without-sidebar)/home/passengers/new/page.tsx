@@ -5,7 +5,7 @@ import { NewPassengerClient } from "./page.client";
 export const dynamic = "force-dynamic";
 
 export default async function NewPassengerPage() {
-  await requireSessionUser("/home/passengers/new");
+  const _user = await requireSessionUser("/home/passengers/new");
 
   return <NewPassengerClient />;
 }
