@@ -1,10 +1,8 @@
 import "server-only";
-
-import { Resend } from "resend";
-
 import { OrderConfirmationEmail, OtpEmailTemplate } from "@/components/emails";
-// env/features removed; read from process.env dynamically
+import { getParsedEnv } from "@/config/env";
 import type { OrderConfirmationEmailData } from "@/types/dto";
+import { Resend } from "resend";
 
 /**
  * Resend Email Client for sending verification emails
@@ -15,7 +13,7 @@ export class ResendEmailClient {
   private client: Resend;
 
   private constructor() {
-    const apiKey = process.env.RESEND_API_KEY;
+    const apiKey = getParsedEnv().RESEND_API_KEY;
     this.client = new Resend(apiKey ?? "dummy-key");
   }
 
@@ -42,7 +40,7 @@ export class ResendEmailClient {
   ): Promise<boolean> {
     try {
       const fromEmail =
-        process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
+        getParsedEnv().RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
 
       console.log(
         `Resend Email config: fromEmail=${fromEmail}, toEmail=${emailAddr}`
@@ -52,7 +50,7 @@ export class ResendEmailClient {
         `Sending verification email to ${emailAddr} with code ${code}`
       );
 
-      if (!process.env.RESEND_API_KEY) {
+      if (!getParsedEnv().RESEND_API_KEY) {
         return false;
       }
 
@@ -94,13 +92,13 @@ export class ResendEmailClient {
   ): Promise<boolean> {
     try {
       const fromEmail =
-        process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
+        getParsedEnv().RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
 
       console.log(
         `Sending order confirmation email to ${orderData.user.email} for order ${orderData.orderNumber}`
       );
 
-      if (!process.env.RESEND_API_KEY) {
+      if (!getParsedEnv().RESEND_API_KEY) {
         return false;
       }
 
