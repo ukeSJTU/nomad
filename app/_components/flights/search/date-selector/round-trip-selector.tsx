@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { type ActiveField } from "@/hooks/use-date-selector";
 
 import { DateDisplay } from "./date-display";
 
@@ -19,6 +20,7 @@ export interface RoundTripSelectorProps {
   tripDuration: number;
   calendarOpen: boolean;
   onCalendarOpenChange: (open: boolean) => void;
+  activeField: ActiveField;
   onDepartureClick: () => void;
   onReturnClick: () => void;
   onDateSelect: (date: Date | DateRange | undefined) => void;
@@ -32,6 +34,7 @@ export function RoundTripSelector({
   tripDuration,
   calendarOpen,
   onCalendarOpenChange,
+  activeField,
   onDepartureClick,
   onReturnClick,
   onDateSelect,
@@ -41,11 +44,16 @@ export function RoundTripSelector({
     <DropdownMenu open={calendarOpen} onOpenChange={onCalendarOpenChange}>
       <div className="relative flex items-stretch border rounded-lg overflow-hidden bg-background hover:bg-accent/50 transition-colors">
         {/* Departure Date Section */}
-        <DropdownMenuTrigger asChild>
-          <div
-            className="flex-1 px-4 py-3 cursor-pointer"
-            onClick={onDepartureClick}
-          >
+        <DropdownMenuTrigger
+          asChild
+          onPointerDown={() => onDepartureClick()}
+          onKeyDown={event => {
+            if (event.key === "Enter" || event.key === " ") {
+              onDepartureClick();
+            }
+          }}
+        >
+          <div className="flex-1 px-4 py-3 cursor-pointer">
             <div className="text-xs text-muted-foreground mb-1">出发日期</div>
             <div className="flex items-baseline gap-2">
               <DateDisplay date={departureDate} today={today} />
@@ -67,11 +75,16 @@ export function RoundTripSelector({
         </div>
 
         {/* Return Date Section */}
-        <DropdownMenuTrigger asChild>
-          <div
-            className="flex-1 px-4 py-3 cursor-pointer"
-            onClick={onReturnClick}
-          >
+        <DropdownMenuTrigger
+          asChild
+          onPointerDown={() => onReturnClick()}
+          onKeyDown={event => {
+            if (event.key === "Enter" || event.key === " ") {
+              onReturnClick();
+            }
+          }}
+        >
+          <div className="flex-1 px-4 py-3 cursor-pointer">
             <div className="text-xs text-muted-foreground mb-1 text-right">
               返回日期
             </div>
@@ -91,11 +104,13 @@ export function RoundTripSelector({
           mode="range"
           defaultMonth={departureDate || new Date()}
           selected={
-            departureDate && returnDate
-              ? { from: departureDate, to: returnDate }
-              : departureDate
-                ? { from: departureDate, to: undefined }
-                : undefined
+            activeField === "departure"
+              ? undefined
+              : departureDate && returnDate
+                ? { from: departureDate, to: returnDate }
+                : departureDate
+                  ? { from: departureDate, to: undefined }
+                  : undefined
           }
           onSelect={onDateSelect}
           numberOfMonths={2}

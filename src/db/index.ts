@@ -17,9 +17,31 @@ if (!process.env.DATABASE_URL) {
 
 const logger = createScopedLogger({ module: "db" });
 
+// Merge the multi-line drizzle-query-logger output into one ANSI-free message.
+const buildDrizzleLogMessage = (() => {
+  const ANSI_ESCAPE_REGEX = /\u001b\[[0-9;]*m/g;
+  let buffer: string[] = [];
+
+  return (message: string) => {
+    const cleanedMessage = message.replace(ANSI_ESCAPE_REGEX, "").trimEnd();
+    if (!cleanedMessage) return;
+
+    if (cleanedMessage.startsWith("╭─")) {
+      buffer = [];
+    }
+
+    buffer.push(cleanedMessage);
+
+    if (cleanedMessage.startsWith("╰─")) {
+      logger.debug(`[Drizzle] query\n${buffer.join("\n")}`);
+      buffer = [];
+    }
+  };
+})();
+
 const dbLogger = new EnhancedQueryLogger({
   log: message => {
-    logger.debug({ sql: message }, "[Drizzle] query");
+    buildDrizzleLogMessage(message);
   },
 });
 
