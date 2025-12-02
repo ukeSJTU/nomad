@@ -129,7 +129,7 @@ export default async function AirportGuidePage() {
           </div>
         </Link>
 
-        {/* Weather Card */}
+        {/* Weather Card: Using hardcoded data is expected for demonstration */}
         <Card className="bg-[#f4f8ff] border border-[#e1e9f5] shadow-none">
           <CardContent className="p-4">
             <div className="flex justify-between items-center mb-4 border-b border-blue-100 pb-2">
