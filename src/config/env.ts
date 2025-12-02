@@ -7,7 +7,6 @@ function valueEnabled(v: string | undefined): boolean {
 
 const envSchema = z
   .object({
-    // 不再用 enum，任意字符串都让它通过，逻辑判断放在运行时
     NODE_ENV: z.string().optional(),
 
     NEXT_RUNTIME: z
@@ -95,59 +94,24 @@ type Features = {
   sms: boolean;
 };
 
-/**
- * Lazy caches
- */
-let envLoaded = false;
-let cachedEnv: AppEnv | null = null;
-let cachedPublicEnv: PublicEnv | null = null;
-let cachedFeatures: Features | null = null;
-
-/**
- * 在 Node 环境里尝试加载 .env
- * 浏览器 / Storybook / Playwright 等环境下 require 不存在，会直接被 catch 吃掉
- */
-function ensureEnvLoaded() {
-  if (envLoaded) return;
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { loadEnvConfig } = require("@next/env") as typeof import(
-      "@next/env"
-    );
-    loadEnvConfig(process.cwd());
-  } catch {
-    // 非 Node CJS 环境（浏览器、ESM）下不用额外处理
-  }
-
-  envLoaded = true;
+export function getParsedEnv(): AppEnv {
+  return envSchema.parse(process.env);
 }
 
-function getParsedEnv(): AppEnv {
-  if (!cachedEnv) {
-    ensureEnvLoaded();
-    cachedEnv = envSchema.parse(process.env);
-  }
-  return cachedEnv;
+export function getPublicEnv(): PublicEnv {
+  return publicEnvSchema.parse(process.env);
 }
 
-function getParsedPublicEnv(): PublicEnv {
-  if (!cachedPublicEnv) {
-    cachedPublicEnv = publicEnvSchema.parse(process.env);
-  }
-  return cachedPublicEnv;
-}
-
-function getNodeEnvFromEnv(e: AppEnv): NodeEnv | undefined {
-  const s = e.NODE_ENV?.trim().toLowerCase();
+function getNodeEnvFromRaw(): NodeEnv | undefined {
+  const s = process.env.NODE_ENV?.trim().toLowerCase();
   return s === "development" || s === "test" || s === "production"
     ? (s as NodeEnv)
     : undefined;
 }
 
-function buildFeatures(e: AppEnv): Features {
-  const nodeEnv = getNodeEnvFromEnv(e);
-  const isProd = nodeEnv === "production";
+export function getFeatures(): Features {
+  const e = getParsedEnv();
+  const isProd = getNodeEnvFromRaw() === "production";
 
   const emailValue = e.ENABLE_RESEND?.toLowerCase();
   const smsValue = e.ENABLE_ALIYUN_SMS?.toLowerCase();
@@ -169,58 +133,29 @@ function buildFeatures(e: AppEnv): Features {
   return { email, sms };
 }
 
-/**
- * Public API
- */
 export function getEnv(): AppEnv {
   return getParsedEnv();
 }
 
-export function getPublicEnv(): PublicEnv {
-  return getParsedPublicEnv();
-}
-
-export function getFeatures(): Features {
-  if (!cachedFeatures) {
-    cachedFeatures = buildFeatures(getParsedEnv());
-  }
-  return cachedFeatures;
-}
-
-/**
- * 兼容导出：老代码可以继续用，之后可以逐步删
- * @deprecated Prefer getEnv()
- */
 export const env = getEnv();
-/** @deprecated Prefer getPublicEnv() */
 export const publicEnv = getPublicEnv();
-/** @deprecated Prefer getFeatures() */
 export const features = getFeatures();
 
-/**
- * 环境判断工具函数
- */
 export function isProduction(): boolean {
-  const nodeEnv = getNodeEnvFromEnv(getParsedEnv());
-  return nodeEnv === "production";
+  const s = process.env.NODE_ENV?.trim().toLowerCase();
+  return s === "production";
 }
 
 export function isDevelopment(): boolean {
-  const nodeEnv = getNodeEnvFromEnv(getParsedEnv());
-  return nodeEnv === "development";
+  const s = process.env.NODE_ENV?.trim().toLowerCase();
+  return s === "development";
 }
 
 export function isTest(): boolean {
-  const nodeEnv = getNodeEnvFromEnv(getParsedEnv());
-  return nodeEnv === "test";
+  const s = process.env.NODE_ENV?.trim().toLowerCase();
+  return s === "test";
 }
 
-/**
- * 测试专用：清理缓存，让 vi.stubEnv 后能重新解析 env
- */
 export function __resetEnvForTests() {
-  cachedEnv = null;
-  cachedPublicEnv = null;
-  cachedFeatures = null;
-  envLoaded = false;
+  // no-op: 保留测试调用兼容性
 }
