@@ -52,9 +52,14 @@ export default function BoardingProcessPage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h1 className="text-2xl font-bold text-foreground mb-8 text-center">
-        乘机流程指南
-      </h1>
+      <div className="mb-6 rounded-lg bg-neutral-100 p-4 border border-neutral-200">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          乘机流程指南
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          本流程图以上海浦东机场为例,仅供参考,具体流程可能因机场和航班而异。
+        </p>
+      </div>
 
       <div className="space-y-12 max-w-5xl mx-auto">
         {processes.map(process => (
