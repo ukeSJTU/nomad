@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { db } from "@/db";
 import { orders, payments, user } from "@/db/schema";
 import { getOrderDetailById } from "@/domains/booking";
+import { createScopedLogger } from "@/infra/logging/logger";
 import { sendOrderConfirmationEmail } from "@/infra/notifications";
 import {
   getCurrencyValue,
@@ -19,6 +20,8 @@ import type {
 } from "@/types/services";
 
 export type { ProcessPaymentData, ProcessPaymentParams };
+
+const logger = createScopedLogger({ module: "payment-workflow" });
 
 function generateTransactionId(): string {
   const now = new Date();
@@ -159,9 +162,9 @@ export async function processPayment(
         }
       }
     } catch (emailError) {
-      console.error(
-        "[Payment] Error sending order confirmation email:",
-        emailError
+      logger.error(
+        { err: emailError },
+        "[Payment] Error sending order confirmation email"
       );
     }
 

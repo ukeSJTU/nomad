@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 
 import UpdateEmailForm from "@/components/security/update-email-form";
+import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {
   title: "Security/UpdateEmailForm",
@@ -32,10 +33,10 @@ export const BindMode: Story = {
         currentEmail=""
         mode="bind"
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onSendOtp={email => {
-          console.log("OTP sent to:", email);
+          storyLogger.info("OTP sent to:", email);
         }}
       />
     </div>
@@ -81,10 +82,10 @@ export const VerifyMode: Story = {
         currentEmail="user@example.com"
         mode="verify"
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onSendOtp={email => {
-          console.log("OTP sent to:", email);
+          storyLogger.info("OTP sent to:", email);
         }}
       />
     </div>
@@ -126,10 +127,10 @@ export const UpdateMode: Story = {
         currentEmail="user@example.com"
         mode="update"
         onSubmit={data => {
-          console.log("Form submitted:", data);
+          storyLogger.info("Form submitted:", data);
         }}
         onSendOtp={email => {
-          console.log("OTP sent to:", email);
+          storyLogger.info("OTP sent to:", email);
         }}
       />
     </div>

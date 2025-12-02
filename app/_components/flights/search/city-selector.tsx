@@ -74,7 +74,7 @@ export function CitySelector({
         const group = LETTER_GROUPS.find(g => g.value === currentTab);
         if (group?.letters) {
           return domesticCities.filter(city =>
-            group.letters.includes(city.pinyinFirstLetter!)
+            group.letters.includes(city.pinyinFirstLetter ?? "")
           );
         }
       }

@@ -77,6 +77,15 @@ export const createLoggerStream = () => {
  */
 const pinoOptions: pino.LoggerOptions = {
   level: getLogLevel(),
+  base: {
+    service: "nomad",
+    environment: process.env.NODE_ENV ?? "development",
+  },
+  messageKey: "message",
+  redact: {
+    paths: REDACT_PATHS,
+    censor: "[REDACTED]",
+  },
 
   // Production：结构化日志 + ISO 时间戳
   ...(isProduction() && {

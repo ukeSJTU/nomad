@@ -10,6 +10,9 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
+    env: {
+      NODE_ENV: "test",
+    },
     globals: true,
     exclude: [
       "**/node_modules/**",

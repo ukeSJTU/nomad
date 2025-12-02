@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { FlightSearchHistoryCard } from "@/components/flights/search/search-history";
+import storyLogger from "@/infra/logging/storybook-logger";
 import type { SearchHistoryRecord } from "@/types/dto";
 
 const meta = {
@@ -48,7 +49,7 @@ const baseRecord: SearchHistoryRecord = {
 export const OneWayFlight: Story = {
   args: {
     record: baseRecord,
-    onClick: () => console.log("Clicked: One-way flight to Beijing"),
+    onClick: () => storyLogger.info("Clicked: One-way flight to Beijing"),
   },
 };
 
@@ -64,7 +65,7 @@ export const RoundTripFlight: Story = {
       lowestPriceAtSearch: "2400.00",
       currentLowestPrice: "2400.00",
     },
-    onClick: () => console.log("Clicked: Round-trip flight"),
+    onClick: () => storyLogger.info("Clicked: Round-trip flight"),
   },
 };
 
@@ -77,7 +78,7 @@ export const PriceDecreased: Story = {
       lowestPriceAtSearch: "1500.00",
       currentLowestPrice: "1200.00",
     },
-    onClick: () => console.log("Clicked: Price decreased flight"),
+    onClick: () => storyLogger.info("Clicked: Price decreased flight"),
   },
 };
 
@@ -90,7 +91,7 @@ export const PriceIncreased: Story = {
       lowestPriceAtSearch: "1200.00",
       currentLowestPrice: "1500.00",
     },
-    onClick: () => console.log("Clicked: Price increased flight"),
+    onClick: () => storyLogger.info("Clicked: Price increased flight"),
   },
 };
 
@@ -105,7 +106,7 @@ export const DifferentRoute: Story = {
       departureCityIata: "SZX",
       arrivalCityIata: "CTU",
     },
-    onClick: () => console.log("Clicked: Different route flight"),
+    onClick: () => storyLogger.info("Clicked: Different route flight"),
   },
 };
 
@@ -119,7 +120,7 @@ export const BusinessClass: Story = {
       lowestPriceAtSearch: "3500.00",
       currentLowestPrice: "3200.00",
     },
-    onClick: () => console.log("Clicked: Business class flight"),
+    onClick: () => storyLogger.info("Clicked: Business class flight"),
   },
 };
 
@@ -133,7 +134,7 @@ export const FirstClass: Story = {
       lowestPriceAtSearch: "8000.00",
       currentLowestPrice: "8000.00",
     },
-    onClick: () => console.log("Clicked: First class flight"),
+    onClick: () => storyLogger.info("Clicked: First class flight"),
   },
 };
 
@@ -146,7 +147,7 @@ export const NoPriceData: Story = {
       lowestPriceAtSearch: null,
       currentLowestPrice: null,
     },
-    onClick: () => console.log("Clicked: No price data flight"),
+    onClick: () => storyLogger.info("Clicked: No price data flight"),
   },
 };
 
@@ -161,7 +162,7 @@ export const LongCityNames: Story = {
       departureCityIata: "URC",
       arrivalCityIata: "HRB",
     },
-    onClick: () => console.log("Clicked: Long city names flight"),
+    onClick: () => storyLogger.info("Clicked: Long city names flight"),
   },
 };
 
@@ -176,7 +177,7 @@ export const MultipleCards: StoryWithRender = {
           lowestPriceAtSearch: "1500.00",
           currentLowestPrice: "1200.00",
         }}
-        onClick={() => console.log("Clicked: Card 1")}
+        onClick={() => storyLogger.info("Clicked: Card 1")}
       />
       <FlightSearchHistoryCard
         record={{
@@ -191,7 +192,7 @@ export const MultipleCards: StoryWithRender = {
           lowestPriceAtSearch: "2400.00",
           currentLowestPrice: "2600.00",
         }}
-        onClick={() => console.log("Clicked: Card 2")}
+        onClick={() => storyLogger.info("Clicked: Card 2")}
       />
       <FlightSearchHistoryCard
         record={{
@@ -205,7 +206,7 @@ export const MultipleCards: StoryWithRender = {
           lowestPriceAtSearch: "3200.00",
           currentLowestPrice: "3200.00",
         }}
-        onClick={() => console.log("Clicked: Card 3")}
+        onClick={() => storyLogger.info("Clicked: Card 3")}
       />
     </div>
   ),

@@ -19,7 +19,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import type { PassengerDTO } from "@/types/dto";
+
+const logger = createClientLogger({ module: "passengers-page" });
 
 interface PassengersPageClientProps {
   initialPassengers: PassengerDTO[];
@@ -56,7 +59,7 @@ export function PassengersPageClient({
         toast.error(result.error || "删除失败");
       }
     } catch (error) {
-      console.error("Failed to delete passenger:", error);
+      logger.error({ err: error }, "Failed to delete passenger");
       toast.error("删除失败");
     } finally {
       setIsLoading(false);
@@ -78,7 +81,10 @@ export function PassengersPageClient({
         toast.error(result.error || "删除失败");
       }
     } catch (error) {
-      console.error("Failed to batch delete passengers:", error);
+      logger.error(
+        { err: error, passengerIds },
+        "Failed to batch delete passengers"
+      );
       toast.error("删除失败");
     } finally {
       setIsLoading(false);

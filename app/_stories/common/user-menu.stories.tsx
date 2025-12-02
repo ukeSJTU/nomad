@@ -11,6 +11,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
+import storyLogger from "@/infra/logging/storybook-logger";
 import { getInitials } from "@/lib/format";
 
 // Mock component for Storybook that accepts controlled props
@@ -28,7 +29,7 @@ interface UserMenuProps {
 
 function UserMenuStory({ isPending = false, session = null }: UserMenuProps) {
   const handleSignOut = async () => {
-    console.log("Sign out clicked");
+    storyLogger.info("Sign out clicked");
   };
 
   if (isPending) {

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { OrderStatusCard } from "@/components/flights/orders/order-status-card";
+import storyLogger from "@/infra/logging/storybook-logger";
 import type { OrderStatusCardData } from "@/types/dto";
 
 const meta = {
@@ -51,10 +52,10 @@ export const PendingPayment: Story = {
       paymentDeadline: new Date(Date.now() + 850 * 1000).toISOString(), // 14:10 remaining
     }),
     onGoToPayment: () => {
-      console.log("Navigate to payment page");
+      storyLogger.info("Navigate to payment page");
     },
     onCancelOrder: () => {
-      console.log("Cancel order");
+      storyLogger.info("Cancel order");
     },
     isLoading: false,
   },
@@ -79,10 +80,10 @@ export const Confirmed: Story = {
       createdAt: new Date(Date.now() - 3600 * 1000).toISOString(),
     }),
     onResendConfirmation: () => {
-      console.log("Resend confirmation email");
+      storyLogger.info("Resend confirmation email");
     },
     onRequestRefund: () => {
-      console.log("Request refund");
+      storyLogger.info("Request refund");
     },
     canRefund: true,
     isLoading: false,

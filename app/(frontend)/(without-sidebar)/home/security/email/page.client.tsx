@@ -19,6 +19,9 @@ import UpdateEmailForm, {
 } from "@/components/security/update-email-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
+import { createClientLogger } from "@/infra/logging/client-logger";
+
+const logger = createClientLogger({ module: "security-email-page" });
 
 /**
  * Props for the EmailPageClient component
@@ -82,7 +85,7 @@ export default function EmailPageClient({
       });
 
       if (!result.success) {
-        console.error("发送验证码失败:", result.error);
+        logger.error({ error: result.error }, "发送验证码失败");
         toast.error(result.error || "发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送到新邮箱");
@@ -92,7 +95,7 @@ export default function EmailPageClient({
       // Reset Turnstile for next use
       turnstileRef.current?.reset();
     } catch (error) {
-      console.error("发送验证码异常:", error);
+      logger.error({ err: error }, "发送验证码异常");
       toast.error("人机验证失败，请重试");
       turnstileRef.current?.reset();
     } finally {
@@ -117,7 +120,7 @@ export default function EmailPageClient({
       });
 
       if (!verifyResult.success) {
-        console.error("验证码验证失败:", verifyResult.error);
+        logger.error({ error: verifyResult.error }, "验证码验证失败");
         toast.error(verifyResult.error || "验证码错误，请重试");
         return;
       }
@@ -136,7 +139,7 @@ export default function EmailPageClient({
         router.push("/home/security");
       }, 1000);
     } catch (error) {
-      console.error("Update email error:", error);
+      logger.error({ err: error }, "Update email error");
       toast.error("网络错误，请稍后重试");
     } finally {
       setIsLoading(false);

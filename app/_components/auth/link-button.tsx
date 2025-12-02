@@ -4,6 +4,9 @@ import { toast } from "sonner";
 
 import { linkSocialAccountAction } from "@/app/_actions/auth";
 import { Button } from "@/components/ui/button";
+import { createClientLogger } from "@/infra/logging/client-logger";
+
+const logger = createClientLogger({ module: "link-button" });
 
 /**
  * Props for LinkButton component
@@ -44,7 +47,10 @@ export function LinkButton({ providerId, providerName }: LinkButtonProps) {
       );
 
       if (!result.success || !result.data?.url) {
-        console.error(`Failed to link ${providerId}:`, result.error);
+        logger.error(
+          { error: result.error, providerId },
+          `Failed to link ${providerId}`
+        );
         toast.error(`Failed to link ${providerName} account`, {
           description: result.error || "Please try again later",
         });
@@ -54,7 +60,7 @@ export function LinkButton({ providerId, providerName }: LinkButtonProps) {
       window.location.href = result.data.url;
       // OAuth redirect will happen automatically if successful
     } catch (error) {
-      console.error(`Error linking ${providerId}:`, error);
+      logger.error({ err: error, providerId }, "Error linking account");
       toast.error(`Error linking ${providerName} account`, {
         description: "An unexpected error occurred",
       });

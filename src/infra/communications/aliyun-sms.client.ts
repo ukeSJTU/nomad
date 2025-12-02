@@ -69,14 +69,16 @@ class AliyunSmsClient {
         ALIBABA_CLOUD_SMS_TEMPLATE_CODE: templateCode,
       } = getParsedEnv();
 
-      console.log(
-        `Aliyun SMS config: signName=${signName}, templateCode=${templateCode}`
+      logger.debug(
+        { signName, templateCode },
+        "Aliyun SMS configuration loaded"
       );
 
       // Validate phone number before sending
       const normalizedPhoneNumber = this.normalizePhoneNumber(phoneNumber);
-      console.log(
-        `Sending SMS to ${normalizedPhoneNumber} (original: ${phoneNumber}) with code ${code}`
+      logger.info(
+        { phoneNumber: normalizedPhoneNumber },
+        "Sending SMS verification code"
       );
 
       if (!signName || !templateCode) {
@@ -103,30 +105,37 @@ class AliyunSmsClient {
 
       // Check response status
       if (response.body?.code === "OK") {
-        console.log(
-          `SMS sent successfully to ${phoneNumber}, RequestId: ${response.body.requestId}`
+        logger.info(
+          {
+            phoneNumber: normalizedPhoneNumber,
+            requestId: response.body?.requestId,
+          },
+          "SMS sent successfully"
         );
         return true;
       } else {
-        console.error(
-          `SMS sending failed: ${response.body?.message}, Code: ${response.body?.code}`
+        logger.error(
+          {
+            phoneNumber: normalizedPhoneNumber,
+            code: response.body?.code,
+            message: response.body?.message,
+          },
+          "SMS sending failed"
         );
         return false;
       }
     } catch (error: unknown) {
-      console.error("Error sending SMS:", error);
+      const diagnosticUrl =
+        error &&
+        typeof error === "object" &&
+        "data" in error &&
+        // biome-ignore lint/suspicious/noExplicitAny: Accessing untyped error property
+        (error as any).data?.["Recommend"];
 
-      // Handle error information according to official example
-      if (error instanceof Error && error.message) {
-        console.error("Error message:", error.message);
-      }
-      if (error && typeof error === "object" && "data" in error) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const errorData = error.data as any;
-        if (errorData && errorData["Recommend"]) {
-          console.error("Diagnostic URL:", errorData["Recommend"]);
-        }
-      }
+      logger.error(
+        { err: error, diagnosticUrl },
+        "Error sending SMS verification code"
+      );
 
       return false;
     }

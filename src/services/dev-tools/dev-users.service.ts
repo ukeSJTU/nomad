@@ -4,8 +4,11 @@ import { env } from "@/config/env";
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
 import { auth } from "@/infra/auth";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { User } from "@/types/db";
 import type { ServiceResult } from "@/types/result";
+
+const logger = createScopedLogger({ module: "dev-users.service" });
 
 export async function listDevUsers(): Promise<ServiceResult<User[]>> {
   if (env.NODE_ENV !== "development") {
@@ -16,7 +19,7 @@ export async function listDevUsers(): Promise<ServiceResult<User[]>> {
     const users = await db.select().from(user).orderBy(desc(user.createdAt));
     return { success: true, data: users };
   } catch (error) {
-    console.error("Failed to fetch users:", error);
+    logger.error({ err: error }, "Failed to fetch users");
     return { success: false, error: "Failed to fetch users" };
   }
 }
@@ -79,7 +82,7 @@ export async function switchUser(params: {
 
     return { success: true };
   } catch (error) {
-    console.error("Failed to switch user:", error);
+    logger.error({ err: error }, "Failed to switch user");
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to switch user",

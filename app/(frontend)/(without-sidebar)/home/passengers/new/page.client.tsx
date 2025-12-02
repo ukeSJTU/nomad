@@ -6,6 +6,9 @@ import { toast } from "sonner";
 
 import { createPassengerAction } from "@/app/_actions";
 import PassengerForm from "@/components/passengers/forms/passenger-form";
+import { createClientLogger } from "@/infra/logging/client-logger";
+
+const logger = createClientLogger({ module: "passengers-new-page" });
 
 export function NewPassengerClient() {
   const router = useRouter();
@@ -24,7 +27,7 @@ export function NewPassengerClient() {
         toast.error(result.error || "保存失败");
       }
     } catch (error) {
-      console.error("Failed to create passenger:", error);
+      logger.error({ err: error }, "Failed to create passenger");
       toast.error("保存失败");
     } finally {
       setIsLoading(false);

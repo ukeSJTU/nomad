@@ -15,9 +15,12 @@ export function buildFlightSearchUrl(data: SearchFormData): string {
   const params = new URLSearchParams();
 
   params.set("tripType", data.tripType);
-  params.set("from", data.departureCity!.iataCode);
-  params.set("to", data.arrivalCity!.iataCode);
-  params.set("departDate", dateToLocalDateString(data.departureDate!));
+  params.set("from", data.departureCity?.iataCode ?? "");
+  params.set("to", data.arrivalCity?.iataCode ?? "");
+  params.set(
+    "departDate",
+    data.departureDate ? dateToLocalDateString(data.departureDate) : ""
+  );
 
   if (data.returnDate && data.tripType === "round-trip") {
     params.set("returnDate", dateToLocalDateString(data.returnDate));

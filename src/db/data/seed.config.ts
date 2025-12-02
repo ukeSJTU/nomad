@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+import { createScopedLogger } from "@/infra/logging/logger";
+
+const logger = createScopedLogger({ module: "seed.config" });
+
 /**
  * Data source type for seeding
  * - fixture-faker: Use real fixture data for cities/airports/airlines, generate flights with Faker
@@ -217,14 +221,14 @@ export function parseSeedConfig(): SeedConfig {
     const scenarioName = scenarioArg.split("=")[1] as ScenarioName;
     if (scenarioName in scenarios) {
       baseConfig = { ...scenarios[scenarioName] };
-      console.log(
+      logger.info(
         `[SEED CONFIG] Using scenario: ${scenarios[scenarioName].name}`
       );
-      console.log(
+      logger.info(
         `[SEED CONFIG] Description: ${scenarios[scenarioName].description}\n`
       );
     } else {
-      console.error(
+      logger.error(
         `[SEED CONFIG] Unknown scenario: ${scenarioName}. Available: ${Object.keys(scenarios).join(", ")}`
       );
       process.exit(1);
@@ -311,8 +315,8 @@ export function parseSeedConfig(): SeedConfig {
   const result = seedConfigSchema.safeParse(mergedConfig);
 
   if (!result.success) {
-    console.error("[SEED CONFIG] Invalid configuration:");
-    console.error(result.error.issues);
+    logger.error("[SEED CONFIG] Invalid configuration:");
+    logger.error(result.error.issues);
     throw new Error("Invalid seed configuration");
   }
 
@@ -325,7 +329,7 @@ export function parseSeedConfig(): SeedConfig {
 export async function promptForScenario(): Promise<SeedConfig> {
   const { select, confirm } = await import("@inquirer/prompts");
 
-  console.log("\nDatabase Seeding - Interactive Mode\n");
+  logger.info("\nDatabase Seeding - Interactive Mode\n");
 
   const scenarioChoices = Object.entries(scenarios).map(([key, scenario]) => ({
     name: `${scenario.name} - ${scenario.description}`,
@@ -350,7 +354,7 @@ export async function promptForScenario(): Promise<SeedConfig> {
   if (selectedScenario === "custom") {
     // For custom, we'll use the default config
     // In the future, we could add more prompts for custom values
-    console.log(
+    logger.info(
       "\nUsing default configuration (you can override with CLI args)\n"
     );
     return defaultSeedConfig;
@@ -358,8 +362,8 @@ export async function promptForScenario(): Promise<SeedConfig> {
 
   const scenario = scenarios[selectedScenario as ScenarioName];
 
-  console.log(`\nSelected: ${scenario.name}`);
-  console.log(`${scenario.description}\n`);
+  logger.info(`\nSelected: ${scenario.name}`);
+  logger.info(`${scenario.description}\n`);
 
   const shouldProceed = await confirm({
     message: "Proceed with this configuration?",
@@ -367,7 +371,7 @@ export async function promptForScenario(): Promise<SeedConfig> {
   });
 
   if (!shouldProceed) {
-    console.log("\nSeeding cancelled.\n");
+    logger.info("\nSeeding cancelled.\n");
     process.exit(0);
   }
 
@@ -385,28 +389,28 @@ export async function promptForScenario(): Promise<SeedConfig> {
  * Display the current seed configuration
  */
 export function displaySeedConfig(config: SeedConfig): void {
-  console.log("\n[SEED CONFIG] Configuration:");
-  console.log(`   - Data Source: ${config.dataSource}`);
+  logger.info("\n[SEED CONFIG] Configuration:");
+  logger.info(`   - Data Source: ${config.dataSource}`);
   if (config.dataSource === "scenario") {
-    console.log(`   - Scenario File: ${config.scenarioFile}`);
+    logger.info(`   - Scenario File: ${config.scenarioFile}`);
   }
-  console.log(`   - Mode: ${config.mode}`);
-  console.log(`   - Seed: ${config.seed}`);
+  logger.info(`   - Mode: ${config.mode}`);
+  logger.info(`   - Seed: ${config.seed}`);
   if (config.dataSource === "fixture-faker" && config.counts) {
-    console.log(`   - Cities: ${config.counts.cities}`);
-    console.log(`   - Airports: ${config.counts.airports}`);
-    console.log(`   - Airlines: ${config.counts.airlines}`);
-    console.log(`   - Flights: ${config.counts.flights}`);
-    console.log(`   - Users: ${config.counts.users}`);
-    console.log(
+    logger.info(`   - Cities: ${config.counts.cities}`);
+    logger.info(`   - Airports: ${config.counts.airports}`);
+    logger.info(`   - Airlines: ${config.counts.airlines}`);
+    logger.info(`   - Flights: ${config.counts.flights}`);
+    logger.info(`   - Users: ${config.counts.users}`);
+    logger.info(
       `   - Passengers per user: ${config.counts.passengersPerUser.min}-${config.counts.passengersPerUser.max}`
     );
-    console.log(
+    logger.info(
       `   - Orders: ${config.counts.orders || `~${Math.floor(config.counts.users * 1.5)}`} (auto)`
     );
-    console.log(
+    logger.info(
       `   - Searches per user: ${config.counts.searchesPerUser?.min || 2}-${config.counts.searchesPerUser?.max || 8}`
     );
   }
-  console.log("");
+  logger.info("");
 }

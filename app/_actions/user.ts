@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 
 import { rechargeBalance, updateUserInfo } from "@/domains/user";
 import { auth } from "@/infra/auth";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { ActionResult } from "@/types/common";
 import {
   RechargeBalanceData,
@@ -11,6 +12,8 @@ import {
   rechargeBalanceSchema,
   userInfoUpdateSchema,
 } from "@/types/validations";
+
+const logger = createScopedLogger({ module: "actions.user" });
 
 /**
  * Update user information action
@@ -29,10 +32,16 @@ import {
 export async function updateUserInfoAction(
   data: UserInfoUpdateData
 ): Promise<ActionResult<void>> {
+  let session:
+    | {
+        user?: { id?: string | null } | null;
+      }
+    | null
+    | undefined;
   try {
     // 1. Verify authentication (framework-specific)
     const headersList = await headers();
-    const session = await auth.api.getSession({
+    session = await auth.api.getSession({
       headers: headersList,
     });
 
@@ -70,7 +79,10 @@ export async function updateUserInfoAction(
       };
     }
   } catch (error) {
-    console.error("Failed to update user info:", error);
+    logger.error(
+      { err: error, userId: session?.user?.id },
+      "Failed to update user info"
+    );
     return {
       success: false,
       error: error instanceof Error ? error.message : "更新用户信息失败",
@@ -93,10 +105,16 @@ export async function updateUserInfoAction(
 export async function rechargeBalanceAction(
   data: RechargeBalanceData
 ): Promise<ActionResult<{ newBalance: string }>> {
+  let session:
+    | {
+        user?: { id?: string | null } | null;
+      }
+    | null
+    | undefined;
   try {
     // 1. Verify authentication
     const headersList = await headers();
-    const session = await auth.api.getSession({
+    session = await auth.api.getSession({
       headers: headersList,
     });
 
@@ -139,7 +157,10 @@ export async function rechargeBalanceAction(
       };
     }
   } catch (error) {
-    console.error("Failed to recharge balance:", error);
+    logger.error(
+      { err: error, userId: session?.user?.id },
+      "Failed to recharge balance"
+    );
     return {
       success: false,
       error: error instanceof Error ? error.message : "充值失败，请稍后重试",

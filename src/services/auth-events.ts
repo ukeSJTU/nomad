@@ -1,10 +1,13 @@
 import { EventEmitter } from "events";
 
+import { createScopedLogger } from "@/infra/logging/logger";
 import type {
   AuthEventHandler,
   AuthEventKey,
   AuthEventMap,
 } from "@/types/services";
+
+const logger = createScopedLogger({ module: "auth-events" });
 
 const authEventEmitter = new EventEmitter();
 
@@ -25,7 +28,7 @@ export function onAuthEvent<K extends AuthEventKey>(
     } catch (error) {
       // Avoid breaking the primary flow if a listener fails.
 
-      console.error(`[auth-events] handler error for ${event}:`, error);
+      logger.error({ err: error, event }, "[auth-events] handler error");
     }
   };
 

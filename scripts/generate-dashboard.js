@@ -3,6 +3,19 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require("fs");
 const path = require("path");
+const pino = require("pino");
+
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "yyyy-mm-dd HH:MM:ss",
+      ignore: "pid,hostname",
+    },
+  },
+});
 
 // Ensure directories exist
 const ensureDir = dir => {
@@ -216,8 +229,7 @@ const generateDashboard = (metadata = {}) => {
 
 // Main execution
 const main = () => {
-  // eslint-disable-next-line no-console
-  console.log("Generating test dashboard...");
+  logger.info("Generating test dashboard...");
 
   // Ensure public directory exists
   ensureDir("public");
@@ -243,14 +255,10 @@ const main = () => {
     process.env.BRANCH_NAME || process.env.GITHUB_REF_NAME || "main";
   const deployTime = new Date().toISOString();
 
-  // eslint-disable-next-line no-console
-  console.log("Metadata:");
-  // eslint-disable-next-line no-console
-  console.log("  Base Path:", basePath);
-  // eslint-disable-next-line no-console
-  console.log("  Branch:", branchName);
-  // eslint-disable-next-line no-console
-  console.log("  Deploy Time:", deployTime);
+  logger.info("Metadata:");
+  logger.info(`  Base Path: ${basePath}`);
+  logger.info(`  Branch: ${branchName}`);
+  logger.info(`  Deploy Time: ${deployTime}`);
 
   // Generate dashboard
   const dashboardHtml = generateDashboard({
@@ -262,8 +270,7 @@ const main = () => {
   // Write dashboard
   fs.writeFileSync("public/index.html", dashboardHtml);
 
-  // eslint-disable-next-line no-console
-  console.log("✅ Dashboard generated successfully!");
+  logger.info("✅ Dashboard generated successfully!");
 };
 
 if (require.main === module) {

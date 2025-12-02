@@ -19,6 +19,7 @@ import {
   orders,
   payments,
 } from "@/db/schema";
+import { createScopedLogger } from "@/infra/logging/logger";
 import type { ConfirmationPageOrder } from "@/types/dto";
 
 /**
@@ -26,6 +27,7 @@ import type { ConfirmationPageOrder } from "@/types/dto";
  * ancillaryDetails should be an array of service codes or null
  */
 const ancillaryDetailsSchema = z.array(z.string()).nullable();
+const logger = createScopedLogger({ module: "confirmation.repository" });
 
 /**
  * Get order confirmation details by order ID
@@ -160,10 +162,12 @@ export async function getOrderConfirmation(
 
   // If parsing fails, log the error and use null as fallback
   if (!parsedAncillaryDetails.success) {
-    console.error(
-      "Failed to parse ancillaryDetails for order:",
-      orderId,
-      parsedAncillaryDetails.error
+    logger.error(
+      {
+        orderId,
+        error: parsedAncillaryDetails.error,
+      },
+      "Failed to parse ancillaryDetails for order"
     );
   }
 

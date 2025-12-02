@@ -37,7 +37,10 @@ import {
 } from "@/components/ui/sheet";
 import { env } from "@/config/env";
 import { useClientSession } from "@/hooks/use-client-session";
+import { createClientLogger } from "@/infra/logging/client-logger";
 import { getInitials } from "@/lib/format";
+
+const logger = createClientLogger({ module: "dev-user-switcher" });
 
 type User = Extract<DevUserListResult, { success: true }>["users"][number];
 
@@ -72,7 +75,7 @@ export default function DevUserSwitcher() {
       const result = await switchUserAction(userId);
 
       if (!result.success) {
-        console.error("Failed to switch user:", result.error);
+        logger.error({ error: result.error, userId }, "Failed to switch user");
         setIsSwitching(false);
         return;
       }
@@ -82,7 +85,7 @@ export default function DevUserSwitcher() {
       // as it ensures complete session state update
       window.location.reload();
     } catch (error) {
-      console.error("Failed to switch user:", error);
+      logger.error({ err: error, userId }, "Failed to switch user");
       setIsSwitching(false);
     }
   };
