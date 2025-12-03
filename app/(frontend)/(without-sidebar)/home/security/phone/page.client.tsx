@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -17,6 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { createClientLogger } from "@/infra/logging/client-logger";
+import { buildOtpStorageKey } from "@/lib/otp";
 
 const logger = createClientLogger({ module: "security-phone-page" });
 
@@ -47,7 +48,14 @@ export default function PhonePageClient({
 }: PhonePageClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { countdown, start: startCountdown } = useOtpCountdown();
+  const [otpTarget, setOtpTarget] = useState(currentPhoneNumber ?? "");
+  const countdownKey = useMemo(
+    () => (otpTarget ? buildOtpStorageKey("phone", otpTarget) : null),
+    [otpTarget]
+  );
+  const { countdown, start: startCountdown } = useOtpCountdown({
+    storageKey: countdownKey,
+  });
 
   // Determine form mode based on current status
   const mode: PhoneFormMode =
@@ -63,11 +71,15 @@ export default function PhonePageClient({
   const handleSendOtp = async (phoneNumber: string) => {
     try {
       setIsLoading(true);
+      setOtpTarget(phoneNumber);
 
       const result = await sendPhoneOtpAction(phoneNumber);
 
       if (!result.success) {
         logger.error({ error: result.error }, "发送验证码失败");
+        if (result.retryAfterSeconds) {
+          startCountdown(result.retryAfterSeconds);
+        }
         toast.error(result.error || "发送验证码失败，请重试");
       } else {
         toast.success("验证码已发送");

@@ -8,6 +8,7 @@ import {
   signInWithOtpAction,
   signInWithPasswordAction,
 } from "@/app/_actions/auth";
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import { validateAccount } from "@/lib/validation";
 import type { ActionResult } from "@/types/common";
@@ -29,7 +30,7 @@ export interface UseSignInFlowReturn {
   handleSendOtp: (
     account: string,
     fetchOptions?: FetchOptions
-  ) => Promise<boolean>;
+  ) => Promise<OtpSendActionResult>;
 }
 
 /**
@@ -115,7 +116,7 @@ export function useSignInFlow(): UseSignInFlowReturn {
   const handleSendOtp = async (
     account: string,
     fetchOptions?: FetchOptions
-  ): Promise<boolean> => {
+  ): Promise<OtpSendActionResult> => {
     setIsLoading(true);
 
     try {
@@ -124,7 +125,7 @@ export function useSignInFlow(): UseSignInFlowReturn {
       // Only support phone or email
       if (!isPhone && !isEmail) {
         toast.error("无效的账号格式");
-        return false;
+        return { success: false, error: "无效的账号格式" };
       }
 
       const result = isPhone
@@ -134,14 +135,14 @@ export function useSignInFlow(): UseSignInFlowReturn {
       if (!result.success) {
         logger.error({ error: result.error }, "发送验证码失败");
         toast.error("发送验证码失败，请重试");
-        return false;
+        return result;
       }
 
-      return true;
+      return result;
     } catch (error) {
       logger.error({ err: error }, "发送验证码异常");
       toast.error("发送验证码失败，请重试");
-      return false;
+      return { success: false, error: "发送验证码失败，请重试" };
     } finally {
       setIsLoading(false);
     }

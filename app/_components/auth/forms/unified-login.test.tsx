@@ -42,7 +42,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -79,7 +81,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -126,7 +130,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -182,7 +188,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -236,7 +244,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -282,7 +292,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -319,7 +331,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -364,7 +378,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -420,7 +436,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -476,7 +494,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -521,7 +541,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display correct title for password login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -538,7 +560,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display correct title for OTP login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -555,7 +579,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display correct placeholder for password login account field", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -574,7 +600,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display correct placeholder for OTP login account field", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -593,7 +621,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display password placeholder in password login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -610,7 +640,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display OTP placeholder in OTP login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -627,7 +659,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it('should display "忘记密码" link in password login', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -651,7 +685,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it('should display "免费注册" link in password login', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -670,7 +706,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display terms agreement text with links", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -697,7 +735,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it('should display "登 录" button', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -714,7 +754,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it('should display "验证码登录" button in password login', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -733,7 +775,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it('should display "账号登录" button in OTP login', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -752,7 +796,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it('should display "发送验证码" button in OTP login', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -771,7 +817,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should display GitHub icon in password login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       const { container } = render(
         <UnifiedLoginForm
@@ -790,7 +838,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should not display GitHub icon in OTP login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       const { container } = render(
         <UnifiedLoginForm
@@ -813,7 +863,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -848,7 +900,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should disable all inputs when isLoading is true in password login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -878,7 +932,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should disable all inputs when isLoading is true in OTP login", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -908,7 +964,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should enable all inputs when isLoading is false", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -941,7 +999,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -965,7 +1025,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -998,7 +1060,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1042,7 +1106,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1088,7 +1154,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1121,7 +1189,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1156,7 +1226,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1185,7 +1257,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
     it("should not display error area when no error", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1205,7 +1279,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1245,7 +1321,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
@@ -1274,7 +1352,9 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
-      const onSendOtp = vi.fn().mockResolvedValue(true);
+      const onSendOtp = vi
+        .fn()
+        .mockResolvedValue({ success: true, data: undefined });
 
       render(
         <UnifiedLoginForm
