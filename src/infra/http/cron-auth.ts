@@ -52,7 +52,7 @@ export function verifyCronSecret(request: Request): boolean {
 
   // Get the expected secret from environment
   const env = getParsedEnv();
-  const expectedSecret = (env as any).CRON_SECRET;
+  const expectedSecret = env.CRON_SECRET;
 
   if (!expectedSecret) {
     logger.error(

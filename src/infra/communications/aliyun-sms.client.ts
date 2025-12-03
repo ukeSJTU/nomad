@@ -70,8 +70,8 @@ class AliyunSmsClient {
   public async sendSms(phoneNumber: string, code: string): Promise<boolean> {
     try {
       const env = getParsedEnv();
-      const signName = (env as any).ALIBABA_CLOUD_SMS_SIGN_NAME;
-      const templateCode = (env as any).ALIBABA_CLOUD_SMS_TEMPLATE_CODE;
+      const signName = env.ALIBABA_CLOUD_SMS_SIGN_NAME;
+      const templateCode = env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE;
 
       logger.debug(
         { signName, templateCode },

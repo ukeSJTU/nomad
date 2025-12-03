@@ -8,7 +8,7 @@ import { onAuthEvent } from "@/services/auth-events";
 
 const env = getParsedEnv();
 const resendApiKey = env.RESEND_API_KEY;
-const resendFrom = (env as any).RESEND_FROM_EMAIL || "onboarding@resend.dev";
+const resendFrom = env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 const resendClient = resendApiKey ? new Resend(resendApiKey) : null;
 
 async function sendSecurityNotificationEmail(

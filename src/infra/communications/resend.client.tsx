@@ -55,7 +55,7 @@ export class ResendEmailClient {
   ): Promise<boolean> {
     try {
       const env = getParsedEnv();
-      const fromEmail = (env as any).RESEND_FROM_EMAIL;
+      const fromEmail = env.RESEND_FROM_EMAIL;
 
       logger.debug(
         { fromEmail, email: emailAddr },
