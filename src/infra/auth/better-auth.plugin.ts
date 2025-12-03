@@ -64,12 +64,17 @@ export const auth = betterAuth({
       return logger.info(message, ...args);
     },
   },
-  socialProviders: {
-    github: {
-      clientId: (getParsedEnv() as any).GITHUB_CLIENT_ID as string,
-      clientSecret: (getParsedEnv() as any).GITHUB_CLIENT_SECRET as string,
-    },
-  },
+  socialProviders: (() => {
+    const env = getParsedEnv();
+    return env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
+      ? {
+          github: {
+            clientId: env.GITHUB_CLIENT_ID,
+            clientSecret: env.GITHUB_CLIENT_SECRET,
+          },
+        }
+      : {};
+  })(),
   rateLimit: {
     storage: "database",
     modelName: "rateLimit",

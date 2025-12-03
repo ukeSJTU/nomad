@@ -300,9 +300,9 @@ export function hasAliyunSmsConfig(): boolean {
 
 export function hasTurnstileConfig(): boolean {
   const env = getParsedEnv();
-  const siteKey =
-    (env as any).TURNSTILE_SITE_KEY ?? env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-  return Boolean(env.TURNSTILE_SECRET_KEY && siteKey);
+  return Boolean(
+    env.TURNSTILE_SECRET_KEY && env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  );
 }
 
 export function getBetterAuthUrl(): string | undefined {

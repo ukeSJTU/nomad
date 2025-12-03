@@ -34,7 +34,8 @@ export async function sendAuthPhoneOtp(
     if (!success) {
       throw new Error("Failed to send SMS");
     }
-  } catch {
+  } catch (error) {
+    logger.error({ err: error }, "Failed to send SMS OTP");
     throw new Error("Failed to send SMS");
   }
 
@@ -62,7 +63,8 @@ export async function sendAuthEmailOtp(
     if (!success) {
       throw new Error("Failed to send email");
     }
-  } catch {
+  } catch (error) {
+    logger.error({ err: error }, "Failed to send Email OTP");
     throw new Error("Failed to send email");
   }
 
