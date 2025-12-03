@@ -1,5 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 
+import { isDevelopment } from "@/config/env";
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
 import { auth } from "@/infra/auth";
@@ -10,7 +11,7 @@ import type { ServiceResult } from "@/types/result";
 const logger = createScopedLogger({ module: "dev-users.service" });
 
 export async function listDevUsers(): Promise<ServiceResult<User[]>> {
-  if (process.env.NODE_ENV !== "development") {
+  if (!isDevelopment()) {
     return { success: false, error: "Not available" };
   }
 
@@ -27,7 +28,7 @@ export async function switchUser(params: {
   userId: string;
   headers: HeadersInit;
 }): Promise<ServiceResult> {
-  if (process.env.NODE_ENV !== "development") {
+  if (!isDevelopment()) {
     return { success: false, error: "Not available in production" };
   }
 

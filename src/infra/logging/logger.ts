@@ -1,13 +1,21 @@
 import pino from "pino";
 import pretty from "pino-pretty";
 
-import { isDevelopment, isTest } from "@/config/env";
+import {
+  getLogLevel as envGetLogLevel,
+  isDevelopment,
+  isTest,
+} from "@/config/env";
 
 const bootstrapLogger = pino({
   level: "warn",
   base: {
     service: "nomad",
-    environment: process.env.NODE_ENV ?? "development",
+    environment: isTest()
+      ? "test"
+      : isDevelopment()
+        ? "development"
+        : "production",
   },
   messageKey: "message",
 });
@@ -23,50 +31,30 @@ const REDACT_PATHS = [
   "verificationCode",
 ];
 
-// Environment detection flags for conditional logger configuration
-const VALID_LOG_LEVELS: pino.LevelWithSilent[] = [
-  "fatal",
-  "error",
-  "warn",
-  "info",
-  "debug",
-  "trace",
-  "silent",
-];
-
-/**
- * Determines the appropriate log level based on the current environment.
- *
- * @returns The log level to use for the pino logger
- *
- * Priority order:
- * 1. Test environment: silent (no logs during tests)
- * 2. LOG_LEVEL environment variable if set
- * 3. Development: debug level for detailed logging
- * 4. Production: info level for essential logs only
- */
-const getLogLevel = (): pino.LevelWithSilent => {
+const resolveLogLevel = (): pino.LevelWithSilent => {
   if (isTest()) return "silent";
-  if (process.env.LOG_LEVEL) {
-    const envLevel = process.env.LOG_LEVEL as pino.LevelWithSilent;
-    // Validate the environment variable
-    if (VALID_LOG_LEVELS.includes(envLevel)) {
-      return envLevel;
-    }
+  try {
+    return envGetLogLevel();
+  } catch {
+    const envLevel = process.env.LOG_LEVEL;
     bootstrapLogger.warn(
-      { envLevel: process.env.LOG_LEVEL },
+      { envLevel },
       "Invalid LOG_LEVEL provided, falling back to default"
     );
+    return isDevelopment() ? "debug" : "info";
   }
-  return isDevelopment() ? "debug" : "info";
 };
 
 // Configuration object for the pino logger with environment-specific settings
 const pinoOptions: pino.LoggerOptions = {
-  level: getLogLevel(),
+  level: resolveLogLevel(),
   base: {
     service: "nomad",
-    environment: process.env.NODE_ENV ?? "development",
+    environment: isTest()
+      ? "test"
+      : isDevelopment()
+        ? "development"
+        : "production",
   },
   messageKey: "message",
   redact: {

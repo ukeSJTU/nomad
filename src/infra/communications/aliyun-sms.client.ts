@@ -5,6 +5,7 @@ import Dypnsapi20170525, * as $Dypnsapi20170525 from "@alicloud/dypnsapi20170525
 import * as $OpenApi from "@alicloud/openapi-client";
 import * as $Util from "@alicloud/tea-util";
 
+import { getParsedEnv } from "@/config/env";
 import { createScopedLogger } from "@/infra/logging/logger";
 import { phoneNumberSchema } from "@/types/validations";
 
@@ -68,8 +69,9 @@ class AliyunSmsClient {
    */
   public async sendSms(phoneNumber: string, code: string): Promise<boolean> {
     try {
-      const signName = process.env.ALIBABA_CLOUD_SMS_SIGN_NAME;
-      const templateCode = process.env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE;
+      const env = getParsedEnv();
+      const signName = env.ALIBABA_CLOUD_SMS_SIGN_NAME;
+      const templateCode = env.ALIBABA_CLOUD_SMS_TEMPLATE_CODE;
 
       logger.debug(
         { signName, templateCode },

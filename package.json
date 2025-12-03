@@ -12,7 +12,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "test": "cross-env NODE_ENV=test vitest",
-    "test:run": "cross-env NODE_ENV=test vitest --run --silent",
+    "test:run": "cross-env NODE_ENV=test vitest --run --silent=true",
     "test:unit": "cross-env NODE_ENV=test vitest --run --project=unit",
     "test:repository": "cross-env NODE_ENV=test vitest --run --project=repository",
     "test:integration": "cross-env NODE_ENV=test vitest --run --project=integration",
