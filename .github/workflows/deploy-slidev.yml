@@ -45,7 +45,7 @@ jobs:
         run: pnpm add -g @slidev/cli
 
       - name: Build Slidev
-        run: slidev build content/slides/midterm-2.md --base /nomad/slides/
+        run: pnpm exec slidev build content/slides/midterm-2.md --base /nomad/slides/ --out dist
         env:
           NODE_ENV: production
 
