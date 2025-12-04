@@ -42,7 +42,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Slidev CLI
-        run: pnpm add -g @slidev/cli
+        run: pnpm add -g @slidev/cli@^52.8.0
 
       - name: Build Slidev
         run: pnpm exec slidev build content/slides/midterm-2.md --base /nomad/slides/ --out dist
