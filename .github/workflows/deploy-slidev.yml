@@ -44,8 +44,11 @@ jobs:
       - name: Install Slidev CLI
         run: pnpm add -g @slidev/cli@^52.8.0
 
+      - name: Clean dist directory
+        run: rm -rf dist
+
       - name: Build Slidev
-        run: pnpm exec slidev build content/slides/midterm-2.md --base /nomad/slides/ --out dist
+        run: pnpm exec slidev build content/slides/midterm-2.md --base /nomad/slides/ --out "$(pwd)/dist"
         env:
           NODE_ENV: production
 
