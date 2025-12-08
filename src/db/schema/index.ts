@@ -2,6 +2,7 @@ export * from "./airlines";
 export * from "./airports";
 export * from "./ancillary";
 export * from "./auth";
+export * from "./addresses";
 export * from "./cities";
 export * from "./enums";
 export * from "./flight-search-history";
