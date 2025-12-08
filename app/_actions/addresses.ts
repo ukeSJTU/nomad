@@ -10,7 +10,7 @@ import {
   getUserAddresses,
   setDefaultAddress,
   updateAddress,
-} from "@/domains/user/address.repository";
+} from "@/domains/user";
 import { createScopedLogger } from "@/infra/logging/logger";
 import {
   createAddressSchema,
