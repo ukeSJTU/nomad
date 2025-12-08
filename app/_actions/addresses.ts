@@ -65,7 +65,10 @@ export async function createAddressAction(data: unknown) {
       "Create address action error"
     );
     if (error instanceof ZodError) {
-      return { success: false, error: (error as any).errors[0].message };
+      const errorMessage = (error as ZodError).issues
+        .map(issue => issue.message)
+        .join("\n");
+      return { success: false, error: errorMessage };
     }
     return { success: false, error: "Failed to create address" };
   }
@@ -103,7 +106,10 @@ export async function updateAddressAction(addressId: string, data: unknown) {
       "Update address action error"
     );
     if (error instanceof ZodError) {
-      return { success: false, error: (error as any).errors[0].message };
+      const errorMessage = (error as ZodError).issues
+        .map(issue => issue.message)
+        .join("\n");
+      return { success: false, error: errorMessage };
     }
     return { success: false, error: "Failed to update address" };
   }

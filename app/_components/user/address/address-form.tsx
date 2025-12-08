@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { type Control, useForm } from "react-hook-form";
+import { type Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -41,7 +41,7 @@ export function AddressForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<CreateAddressData>({
-    resolver: zodResolver(createAddressSchema) as any,
+    resolver: zodResolver(createAddressSchema) as Resolver<CreateAddressData>,
     defaultValues: {
       recipientName: initialData?.recipientName || "",
       phoneNumber: initialData?.phoneNumber || "",
@@ -71,8 +71,11 @@ export function AddressForm({
       } else {
         toast.error(result.error || "操作失败");
       }
-    } catch (_error) {
-      toast.error("发生未知错误");
+    } catch (error) {
+      console.error("Address form submission error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "发生未知错误，请稍后重试"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -80,10 +83,10 @@ export function AddressForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <FormField<CreateAddressData, "recipientName">
-            control={form.control as unknown as Control<CreateAddressData>}
+          <FormField
+            control={form.control}
             name="recipientName"
             render={({ field }) => (
               <FormItem>
@@ -95,8 +98,8 @@ export function AddressForm({
               </FormItem>
             )}
           />
-          <FormField<CreateAddressData, "phoneNumber">
-            control={form.control as unknown as Control<CreateAddressData>}
+          <FormField
+            control={form.control}
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
@@ -111,8 +114,8 @@ export function AddressForm({
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <FormField<CreateAddressData, "province">
-            control={form.control as unknown as Control<CreateAddressData>}
+          <FormField
+            control={form.control}
             name="province"
             render={({ field }) => (
               <FormItem>
@@ -124,8 +127,8 @@ export function AddressForm({
               </FormItem>
             )}
           />
-          <FormField<CreateAddressData, "city">
-            control={form.control as unknown as Control<CreateAddressData>}
+          <FormField
+            control={form.control}
             name="city"
             render={({ field }) => (
               <FormItem>
@@ -137,8 +140,8 @@ export function AddressForm({
               </FormItem>
             )}
           />
-          <FormField<CreateAddressData, "district">
-            control={form.control as unknown as Control<CreateAddressData>}
+          <FormField
+            control={form.control}
             name="district"
             render={({ field }) => (
               <FormItem>
@@ -152,8 +155,8 @@ export function AddressForm({
           />
         </div>
 
-        <FormField<CreateAddressData, "detailAddress">
-          control={form.control as unknown as Control<CreateAddressData>}
+        <FormField
+          control={form.control}
           name="detailAddress"
           render={({ field }) => (
             <FormItem>
@@ -166,8 +169,8 @@ export function AddressForm({
           )}
         />
 
-        <FormField<CreateAddressData, "isDefault">
-          control={form.control as unknown as Control<CreateAddressData>}
+        <FormField
+          control={form.control}
           name="isDefault"
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">

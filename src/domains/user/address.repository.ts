@@ -1,4 +1,4 @@
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, count, desc, eq, ne } from "drizzle-orm";
 
 import { db } from "@/db";
 import { addresses } from "@/db/schema";
@@ -43,25 +43,28 @@ export async function createAddress(
   data: AddressInsert,
   dbClient: DbExecutor = db
 ): Promise<AddressRow> {
-  // If this is the first address, make it default
-  const existing = await getUserAddresses(data.userId, dbClient);
-  if (existing.length === 0) {
-    data.isDefault = true;
-  }
-
-  // If setting as default, unset others
-  if (data.isDefault) {
-    await dbClient
-      .update(addresses)
-      .set({ isDefault: false })
+  return dbClient.transaction(async tx => {
+    // If this is the first address, make it default
+    const [existingCount] = await tx
+      .select({ count: count() })
+      .from(addresses)
       .where(eq(addresses.userId, data.userId));
-  }
 
-  const [newAddress] = await dbClient
-    .insert(addresses)
-    .values(data)
-    .returning();
-  return newAddress;
+    if (existingCount.count === 0) {
+      data.isDefault = true;
+    }
+
+    // If setting as default, unset others
+    if (data.isDefault) {
+      await tx
+        .update(addresses)
+        .set({ isDefault: false })
+        .where(eq(addresses.userId, data.userId));
+    }
+
+    const [newAddress] = await tx.insert(addresses).values(data).returning();
+    return newAddress;
+  });
 }
 
 /**
@@ -73,21 +76,23 @@ export async function updateAddress(
   data: Partial<AddressInsert>,
   dbClient: DbExecutor = db
 ): Promise<AddressRow | undefined> {
-  // If setting as default, unset others
-  if (data.isDefault) {
-    await dbClient
+  return dbClient.transaction(async tx => {
+    // If setting as default, unset others
+    if (data.isDefault) {
+      await tx
+        .update(addresses)
+        .set({ isDefault: false })
+        .where(and(eq(addresses.userId, userId), ne(addresses.id, addressId)));
+    }
+
+    const [updatedAddress] = await tx
       .update(addresses)
-      .set({ isDefault: false })
-      .where(and(eq(addresses.userId, userId), ne(addresses.id, addressId)));
-  }
+      .set(data)
+      .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)))
+      .returning();
 
-  const [updatedAddress] = await dbClient
-    .update(addresses)
-    .set(data)
-    .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)))
-    .returning();
-
-  return updatedAddress;
+    return updatedAddress;
+  });
 }
 
 /**
