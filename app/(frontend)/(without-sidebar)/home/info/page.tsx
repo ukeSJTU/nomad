@@ -2,8 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Separator } from "@/components/ui/separator";
-import { UserInfoForm } from "@/components/user";
-import { getUserInfo } from "@/domains/user";
+import { AddressList, UserInfoForm } from "@/components/user";
+import { getUserAddresses, getUserInfo } from "@/domains/user";
 import { requireSessionUser } from "@/infra/auth/session";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +24,7 @@ export const dynamic = "force-dynamic";
 export default async function UserInfoPage() {
   const user = await requireSessionUser("/home/info");
   const userData = await getUserInfo(user.id);
+  const userAddresses = await getUserAddresses(user.id);
 
   // Handle case where user data is not found (should not happen for authenticated users)
   if (!userData) {
@@ -42,6 +43,11 @@ export default async function UserInfoPage() {
         <div className="space-y-6">
           {/* User Info Form Component */}
           <UserInfoForm userData={userData} />
+
+          {/* Address Management Section */}
+          <div className="space-y-6 bg-white p-6 rounded-lg border">
+            <AddressList addresses={userAddresses} />
+          </div>
 
           {/* Account Security Section */}
           <div className="space-y-6 bg-white p-6 rounded-lg border">
