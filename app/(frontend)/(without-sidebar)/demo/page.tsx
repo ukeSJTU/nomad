@@ -5,10 +5,10 @@ import type { NextPage } from "next";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 
-import { Main } from "@/remotion/MyComp/Main";
-import { RenderControls } from "@/remotion/components/RenderControls";
-import { Spacing } from "@/remotion/components/Spacing";
-import { Tips } from "@/remotion/components/Tips";
+import { Main } from "@/app/_remotion/MyComp/Main";
+import { RenderControls } from "@/app/_remotion/components/RenderControls";
+import { Spacing } from "@/app/_remotion/components/Spacing";
+import { Tips } from "@/app/_remotion/components/Tips";
 import {
   CompositionProps,
   DURATION_IN_FRAMES,
@@ -16,7 +16,7 @@ import {
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
   defaultMyCompProps,
-} from "@/remotion/constants";
+} from "@/app/_remotion/constants";
 
 const Home: NextPage = () => {
   const [text, setText] = useState<string>(defaultMyCompProps.title);

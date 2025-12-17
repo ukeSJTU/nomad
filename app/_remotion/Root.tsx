@@ -1,15 +1,15 @@
 import { Composition } from "remotion";
 
+import { Main } from "./MyComp/Main";
+import { NextLogo } from "./MyComp/NextLogo";
 import {
   COMP_NAME,
-  defaultMyCompProps,
   DURATION_IN_FRAMES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
+  defaultMyCompProps,
 } from "./constants";
-import { Main } from "./MyComp/Main";
-import { NextLogo } from "./MyComp/NextLogo";
 
 export const RemotionRoot: React.FC = () => {
   return (

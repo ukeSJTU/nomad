@@ -1,4 +1,4 @@
-import "../../remotion/styles/global.css";
+import "@/app/_remotion/styles/global.css";
 
 import type { ReactNode } from "react";
 
