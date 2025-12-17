@@ -34,20 +34,30 @@ const Home: NextPage = () => {
         </div>
         <div className="mt-8 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            认证场景 - 登录流程展示
+            认证场景 - 登录流程展示(含摄像机动画)
           </h2>
           <p className="text-gray-600 mb-2">
-            这个动画展示了用户登录的完整流程:
+            这个动画展示了用户登录的完整流程,配合电影级摄像机运镜:
           </p>
           <ul className="text-left text-gray-600 space-y-1 max-w-md mx-auto">
             <li>✨ 背景淡入和品牌展示</li>
             <li>📝 登录表单平滑滑入</li>
-            <li>⌨️ 账号和密码逐字填充动画</li>
+            <li>
+              🎥 <strong>摄像机聚焦放大</strong> - 突出账号输入框
+            </li>
+            <li>⌨️ 账号逐字填充动画</li>
+            <li>
+              🎬 <strong>摄像机平滑下移</strong> - 过渡到密码框
+            </li>
+            <li>🔒 密码逐字填充动画</li>
+            <li>
+              📹 <strong>摄像机缩小复位</strong> - 展示完整表单
+            </li>
             <li>✅ 协议勾选交互</li>
             <li>🚀 登录按钮高亮效果</li>
           </ul>
           <p className="text-gray-500 text-sm mt-4">
-            时长: 8秒 (240帧 @ 30fps)
+            时长: 10秒 (300帧 @ 30fps) | 含 Spring 弹性动画
           </p>
         </div>
       </div>
