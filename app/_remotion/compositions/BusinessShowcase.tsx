@@ -2,8 +2,11 @@ import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
 
 import { SCENE_DURATIONS } from "../constants";
-import { AuthScene } from "../scenes/AuthScene";
+import { AuthSceneComplete } from "../scenes/AuthSceneComplete";
+import { HomeScene } from "../scenes/HomeScene";
 import { IntroScene } from "../scenes/IntroScene";
+import { OrderScene } from "../scenes/OrderScene";
+import { SearchScene } from "../scenes/SearchScene";
 
 /**
  * 主业务展示动画 - 完整版
@@ -16,22 +19,6 @@ import { IntroScene } from "../scenes/IntroScene";
  * 4. Order (1740-2940): 订票流程
  * 5. Home (2940-3840): 个人中心
  */
-
-// 占位符场景组件 - 用于尚未实现的场景
-const PlaceholderScene: React.FC<{ title: string; duration: string }> = ({
-  title,
-  duration,
-}) => {
-  return (
-    <AbsoluteFill className="bg-background flex items-center justify-center">
-      <div className="text-center space-y-4">
-        <div className="text-6xl">🚧</div>
-        <h2 className="text-4xl font-bold text-foreground">{title}</h2>
-        <p className="text-xl text-muted-foreground">即将实现 ({duration})</p>
-      </div>
-    </AbsoluteFill>
-  );
-};
 
 export const BusinessShowcase: React.FC = () => {
   // 计算每个场景的起始帧
@@ -61,23 +48,22 @@ export const BusinessShowcase: React.FC = () => {
 
       {/* Scene 2: Auth - 用户认证 (90-840帧) */}
       <Sequence from={authStart} durationInFrames={SCENE_DURATIONS.AUTH}>
-        {/* 暂时使用现有的AuthScene作为占位 */}
-        <AuthScene />
+        <AuthSceneComplete />
       </Sequence>
 
       {/* Scene 3: Search - 航班搜索 (840-1740帧) */}
       <Sequence from={searchStart} durationInFrames={SCENE_DURATIONS.SEARCH}>
-        <PlaceholderScene title="航班搜索场景" duration="30秒" />
+        <SearchScene />
       </Sequence>
 
       {/* Scene 4: Order - 订票流程 (1740-2940帧) */}
       <Sequence from={orderStart} durationInFrames={SCENE_DURATIONS.ORDER}>
-        <PlaceholderScene title="订票流程场景" duration="40秒" />
+        <OrderScene />
       </Sequence>
 
       {/* Scene 5: Home - 个人中心 (2940-3840帧) */}
       <Sequence from={homeStart} durationInFrames={SCENE_DURATIONS.HOME}>
-        <PlaceholderScene title="个人中心场景" duration="30秒" />
+        <HomeScene />
       </Sequence>
     </AbsoluteFill>
   );
