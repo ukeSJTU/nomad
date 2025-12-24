@@ -6,6 +6,7 @@
  * - results: Flight search results display
  * - booking: Flight booking process
  * - orders: Order management and display
+ * - guide: Airport guide and information
  */
 
 // Re-export all search components
@@ -19,3 +20,6 @@ export * from "./booking";
 
 // Re-export all order components
 export * from "./orders";
+
+// Re-export all guide components
+export * from "./guide";

@@ -2,6 +2,15 @@ import { getAirportByIataCodeAction } from "@/actions/airport-guide";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AirportSidebar } from "@/components/flights";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -18,7 +27,6 @@ export default async function AirportDetailPage({ params }: PageProps) {
   const match = slug.match(/^airport-([a-zA-Z]{3})$/);
 
   if (!match) {
-    console.log("Invalid slug format:", slug);
     notFound();
   }
 
@@ -95,17 +103,21 @@ export default async function AirportDetailPage({ params }: PageProps) {
 
   return (
     <div className="container mx-auto py-8 px-4 min-h-screen bg-background">
-      {/* Breadcrumb */}
-      <div className="text-muted-foreground mb-4 text-xs">
-        <Link href="/flights" className="hover:text-primary">
-          首页
-        </Link>{" "}
-        &gt;{" "}
-        <Link href="/flights/guide" className="hover:text-primary">
-          机场攻略
-        </Link>{" "}
-        &gt; {cityName}
-      </div>
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/flights">首页</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/flights/guide">机场攻略</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{cityName}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       <h1 className="text-2xl font-bold text-foreground mb-6">{airportName}</h1>
 
@@ -283,30 +295,7 @@ export default async function AirportDetailPage({ params }: PageProps) {
             </TabsContent>
           </div>
 
-          {/* Right Sidebar (Reused from Home) */}
-          <aside className="w-full lg:w-[280px] space-y-4">
-            <Card className="bg-accent/50 border-accent">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="font-bold text-foreground">相关链接</span>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <Link
-                    href="/flights/guide"
-                    className="block text-primary hover:underline transition-colors"
-                  >
-                    返回机场攻略首页
-                  </Link>
-                  <Link
-                    href="/flights"
-                    className="block text-primary hover:underline transition-colors"
-                  >
-                    特价机票查询
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          </aside>
+          <AirportSidebar />
         </div>
       </Tabs>
     </div>
