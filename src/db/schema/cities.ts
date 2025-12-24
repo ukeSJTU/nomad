@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   char,
@@ -10,6 +10,8 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+
+import { airports } from "./airports";
 
 /**
  * Cities Schema
@@ -125,3 +127,10 @@ export const cities = pgTable(
     ), // International cities must have continent
   ]
 );
+
+/**
+ * Cities Relations
+ */
+export const citiesRelations = relations(cities, ({ many }) => ({
+  airports: many(airports),
+}));
