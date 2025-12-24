@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.55% </span>
+                <span class="strong">82.39% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>115/136</span>
+                <span class='fraction'>117/142</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.88% </span>
+                <span class="strong">35% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/18</span>
+                <span class='fraction'>7/20</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.55% </span>
+                <span class="strong">82.39% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>115/136</span>
+                <span class='fraction'>117/142</span>
             </div>
         
             
@@ -281,13 +281,23 @@
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
 <a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -449,6 +459,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -476,6 +490,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -511,6 +529,7 @@ import {
   signInWithOtpAction,
   verifyEmailOtpAction,
 } from "@/app/_actions/auth";
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {
@@ -541,11 +560,11 @@ export interface UseSignUpFlowReturn {
   handleSendPhoneOtp: (
     phoneNumber: string,
     fetchOptions?: FetchOptions
-  ) =&gt; Promise&lt;boolean&gt;;
+  ) =&gt; Promise&lt;OtpSendActionResult&gt;;
   handleSendEmailOtp: (
     email: string,
     fetchOptions?: FetchOptions
-  ) =&gt; Promise&lt;boolean&gt;;
+  ) =&gt; Promise&lt;OtpSendActionResult&gt;;
 }
 &nbsp;
 export function useSignUpFlow(): UseSignUpFlowReturn {
@@ -655,10 +674,10 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
   const handleSendPhoneOtp = async (
     phoneNumber: string,
     fetchOptions?: FetchOptions
-  ): Promise&lt;boolean&gt; =&gt; {
+  ): Promise&lt;OtpSendActionResult&gt; =&gt; {
     if (!phoneNumber) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >      toast.error("请先输入手机号");</span>
-<span class="cstat-no" title="statement not covered" >      return false;</span>
+<span class="cstat-no" title="statement not covered" >      return { success: false, error: "请先输入手机号" };</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     setIsLoading(true);
@@ -666,9 +685,13 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
     try {
       const result = await sendPhoneOtpAction(phoneNumber, fetchOptions);
 &nbsp;
-      return result.success;
+      if (!result.success) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        toast.error(result.error || "发送验证码失败，请重试");</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+&nbsp;
+      return result;
 <span class="branch-0 cbranch-no" title="branch not covered" >    } catch {</span>
-<span class="cstat-no" title="statement not covered" >      return false;</span>
+<span class="cstat-no" title="statement not covered" >      return { success: false, error: "发送验证码失败，请重试" };</span>
     } finally {
       setIsLoading(false);
     }
@@ -680,10 +703,10 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
   const handleSendEmailOtp = async (
     email: string,
     fetchOptions?: FetchOptions
-  ): Promise&lt;boolean&gt; =&gt; {
+  ): Promise&lt;OtpSendActionResult&gt; =&gt; {
     if (!email) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >      toast.error("请先输入邮箱地址");</span>
-<span class="cstat-no" title="statement not covered" >      return false;</span>
+<span class="cstat-no" title="statement not covered" >      return { success: false, error: "请先输入邮箱地址" };</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     setIsLoading(true);
@@ -695,9 +718,13 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
         fetchOptions
       );
 &nbsp;
-      return result.success;
+      if (!result.success) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        toast.error(result.error || "发送验证码失败，请重试");</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+&nbsp;
+      return result;
 <span class="branch-0 cbranch-no" title="branch not covered" >    } catch {</span>
-<span class="cstat-no" title="statement not covered" >      return false;</span>
+<span class="cstat-no" title="statement not covered" >      return { success: false, error: "发送验证码失败，请重试" };</span>
     } finally {
       setIsLoading(false);
     }
@@ -724,7 +751,7 @@ export function useSignUpFlow(): UseSignUpFlowReturn {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T11:15:13.714Z
+                at 2025-12-24T15:20:31.937Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

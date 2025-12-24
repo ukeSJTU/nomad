@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/72</span>
+                <span class='fraction'>0/73</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/72</span>
+                <span class='fraction'>0/73</span>
             </div>
         
             
@@ -144,7 +144,8 @@
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -154,14 +155,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -199,6 +196,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -233,6 +235,7 @@
 <span class="cstat-no" title="statement not covered" >import { nextCookies } from "better-auth/next-js";</span>
 <span class="cstat-no" title="statement not covered" >import { captcha, emailOTP, phoneNumber } from "better-auth/plugins";</span>
 &nbsp;
+<span class="cstat-no" title="statement not covered" >import { getParsedEnv } from "@/config/env";</span>
 <span class="cstat-no" title="statement not covered" >import { db } from "@/db";</span>
 <span class="cstat-no" title="statement not covered" >import { logger } from "@/infra/logging";</span>
 &nbsp;
@@ -248,13 +251,8 @@
 <span class="cstat-no" title="statement not covered" >  plugins: [</span>
 <span class="cstat-no" title="statement not covered" >    captcha({</span>
 <span class="cstat-no" title="statement not covered" >      provider: "cloudflare-turnstile",</span>
-<span class="cstat-no" title="statement not covered" >      secretKey: process.env.TURNSTILE_SECRET_KEY ?? "",</span>
-<span class="cstat-no" title="statement not covered" >      endpoints: [</span>
-<span class="cstat-no" title="statement not covered" >        "/phone-number/send-otp",</span>
-<span class="cstat-no" title="statement not covered" >        "/email-otp/send-verification-otp",</span>
-<span class="cstat-no" title="statement not covered" >        "/phone-number/request-password-reset",</span>
-<span class="cstat-no" title="statement not covered" >        "/forget-password/email-otp",</span>
-<span class="cstat-no" title="statement not covered" >      ],</span>
+<span class="cstat-no" title="statement not covered" >      secretKey: getParsedEnv().TURNSTILE_SECRET_KEY ?? "",</span>
+<span class="cstat-no" title="statement not covered" >      endpoints: ["/phone-number/send-otp", "/email-otp/send-verification-otp"],</span>
 <span class="cstat-no" title="statement not covered" >    }),</span>
 <span class="cstat-no" title="statement not covered" >    phoneNumber({</span>
 <span class="cstat-no" title="statement not covered" >      sendOTP: async ({ phoneNumber, code }) =&gt; {</span>
@@ -295,12 +293,17 @@
 <span class="cstat-no" title="statement not covered" >      return logger.info(message, ...args);</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  },</span>
-<span class="cstat-no" title="statement not covered" >  socialProviders: {</span>
-<span class="cstat-no" title="statement not covered" >    github: {</span>
-<span class="cstat-no" title="statement not covered" >      clientId: process.env.GITHUB_CLIENT_ID as string,</span>
-<span class="cstat-no" title="statement not covered" >      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  },</span>
+<span class="cstat-no" title="statement not covered" >  socialProviders: (() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    const env = getParsedEnv();</span>
+<span class="cstat-no" title="statement not covered" >    return env.GITHUB_CLIENT_ID &amp;&amp; env.GITHUB_CLIENT_SECRET</span>
+<span class="cstat-no" title="statement not covered" >      ? {</span>
+<span class="cstat-no" title="statement not covered" >          github: {</span>
+<span class="cstat-no" title="statement not covered" >            clientId: env.GITHUB_CLIENT_ID,</span>
+<span class="cstat-no" title="statement not covered" >            clientSecret: env.GITHUB_CLIENT_SECRET,</span>
+<span class="cstat-no" title="statement not covered" >          },</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
+<span class="cstat-no" title="statement not covered" >      : {};</span>
+<span class="cstat-no" title="statement not covered" >  })(),</span>
 <span class="cstat-no" title="statement not covered" >  rateLimit: {</span>
 <span class="cstat-no" title="statement not covered" >    storage: "database",</span>
 <span class="cstat-no" title="statement not covered" >    modelName: "rateLimit",</span>
@@ -313,7 +316,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T11:15:13.714Z
+                at 2025-12-24T15:20:31.937Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

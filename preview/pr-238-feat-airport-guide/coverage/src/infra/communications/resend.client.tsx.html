@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">48.06% </span>
+                <span class="strong">48.85% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>62/129</span>
+                <span class='fraction'>64/131</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.3% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/13</span>
+                <span class='fraction'>11/12</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">48.06% </span>
+                <span class="strong">48.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>62/129</span>
+                <span class='fraction'>64/131</span>
             </div>
         
             
@@ -252,24 +252,28 @@
 <a name='L187'></a><a href='#L187'>187</a>
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -446,6 +450,7 @@
 import { Resend } from "resend";
 &nbsp;
 import { OrderConfirmationEmail, OtpEmailTemplate } from "@/components/emails";
+import { getParsedEnv } from "@/config/env";
 import { createScopedLogger } from "@/infra/logging/logger";
 import type { OrderConfirmationEmailData } from "@/types/dto";
 &nbsp;
@@ -460,7 +465,8 @@ export class ResendEmailClient {
   private client: Resend;
 &nbsp;
   private constructor() {
-    const apiKey = process.env.RESEND_API_KEY;
+    const env = getParsedEnv();
+    const apiKey = env.RESEND_API_KEY;
 &nbsp;
     if (!apiKey) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >      logger.warn(</span>
@@ -495,15 +501,15 @@ export class ResendEmailClient {
     code: string
   ): Promise&lt;boolean&gt; {
     try {
-      const fromEmail =
-        process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+      const env = getParsedEnv();
+      const fromEmail = env.RESEND_FROM_EMAIL;
 &nbsp;
       logger.debug(
         { fromEmail, email: emailAddr },
         "Sending verification email"
       );
 &nbsp;
-      if (!process.env.RESEND_API_KEY) {
+      if (!env.RESEND_API_KEY) {
         throw new Error("Missing required email configuration: RESEND_API_KEY");
       }
 &nbsp;
@@ -541,8 +547,8 @@ export class ResendEmailClient {
 <span class="cstat-no" title="statement not covered" >    orderData: OrderConfirmationEmailData</span>
 <span class="cstat-no" title="statement not covered" >  ): Promise&lt;boolean&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      const fromEmail =</span>
-<span class="cstat-no" title="statement not covered" >        process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";</span>
+<span class="cstat-no" title="statement not covered" >      const env = getParsedEnv();</span>
+<span class="cstat-no" title="statement not covered" >      const fromEmail = (env as any).RESEND_FROM_EMAIL;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      logger.info(</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
@@ -552,7 +558,7 @@ export class ResendEmailClient {
 <span class="cstat-no" title="statement not covered" >        "Sending order confirmation email"</span>
 <span class="cstat-no" title="statement not covered" >      );</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      if (!process.env.RESEND_API_KEY) {</span>
+<span class="cstat-no" title="statement not covered" >      if (!env.RESEND_API_KEY) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error("Missing required email configuration: RESEND_API_KEY");</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 &nbsp;
@@ -637,7 +643,7 @@ export async function sendEmailOtp(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T11:15:13.714Z
+                at 2025-12-24T15:20:31.937Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
