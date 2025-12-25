@@ -19,7 +19,15 @@ export const SCENE_DURATIONS = {
   // Auth 子场景
   AUTH_SIGNUP: 450, // 15 秒 - 注册流程
   AUTH_TRANSITION: 60, // 2 秒 - 注册到登录的过渡
-  AUTH_SIGNIN: 240, // 8 秒 - 登录流程
+  AUTH_SIGNIN: 300, // 10 秒 - 登录流程(完整动画时长)
 } as const;
+
+// 计算完整动画的总帧数
+export const TOTAL_FRAMES =
+  SCENE_DURATIONS.INTRO +
+  SCENE_DURATIONS.AUTH +
+  SCENE_DURATIONS.SEARCH +
+  SCENE_DURATIONS.ORDER +
+  SCENE_DURATIONS.HOME;
 
 // 总时长: 3840 帧 (128 秒 / 2分8秒)

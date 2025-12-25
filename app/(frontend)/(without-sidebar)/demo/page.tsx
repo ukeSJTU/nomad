@@ -5,28 +5,20 @@ import type { NextPage } from "next";
 
 import { BusinessShowcase } from "@/app/_remotion/compositions/BusinessShowcase";
 import {
-  SCENE_DURATIONS,
+  TOTAL_FRAMES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
 } from "@/app/_remotion/constants";
 
 const Home: NextPage = () => {
-  // 计算完整动画的总帧数
-  const totalFrames =
-    SCENE_DURATIONS.INTRO +
-    SCENE_DURATIONS.AUTH +
-    SCENE_DURATIONS.SEARCH +
-    SCENE_DURATIONS.ORDER +
-    SCENE_DURATIONS.HOME;
-
   return (
     <div>
       <div className="max-w-screen-md m-auto mb-5">
         <div className="overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)] mb-10 mt-16">
           <Player
             component={BusinessShowcase}
-            durationInFrames={totalFrames}
+            durationInFrames={TOTAL_FRAMES}
             fps={VIDEO_FPS}
             compositionHeight={VIDEO_HEIGHT}
             compositionWidth={VIDEO_WIDTH}

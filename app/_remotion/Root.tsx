@@ -3,6 +3,7 @@ import { Composition } from "remotion";
 import { BusinessShowcase } from "./compositions/BusinessShowcase";
 import {
   SCENE_DURATIONS,
+  TOTAL_FRAMES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
@@ -11,21 +12,13 @@ import { AuthScene } from "./scenes/AuthScene";
 import { IntroScene } from "./scenes/IntroScene";
 
 export const RemotionRoot: React.FC = () => {
-  // 计算完整动画的总帧数
-  const totalFrames =
-    SCENE_DURATIONS.INTRO +
-    SCENE_DURATIONS.AUTH +
-    SCENE_DURATIONS.SEARCH +
-    SCENE_DURATIONS.ORDER +
-    SCENE_DURATIONS.HOME;
-
   return (
     <>
       {/* 完整业务展示动画 - 主Composition */}
       <Composition
         id="BusinessShowcase"
         component={BusinessShowcase}
-        durationInFrames={totalFrames}
+        durationInFrames={TOTAL_FRAMES}
         fps={VIDEO_FPS}
         width={VIDEO_WIDTH}
         height={VIDEO_HEIGHT}
