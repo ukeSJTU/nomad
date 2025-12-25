@@ -80,3 +80,6 @@ vitest.config.mts.timestamp-
 
 # Openspec
 openspec/changes
+
+# Turborepo
+.turbo/
