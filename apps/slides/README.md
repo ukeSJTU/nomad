@@ -57,5 +57,6 @@ pnpm slides:export
 修改 `apps/slides/` 目录下的文件后，推送到 GitHub 会自动触发部署到 GitHub Pages。
 
 部署地址：
+
 - **Production**: https://ukesjtu.github.io/nomad/slides/
 - **Staging**: https://ukesjtu.github.io/nomad/slides/develop/
