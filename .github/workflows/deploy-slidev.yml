@@ -4,9 +4,9 @@ on:
   push:
     branches: [develop, main]
     paths:
-      - "content/slides/**"
+      - "apps/slides/**"
       - ".github/workflows/deploy-slidev.yml"
-      - "package.json"
+      - "pnpm-workspace.yaml"
       - "pnpm-lock.yaml"
   workflow_dispatch:
 
@@ -41,14 +41,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Slidev CLI
-        run: pnpm add -g @slidev/cli@^52.8.0
-
-      - name: Clean dist directory
-        run: rm -rf dist
-
       - name: Build Slidev
-        run: pnpm exec slidev build content/slides/midterm-2.md --base /nomad/slides/ --out "$(pwd)/dist"
+        run: pnpm --filter slides build --base /nomad/slides/
         env:
           NODE_ENV: production
 
@@ -56,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: slidev-dist
-          path: dist/
+          path: apps/slides/dist/
           retention-days: 30
 
       - name: Build status
