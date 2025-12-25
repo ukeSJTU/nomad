@@ -8,8 +8,8 @@ node_modules/
 *.ts
 *.cjs
 *.mjs
-d.cts
-d.mts
+*.d.cts
+*.d.mts
 *.jsx
 *.tsx
 *.json
