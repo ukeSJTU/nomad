@@ -184,6 +184,7 @@
     "ora": "^8.2.0",
     "pino-pretty": "^13.1.2",
     "playwright": "^1.56.1",
+    "prettier": "^3.7.4",
     "react-email": "4.3.2",
     "server-only": "^0.0.1",
     "storybook": "^9.1.15",
@@ -195,6 +196,8 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": ["biome check --write"]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": ["biome check --write"],
+    "*.{md,mdx}": ["prettier --write"],
+    "*.{vue}": ["prettier --write"]
   }
 }
