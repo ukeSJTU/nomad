@@ -36,7 +36,7 @@
     "lint": "biome check --diagnostic-level=error . && pnpm lint:boundary",
     "lint:fix": "biome check --write . && pnpm lint:boundary",
     "lint:boundary": "node scripts/check-app-boundary.mjs",
-    "format": "biome check --write --linter-enabled=false .",
+    "format": "biome check --write --linter-enabled=false . && prettier --write '**/*.{md,mdx,vue}'",
     "format:check": "biome check --linter-enabled=false .",
     "prepare": "husky",
     "postinstall": "fumadocs-mdx",
