@@ -195,6 +195,6 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs,cts,mts,json,md,mdx}": ["biome check --write"]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": ["biome check --write"]
   }
 }
