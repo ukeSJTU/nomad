@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AbsoluteFill,
   interpolate,
@@ -26,7 +25,7 @@ import { LoginFormVisual } from "../components/visual/LoginFormVisual";
  * 280-300: 场景保持
  */
 
-export const AuthScene: React.FC = () => {
+export const AuthScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 

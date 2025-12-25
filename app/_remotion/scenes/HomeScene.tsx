@@ -1,4 +1,3 @@
-import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 
 /**
@@ -31,7 +30,7 @@ import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
  * - 870-900: 点击下载登机牌,淡出结束
  */
 
-export const HomeScene: React.FC = () => {
+export const HomeScene = () => {
   const frame = useCurrentFrame();
 
   // ==========================================

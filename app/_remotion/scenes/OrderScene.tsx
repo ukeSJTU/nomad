@@ -1,4 +1,3 @@
-import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 
 /**
@@ -36,7 +35,7 @@ import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
  * - 1170-1200: 支付成功,淡出
  */
 
-export const OrderScene: React.FC = () => {
+export const OrderScene = () => {
   const frame = useCurrentFrame();
 
   // ==========================================

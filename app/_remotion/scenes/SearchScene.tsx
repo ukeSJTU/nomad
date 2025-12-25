@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AbsoluteFill,
   interpolate,
@@ -40,7 +39,7 @@ import {
  * - 840-900: 点击订票按钮,淡出
  */
 
-export const SearchScene: React.FC = () => {
+export const SearchScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 

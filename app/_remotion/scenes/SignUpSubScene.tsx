@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AbsoluteFill,
   interpolate,
@@ -34,7 +33,7 @@ import { SignUpFormVisual } from "../components/visual/SignUpFormVisual";
  * - 420-450: 准备淡出
  */
 
-export const SignUpSubScene: React.FC = () => {
+export const SignUpSubScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 

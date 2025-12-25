@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AbsoluteFill,
   interpolate,
@@ -20,7 +19,7 @@ import {
  * 85-90: 所有元素淡出
  */
 
-export const IntroScene: React.FC = () => {
+export const IntroScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
