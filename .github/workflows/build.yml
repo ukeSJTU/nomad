@@ -46,22 +46,22 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run lint (Biome)
-        run: pnpm lint
+        run: turbo run lint
 
       - name: Setup build database
-        run: pnpm db:push
+        run: pnpm web:db:push
         env:
           DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
           DATABASE_SSL: "false"
 
       - name: Seed build database
-        run: pnpm db:seed
+        run: pnpm web:db:seed
         env:
           DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
           DATABASE_SSL: "false"
 
       - name: Run build
-        run: pnpm build
+        run: turbo run build
         env:
           # Disable Next.js telemetry in CI
           NEXT_TELEMETRY_DISABLED: 1
