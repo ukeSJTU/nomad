@@ -76,13 +76,16 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "biomejs.biome",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.rulers": [],
     "editor.wordWrap": "on"
   },
   "[mdx]": {
     "editor.formatOnSave": false,
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
   // TypeScript settings
@@ -141,6 +144,5 @@
     {
       "text": "Generate commit messages in English only"
     }
-  ],
-  "slidev.include": ["content/slides/midterm-2.md"]
+  ]
 }
