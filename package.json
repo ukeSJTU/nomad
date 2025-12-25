@@ -43,7 +43,10 @@
     "setup:dev": "node scripts/setup-dev.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "email": "email dev --dir ./app/_components/emails --port 6007"
+    "email": "email dev --dir ./app/_components/emails --port 6007",
+    "slides:dev": "pnpm --filter slides dev",
+    "slides:build": "pnpm --filter slides build",
+    "slides:export": "pnpm --filter slides export"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.22",
