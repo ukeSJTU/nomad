@@ -1,0 +1,20 @@
+# Build outputs
+dist/
+.next/
+node_modules/
+
+# Files already handle by biome, check biome.json
+*.js
+*.ts
+*.cjs
+*.mjs
+*.d.cts
+*.d.mts
+*.jsx
+*.tsx
+*.json
+*.jsonc
+*.mdx
+
+# Special lock files
+pnpm-lock.yaml

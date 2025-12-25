@@ -36,14 +36,17 @@
     "lint": "biome check --diagnostic-level=error . && pnpm lint:boundary",
     "lint:fix": "biome check --write . && pnpm lint:boundary",
     "lint:boundary": "node scripts/check-app-boundary.mjs",
-    "format": "biome check --write --linter-enabled=false .",
-    "format:check": "biome check --linter-enabled=false .",
+    "format": "biome check --write --linter-enabled=false . && prettier --write '**/*.{md,vue}' --ignore-path .prettierignore",
+    "format:check": "biome check --linter-enabled=false . && prettier --check '**/*.{md,vue}' --ignore-path .prettierignore",
     "prepare": "husky",
     "postinstall": "fumadocs-mdx",
     "setup:dev": "node scripts/setup-dev.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "email": "email dev --dir ./app/_components/emails --port 6007"
+    "email": "email dev --dir ./app/_components/emails --port 6007",
+    "slides:dev": "pnpm --filter slides dev",
+    "slides:build": "pnpm --filter slides build",
+    "slides:export": "pnpm --filter slides export"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.22",
@@ -83,7 +86,6 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@react-email/components": "^0.5.6",
-    "@slidev/theme-default": "^0.25.0",
     "@remotion/cli": "4.0.375",
     "@remotion/lambda": "4.0.375",
     "@remotion/paths": "^4.0.375",
@@ -182,6 +184,8 @@
     "ora": "^8.2.0",
     "pino-pretty": "^13.1.2",
     "playwright": "^1.56.1",
+    "prettier": "^3.7.4",
+    "prettier-plugin-slidev": "^1.0.5",
     "react-email": "4.3.2",
     "server-only": "^0.0.1",
     "storybook": "^9.1.15",
@@ -193,6 +197,8 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs,cts,mts,json,md,mdx}": ["biome check --write"]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": ["biome check --write"],
+    "*.{md}": ["prettier --write"],
+    "*.{vue}": ["prettier --write"]
   }
 }
