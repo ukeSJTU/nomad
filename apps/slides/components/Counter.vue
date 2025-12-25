@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
 const props = defineProps({
   count: {
     default: 0,
   },
-})
+});
 
-const counter = ref(props.count)
+// biome-ignore lint/correctness/noUnusedVariables: This is used in the template
+const counter = ref(props.count);
 </script>
 
 <template>
