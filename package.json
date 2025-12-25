@@ -83,7 +83,6 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@react-email/components": "^0.5.6",
-    "@slidev/theme-default": "^0.25.0",
     "@remotion/cli": "4.0.375",
     "@remotion/lambda": "4.0.375",
     "@remotion/paths": "^4.0.375",
