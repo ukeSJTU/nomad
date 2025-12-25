@@ -426,19 +426,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage-report
-          path: ./public/coverage/
+          path: ./apps/web/public/coverage/
 
       - name: Download Playwright report
         uses: actions/download-artifact@v4
         with:
           name: playwright-report-merged
-          path: ./public/playwright-report/
+          path: ./apps/web/public/playwright-report/
 
       - name: Download Storybook
         uses: actions/download-artifact@v4
         with:
           name: storybook-static
-          path: ./public/storybook/
+          path: ./apps/web/public/storybook/
 
       - name: Set deployment path and URL
         id: set-path
@@ -477,6 +477,7 @@ jobs:
           fi
 
       - name: Generate test dashboard
+        working-directory: ./apps/web
         run: |
           echo "📊 Generating dashboard..."
           echo "Using BASE_PATH: $BASE_PATH"
@@ -500,7 +501,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./apps/web/public
           destination_dir: ${{ steps.set-path.outputs.deploy_path }}
           keep_files: true # Keep other files to avoid overwriting
           user_name: "github-actions[bot]"
