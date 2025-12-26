@@ -29,7 +29,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.3.10",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "husky": "^9.1.7",
@@ -40,8 +40,14 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": ["biome check --write"],
-    "*.md": ["prettier --write"],
-    "*.vue": ["prettier --write"]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+      "biome check --write"
+    ],
+    "*.md": [
+      "prettier --write"
+    ],
+    "*.vue": [
+      "prettier --write"
+    ]
   }
 }
