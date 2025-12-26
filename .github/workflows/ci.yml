@@ -178,14 +178,14 @@ jobs:
         run: pnpm --filter web exec playwright install-deps
 
       - name: Setup test database
-        run: pnpm web:db:push:test
+        run: pnpm --filter web db:push:test
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/nomad_test
           DATABASE_SSL: "false"
 
       - name: Run vitest tests with coverage
-        run: pnpm web:test:coverage
+        run: pnpm --filter web test:coverage
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/nomad_test
