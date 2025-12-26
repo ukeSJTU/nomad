@@ -12,7 +12,6 @@ import {
 import { transformerTwoslash } from "fumadocs-twoslash";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
-import { type BundledLanguage, bundledLanguages } from "shiki";
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
@@ -42,7 +41,7 @@ export default defineConfig({
         light: "github-light",
         dark: "github-dark",
       },
-      langs: Object.keys(bundledLanguages) as BundledLanguage[],
+      // langs: Object.keys(bundledLanguages) as BundledLanguage[],
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
         transformerTwoslash(),
