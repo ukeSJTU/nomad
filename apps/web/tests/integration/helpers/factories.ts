@@ -36,6 +36,8 @@ const randomCode = (length: number) => {
   return result;
 };
 
+// lgtm[js/insecure-randomness]
+// CodeQL suppression: This is test data generation only, not used in security contexts
 const uniqueSuffix = () => randomCode(3) + Math.floor(Math.random() * 1000);
 
 const uniquePhone = () =>
