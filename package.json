@@ -22,6 +22,7 @@
     "web:db:studio": "pnpm --filter web db:studio",
     "web:db:seed": "pnpm --filter web db:seed",
     "web:storybook": "pnpm --filter web storybook",
+    "web:build-storybook": "pnpm --filter web build-storybook",
     "web:email": "pnpm --filter web email",
     "slides:dev": "pnpm --filter slides dev",
     "slides:build": "pnpm --filter slides build",
