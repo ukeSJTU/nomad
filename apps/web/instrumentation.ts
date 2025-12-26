@@ -7,10 +7,12 @@
  * @see https://nextjs.org/docs/15/app/guides/instrumentation
  */
 
-import { isDevelopment } from "@/config/env";
-
 export async function register() {
-  if (isDevelopment()) {
+  // Use direct process.env access instead of config/env to avoid
+  // environment validation during build time
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  if (isDevelopment) {
     if (process.env.NEXT_RUNTIME === "nodejs") {
       const { startOrderCancellationTask } = await import("@/infra/background");
       startOrderCancellationTask();
