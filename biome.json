@@ -1,14 +1,18 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "extends": [],
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "root": true,
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 80
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "javascript": {
     "formatter": {
@@ -40,7 +44,6 @@
         "noNonNullAssertion": "warn",
         "useTemplate": "error",
         "useConst": "error",
-        "noVar": "error",
         "useImportType": "off",
         "useNumberNamespace": "off",
         "useNodejsImportProtocol": "off"
@@ -58,64 +61,38 @@
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      ".next",
-      "out",
-      "build",
-      "dist",
-      "coverage",
-      ".source",
-      ".storybook",
-      ".augment",
-      ".trae",
-      ".pnpm-store",
-      ".eslintcache",
-      "pnpm-lock.yaml",
-      "package-lock.json",
-      "yarn.lock",
-      "**/*.config.js",
-      "**/*.config.mjs",
-      "next-env.d.ts",
-      ".env*",
-      "*.log",
-      "pids",
-      "*.pid",
-      "*.seed",
-      "*.pid.lock",
-      ".npm",
-      ".pnp",
-      ".pnp.js",
-      "**/*.tsbuildinfo",
-      "playwright-report",
-      "test-results",
-      "content/docs/**/*.mdx",
-      "content/slides/**/*.md",
-      ".github/prompts/openspec-apply.prompt.md",
-      ".github/prompts/openspec-archive.prompt.md",
-      ".github/prompts/openspec-proposal.prompt.md",
-      "openspec/AGENTS.md",
-      "AGENTS.md"
+    "includes": [
+      "**/*",
+      "!node_modules/**",
+      "!.next/**",
+      "!out/**",
+      "!build/**",
+      "!dist/**",
+      "!coverage/**",
+      "!.source/**",
+      "!.storybook/**",
+      "!.augment/**",
+      "!.trae/**",
+      "!.pnpm-store/**",
+      "!.eslintcache",
+      "!pnpm-lock.yaml",
+      "!package-lock.json",
+      "!yarn.lock",
+      "!**/*.config.js",
+      "!**/*.config.mjs",
+      "!next-env.d.ts",
+      "!.env*",
+      "!*.log",
+      "!pids",
+      "!*.pid",
+      "!*.seed",
+      "!*.pid.lock",
+      "!.npm/**",
+      "!.pnp/**",
+      "!.pnp.js",
+      "!**/*.tsbuildinfo",
+      "!playwright-report/**",
+      "!test-results/**"
     ]
-  },
-  "overrides": [
-    {
-      "include": ["app/**/*.{ts,tsx,js,jsx}"],
-      "ignore": ["app/_actions/**", "app/api/**"],
-      "linter": {
-        "rules": {
-          "nursery": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "paths": {
-                  "@/domains/**": "App layer should call backend through server actions or API clients instead of importing domains."
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  ]
+  }
 }

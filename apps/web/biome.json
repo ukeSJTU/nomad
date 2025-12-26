@@ -1,0 +1,60 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "extends": "//",
+  "files": {
+    "includes": [
+      "**/*",
+      "!node_modules/**",
+      "!.next/**",
+      "!out/**",
+      "!build/**",
+      "!dist/**",
+      "!coverage/**",
+      "!.source/**",
+      "!.storybook/**",
+      "!.augment/**",
+      "!.trae/**",
+      "!.pnpm-store/**",
+      "!.eslintcache",
+      "!pnpm-lock.yaml",
+      "!package-lock.json",
+      "!yarn.lock",
+      "!**/*.config.js",
+      "!**/*.config.mjs",
+      "!next-env.d.ts",
+      "!.env*",
+      "!*.log",
+      "!pids",
+      "!*.pid",
+      "!*.seed",
+      "!*.pid.lock",
+      "!.npm/**",
+      "!.pnp/**",
+      "!.pnp.js",
+      "!**/*.tsbuildinfo",
+      "!playwright-report/**",
+      "!test-results/**",
+      "!content/docs/**/*.mdx",
+      "!content/slides/**/*.md",
+      "!.github/prompts/openspec-apply.prompt.md",
+      "!.github/prompts/openspec-archive.prompt.md",
+      "!.github/prompts/openspec-proposal.prompt.md",
+      "!openspec/AGENTS.md",
+      "!AGENTS.md"
+    ]
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "app/**/*.{ts,tsx,js,jsx}",
+        "!app/_actions/**",
+        "!app/api/**"
+      ]
+    }
+  ]
+}

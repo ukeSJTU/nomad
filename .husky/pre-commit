@@ -1,1 +1,6 @@
-pnpm lint-staged && pnpm lint:boundary -- --staged
+pnpm lint-staged
+
+# 只有当 apps/web/ 下有文件变更时才运行 boundary 检查
+if git diff --cached --name-only | grep -q "^apps/web/"; then
+  cd apps/web && pnpm lint:boundary -- --staged
+fi

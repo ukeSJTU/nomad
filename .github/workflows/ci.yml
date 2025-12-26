@@ -45,7 +45,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run lint (Biome)
-        run: pnpm lint
+        run: pnpm turbo lint
 
   # ========================================
   # Parallel Jobs: Build & Tests
@@ -92,28 +92,32 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Setup build database
-        run: pnpm db:push
+        run: pnpm web:db:push
         env:
           DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
           DATABASE_SSL: "false"
 
       - name: Seed build database
-        run: pnpm db:seed
+        run: pnpm web:db:seed
         env:
           DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
           DATABASE_SSL: "false"
 
+      - name: Create .env.local for build
+        run: |
+          cat > apps/web/.env.local << 'EOF'
+          DATABASE_URL=postgresql://build_user:build_password@localhost:5432/nomad_build
+          DATABASE_SSL=false
+          BETTER_AUTH_SECRET=dummy-secret-for-build-only
+          BETTER_AUTH_URL=http://localhost:3000
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+          TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+          EOF
+
       - name: Run build
-        run: pnpm build
+        run: pnpm turbo build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
-          DATABASE_SSL: "false"
-          BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
-          BETTER_AUTH_URL: "http://localhost:3000"
-          # use always pass setting for Turnstile keys during build
-          NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
-          TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA"
 
       - name: Build status
         if: success()
@@ -171,21 +175,21 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps
+        run: pnpm --filter web exec playwright install --with-deps
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps
+        run: pnpm --filter web exec playwright install-deps
 
       - name: Setup test database
-        run: pnpm db:push:test
+        run: pnpm --filter web db:push:test
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/nomad_test
           DATABASE_SSL: "false"
 
       - name: Run vitest tests with coverage
-        run: pnpm test:coverage
+        run: pnpm --filter web test:coverage
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/nomad_test
@@ -199,7 +203,7 @@ jobs:
         uses: codecov/codecov-action@v4
         if: always()
         with:
-          file: ./coverage/lcov.info
+          file: ./apps/web/coverage/lcov.info
           flags: vitest
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -210,8 +214,8 @@ jobs:
         with:
           name: coverage-report
           path: |
-            coverage/
-            !coverage/tmp/
+            apps/web/coverage/
+            !apps/web/coverage/tmp/
           retention-days: 30
 
   playwright-tests:
@@ -254,13 +258,14 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps
+        run: pnpm --filter web exec playwright install --with-deps
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps
+        run: pnpm --filter web exec playwright install-deps
 
       - name: Run Playwright tests
+        working-directory: ./apps/web
         run: pnpm exec playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Upload blob report
@@ -268,7 +273,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.shard }}
-          path: blob-report/
+          path: apps/web/blob-report/
           retention-days: 30
 
   storybook:
@@ -296,19 +301,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build Storybook
-        run: pnpm build-storybook
+        run: pnpm web:build-storybook
         env:
           NODE_ENV: production
 
       - name: Run Storybook accessibility tests
-        run: pnpm test:run --project=storybook
+        run: pnpm web:test:run --project=storybook
         continue-on-error: true
 
       - name: Upload Storybook artifact
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static
-          path: storybook-static/
+          path: apps/web/storybook-static/
           retention-days: 30
 
       - name: Build status
@@ -351,19 +356,20 @@ jobs:
           pattern: playwright-report-*
 
       - name: Merge reports
+        working-directory: ./apps/web
         run: |
           echo "📊 Merging Playwright reports..."
-          ls -la all-reports/
-          ls -la all-reports/*/
+          ls -la ../../all-reports/
+          ls -la ../../all-reports/*/
 
           mkdir -p blob-reports
-          find all-reports -name "*.zip" -exec cp {} blob-reports/ \; || true
-          find all-reports -name "*.jsonl" -exec cp {} blob-reports/ \; || true
+          find ../../all-reports -name "*.zip" -exec cp {} blob-reports/ \; || true
+          find ../../all-reports -name "*.jsonl" -exec cp {} blob-reports/ \; || true
 
           ls -la blob-reports/
 
           if [ "$(ls -A blob-reports/)" ]; then
-            pnpm exec playwright merge-reports --reporter=html blob-reports
+            npx playwright merge-reports --reporter=html blob-reports
             echo "✅ Reports merged successfully"
           else
             echo "⚠️ No blob reports found, creating empty report"
@@ -375,7 +381,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-merged
-          path: playwright-report/
+          path: apps/web/playwright-report/
           retention-days: 30
 
   # ========================================
@@ -426,19 +432,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage-report
-          path: ./public/coverage/
+          path: ./apps/web/public/coverage/
 
       - name: Download Playwright report
         uses: actions/download-artifact@v4
         with:
           name: playwright-report-merged
-          path: ./public/playwright-report/
+          path: ./apps/web/public/playwright-report/
 
       - name: Download Storybook
         uses: actions/download-artifact@v4
         with:
           name: storybook-static
-          path: ./public/storybook/
+          path: ./apps/web/public/storybook/
 
       - name: Set deployment path and URL
         id: set-path
@@ -477,6 +483,7 @@ jobs:
           fi
 
       - name: Generate test dashboard
+        working-directory: ./apps/web
         run: |
           echo "📊 Generating dashboard..."
           echo "Using BASE_PATH: $BASE_PATH"
@@ -500,7 +507,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./apps/web/public
           destination_dir: ${{ steps.set-path.outputs.deploy_path }}
           keep_files: true # Keep other files to avoid overwriting
           user_name: "github-actions[bot]"
