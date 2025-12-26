@@ -87,34 +87,7 @@
       ".pnp.js",
       "**/*.tsbuildinfo",
       "playwright-report",
-      "test-results",
-      "content/docs/**/*.mdx",
-      "content/slides/**/*.md",
-      ".github/prompts/openspec-apply.prompt.md",
-      ".github/prompts/openspec-archive.prompt.md",
-      ".github/prompts/openspec-proposal.prompt.md",
-      "openspec/AGENTS.md",
-      "AGENTS.md"
+      "test-results"
     ]
-  },
-  "overrides": [
-    {
-      "include": ["app/**/*.{ts,tsx,js,jsx}"],
-      "ignore": ["app/_actions/**", "app/api/**"],
-      "linter": {
-        "rules": {
-          "nursery": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "paths": {
-                  "@/domains/**": "App layer should call backend through server actions or API clients instead of importing domains."
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  ]
+  }
 }

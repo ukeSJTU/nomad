@@ -6,63 +6,63 @@ const path = require("node:path");
 const pino = require("pino");
 
 const logger = pino({
-	level: process.env.LOG_LEVEL || "info",
-	transport: {
-		target: "pino-pretty",
-		options: {
-			colorize: true,
-			translateTime: "yyyy-mm-dd HH:MM:ss",
-			ignore: "pid,hostname",
-		},
-	},
+  level: process.env.LOG_LEVEL || "info",
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "yyyy-mm-dd HH:MM:ss",
+      ignore: "pid,hostname",
+    },
+  },
 });
 
 // Ensure directories exist
-const ensureDir = (dir) => {
-	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir, { recursive: true });
-	}
+const ensureDir = dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
 };
 
 // Copy directory recursively
 const copyDir = (src, dest) => {
-	if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(src)) return;
 
-	ensureDir(dest);
-	const entries = fs.readdirSync(src, { withFileTypes: true });
+  ensureDir(dest);
+  const entries = fs.readdirSync(src, { withFileTypes: true });
 
-	for (const entry of entries) {
-		const srcPath = path.join(src, entry.name);
-		const destPath = path.join(dest, entry.name);
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
 
-		if (entry.isDirectory()) {
-			copyDir(srcPath, destPath);
-		} else {
-			fs.copyFileSync(srcPath, destPath);
-		}
-	}
+    if (entry.isDirectory()) {
+      copyDir(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
 };
 
 // Generate dashboard HTML
 const generateDashboard = (metadata = {}) => {
-	const {
-		basePath = "",
-		branchName = "main",
-		deployTime = new Date().toISOString(),
-	} = metadata;
-	// Ensure basePath ends with / if not empty
-	const base = basePath ? `${basePath.replace(/\/$/, "")}/` : "";
+  const {
+    basePath = "",
+    branchName = "main",
+    deployTime = new Date().toISOString(),
+  } = metadata;
+  // Ensure basePath ends with / if not empty
+  const base = basePath ? `${basePath.replace(/\/$/, "")}/` : "";
 
-	const formattedDate = new Date(deployTime).toLocaleString("en-US", {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-		timeZoneName: "short",
-	});
+  const formattedDate = new Date(deployTime).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
 
-	return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -229,52 +229,52 @@ const generateDashboard = (metadata = {}) => {
 
 // Main execution
 const main = () => {
-	logger.info("Generating test dashboard...");
+  logger.info("Generating test dashboard...");
 
-	// Ensure public directory exists
-	ensureDir("public");
+  // Ensure public directory exists
+  ensureDir("public");
 
-	// In CI, artifacts are already downloaded to public/ directory
-	// In local development, copy from reports/ directory
-	const isCI = process.env.CI === "true";
+  // In CI, artifacts are already downloaded to public/ directory
+  // In local development, copy from reports/ directory
+  const isCI = process.env.CI === "true";
 
-	if (!isCI) {
-		// Copy Playwright reports
-		copyDir("reports/playwright", "public/playwright-report");
+  if (!isCI) {
+    // Copy Playwright reports
+    copyDir("reports/playwright", "public/playwright-report");
 
-		// Copy coverage reports
-		copyDir("reports/coverage", "public/coverage");
+    // Copy coverage reports
+    copyDir("reports/coverage", "public/coverage");
 
-		// Copy Storybook
-		copyDir("storybook-static", "public/storybook");
-	}
+    // Copy Storybook
+    copyDir("storybook-static", "public/storybook");
+  }
 
-	// Get metadata from environment variables
-	const basePath = process.env.BASE_PATH || "";
-	const branchName =
-		process.env.BRANCH_NAME || process.env.GITHUB_REF_NAME || "main";
-	const deployTime = new Date().toISOString();
+  // Get metadata from environment variables
+  const basePath = process.env.BASE_PATH || "";
+  const branchName =
+    process.env.BRANCH_NAME || process.env.GITHUB_REF_NAME || "main";
+  const deployTime = new Date().toISOString();
 
-	logger.info("Metadata:");
-	logger.info(`  Base Path: ${basePath}`);
-	logger.info(`  Branch: ${branchName}`);
-	logger.info(`  Deploy Time: ${deployTime}`);
+  logger.info("Metadata:");
+  logger.info(`  Base Path: ${basePath}`);
+  logger.info(`  Branch: ${branchName}`);
+  logger.info(`  Deploy Time: ${deployTime}`);
 
-	// Generate dashboard
-	const dashboardHtml = generateDashboard({
-		basePath,
-		branchName,
-		deployTime,
-	});
+  // Generate dashboard
+  const dashboardHtml = generateDashboard({
+    basePath,
+    branchName,
+    deployTime,
+  });
 
-	// Write dashboard
-	fs.writeFileSync("public/index.html", dashboardHtml);
+  // Write dashboard
+  fs.writeFileSync("public/index.html", dashboardHtml);
 
-	logger.info("✅ Dashboard generated successfully!");
+  logger.info("✅ Dashboard generated successfully!");
 };
 
 if (require.main === module) {
-	main();
+  main();
 }
 
 module.exports = { generateDashboard };
