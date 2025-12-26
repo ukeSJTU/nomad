@@ -83,18 +83,17 @@ describe("user.service", () => {
     });
   });
 
-  it.each([0, 10001])(
-    "rejects recharge amounts outside allowed range (%s)",
-    async amount => {
-      const result = await rechargeBalance("user-4", amount);
+  it.each([
+    0, 10001,
+  ])("rejects recharge amounts outside allowed range (%s)", async amount => {
+    const result = await rechargeBalance("user-4", amount);
 
-      expect(result).toEqual({
-        success: false,
-        error: "充值金额必须在 1 到 10000 元之间",
-      });
-      expect(mockRechargeUserBalance).not.toHaveBeenCalled();
-    }
-  );
+    expect(result).toEqual({
+      success: false,
+      error: "充值金额必须在 1 到 10000 元之间",
+    });
+    expect(mockRechargeUserBalance).not.toHaveBeenCalled();
+  });
 
   it("returns error when user is missing during recharge", async () => {
     mockRechargeUserBalance.mockResolvedValueOnce(null);

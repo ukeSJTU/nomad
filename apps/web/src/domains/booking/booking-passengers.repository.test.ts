@@ -1,10 +1,10 @@
 import { randomUUID } from "crypto";
+import { describe, expect, it } from "vitest";
 import {
   createFlightWithSeatClass,
   createPassengerForUser,
   createUser,
 } from "@/tests/integration/helpers/factories";
-import { describe, expect, it } from "vitest";
 
 import {
   getFlightSeatClassById,

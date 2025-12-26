@@ -1,5 +1,5 @@
-import { createOrderScenario } from "@/tests/integration/helpers/factories";
 import { describe, expect, it } from "vitest";
+import { createOrderScenario } from "@/tests/integration/helpers/factories";
 
 import { getOrderConfirmation } from "./confirmation.repository";
 

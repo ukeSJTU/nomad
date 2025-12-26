@@ -9,17 +9,13 @@
  * - guide: Airport guide and information
  */
 
-// Re-export all search components
-export * from "./search";
-
-// Re-export all results components
-export * from "./results";
-
 // Re-export all booking components
 export * from "./booking";
-
-// Re-export all order components
-export * from "./orders";
-
 // Re-export all guide components
 export * from "./guide";
+// Re-export all order components
+export * from "./orders";
+// Re-export all results components
+export * from "./results";
+// Re-export all search components
+export * from "./search";

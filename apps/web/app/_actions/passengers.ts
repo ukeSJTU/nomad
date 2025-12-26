@@ -2,13 +2,13 @@
 
 import { requireSessionUser } from "@/actions/session";
 import {
-  type PassengerInput,
   batchDeletePassengers,
   createPassenger,
   deletePassenger,
   getPassenger,
   getPassengerById,
   getPassengers,
+  type PassengerInput,
   updatePassenger,
 } from "@/domains/passengers";
 import { createScopedLogger } from "@/infra/logging/logger";

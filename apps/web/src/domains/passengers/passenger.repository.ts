@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { passengers } from "@/db/schema";
 import type { DbExecutor } from "@/db/transaction";
 import { maskDocumentNumber, maskEmail, maskPhoneNumber } from "@/lib/security";
-import type { PassengerDTO, PassengerDetailData } from "@/types/dto";
+import type { PassengerDetailData, PassengerDTO } from "@/types/dto";
 
 export type PassengerRow = typeof passengers.$inferSelect;
 type PassengerInsert = typeof passengers.$inferInsert;

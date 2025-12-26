@@ -8,10 +8,10 @@
 export { default as ChangePasswordForm } from "./change-password-form";
 export { default as SecurityItem, type SecurityStatus } from "./security-item";
 export {
-  type EmailFormMode,
   default as UpdateEmailForm,
+  type EmailFormMode,
 } from "./update-email-form";
 export {
-  type PhoneFormMode,
   default as UpdatePhoneForm,
+  type PhoneFormMode,
 } from "./update-phone-form";

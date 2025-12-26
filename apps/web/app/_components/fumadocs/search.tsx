@@ -6,8 +6,8 @@ import Link from "fumadocs-core/link";
 import { Loader2, RefreshCw, SearchIcon, Send, X } from "lucide-react";
 import {
   type ComponentProps,
-  type SyntheticEvent,
   createContext,
+  type SyntheticEvent,
   use,
   useEffect,
   useMemo,

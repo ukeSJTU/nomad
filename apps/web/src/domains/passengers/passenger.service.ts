@@ -6,10 +6,10 @@ import type {
   UpdatePassengerData,
 } from "@/types/validations";
 import {
-  PassengerRow,
   batchSoftDeletePassengersForUser,
   createPassengerRecord,
   findPassengerForUser,
+  PassengerRow,
   softDeletePassengerForUser,
   updatePassengerRecord,
 } from "./passenger.repository";

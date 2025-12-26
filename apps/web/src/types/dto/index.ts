@@ -17,8 +17,8 @@ export * from "./flight";
 export * from "./flight-search-history";
 export * from "./orders";
 export {
-  type PassengerDetailData,
   type Passenger as PassengerDTO,
+  type PassengerDetailData,
   type PassengerListItem,
 } from "./passengers";
 export {

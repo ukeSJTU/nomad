@@ -1,12 +1,12 @@
+import { eq } from "drizzle-orm";
+import { describe, expect, it, vi } from "vitest";
+
+import { db } from "@/db";
+import { cities, flightSearchHistory } from "@/db/schema";
 import {
   createSearchHistoryRecord as createHistoryRecord,
   createUser,
 } from "@/tests/integration/helpers/factories";
-import { eq } from "drizzle-orm";
-import { describe, expect, it } from "vitest";
-
-import { db } from "@/db";
-import { cities, flightSearchHistory } from "@/db/schema";
 import {
   findCityByIataCode,
   findExistingSearchHistory,
@@ -14,8 +14,6 @@ import {
   softDeleteSearchHistoryByUser,
   updateSearchHistory,
 } from "./flight-search-history.repository";
-
-import { vi } from "vitest";
 
 vi.mock("server-only", () => {
   return {}; // 返回空对象，不做任何检查

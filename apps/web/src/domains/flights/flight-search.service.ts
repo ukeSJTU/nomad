@@ -12,11 +12,11 @@ import type {
   RoundTripFlightSearchResult,
 } from "@/types/dto";
 import type { SeatClass, TripType, UpperSeatClass } from "@/types/validations";
-import { recordFlightSearch } from "./flight-search-history.service";
 import {
   searchOneWayFlights,
   searchRoundTripFlights,
 } from "./flight.repository";
+import { recordFlightSearch } from "./flight-search-history.service";
 
 /**
  * Parameters for searching one-way flights

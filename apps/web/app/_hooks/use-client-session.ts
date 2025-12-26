@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { type SessionUser, getSessionUser } from "@/actions/session";
+import { getSessionUser, type SessionUser } from "@/actions/session";
 import { createClientLogger } from "@/infra/logging/client-logger";
 
 const logger = createClientLogger({ module: "use-client-session" });

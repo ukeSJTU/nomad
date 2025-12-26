@@ -4,13 +4,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { setInitialPasswordAction } from "@/app/_actions";
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import {
   sendEmailOtpAction,
   sendPhoneOtpAction,
   signInWithOtpAction,
   verifyEmailOtpAction,
 } from "@/app/_actions/auth";
-import type { OtpSendActionResult } from "@/app/_actions/auth";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {

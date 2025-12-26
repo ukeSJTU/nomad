@@ -1,4 +1,4 @@
-import type { PassengerDTO, PassengerDetailData } from "@/types/dto";
+import type { PassengerDetailData, PassengerDTO } from "@/types/dto";
 import {
   getPassengerById as getPassengerByIdFromRepo,
   getPassengers as getPassengersFromRepo,

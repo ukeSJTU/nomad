@@ -1,7 +1,5 @@
+import { describe, expect, it, vi } from "vitest";
 import { createCity } from "@/tests/integration/helpers/factories";
-import { describe, expect, it } from "vitest";
-
-import { vi } from "vitest";
 import { getAllCities } from "./city.repository";
 
 vi.mock("server-only", () => {

@@ -1,14 +1,13 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-
+import type { OtpSendActionResult } from "@/app/_actions/auth";
 import {
   sendEmailOtpAction,
   sendPhoneOtpAction,
   signInWithOtpAction,
   signInWithPasswordAction,
 } from "@/app/_actions/auth";
-import type { OtpSendActionResult } from "@/app/_actions/auth";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import { validateAccount } from "@/lib/validation";
 import type { ActionResult } from "@/types/common";

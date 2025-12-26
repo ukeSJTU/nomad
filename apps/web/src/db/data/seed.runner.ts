@@ -53,10 +53,10 @@ import { generateOrders } from "./generators/order";
 import { generateSearchHistory } from "./generators/search.history";
 import { generatePassengers, generateUsers } from "./generators/user";
 import {
-  type SeedConfig,
   displaySeedConfig,
   parseSeedConfig,
   promptForScenario,
+  type SeedConfig,
 } from "./seed.config";
 
 const logger = createScopedLogger({ module: "seed.runner" });

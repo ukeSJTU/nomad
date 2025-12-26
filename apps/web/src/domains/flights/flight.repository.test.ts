@@ -1,3 +1,6 @@
+import { addDays } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
+import { describe, expect, it, vi } from "vitest";
 import {
   createAirline,
   createAirport,
@@ -5,13 +8,7 @@ import {
   createFlight,
   createSeatClass,
 } from "@/tests/integration/helpers/factories";
-import { addDays } from "date-fns";
-import { fromZonedTime } from "date-fns-tz";
-import { describe, expect, it } from "vitest";
-
 import { searchFlights, searchRoundTripFlights } from "./flight.repository";
-
-import { vi } from "vitest";
 
 vi.mock("server-only", () => {
   return {}; // 返回空对象，不做任何检查

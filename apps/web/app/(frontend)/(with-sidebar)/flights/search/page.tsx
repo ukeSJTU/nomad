@@ -5,10 +5,10 @@ import { getCitiesAction, searchFlightsAction } from "@/actions/flights";
 import { logger } from "@/infra/logging";
 import {
   type SeatClass,
-  type TripType,
-  type UpperSeatClass,
   seatClassSchema,
+  type TripType,
   tripTypeSchema,
+  type UpperSeatClass,
   upperSeatClassSchema,
 } from "@/types/validations";
 

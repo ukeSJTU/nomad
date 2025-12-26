@@ -1,8 +1,8 @@
+import { describe, expect, it } from "vitest";
 import {
   createPassengerForUser,
   createUser,
 } from "@/tests/integration/helpers/factories";
-import { describe, expect, it } from "vitest";
 
 import {
   batchSoftDeletePassengersForUser,

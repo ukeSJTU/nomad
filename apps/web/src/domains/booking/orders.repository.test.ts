@@ -1,14 +1,13 @@
-import { createOrderScenario } from "@/tests/integration/helpers/factories";
 import { addHours, subHours } from "date-fns";
 import { eq } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
-
 import { db } from "@/db";
 import {
   flightSeatClasses,
   orders as ordersTable,
   user as userTable,
 } from "@/db/schema";
+import { createOrderScenario } from "@/tests/integration/helpers/factories";
 import {
   cancelExpiredOrdersAndReleaseSeats,
   cancelOrderAndReleaseSeats,

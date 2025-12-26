@@ -8,8 +8,8 @@ import { createScopedLogger } from "@/infra/logging/logger";
 import type { ActionResult } from "@/types/common";
 import {
   RechargeBalanceData,
-  UserInfoUpdateData,
   rechargeBalanceSchema,
+  UserInfoUpdateData,
   userInfoUpdateSchema,
 } from "@/types/validations";
 

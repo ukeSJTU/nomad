@@ -1,6 +1,6 @@
-import { getAirportByIataCodeAction } from "@/actions/airport-guide";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getAirportByIataCodeAction } from "@/actions/airport-guide";
 
 import { AirportSidebar } from "@/components/flights";
 import {

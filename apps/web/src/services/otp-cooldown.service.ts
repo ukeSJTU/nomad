@@ -5,9 +5,9 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { rateLimit } from "@/db/schema/auth";
 import {
+  buildOtpStorageKey,
   OTP_COOLDOWN_SECONDS,
   type OtpChannel,
-  buildOtpStorageKey,
 } from "@/lib/otp";
 
 const OTP_COOLDOWN_MS = OTP_COOLDOWN_SECONDS * 1000;
