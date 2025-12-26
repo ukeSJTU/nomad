@@ -4,9 +4,6 @@ import { createScopedLogger } from "@/infra/logging/logger";
 
 const logger = createScopedLogger({ module: "api.cancel-expiration" });
 
-// Force dynamic rendering to prevent build-time evaluation
-export const dynamic = "force-dynamic";
-
 /**
  * Cron Job: Cancel Expired Orders
  *
