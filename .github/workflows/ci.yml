@@ -103,17 +103,21 @@ jobs:
           DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
           DATABASE_SSL: "false"
 
+      - name: Create .env.local for build
+        run: |
+          cat > apps/web/.env.local << 'EOF'
+          DATABASE_URL=postgresql://build_user:build_password@localhost:5432/nomad_build
+          DATABASE_SSL=false
+          BETTER_AUTH_SECRET=dummy-secret-for-build-only
+          BETTER_AUTH_URL=http://localhost:3000
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+          TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+          EOF
+
       - name: Run build
         run: pnpm turbo build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          DATABASE_URL: postgresql://build_user:build_password@localhost:5432/nomad_build
-          DATABASE_SSL: "false"
-          BETTER_AUTH_SECRET: "dummy-secret-for-build-only"
-          BETTER_AUTH_URL: "http://localhost:3000"
-          # use always pass setting for Turnstile keys during build
-          NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
-          TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA"
 
       - name: Build status
         if: success()
@@ -352,19 +356,20 @@ jobs:
           pattern: playwright-report-*
 
       - name: Merge reports
+        working-directory: ./apps/web
         run: |
           echo "📊 Merging Playwright reports..."
-          ls -la all-reports/
-          ls -la all-reports/*/
+          ls -la ../../all-reports/
+          ls -la ../../all-reports/*/
 
           mkdir -p blob-reports
-          find all-reports -name "*.zip" -exec cp {} blob-reports/ \; || true
-          find all-reports -name "*.jsonl" -exec cp {} blob-reports/ \; || true
+          find ../../all-reports -name "*.zip" -exec cp {} blob-reports/ \; || true
+          find ../../all-reports -name "*.jsonl" -exec cp {} blob-reports/ \; || true
 
           ls -la blob-reports/
 
           if [ "$(ls -A blob-reports/)" ]; then
-            pnpm --filter web exec playwright merge-reports --reporter=html blob-reports
+            npx playwright merge-reports --reporter=html blob-reports
             echo "✅ Reports merged successfully"
           else
             echo "⚠️ No blob reports found, creating empty report"
@@ -376,7 +381,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-merged
-          path: playwright-report/
+          path: apps/web/playwright-report/
           retention-days: 30
 
   # ========================================
