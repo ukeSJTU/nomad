@@ -171,11 +171,11 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps
+        run: pnpm --filter web exec playwright install --with-deps
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps
+        run: pnpm --filter web exec playwright install-deps
 
       - name: Setup test database
         run: pnpm web:db:push:test
@@ -254,11 +254,11 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps
+        run: pnpm --filter web exec playwright install --with-deps
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps
+        run: pnpm --filter web exec playwright install-deps
 
       - name: Run Playwright tests
         working-directory: ./apps/web
@@ -364,7 +364,7 @@ jobs:
           ls -la blob-reports/
 
           if [ "$(ls -A blob-reports/)" ]; then
-            pnpm exec playwright merge-reports --reporter=html blob-reports
+            pnpm --filter web exec playwright merge-reports --reporter=html blob-reports
             echo "✅ Reports merged successfully"
           else
             echo "⚠️ No blob reports found, creating empty report"
