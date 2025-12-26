@@ -46,7 +46,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run lint (Biome)
-        run: turbo run lint
+        run: pnpm turbo run lint
 
       - name: Setup build database
         run: pnpm web:db:push
@@ -61,7 +61,7 @@ jobs:
           DATABASE_SSL: "false"
 
       - name: Run build
-        run: turbo run build
+        run: pnpm turbo run build
         env:
           # Disable Next.js telemetry in CI
           NEXT_TELEMETRY_DISABLED: 1
