@@ -35,6 +35,7 @@ const randomCode = (length: number) => {
   }
   return result;
 };
+
 const uniqueSuffix = () => randomCode(3) + randomInt(0, 1000);
 
 const uniquePhone = () =>
