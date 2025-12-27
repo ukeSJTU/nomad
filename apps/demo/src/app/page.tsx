@@ -14,7 +14,7 @@ import {
 const Home: NextPage = () => {
   return (
     <div>
-      <div className="max-w-screen-md m-auto mb-5">
+      <div className="max-w-3xl m-auto mb-5">
         <div className="overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)] mb-10 mt-16">
           <Player
             component={BusinessShowcase}
@@ -91,7 +91,7 @@ const Home: NextPage = () => {
             </div>
 
             {/* Scene 5: Home */}
-            <div className="bg-green-50 p-4 rounded-lg col-span-1 md:grid-cols-2">
+            <div className="bg-green-50 p-4 rounded-lg col-span-1 md:col-span-2">
               <h3 className="font-bold text-gray-800 mb-2">
                 🏠 场景 5: 个人中心 (30秒)
               </h3>
