@@ -30,6 +30,10 @@
     "slides:dev": "pnpm --filter slides dev",
     "slides:build": "pnpm --filter slides build",
     "slides:export": "pnpm --filter slides export",
+    "demo:dev": "pnpm --filter demo dev",
+    "demo:build": "pnpm --filter demo build",
+    "demo:remotion": "pnpm --filter demo remotion",
+    "demo:render": "pnpm --filter demo render",
     "prepare": "husky"
   },
   "devDependencies": {
