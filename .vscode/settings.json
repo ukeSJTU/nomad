@@ -1,9 +1,6 @@
 {
   // Editor settings
   "editor.defaultFormatter": "biomejs.biome",
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
-  "editor.formatOnType": false,
   "editor.codeActionsOnSave": {
     "quickfix.biome": "always",
     "source.organizeImports": "never"
@@ -11,15 +8,12 @@
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
-  "editor.rulers": [80],
-  "editor.wordWrap": "bounded",
-  "editor.wordWrapColumn": 80,
-  "editor.bracketPairColorization.enabled": false,
 
   // File settings
   "files.exclude": {
     "**/node_modules": true,
     "**/.git": true,
+    "**/.gitmessage": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "**/dist": true,
@@ -30,7 +24,6 @@
     "**/tmp": true,
     "**/temp": true,
     "**/.cache": true,
-    "**/pnpm-lock.yaml": true,
     "**/.source": true,
     "**/next-env.d.ts": true,
     "**/.contentlayer": true,
@@ -41,19 +34,8 @@
     "**/reports": true,
     "**/.augment": true,
     "**/.trae": true,
-    "**/.gitmessage": true,
-    "**/cli.json": true,
-    "**/.nvmrc": true,
     "**/.pnpm-store": true,
-    "**/drizzle": true,
     "tsconfig.tsbuildinfo": true
-  },
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.expand": false,
-  "explorer.fileNesting.patterns": {
-    ".env": ".env.*",
-    "package.json": "*.config.ts, *.config.js, *.config.mjs, *.config.cjs, .npmrc, .nvmrc, yarn.lock, pnpm-lock.yaml, tsconfig*.json, *.config.mts, components.json",
-    "README.md": "CHANGELOG.md, LICENSE, LICENSE.md, CONTRIBUTING.md"
   },
 
   // Language-specific settings
@@ -81,6 +63,7 @@
     "editor.wordWrap": "on"
   },
   "[mdx]": {
+    // Prevent Prettier from auto-formatting MDX files on save as it might break fumadocs parsing
     "editor.formatOnSave": false,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -103,11 +86,6 @@
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-
-  // Git settings
-  "git.autofetch": true,
-  "git.confirmSync": false,
-  "git.enableSmartCommit": true,
 
   // Search settings
   "search.exclude": {
