@@ -9,7 +9,11 @@ import {
   VIDEO_WIDTH,
 } from "./constants";
 import { AuthScene } from "./scenes/AuthScene";
+import { AuthSceneComplete } from "./scenes/AuthSceneComplete";
+import { HomeScene } from "./scenes/HomeScene";
 import { IntroScene } from "./scenes/IntroScene";
+import { OrderScene } from "./scenes/OrderScene";
+import { SearchScene } from "./scenes/SearchScene";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -38,6 +42,38 @@ export const RemotionRoot: React.FC = () => {
         id="AuthScene"
         component={AuthScene}
         durationInFrames={SCENE_DURATIONS.AUTH_SIGNIN}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+      <Composition
+        id="AuthSceneComplete"
+        component={AuthSceneComplete}
+        durationInFrames={SCENE_DURATIONS.AUTH}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+      <Composition
+        id="SearchScene"
+        component={SearchScene}
+        durationInFrames={SCENE_DURATIONS.SEARCH}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+      <Composition
+        id="OrderScene"
+        component={OrderScene}
+        durationInFrames={SCENE_DURATIONS.ORDER}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+      />
+      <Composition
+        id="HomeScene"
+        component={HomeScene}
+        durationInFrames={SCENE_DURATIONS.HOME}
         fps={VIDEO_FPS}
         width={VIDEO_WIDTH}
         height={VIDEO_HEIGHT}

@@ -3,18 +3,18 @@
 import { Player } from "@remotion/player";
 import type { NextPage } from "next";
 
-import { BusinessShowcase } from "@/app/_remotion/compositions/BusinessShowcase";
+import { BusinessShowcase } from "@/remotion/compositions/BusinessShowcase";
 import {
   TOTAL_FRAMES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
-} from "@/app/_remotion/constants";
+} from "@/remotion/constants";
 
 const Home: NextPage = () => {
   return (
     <div>
-      <div className="max-w-screen-md m-auto mb-5">
+      <div className="max-w-3xl m-auto mb-5">
         <div className="overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)] mb-10 mt-16">
           <Player
             component={BusinessShowcase}
@@ -23,13 +23,12 @@ const Home: NextPage = () => {
             compositionHeight={VIDEO_HEIGHT}
             compositionWidth={VIDEO_WIDTH}
             style={{
-              // Can't use tailwind class for width since player's default styles take presedence over tailwind's,
-              // but not over inline styles
               width: "100%",
             }}
             controls
             autoPlay
             loop
+            acknowledgeRemotionLicense
           />
         </div>
         <div className="mt-8 text-center">
@@ -109,9 +108,6 @@ const Home: NextPage = () => {
           <p className="text-gray-500 text-sm mt-6">
             总时长: 128秒 (3840帧 @ 30fps) | 含场景过渡、摄像机运镜、Spring
             弹性动画
-          </p>
-          <p className="text-gray-400 text-xs mt-2">
-            ✅ 已实现: Intro Scene | 🚧 进行中: Auth/Search/Order/Home Scenes
           </p>
         </div>
       </div>
