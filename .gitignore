@@ -83,3 +83,6 @@ openspec/changes
 
 # Turborepo
 .turbo/
+
+# VScode
+.vscode/*
