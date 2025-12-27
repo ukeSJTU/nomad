@@ -1,0 +1,31 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "extends": "//",
+  "files": {
+    "includes": [
+      "**/*",
+      "!node_modules/**",
+      "!.next/**",
+      "!out/**",
+      "!build/**",
+      "!dist/**",
+      "!.eslintcache",
+      "!pnpm-lock.yaml",
+      "!package-lock.json",
+      "!yarn.lock",
+      "!**/*.config.js",
+      "!**/*.config.mjs",
+      "!next-env.d.ts",
+      "!.env*",
+      "!*.log"
+    ]
+  },
+  "css": {
+    "parser": {
+      "cssModules": false
+    },
+    "linter": {
+      "enabled": true
+    }
+  }
+}
