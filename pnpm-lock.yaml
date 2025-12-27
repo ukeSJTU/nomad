@@ -61,7 +61,7 @@ importers:
         version: 0.545.0(react@19.1.2)
       next:
         specifier: 15.5.9
-        version: 15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+        version: 15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       react:
         specifier: 19.1.2
         version: 19.1.2
@@ -78,6 +78,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.3.10
         version: 2.3.10
+      '@remotion/bundler':
+        specifier: ^4.0.375
+        version: 4.0.375(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.18
@@ -90,6 +93,18 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.7)
+      css-loader:
+        specifier: ^7.1.2
+        version: 7.1.2(webpack@5.104.1)
+      postcss:
+        specifier: ^8.5.6
+        version: 8.5.6
+      postcss-loader:
+        specifier: ^8.2.0
+        version: 8.2.0(postcss@8.5.6)(typescript@5.9.3)(webpack@5.104.1)
+      style-loader:
+        specifier: ^4.0.0
+        version: 4.0.0(webpack@5.104.1)
       tailwindcss:
         specifier: ^4
         version: 4.1.18
@@ -128,7 +143,7 @@ importers:
         version: 15.8.5(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.545.0(react@19.1.2))(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2))(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(tailwindcss@4.1.18)
       geist:
         specifier: ^1.5.1
-        version: 1.5.1(next@15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2))
+        version: 1.5.1(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2))
       hast-util-to-jsx-runtime:
         specifier: ^2.3.6
         version: 2.3.6
@@ -143,7 +158,7 @@ importers:
         version: 11.12.2
       next:
         specifier: 15.5.9
-        version: 15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+        version: 15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -5453,6 +5468,18 @@ packages:
     peerDependencies:
       webpack: ^4.27.0 || ^5.0.0
 
+  css-loader@7.1.2:
+    resolution: {integrity: sha512-6WvYYn7l/XEGN8Xu2vWFt9nVzrCn39vKyTEFf/ExEyoksJjjSZV/0/35XPlMbpnr6VGhZIUg5yJrL8tGfes/FA==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      '@rspack/core': 0.x || 1.x
+      webpack: ^5.27.0
+    peerDependenciesMeta:
+      '@rspack/core':
+        optional: true
+      webpack:
+        optional: true
+
   css-select@5.2.2:
     resolution: {integrity: sha512-TizTzUddG/xYLA3NXodFM0fSbNizXjOKhqiQQwvhlspadZokn1KDy0NZFS0wuEubIYAV5/c1/lAr0TaaFXEXzw==}
 
@@ -7918,6 +7945,19 @@ packages:
       postcss:
         optional: true
       ts-node:
+        optional: true
+
+  postcss-loader@8.2.0:
+    resolution: {integrity: sha512-tHX+RkpsXVcc7st4dSdDGliI+r4aAQDuv+v3vFYHixb6YgjreG5AG4SEB0kDK8u2s6htqEEpKlkhSBUTvWKYnA==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      '@rspack/core': 0.x || 1.x
+      postcss: ^7.0.0 || ^8.0.1
+      webpack: ^5.0.0
+    peerDependenciesMeta:
+      '@rspack/core':
+        optional: true
+      webpack:
         optional: true
 
   postcss-modules-extract-imports@3.1.0:
@@ -13212,14 +13252,14 @@ snapshots:
       '@remotion/media-parser': 4.0.375
       '@remotion/studio': 4.0.375(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@remotion/studio-shared': 4.0.375(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
-      css-loader: 5.2.7(webpack@5.96.1)
+      css-loader: 5.2.7(webpack@5.96.1(esbuild@0.25.0))
       esbuild: 0.25.0
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
       react-refresh: 0.9.0
       remotion: 4.0.375(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       source-map: 0.7.3
-      style-loader: 4.0.0(webpack@5.96.1)
+      style-loader: 4.0.0(webpack@5.96.1(esbuild@0.25.0))
       webpack: 5.96.1(esbuild@0.25.0)
     transitivePeerDependencies:
       - '@swc/core'
@@ -15740,7 +15780,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  css-loader@5.2.7(webpack@5.96.1):
+  css-loader@5.2.7(webpack@5.96.1(esbuild@0.25.0)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.6)
       loader-utils: 2.0.4
@@ -15753,6 +15793,19 @@ snapshots:
       schema-utils: 3.3.0
       semver: 7.7.3
       webpack: 5.96.1(esbuild@0.25.0)
+
+  css-loader@7.1.2(webpack@5.104.1):
+    dependencies:
+      icss-utils: 5.1.0(postcss@8.5.6)
+      postcss: 8.5.6
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.6)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.6)
+      postcss-modules-scope: 3.2.1(postcss@8.5.6)
+      postcss-modules-values: 4.0.0(postcss@8.5.6)
+      postcss-value-parser: 4.2.0
+      semver: 7.7.3
+    optionalDependencies:
+      webpack: 5.104.1
 
   css-select@5.2.2:
     dependencies:
@@ -16661,7 +16714,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.7
       lucide-react: 0.545.0(react@19.1.2)
-      next: 15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      next: 15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
     transitivePeerDependencies:
@@ -16687,7 +16740,7 @@ snapshots:
       unist-util-visit: 5.0.0
       zod: 4.2.1
     optionalDependencies:
-      next: 15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      next: 15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       react: 19.1.2
       vite: 7.3.0(@types/node@20.19.27)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
@@ -16737,7 +16790,7 @@ snapshots:
       tailwind-merge: 3.4.0
     optionalDependencies:
       '@types/react': 19.2.7
-      next: 15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      next: 15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       tailwindcss: 4.1.18
     transitivePeerDependencies:
       - '@mixedbread/sdk'
@@ -16761,6 +16814,10 @@ snapshots:
   geist@1.5.1(next@15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)):
     dependencies:
       next: 15.5.9(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+
+  geist@1.5.1(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)):
+    dependencies:
+      next: 15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
 
   gensync@1.0.0-beta.2: {}
 
@@ -18234,6 +18291,31 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
+  next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2):
+    dependencies:
+      '@next/env': 15.5.9
+      '@swc/helpers': 0.5.15
+      caniuse-lite: 1.0.30001761
+      postcss: 8.4.31
+      react: 19.1.2
+      react-dom: 19.1.2(react@19.1.2)
+      styled-jsx: 5.1.6(react@19.1.2)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 15.5.7
+      '@next/swc-darwin-x64': 15.5.7
+      '@next/swc-linux-arm64-gnu': 15.5.7
+      '@next/swc-linux-arm64-musl': 15.5.7
+      '@next/swc-linux-x64-gnu': 15.5.7
+      '@next/swc-linux-x64-musl': 15.5.7
+      '@next/swc-win32-arm64-msvc': 15.5.7
+      '@next/swc-win32-x64-msvc': 15.5.7
+      '@opentelemetry/api': 1.9.0
+      '@playwright/test': 1.57.0
+      sharp: 0.34.5
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
   node-fetch-native@1.6.7: {}
 
   node-html-parser@7.0.1:
@@ -18592,6 +18674,17 @@ snapshots:
       yaml: 2.8.2
     optionalDependencies:
       postcss: 8.5.6
+
+  postcss-loader@8.2.0(postcss@8.5.6)(typescript@5.9.3)(webpack@5.104.1):
+    dependencies:
+      cosmiconfig: 9.0.0(typescript@5.9.3)
+      jiti: 2.6.1
+      postcss: 8.5.6
+      semver: 7.7.3
+    optionalDependencies:
+      webpack: 5.104.1
+    transitivePeerDependencies:
+      - typescript
 
   postcss-modules-extract-imports@3.1.0(postcss@8.5.6):
     dependencies:
@@ -19551,7 +19644,11 @@ snapshots:
 
   strnum@1.1.2: {}
 
-  style-loader@4.0.0(webpack@5.96.1):
+  style-loader@4.0.0(webpack@5.104.1):
+    dependencies:
+      webpack: 5.104.1
+
+  style-loader@4.0.0(webpack@5.96.1(esbuild@0.25.0)):
     dependencies:
       webpack: 5.96.1(esbuild@0.25.0)
 
@@ -19581,6 +19678,11 @@ snapshots:
       react: 19.1.2
     optionalDependencies:
       '@babel/core': 7.28.5
+
+  styled-jsx@5.1.6(react@19.1.2):
+    dependencies:
+      client-only: 0.0.1
+      react: 19.1.2
 
   stylis@4.3.6: {}
 
@@ -19662,7 +19764,7 @@ snapshots:
 
   tapable@2.3.0: {}
 
-  terser-webpack-plugin@5.3.16(esbuild@0.25.0)(webpack@5.96.1):
+  terser-webpack-plugin@5.3.16(esbuild@0.25.0)(webpack@5.96.1(esbuild@0.25.0)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
@@ -19683,6 +19785,15 @@ snapshots:
       webpack: 5.104.1(esbuild@0.25.10)
     optionalDependencies:
       esbuild: 0.25.10
+
+  terser-webpack-plugin@5.3.16(webpack@5.104.1):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      serialize-javascript: 6.0.2
+      terser: 5.44.1
+      webpack: 5.104.1
 
   terser@5.44.1:
     dependencies:
@@ -20386,6 +20497,38 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
+  webpack@5.104.1:
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.4(acorn@8.15.0)
+      browserslist: 4.28.1
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.4
+      es-module-lexer: 2.0.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.1
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.3
+      tapable: 2.3.0
+      terser-webpack-plugin: 5.3.16(webpack@5.104.1)
+      watchpack: 2.5.0
+      webpack-sources: 3.3.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+
   webpack@5.104.1(esbuild@0.25.10):
     dependencies:
       '@types/eslint-scope': 3.7.7
@@ -20440,7 +20583,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.16(esbuild@0.25.0)(webpack@5.96.1)
+      terser-webpack-plugin: 5.3.16(esbuild@0.25.0)(webpack@5.96.1(esbuild@0.25.0))
       watchpack: 2.5.0
       webpack-sources: 3.3.3
     transitivePeerDependencies:
