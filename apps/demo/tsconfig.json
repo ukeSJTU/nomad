@@ -19,9 +19,9 @@
       }
     ],
     "paths": {
-      "@/remotion/*": ["./src/remotion/*"],
-      "@/app/*": ["./src/app/*"],
-      "@/*": ["./src/*"]
+      "@/remotion/*": ["./remotion/*"],
+      "@/app/*": ["./app/*"],
+      "@/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
