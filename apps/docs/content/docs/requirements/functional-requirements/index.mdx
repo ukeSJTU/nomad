@@ -5,18 +5,25 @@ icon: Package
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
+import { userModule } from '@nomad/requirements/data';
 
 本章节详细描述系统的所有功能需求，按照用户、机票、订单和支付模块组织。
 
 ## 需求统计
 
-| 模块 | 功能点数 | 用户故事数 | 验收标准数 | MoSCoW分布 |
-|------|---------|-----------|-----------|-----------|
-| 用户模块 | 6 | 16 | 34 | Must: 4, Should: 2 |
-| 机票模块 | 3 | 11 | 15 | Must: 3 |
-| 订单模块 | 2 | 5 | 9 | Must: 2 |
-| 支付模块 | 2 | 2 | 5 | Must: 1, Should: 1 |
-| **总计** | **13** | **34** | **63** | **Must: 10, Should: 3** |
+<RequirementStats />
+
+## 需求卡片示例
+
+下面展示如何使用 `RequirementCard` 组件来展示单个需求的详细信息。这里以用户模块的第一个需求（REQ-U01：手机号OTP注册）作为示例：
+
+<RequirementCard requirement={userModule.requirements[0]} />
+
+## 在测试中关联需求
+
+我们使用 JSDoc 标签在测试代码中关联需求，这样可以追踪哪些测试覆盖了哪些需求。详细使用方法请参考下面的说明。
+
+### 模块导航
 
 <Cards>
   <Card 
