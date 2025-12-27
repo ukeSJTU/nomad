@@ -4,19 +4,19 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'apps/demo/**'
-      - '.github/workflows/render-video.yml'
+      - "apps/demo/**"
+      - ".github/workflows/render-video.yml"
   pull_request:
     branches: [main, develop]
     paths:
-      - 'apps/demo/**'
+      - "apps/demo/**"
   workflow_dispatch:
     inputs:
       composition_id:
-        description: 'Composition ID to render (leave empty for all)'
+        description: "Composition ID to render (leave empty for all)"
         required: false
         type: string
-        default: 'BusinessShowcase'
+        default: "BusinessShowcase"
 
 permissions:
   contents: read
@@ -64,7 +64,7 @@ jobs:
         working-directory: ./apps/demo
         run: |
           mkdir -p out
-          pnpm remotion render ${{ matrix.composition }} out/${{ matrix.composition }}.mp4
+          pnpm render ${{ matrix.composition }} out/${{ matrix.composition }}.mp4
         env:
           REMOTION_CONCURRENCY: 2
 
