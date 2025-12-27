@@ -3,9 +3,6 @@ description: "Set up Node.js, pnpm, and install dependencies for the monorepo"
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
     - name: Install pnpm
       uses: pnpm/action-setup@v4
       # Version is automatically read from package.json's packageManager field
