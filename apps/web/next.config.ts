@@ -1,14 +1,8 @@
-import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
-
-const withMDX = createMDX({
-  /* config options here */
-});
 
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
-  serverExternalPackages: ["typescript", "twoslash"],
   images: {
     remotePatterns: [
       {
@@ -28,14 +22,6 @@ const nextConfig: NextConfig = {
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  async rewrites() {
-    return [
-      {
-        source: "/docs/:path*.mdx",
-        destination: "/llms.mdx/:path*",
-      },
-    ];
-  },
 };
 
-export default withMDX(nextConfig);
+export default nextConfig;
