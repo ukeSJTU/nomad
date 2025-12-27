@@ -1,13 +1,17 @@
 import { isMarkdownPreferred, rewritePath } from "fumadocs-core/negotiation";
 import { NextRequest, NextResponse } from "next/server";
 
-const { rewrite: rewriteLLM } = rewritePath("/docs/*path", "/llms.mdx/*path");
+const { rewrite: rewriteLLM } = rewritePath("/*path", "/llms.mdx/*path");
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Handle AI agent content negotiation for all /docs paths
-  if (pathname.startsWith("/docs") && isMarkdownPreferred(request)) {
+  // Handle AI agent content negotiation for all paths
+  if (
+    pathname !== "/" &&
+    !pathname.startsWith("/llms") &&
+    isMarkdownPreferred(request)
+  ) {
     const result = rewriteLLM(pathname);
     if (result) {
       return NextResponse.rewrite(new URL(result, request.nextUrl));
