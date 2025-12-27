@@ -12,7 +12,13 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <svg width="36" height="24" viewBox="0 0 175 87">
+          <svg
+            width="36"
+            height="24"
+            viewBox="0 0 175 87"
+            aria-label="Nomad logo"
+          >
+            <title>Nomad logo</title>
             <polygon points="50,0 0,87 100,87" fill="#2A64A8" />
             <polygon points="75,0 175,0 125,87" fill="#EA5B2B" />
           </svg>

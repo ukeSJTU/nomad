@@ -20,13 +20,10 @@
       }
     ],
     "paths": {
-      "@/actions/*": ["./app/_actions/*"],
-      "@/components/*": ["./app/_components/*"],
-      "@/hooks/*": ["./app/_hooks/*"],
-      "@/stories/*": ["./app/_stories/*"],
-      "@/app/*": ["./app/*"],
-      "@/*": ["./src/*"],
-      "@/tests/*": ["./tests/*"]
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/.source": ["./.source"]
     }
   },
   "include": [
@@ -34,7 +31,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "scripts/**/*.js"
+    ".source"
   ],
   "exclude": ["node_modules"]
 }

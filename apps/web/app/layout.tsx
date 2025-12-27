@@ -1,4 +1,3 @@
-import { RootProvider } from "fumadocs-ui/provider";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
@@ -28,10 +27,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <RootProvider>
-            {children}
-            <Toaster />
-          </RootProvider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
