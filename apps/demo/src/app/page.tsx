@@ -28,6 +28,7 @@ const Home: NextPage = () => {
             controls
             autoPlay
             loop
+            acknowledgeRemotionLicense
           />
         </div>
         <div className="mt-8 text-center">
