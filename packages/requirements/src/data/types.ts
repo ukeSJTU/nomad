@@ -23,33 +23,28 @@ export interface UserStory {
 }
 
 /**
+ * 验收标准中的单个步骤
+ */
+export interface AcceptanceStep {
+  /** 步骤类型 */
+  type: "given" | "when" | "then" | "and" | "but";
+  /** 步骤描述 */
+  description: string;
+}
+
+/**
  * 验收标准（场景）
+ * 支持灵活的步骤定义，可以处理复杂的多步骤操作流程
  */
 export interface AcceptanceCriteria {
   /** 场景ID，如 "场景1", "场景2" */
   id: string;
   /** 场景标题 */
   title: string;
-  /** Given 条件 */
-  given?: string[];
-  /** When 操作 */
-  when?: string[];
-  /** Then 期望结果 */
-  then?: string[];
-  /** And 附加条件 */
-  and?: string[];
-}
-
-/**
- * UI/UX 注释
- */
-export interface UIUXNotes {
-  /** 所需UI元素列表 */
-  elements?: string[];
-  /** 关键交互说明 */
-  interactions?: string[];
-  /** 页面布局描述 */
-  layout?: string;
+  /** 场景描述（可选，用于复杂场景的总体说明） */
+  description?: string;
+  /** 步骤列表 - 按顺序执行的验收步骤 */
+  steps: AcceptanceStep[];
 }
 
 /**
@@ -70,8 +65,8 @@ export interface Requirement {
   userStories: UserStory[];
   /** 验收标准列表 */
   acceptanceCriteria: AcceptanceCriteria[];
-  /** UI/UX注释 */
-  uiNotes?: UIUXNotes;
+  /** 补充说明（用于记录技术细节、UI/UX要求、业务规则等） */
+  notes?: string;
   /** 相关需求ID列表 */
   relatedRequirements?: string[];
 }
