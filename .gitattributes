@@ -1,0 +1,18 @@
+# Git Attributes Configuration for Nomad Project
+
+# Ensure shell scripts use Unix line endings (LF) for Docker containers
+# This is critical for DevContainer scripts which run in Linux containers
+*.sh text eol=lf
+
+# Ensure consistent line endings for common text files
+*.ts text
+*.tsx text
+*.js text
+*.jsx text
+*.json text
+*.md text
+*.yml text
+*.yaml text
+
+# Ensure package manager lockfiles are not modified
+pnpm-lock.yaml text eol=lf
