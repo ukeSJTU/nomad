@@ -40,13 +40,19 @@ RUN npm install -g pnpm@${PNPM_VERSION} || \
 # Configure pnpm
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
-RUN pnpm config set store-dir /pnpm/store
+RUN mkdir -p /pnpm/store && \
+    pnpm config set store-dir /pnpm/store
 
 # Set working directory
 WORKDIR /workspace
 
 # Configure Git safe directory to avoid permission warnings
 RUN git config --global --add safe.directory /workspace
+
+# Pre-create directories for volumes and set correct permissions
+# This ensures the node user can write to these directories
+RUN mkdir -p /workspace/node_modules /workspace/.turbo && \
+    chown -R node:node /workspace /pnpm
 
 # Set up shell configuration for node user
 USER node
