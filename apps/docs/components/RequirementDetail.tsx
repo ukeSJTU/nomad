@@ -77,7 +77,10 @@ export function RequirementDetail({ requirement }: RequirementDetailProps) {
               )}
               <div className="space-y-2">
                 {criteria.steps.map((step, index) => (
-                  <div key={index} className="flex items-start gap-3 text-sm">
+                  <div
+                    key={`${step.type}-${index}`}
+                    className="flex items-start gap-3 text-sm"
+                  >
                     <Badge variant={getStepVariant(step.type)}>
                       {step.type}
                     </Badge>
