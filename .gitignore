@@ -86,4 +86,4 @@ openspec/changes
 graph.html
 
 # VScode
-.vscode/*
+.vscode/settings.json
