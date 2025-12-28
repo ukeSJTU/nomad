@@ -7,6 +7,37 @@ echo "Initializing Nomad development environment..."
 echo "Node.js version: $(node --version)"
 echo "pnpm version: $(pnpm --version)"
 
+# ============================================================================
+# CI Environment Detection
+# ============================================================================
+# In CI environments (like GitHub Actions), we skip time-consuming operations
+# to speed up the container build process. All validation steps should be
+# explicitly defined in the CI workflow's runCmd instead.
+#
+# This approach provides:
+# - Faster container startup in CI
+# - Better visibility of what's being tested (explicit in workflow YAML)
+# - More reliable CI runs (avoiding timeouts during postCreateCommand)
+# ============================================================================
+if [ "$CI" = "true" ]; then
+  echo "CI environment detected - Running lightweight setup..."
+  echo "Installing dependencies only..."
+  pnpm install --frozen-lockfile
+
+  echo ""
+  echo "✓ CI setup complete!"
+  echo "Note: Database initialization, seeding, and Playwright installation"
+  echo "      will be handled explicitly by the CI workflow's validation steps."
+  exit 0
+fi
+
+# ============================================================================
+# Full Development Environment Setup (Local Development Only)
+# ============================================================================
+# The following steps are only executed in local development environments
+# to provide a complete, ready-to-use setup.
+# ============================================================================
+
 # Install dependencies
 echo "Installing dependencies..."
 pnpm install --frozen-lockfile
