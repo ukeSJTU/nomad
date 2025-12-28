@@ -1,0 +1,131 @@
+{
+  "name": "Nomad OTA Platform",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "biomejs.biome",
+        "dsznajder.es7-react-js-snippets",
+        "styled-components.vscode-styled-components",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "Playwright.playwright",
+        "ZixuanChen.vitest-explorer",
+        "EditorConfig.EditorConfig",
+        "DavidAnson.vscode-markdownlint",
+        "usernamehw.errorlens",
+        "bradlc.vscode-tailwindcss",
+        "ms-azuretools.vscode-docker"
+      ],
+
+      "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "quickfix.biome": "explicit",
+          "source.organizeImports.biome": "explicit"
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/node_modules/**": true,
+          "**/.next/**": true,
+          "**/.turbo/**": true,
+          "**/dist/**": true
+        },
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/.next": true,
+          "**/.turbo": true,
+          "**/dist": true,
+          "pnpm-lock.yaml": true
+        },
+        "sqltools.connections": [
+          {
+            "name": "Nomad Development DB",
+            "driver": "PostgreSQL",
+            "previewLimit": 50,
+            "server": "postgres",
+            "port": 5432,
+            "database": "nomad_dev",
+            "username": "nomad",
+            "password": "nomad_dev_password"
+          },
+          {
+            "name": "Nomad Test DB",
+            "driver": "PostgreSQL",
+            "previewLimit": 50,
+            "server": "postgres",
+            "port": 5432,
+            "database": "nomad_test",
+            "username": "nomad",
+            "password": "nomad_dev_password"
+          }
+        ]
+      }
+    }
+  },
+
+  "forwardPorts": [3000, 3001, 3002, 5432, 6006, 6007],
+
+  "portsAttributes": {
+    "3000": {
+      "label": "Web App",
+      "onAutoForward": "notify"
+    },
+    "3001": {
+      "label": "Documentation",
+      "onAutoForward": "silent"
+    },
+    "3002": {
+      "label": "Demo (Remotion)",
+      "onAutoForward": "silent"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6006": {
+      "label": "Storybook",
+      "onAutoForward": "silent"
+    },
+    "6007": {
+      "label": "React Email",
+      "onAutoForward": "silent"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/init-scripts/postCreateCommand.sh",
+  "postStartCommand": "bash .devcontainer/init-scripts/postStartCommand.sh",
+
+  "remoteUser": "node",
+
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "PNPM_HOME": "/pnpm",
+    "PATH": "/pnpm:${containerEnv:PATH}"
+  },
+
+  "mounts": [
+    "source=nomad-pnpm-store,target=/pnpm/store,type=volume",
+    "source=nomad-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ]
+}
