@@ -5,7 +5,7 @@ ARG NODE_VERSION=22.21.0
 FROM node:${NODE_VERSION}-slim
 
 # Install necessary system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     ca-certificates \
     curl \
