@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 22.21.0
+        PNPM_VERSION: 10.17.1
+
+    volumes:
+      - ..:/workspace:cached
+      - nomad-pnpm-store:/pnpm/store
+      - nomad-node-modules:/workspace/node_modules
+      - nomad-turbo-cache:/workspace/.turbo
+
+    command: sleep infinity
+
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://nomad:nomad_dev_password@postgres:5432/nomad_dev
+      - DATABASE_URL_TEST=postgresql://nomad:nomad_dev_password@postgres:5432/nomad_test
+      - BETTER_AUTH_URL=http://localhost:3000
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-dev_secret_key_change_in_production_32_chars_min}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - ENABLE_ALIYUN_SMS=${ENABLE_ALIYUN_SMS:-disabled}
+      - ENABLE_RESEND=${ENABLE_RESEND:-disabled}
+      - NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+      - TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+      - RESEND_FROM_EMAIL=onboarding@resend.dev
+      - DATABASE_SSL=false
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - nomad-network
+
+    user: node
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+
+    volumes:
+      - nomad-postgres-data:/var/lib/postgresql/data
+      - ./init-scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+
+    environment:
+      POSTGRES_USER: nomad
+      POSTGRES_PASSWORD: nomad_dev_password
+      POSTGRES_DB: nomad_dev
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nomad -d nomad_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - nomad-network
+
+    ports:
+      - "5432:5432"
+
+volumes:
+  nomad-pnpm-store:
+    name: nomad-pnpm-store
+  nomad-node-modules:
+    name: nomad-node-modules
+  nomad-turbo-cache:
+    name: nomad-turbo-cache
+  nomad-postgres-data:
+    name: nomad-postgres-data
+
+networks:
+  nomad-network:
+    name: nomad-network
+    driver: bridge
