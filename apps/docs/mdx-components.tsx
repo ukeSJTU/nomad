@@ -3,7 +3,11 @@ import * as Twoslash from "fumadocs-twoslash/ui";
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
-import { RequirementCard, RequirementStats } from "@/components";
+import {
+  RequirementCard,
+  RequirementDetail,
+  RequirementStats,
+} from "@/components";
 import { Mermaid } from "@/components/mermaid";
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
@@ -14,6 +18,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Mermaid,
     RequirementStats,
     RequirementCard,
+    RequirementDetail,
     ...Twoslash,
     ...components,
   };
