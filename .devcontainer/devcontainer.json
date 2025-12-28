@@ -120,9 +120,7 @@
   "remoteUser": "node",
 
   "containerEnv": {
-    "NODE_ENV": "development",
-    "PNPM_HOME": "/pnpm",
-    "PATH": "/pnpm:${containerEnv:PATH}"
+    "NODE_ENV": "development"
   },
 
   "mounts": [
