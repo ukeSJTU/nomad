@@ -15,16 +15,17 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "biomejs.biome",
+        "editorconfig.editorconfig",
         "dsznajder.es7-react-js-snippets",
-        "styled-components.vscode-styled-components",
+        "bradlc.vscode-tailwindcss",
         "mtxr.sqltools",
         "mtxr.sqltools-driver-pg",
         "Playwright.playwright",
         "ZixuanChen.vitest-explorer",
-        "EditorConfig.EditorConfig",
-        "DavidAnson.vscode-markdownlint",
+        "eamodio.gitlens",
         "usernamehw.errorlens",
-        "bradlc.vscode-tailwindcss",
+        "streetsidesoftware.code-spell-checker",
+        "DavidAnson.vscode-markdownlint",
         "ms-azuretools.vscode-docker"
       ],
 
@@ -65,9 +66,9 @@
             "previewLimit": 50,
             "server": "postgres",
             "port": 5432,
-            "database": "nomad_dev",
-            "username": "nomad",
-            "password": "nomad_dev_password"
+            "database": "${containerEnv:POSTGRES_DB:nomad_dev}",
+            "username": "${containerEnv:POSTGRES_USER:nomad}",
+            "password": "${containerEnv:POSTGRES_PASSWORD:nomad_dev_password}"
           },
           {
             "name": "Nomad Test DB",
@@ -76,8 +77,8 @@
             "server": "postgres",
             "port": 5432,
             "database": "nomad_test",
-            "username": "nomad",
-            "password": "nomad_dev_password"
+            "username": "${containerEnv:POSTGRES_USER:nomad}",
+            "password": "${containerEnv:POSTGRES_PASSWORD:nomad_dev_password}"
           }
         ]
       }
