@@ -5,7 +5,8 @@
   "scripts": {
     "build": "slidev build",
     "dev": "slidev --open",
-    "export": "slidev export"
+    "export": "slidev export",
+    "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
     "@nomad/requirements": "workspace:*",

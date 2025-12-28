@@ -13,7 +13,11 @@
   },
   "scripts": {
     "lint": "biome check .",
-    "type-check": "tsc --noEmit"
+    "lint:fix": "biome check --write .",
+    "format": "biome check --write --linter-enabled=false .",
+    "format:check": "biome check --linter-enabled=false .",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist node_modules"
   },
   "devDependencies": {
     "typescript": "^5"

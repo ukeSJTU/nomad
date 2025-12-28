@@ -15,7 +15,9 @@
     "format": "biome check --write --linter-enabled=false .",
     "format:check": "biome check --linter-enabled=false .",
     "remotion": "remotion studio --port 3003",
-    "render": "remotion render"
+    "render": "remotion render",
+    "clean": "rm -rf .next .turbo node_modules",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@remotion/cli": "4.0.375",

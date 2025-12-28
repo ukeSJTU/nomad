@@ -39,7 +39,9 @@
     "format:check": "biome check --linter-enabled=false . && prettier --check '**/*.{md,vue}' --ignore-path .prettierignore",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "email": "email dev --dir ./app/_components/emails --port 6007"
+    "email": "email dev --dir ./app/_components/emails --port 6007",
+    "clean": "rm -rf .next .turbo node_modules",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.22",
