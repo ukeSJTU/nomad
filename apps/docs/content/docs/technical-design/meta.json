@@ -1,4 +1,11 @@
 {
   "title": "Technical Design",
-  "pages": ["architecture", "backend", "data-flow", "test", "seeding"]
+  "pages": [
+    "architecture",
+    "monorepo",
+    "backend",
+    "data-flow",
+    "test",
+    "seeding"
+  ]
 }

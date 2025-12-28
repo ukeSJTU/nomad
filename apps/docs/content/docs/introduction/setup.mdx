@@ -115,16 +115,41 @@ pnpm dev
 
 在日常开发中，你可能会频繁使用到以下命令。完整的脚本列表请见 `package.json`。
 
+### 全局命令
+
+从**根目录**运行这些命令：
+
 | 命令                | 作用说明               |
 | :------------------ | :--------------------- |
-| `pnpm dev`          | 启动开发服务器         |
-| `pnpm build`        | 构建生产版本           |
-| `pnpm lint`         | 检查代码规范问题       |
-| `pnpm format`       | 格式化所有代码文件     |
-| `pnpm test`         | 运行单元测试           |
-| `pnpm e2e`          | 运行端到端测试         |
-| `pnpm db:push`      | 推送数据库架构变更     |
-| `pnpm db:seed`      | 使用示例数据填充数据库 |
+| `pnpm dev`          | 启动所有应用的开发服务器 |
+| `pnpm build`        | 构建所有应用的生产版本 |
+| `pnpm lint`         | 检查所有代码规范问题 |
+| `pnpm lint:fix`     | 检查并自动修复代码规范问题 |
+| `pnpm format`       | 格式化所有代码文件 |
+| `pnpm type-check`   | 检查所有 TypeScript 类型 |
+| `pnpm test`         | 运行所有单元测试 |
+| `pnpm clean`        | 清理所有构建产物和 node_modules |
+| `pnpm clean:cache`  | 清理 Turbo 缓存 |
+
+### 应用特定命令
+
+针对特定应用的命令：
+
+| 命令                | 作用说明               |
+| :------------------ | :--------------------- |
+| `pnpm web:dev`      | 启动 Web 应用开发服务器 |
+| `pnpm web:build`    | 构建 Web 应用生产版本 |
+| `pnpm web:test`     | 运行 Web 应用测试 |
+| `pnpm web:e2e`      | 运行 Web 应用端到端测试 |
+| `pnpm web:db:push`  | 推送数据库架构变更 |
+| `pnpm web:db:seed`  | 使用示例数据填充数据库 |
+| `pnpm docs:dev`     | 启动文档站开发服务器 |
+| `pnpm demo:dev`     | 启动 Demo 应用开发服务器 |
+| `pnpm slides:dev`   | 启动 Slides 演示开发服务器 |
+
+<Callout type="info">
+更多关于 monorepo 架构和命令的详细信息，请参阅 [Monorepo 架构文档](/technical-design/monorepo)。
+</Callout>
 
 ## 常见问题
 
