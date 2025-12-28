@@ -35,7 +35,7 @@ jobs:
         uses: ./.github/actions/setup-node-pnpm
 
       - name: Run lint (Biome)
-        run: pnpm turbo run lint
+        run: pnpm turbo lint
 
       - name: Setup build database
         run: pnpm web:db:push
@@ -61,7 +61,7 @@ jobs:
           EOF
 
       - name: Run build
-        run: pnpm turbo run build
+        run: pnpm turbo build
         env:
           # Disable Next.js telemetry in CI
           NEXT_TELEMETRY_DISABLED: 1

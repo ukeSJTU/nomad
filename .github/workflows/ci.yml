@@ -246,12 +246,12 @@ jobs:
         uses: ./.github/actions/setup-node-pnpm
 
       - name: Build Storybook
-        run: pnpm web:build-storybook
+        run: pnpm --filter web build-storybook
         env:
           NODE_ENV: production
 
       - name: Run Storybook accessibility tests
-        run: pnpm web:test:run --project=storybook
+        run: pnpm --filter web test:run --project=storybook
         continue-on-error: true
 
       - name: Upload Storybook artifact
