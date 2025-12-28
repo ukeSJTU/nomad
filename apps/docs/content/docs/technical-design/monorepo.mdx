@@ -1,0 +1,295 @@
+---
+title: Monorepo Architecture
+description: Understanding the Nomad monorepo structure and development workflow
+---
+
+## Project Structure
+
+Nomad uses a monorepo architecture managed by **pnpm workspaces** and **Turborepo**. The project is organized into applications and shared packages.
+
+### Applications (`apps/`)
+
+| Application | Port | Description |
+|------------|------|-------------|
+| **web** | 3000 | Main Next.js application with flight booking features |
+| **docs** | 3001 | Fumadocs documentation site |
+| **demo** | 3002 | Remotion video demonstrations |
+| **slides** | N/A | Slidev presentation slides |
+
+### Packages (`packages/`)
+
+| Package | Description |
+|---------|-------------|
+| **@nomad/requirements** | Shared requirements data and utilities |
+
+### Port Allocation
+
+- **3000**: Main web application
+- **3001**: Documentation site
+- **3002**: Demo application
+- **3003**: Remotion studio (demo)
+- **6006**: Storybook (web)
+- **6007**: Email preview (web)
+
+---
+
+## Technology Stack
+
+### Core Technologies
+
+- **pnpm workspace**: Package manager with workspace support
+- **Turborepo 2.7.2**: Build system with intelligent caching
+- **Turbopack**: Next.js bundler for faster builds
+- **Next.js 15.5.9**: React framework for all apps
+- **TypeScript 5**: Type-safe JavaScript
+- **Biome**: Fast linter and formatter
+
+### Key Features
+
+1. **Dependency Sharing**: Common dependencies are installed once at the root
+2. **Task Orchestration**: Turbo runs tasks in parallel with dependency awareness
+3. **Smart Caching**: Build outputs are cached locally for faster rebuilds
+4. **Incremental Builds**: Only affected packages rebuild on changes
+
+---
+
+## Common Commands
+
+### Global Commands
+
+Run these from the **root** directory:
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start all apps in development mode |
+| `pnpm build` | Build all apps for production |
+| `pnpm test` | Run all test suites |
+| `pnpm lint` | Lint all packages |
+| `pnpm lint:fix` | Lint and auto-fix issues |
+| `pnpm format` | Format all code |
+| `pnpm type-check` | Type-check all TypeScript |
+| `pnpm clean` | Clean all build outputs and node_modules |
+| `pnpm clean:cache` | Clear Turbo cache |
+
+### Application-Specific Commands
+
+#### Web Application
+
+```bash
+pnpm web:dev          # Start development server
+pnpm web:build        # Build for production
+pnpm web:start        # Start production server
+pnpm web:test         # Run tests
+pnpm web:e2e          # Run E2E tests
+pnpm web:storybook    # Start Storybook
+pnpm web:db:push      # Push database schema
+pnpm web:db:studio    # Open Drizzle Studio
+pnpm web:db:seed      # Seed database
+```
+
+#### Documentation
+
+```bash
+pnpm docs:dev         # Start development server
+pnpm docs:build       # Build for production
+pnpm docs:start       # Start production server
+```
+
+#### Demo
+
+```bash
+pnpm demo:dev         # Start development server
+pnpm demo:build       # Build for production
+pnpm demo:remotion    # Start Remotion studio
+pnpm demo:render      # Render video
+```
+
+#### Slides
+
+```bash
+pnpm slides:dev       # Start development server
+pnpm slides:build     # Build for production
+pnpm slides:export    # Export as PDF
+```
+
+### Utility Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm check:deps` | Check for outdated dependencies |
+| `pnpm update:deps` | Update dependencies interactively |
+| `pnpm turbo:graph` | Generate task dependency graph |
+| `pnpm turbo:dry` | Dry-run build to see what would execute |
+
+---
+
+## Best Practices
+
+### Adding New Packages
+
+1. **Create package directory** under `apps/` or `packages/`
+2. **Add to pnpm workspace** (auto-detected if in workspace folders)
+3. **Configure package.json** with name, version, and scripts
+4. **Add TypeScript config** extending `tsconfig.base.json`
+5. **Add Biome config** extending root `biome.json`
+6. **Install dependencies** with `pnpm install`
+
+### Dependency Management
+
+#### Internal Dependencies
+
+Use workspace protocol in `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@nomad/requirements": "workspace:*"
+  }
+}
+```
+
+#### External Dependencies
+
+Install scoped to specific package:
+
+```bash
+# Install in specific package
+pnpm --filter web add react-hook-form
+
+# Install as dev dependency
+pnpm --filter web add -D vitest
+
+# Install at root (for tooling)
+pnpm add -D -w typescript
+```
+
+### Configuration Strategy
+
+1. **Share common config** at the root
+2. **Extend in packages** for minimal overrides
+3. **Keep configs DRY** - avoid duplication
+
+Example TypeScript config:
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+---
+
+## Troubleshooting
+
+### Build Issues
+
+**Problem**: Build fails with missing dependencies
+
+```bash
+# Solution: Clean and reinstall
+pnpm clean
+pnpm install
+```
+
+**Problem**: TypeScript errors in IDE but not in CLI
+
+```bash
+# Solution: Restart TypeScript server
+# In VS Code: Cmd+Shift+P → "TypeScript: Restart TS Server"
+```
+
+### Caching Issues
+
+**Problem**: Old build artifacts causing issues
+
+```bash
+# Solution: Clear Turbo cache
+pnpm clean:cache
+pnpm turbo build
+```
+
+**Problem**: Changes not reflected in build
+
+```bash
+# Solution: Force rebuild
+TURBO_FORCE=true pnpm turbo build
+```
+
+### Type Errors
+
+**Problem**: Cannot find module '@nomad/requirements'
+
+```bash
+# Solution: Build dependencies first
+pnpm turbo build --filter=@nomad/requirements
+```
+
+**Problem**: Path alias not working
+
+- Check `tsconfig.json` extends `tsconfig.base.json`
+- Verify `paths` configuration in compilerOptions
+- Restart TypeScript server
+
+---
+
+## Performance Tips
+
+### Faster Development
+
+1. **Use Turbopack**: Already enabled in `dev` commands
+2. **Run single app**: Use `pnpm web:dev` instead of `pnpm dev`
+3. **Skip type checking**: Add `SKIP_TYPE_CHECK=1` env var
+
+### Faster Builds
+
+1. **Incremental builds**: Turbo automatically caches
+2. **Parallel execution**: Turbo runs independent tasks in parallel
+3. **Filter builds**: `pnpm turbo build --filter=web` builds only web + dependencies
+
+### Turbo Daemon
+
+Turbo daemon is enabled for faster repeated builds:
+
+```bash
+# Check daemon status
+pnpm turbo daemon status
+
+# Restart daemon if needed
+pnpm turbo daemon restart
+```
+
+---
+
+## Architecture Decisions
+
+### Why pnpm?
+
+- **Fast**: Efficient with hard links
+- **Space-saving**: Shared dependencies across projects
+- **Strict**: Better dependency resolution than npm/yarn
+
+### Why Turborepo?
+
+- **Incremental builds**: Only rebuilds what changed
+- **Remote caching**: (Can be enabled for CI/CD)
+- **Task pipeline**: Manages task dependencies automatically
+- **Parallel execution**: Runs independent tasks concurrently
+
+### Why Turbopack?
+
+- **Faster HMR**: Incremental bundling with Rust
+- **Better caching**: Granular invalidation
+- **Next.js integration**: First-class support
+
+---
+
+## Related Documentation
+
+- [Setup Guide](/introduction/setup)
+- [Configuration Guide](/contributing/monorepo-configuration)
+- [Contributing Guidelines](/contributing/overview)

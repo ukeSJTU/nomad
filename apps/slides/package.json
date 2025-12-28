@@ -5,9 +5,11 @@
   "scripts": {
     "build": "slidev build",
     "dev": "slidev --open",
-    "export": "slidev export"
+    "export": "slidev export",
+    "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
+    "@nomad/requirements": "workspace:*",
     "@slidev/cli": "^52.11.1",
     "@slidev/theme-default": "^0.25.0",
     "@slidev/theme-seriph": "^0.25.0",

@@ -114,6 +114,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@nomad/requirements':
+        specifier: workspace:*
+        version: link:../../packages/requirements
       '@radix-ui/react-popover':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -226,6 +229,9 @@ importers:
 
   apps/slides:
     dependencies:
+      '@nomad/requirements':
+        specifier: workspace:*
+        version: link:../../packages/requirements
       '@slidev/cli':
         specifier: ^52.11.1
         version: 52.11.1(@babel/parser@7.28.5)(@nuxt/kit@3.20.2(magicast@0.3.5))(@types/markdown-it@14.1.2)(@types/node@22.19.3)(@vue/compiler-sfc@3.5.26)(lightningcss@1.30.2)(magicast@0.3.5)(markdown-it-async@2.2.0)(postcss@8.5.6)(react@19.1.2)(terser@5.44.1)(tsx@4.21.0)
@@ -608,6 +614,12 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.27)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/requirements:
+    devDependencies:
+      typescript:
+        specifier: ^5
+        version: 5.9.3
 
 packages:
 

@@ -4,6 +4,7 @@
     "introduction",
     "overall-description",
     "functional-requirements",
-    "non-functional-requirements"
+    "non-functional-requirements",
+    "testing-guide"
   ]
 }

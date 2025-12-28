@@ -83,3 +83,7 @@ openspec/changes
 
 # Turborepo
 .turbo/
+graph.html
+
+# VScode
+.vscode/settings.json

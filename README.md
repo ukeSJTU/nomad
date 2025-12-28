@@ -35,6 +35,57 @@ pnpm dev
 
 访问 [http://localhost:3000](http://localhost:3000) 查看应用
 
+## 项目结构
+
+Nomad 使用 **pnpm workspace** 和 **Turborepo** 构建的 monorepo 架构：
+
+```
+nomad/
+├── apps/
+│   ├── web/         # 主 Web 应用 (端口 3000)
+│   ├── docs/        # 文档站点 (端口 3001)
+│   ├── demo/        # Remotion 视频演示 (端口 3002)
+│   └── slides/      # Slidev 演示文稿
+├── packages/
+│   └── requirements/  # 共享需求数据和工具
+└── openspec/        # 项目规范和提案
+```
+
+## 常用命令
+
+### 全局命令
+
+```bash
+pnpm dev              # 启动所有应用
+pnpm build            # 构建所有应用
+pnpm lint             # 检查代码规范
+pnpm test             # 运行所有测试
+pnpm type-check       # TypeScript 类型检查
+pnpm clean            # 清理构建产物
+```
+
+### 应用特定命令
+
+```bash
+# Web 应用
+pnpm web:dev          # 启动 Web 开发服务器
+pnpm web:build        # 构建 Web 应用
+pnpm web:test         # 运行 Web 测试
+pnpm web:e2e          # 运行 E2E 测试
+pnpm web:db:push      # 推送数据库架构
+pnpm web:db:seed      # 填充测试数据
+
+# 文档站点
+pnpm docs:dev         # 启动文档开发服务器
+pnpm docs:build       # 构建文档站点
+
+# Demo 应用
+pnpm demo:dev         # 启动 Demo 开发服务器
+pnpm demo:remotion    # 启动 Remotion Studio
+```
+
+更多命令和架构细节，请参考[文档站点](https://nomad-docs.vercel.app/technical-design/monorepo)。
+
 ## 贡献指南
 
 我们欢迎所有形式的贡献！请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 了解：
