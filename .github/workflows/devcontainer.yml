@@ -1,0 +1,63 @@
+name: DevContainer Validation
+
+on:
+  pull_request:
+    paths:
+      - '.devcontainer/**'
+      - '.gitattributes'
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '.devcontainer/**'
+      - '.gitattributes'
+  workflow_dispatch:
+
+jobs:
+  validate-devcontainer:
+    name: Validate DevContainer Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and run DevContainer
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd: |
+            echo "Validating DevContainer setup..."
+
+            # Check Node.js and pnpm versions
+            echo "Node.js version: $(node --version)"
+            echo "pnpm version: $(pnpm --version)"
+
+            # Verify database connection
+            echo "Checking PostgreSQL connection..."
+            pg_isready -h postgres -U nomad -d nomad_dev || exit 1
+
+            # Verify dependencies are installed
+            echo "Checking dependencies..."
+            test -d node_modules || exit 1
+
+            # Verify database schema is initialized
+            echo "Verifying database schema..."
+            cd /workspace/apps/web
+            pnpm drizzle-kit push --force || exit 1
+
+            # Run basic type checking
+            echo "Running TypeScript type check..."
+            cd /workspace
+            pnpm type-check || exit 1
+
+            # Run a smoke test
+            echo "Running smoke tests..."
+            cd /workspace/apps/web
+            pnpm test:unit --run || exit 1
+
+            echo "DevContainer validation successful!"
+
+      - name: Summary
+        if: success()
+        run: echo "DevContainer configuration is valid and working correctly"
