@@ -32,10 +32,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pnpm via corepack
+# Install pnpm via npm (with fallback to Taobao mirror for network issues)
 ARG PNPM_VERSION=10.17.1
-RUN corepack enable && \
-    corepack prepare pnpm@${PNPM_VERSION} --activate
+RUN npm install -g pnpm@${PNPM_VERSION} || \
+    npm install -g pnpm@${PNPM_VERSION} --registry=https://registry.npmmirror.com
 
 # Configure pnpm
 ENV PNPM_HOME=/pnpm
