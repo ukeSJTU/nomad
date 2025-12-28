@@ -16,26 +16,7 @@ import { flightModule } from '@nomad/requirements/data';
 
 ### 需求列表
 
-<div className="space-y-2 mb-8">
-  {flightModule.requirements.map((req) => (
-    <a
-      key={req.id}
-      href={`#${req.id}`}
-      className="block p-3 border rounded-lg hover:bg-fd-secondary/50 transition-colors"
-    >
-      <div className="flex items-center justify-between">
-        <span className="font-semibold">{req.id}: {req.name}</span>
-        <span className={`text-xs px-2 py-1 rounded ${
-          req.priority === 'Must Have' ? 'bg-red-100 text-red-800' :
-          req.priority === 'Should Have' ? 'bg-yellow-100 text-yellow-800' :
-          'bg-blue-100 text-blue-800'
-        }`}>
-          {req.priority}
-        </span>
-      </div>
-    </a>
-  ))}
-</div>
+<RequirementToc requirements={flightModule.requirements} />
 
 ---
 

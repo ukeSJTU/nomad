@@ -1,6 +1,7 @@
 "use client";
 
 import type { Requirement } from "@nomad/requirements/types";
+import { Badge, getPriorityVariant, getStepVariant } from "./ui/badge";
 
 interface RequirementDetailProps {
   requirement: Requirement;
@@ -16,17 +17,9 @@ export function RequirementDetail({ requirement }: RequirementDetailProps) {
             {requirement.id}: {requirement.name}
           </h3>
         </div>
-        <span
-          className={`px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
-            requirement.priority === "Must Have"
-              ? "bg-red-100 text-red-800"
-              : requirement.priority === "Should Have"
-                ? "bg-yellow-100 text-yellow-800"
-                : "bg-blue-100 text-blue-800"
-          }`}
-        >
+        <Badge variant={getPriorityVariant(requirement.priority)}>
           {requirement.priority}
-        </span>
+        </Badge>
       </div>
 
       {/* 功能概述 */}
@@ -70,7 +63,10 @@ export function RequirementDetail({ requirement }: RequirementDetailProps) {
         <h4 className="text-lg font-semibold mb-3">验收标准</h4>
         <div className="space-y-6">
           {requirement.acceptanceCriteria.map(criteria => (
-            <div key={criteria.id} className="border rounded-lg p-4">
+            <div
+              key={criteria.id}
+              className="border border-fd-border rounded-lg p-4"
+            >
               <h5 className="font-semibold mb-3">
                 {criteria.id}: {criteria.title}
               </h5>
@@ -82,21 +78,9 @@ export function RequirementDetail({ requirement }: RequirementDetailProps) {
               <div className="space-y-2">
                 {criteria.steps.map((step, index) => (
                   <div key={index} className="flex items-start gap-3 text-sm">
-                    <span
-                      className={`px-2 py-0.5 rounded text-xs font-medium uppercase whitespace-nowrap ${
-                        step.type === "given"
-                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                          : step.type === "when"
-                            ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
-                            : step.type === "then"
-                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
-                              : step.type === "and"
-                                ? "bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-300"
-                                : "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300"
-                      }`}
-                    >
+                    <Badge variant={getStepVariant(step.type)}>
                       {step.type}
-                    </span>
+                    </Badge>
                     <span className="flex-1 text-fd-muted-foreground">
                       {step.description}
                     </span>

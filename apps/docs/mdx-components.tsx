@@ -7,6 +7,7 @@ import {
   RequirementCard,
   RequirementDetail,
   RequirementStats,
+  RequirementToc,
 } from "@/components";
 import { Mermaid } from "@/components/mermaid";
 
@@ -19,6 +20,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     RequirementStats,
     RequirementCard,
     RequirementDetail,
+    RequirementToc,
     ...Twoslash,
     ...components,
   };
