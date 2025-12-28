@@ -9,27 +9,5 @@
   "files": {
     "ignoreUnknown": true,
     "includes": ["**", "!node_modules", "!.next", "!dist", "!build", "!.source"]
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true
-    },
-    "domains": {
-      "next": "recommended",
-      "react": "recommended"
-    }
-  },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
   }
 }
