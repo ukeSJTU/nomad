@@ -10,24 +10,24 @@ echo "pnpm version: $(pnpm --version)"
 # ============================================================================
 # CI Environment Detection
 # ============================================================================
-# In CI environments (like GitHub Actions), we skip time-consuming operations
-# to speed up the container build process. All validation steps should be
-# explicitly defined in the CI workflow's runCmd instead.
+# In CI environments (like GitHub Actions), we completely skip postCreateCommand
+# to avoid timeout issues during container startup. The devcontainers/ci tool
+# expects postCreateCommand to complete quickly, but even a basic "pnpm install"
+# can take several minutes on first run.
 #
-# This approach provides:
-# - Faster container startup in CI
-# - Better visibility of what's being tested (explicit in workflow YAML)
-# - More reliable CI runs (avoiding timeouts during postCreateCommand)
+# Solution:
+# - In CI: postCreateCommand does nothing (instant return)
+# - All setup steps (including dependency installation) are handled explicitly
+#   in the GitHub workflow's runCmd section for better control and visibility
+#
+# Benefits:
+# - Reliable container startup in CI (no timeouts)
+# - Complete visibility of all validation steps in workflow logs
+# - Fine-grained control over each step's execution
 # ============================================================================
 if [ "$CI" = "true" ]; then
-  echo "CI environment detected - Running lightweight setup..."
-  echo "Installing dependencies only..."
-  pnpm install --frozen-lockfile
-
-  echo ""
-  echo "✓ CI setup complete!"
-  echo "Note: Database initialization, seeding, and Playwright installation"
-  echo "      will be handled explicitly by the CI workflow's validation steps."
+  echo "CI environment detected - Skipping postCreateCommand"
+  echo "All setup steps will be handled by the CI workflow's runCmd"
   exit 0
 fi
 

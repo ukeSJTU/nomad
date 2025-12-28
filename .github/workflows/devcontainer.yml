@@ -51,39 +51,47 @@ jobs:
 
             # Verify environment
             echo ""
-            echo "[1/6] Checking development environment..."
+            echo "[1/7] Checking development environment..."
             echo "Node.js version: $(node --version)"
             echo "pnpm version: $(pnpm --version)"
 
             # Verify database connection
             echo ""
-            echo "[2/6] Checking PostgreSQL connection..."
+            echo "[2/7] Checking PostgreSQL connection..."
             pg_isready -h postgres -U nomad -d nomad_dev || exit 1
             echo "✓ Database connection successful"
 
-            # Verify dependencies are installed (by postCreateCommand)
+            # Install dependencies
+            # Note: In CI mode, postCreateCommand is skipped to avoid timeout issues.
+            # We install dependencies here for better control and visibility.
             echo ""
-            echo "[3/6] Verifying dependencies installation..."
-            test -d node_modules || exit 1
+            echo "[3/7] Installing project dependencies..."
+            pnpm install --frozen-lockfile || exit 1
             echo "✓ Dependencies installed"
+
+            # Verify installation
+            echo ""
+            echo "[4/7] Verifying dependencies installation..."
+            test -d node_modules || exit 1
+            echo "✓ node_modules directory exists"
 
             # Initialize database schema
             echo ""
-            echo "[4/6] Initializing database schema..."
+            echo "[5/7] Initializing database schema..."
             cd /workspace/apps/web
             pnpm drizzle-kit push --force || exit 1
             echo "✓ Database schema initialized"
 
             # Run TypeScript type checking
             echo ""
-            echo "[5/6] Running TypeScript type check..."
+            echo "[6/7] Running TypeScript type check..."
             cd /workspace
             pnpm type-check || exit 1
             echo "✓ Type checking passed"
 
             # Run unit tests
             echo ""
-            echo "[6/6] Running unit tests..."
+            echo "[7/7] Running unit tests..."
             cd /workspace/apps/web
             pnpm test:unit --run || exit 1
             echo "✓ Unit tests passed"
