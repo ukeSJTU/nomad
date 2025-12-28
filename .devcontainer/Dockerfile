@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-ARG NODE_VERSION=22.21.0
+ARG NODE_VERSION=22
 
 FROM node:${NODE_VERSION}-slim
 
@@ -57,5 +57,3 @@ RUN echo 'alias ll="ls -alh"' >> ~/.bashrc && \
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node --version && pnpm --version || exit 1
-
-CMD ["sleep", "infinity"]
