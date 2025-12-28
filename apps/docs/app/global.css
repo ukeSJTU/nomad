@@ -3,6 +3,8 @@
 @import "fumadocs-ui/css/preset.css";
 @import "katex/dist/katex.css";
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
