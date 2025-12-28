@@ -13,12 +13,6 @@ import { userModule } from '@nomad/requirements/data';
 
 <RequirementStats />
 
-## 需求卡片示例
-
-下面展示如何使用 `RequirementCard` 组件来展示单个需求的详细信息。这里以用户模块的第一个需求（REQ-U01：手机号OTP注册）作为示例：
-
-<RequirementCard requirement={userModule.requirements[0]} />
-
 ## 在测试中关联需求
 
 我们使用 JSDoc 标签在测试代码中关联需求，这样可以追踪哪些测试覆盖了哪些需求。详细使用方法请参考下面的说明。

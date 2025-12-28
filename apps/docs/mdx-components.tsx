@@ -4,7 +4,6 @@ import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import {
-  RequirementCard,
   RequirementDetail,
   RequirementStats,
   RequirementToc,
@@ -18,7 +17,6 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     img: props => <ImageZoom {...(props as any)} />,
     Mermaid,
     RequirementStats,
-    RequirementCard,
     RequirementDetail,
     RequirementToc,
     ...Twoslash,
