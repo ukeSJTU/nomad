@@ -29,7 +29,7 @@ Requirements as Code 方法实践
 —— TODO 小组
 
 <a href="https://github.com/ukesjtu/nomad/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ukesjtu/nomad" />
+  <img src="https://contrib.rocks/image?repo=ukesjtu/nomad&max=3" />
 </a>
 
 <!--
