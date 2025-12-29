@@ -25,17 +25,26 @@ async function main() {
     .option("--json", "Output in JSON format")
     .option("--output <file>", "Save output to file")
     .option("--module <modules>", "Filter by modules (comma-separated)")
+    .option(
+      "--path <directory>",
+      "Path to the project directory to scan (default: ../../apps/web relative to cwd)"
+    )
     .parse(process.argv);
 
   const options = program.opts();
 
   try {
-    // Determine the apps/web path
+    // Determine the project path
     const currentDir = process.cwd();
-    const webAppPath = path.resolve(currentDir, "../../apps/web");
+    const webAppPath = options.path
+      ? path.resolve(currentDir, options.path)
+      : path.resolve(currentDir, "../../apps/web");
 
     if (!fs.existsSync(webAppPath)) {
-      console.error(`Error: apps/web directory not found at ${webAppPath}`);
+      console.error(`Error: Project directory not found at ${webAppPath}`);
+      console.error(
+        "Hint: Use --path <directory> to specify a different location"
+      );
       process.exit(1);
     }
 
