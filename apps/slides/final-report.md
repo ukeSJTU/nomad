@@ -370,34 +370,44 @@ layout: section
 
 ---
 transition: slide-up
-layout: center
 ---
 
 ## 3.1 设计思路：双向追溯系统
 
 <v-clicks>
 
+### 完整工作流程
+
 ```mermaid
-graph TD
-    A[需求定义<br/>packages/requirements] --> B[JSDoc 标签标记<br/>@requirement, @scenario]
-    B --> C[测试代码<br/>apps/web/**/*.test.ts]
-    C --> D[AST 解析<br/>TypeScript Compiler API]
-    D --> E[覆盖率映射<br/>需求↔测试, 场景↔测试]
-    E --> F[覆盖率报告<br/>识别未覆盖需求]
-    F --> G[文档系统展示<br/>apps/docs]
+graph LR
+    A[需求定义] --> B[JSDoc标签]
+    B --> C[测试代码]
+    C --> D[AST解析]
+    D --> E[覆盖率映射]
+    E --> F[覆盖率报告]
+    F --> G[文档展示]
     G -.反馈.-> A
 ```
+
+### 关键环节
+
+1. **需求定义** → packages/requirements 定义 62 个需求、381 个场景
+2. **JSDoc标签** → @requirement, @scenario 标记测试
+3. **AST解析** → TypeScript Compiler API 提取标签
+4. **覆盖率映射** → 构建需求↔测试、场景↔测试的双向映射
+5. **覆盖率报告** → 识别未覆盖需求和场景
+6. **文档展示** → apps/docs 动态展示需求状态
 
 </v-clicks>
 
 <!--
 [click] 首先让我们看看双向追溯系统的设计思路。
 
-整个流程从需求定义开始。我们在 packages/requirements 中定义了 62 个需求和 381 个验收场景。
+整个流程是一个完整的闭环。从需求定义开始，我们在 packages/requirements 中定义了 62 个需求和 381 个验收场景。
 
-然后，开发人员在编写测试代码时，通过 JSDoc 标签标记测试覆盖的需求和场景。比如 @requirement REQ-U01 和 @scenario 场景1。
+开发人员编写测试时，通过 JSDoc 标签标记测试覆盖的需求和场景，比如 @requirement REQ-U01 和 @scenario 场景1。
 
-接下来，覆盖率分析工具使用 TypeScript Compiler API 解析测试文件的 AST，提取出所有的 JSDoc 标签。
+覆盖率分析工具使用 TypeScript Compiler API 解析测试文件的 AST，提取出所有的 JSDoc 标签。
 
 然后构建需求到测试、场景到测试的双向映射关系。这样我们就知道哪些需求被哪些测试覆盖，哪些场景被哪些测试验证。
 
