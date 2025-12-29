@@ -16,7 +16,15 @@ vi.mock("server-only", () => {
 
 const toDateString = (date: Date) => date.toISOString().slice(0, 10);
 
+/**
+ * @requirement REQ-F02
+ * @requirement REQ-F03
+ */
 describe("flight.repository", () => {
+  /**
+   * @requirement REQ-F02
+   * @scenario 场景1
+   */
   it("searches flights by route/date and returns seat classes and lowest price", async () => {
     const departureCity = await createCity({
       iataCode: "SHA",

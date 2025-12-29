@@ -19,7 +19,17 @@ import {
   refundOrderAndReleaseSeats,
 } from "./orders.repository";
 
+/**
+ * @requirement REQ-O01
+ * @requirement REQ-O02
+ * @requirement REQ-O04
+ * @requirement REQ-O05
+ */
 describe("booking.orders.repository", () => {
+  /**
+   * @requirement REQ-O01
+   * @scenario 场景1
+   */
   it("returns all orders for user ordered by creation time", async () => {
     const scenario = await createOrderScenario({
       includeInbound: true,
@@ -34,6 +44,10 @@ describe("booking.orders.repository", () => {
     expect(orders[0]?.inboundFlight).not.toBeNull();
   });
 
+  /**
+   * @requirement REQ-O02
+   * @scenario 场景2
+   */
   it("returns full order detail with masked contact data", async () => {
     const scenario = await createOrderScenario({
       includeInbound: true,
@@ -55,6 +69,10 @@ describe("booking.orders.repository", () => {
     );
   });
 
+  /**
+   * @requirement REQ-O04
+   * @scenario 场景1
+   */
   it("returns order for cancellation and updates seats when cancelling", async () => {
     const scenario = await createOrderScenario({
       includeInbound: true,
@@ -77,13 +95,13 @@ describe("booking.orders.repository", () => {
     const [inbound] = await db
       .select()
       .from(flightSeatClasses)
-      .where(eq(flightSeatClasses.id, scenario.inbound!.seatClass.id));
+      .where(eq(flightSeatClasses.id, scenario.inbound?.seatClass.id));
 
     expect(outbound?.availableSeats).toBe(
       (scenario.outbound.seatClass.availableSeats ?? 0) + 2
     );
     expect(inbound?.availableSeats).toBe(
-      (scenario.inbound!.seatClass.availableSeats ?? 0) + 2
+      (scenario.inbound?.seatClass.availableSeats ?? 0) + 2
     );
 
     const [updatedOrder] = await db
@@ -93,6 +111,10 @@ describe("booking.orders.repository", () => {
     expect(updatedOrder?.status).toBe("CANCELLED");
   });
 
+  /**
+   * @requirement REQ-O04
+   * @scenario 场景2
+   */
   it("finds expired orders and cancels them releasing seats", async () => {
     const active = await createOrderScenario({
       passengerCount: 1,
@@ -130,6 +152,10 @@ describe("booking.orders.repository", () => {
     );
   });
 
+  /**
+   * @requirement REQ-O05
+   * @scenario 场景1
+   */
   it("returns refund data and performs refund with seat release", async () => {
     const scenario = await createOrderScenario({
       includeInbound: true,

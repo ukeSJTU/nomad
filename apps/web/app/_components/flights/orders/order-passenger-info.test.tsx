@@ -28,8 +28,18 @@ const createMockPassengers = (
   ];
 };
 
+/**
+ * @requirement REQ-O02
+ */
 describe("OrderPassengerInfo Component", () => {
+  /**
+   * @requirement REQ-O02
+   */
   describe("Rendering", () => {
+    /**
+     * @requirement REQ-O02
+     * @scenario 场景2
+     */
     it("should render passenger information card with title", () => {
       const passengers = createMockPassengers();
       render(<OrderPassengerInfo passengers={passengers} />);

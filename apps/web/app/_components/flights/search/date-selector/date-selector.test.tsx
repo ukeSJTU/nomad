@@ -22,6 +22,9 @@ const getTestDates = () => {
   };
 };
 
+/**
+ * @requirement REQ-F01
+ */
 describe("DateSelector", () => {
   const baseDates = getTestDates();
 
@@ -38,7 +41,14 @@ describe("DateSelector", () => {
     vi.clearAllMocks();
   });
 
+  /**
+   * @requirement REQ-F01
+   */
   describe("One-way mode", () => {
+    /**
+     * @requirement REQ-F01
+     * @scenario 场景1
+     */
     it("renders departure date selector", () => {
       render(<DateSelector {...defaultProps} />);
 
@@ -74,7 +84,14 @@ describe("DateSelector", () => {
     });
   });
 
+  /**
+   * @requirement REQ-F01
+   */
   describe("Round-trip mode", () => {
+    /**
+     * @requirement REQ-F01
+     * @scenario 场景2
+     */
     it("renders both departure and return date selectors", () => {
       render(<DateSelector {...defaultProps} tripType="round-trip" />);
 

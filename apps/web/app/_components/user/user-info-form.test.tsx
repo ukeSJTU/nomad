@@ -40,6 +40,9 @@ vi.mock("@/components/user/success-dialog", () => ({
     open ? <div data-testid="success-dialog">保存成功</div> : null,
 }));
 
+/**
+ * @requirement REQ-U09
+ */
 describe("UserInfoForm Component", () => {
   const mockUserData: UserInfo = {
     id: "user-123",
@@ -70,7 +73,14 @@ describe("UserInfoForm Component", () => {
     vi.mocked(useRouter).mockReturnValue(mockRouter);
   });
 
+  /**
+   * @requirement REQ-U09
+   */
   describe("Display Mode", () => {
+    /**
+     * @requirement REQ-U09
+     * @scenario 场景1
+     */
     it("should render UserInfoDisplay by default", () => {
       render(<UserInfoForm userData={mockUserData} />);
       expect(screen.getByTestId("user-info-display")).toBeInTheDocument();

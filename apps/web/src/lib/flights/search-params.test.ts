@@ -32,7 +32,14 @@ const baseFormData: Omit<SearchFormData, "tripType" | "returnDate"> = {
   seatClass: "economy",
 };
 
+/**
+ * @requirement REQ-F01
+ */
 describe("buildFlightSearchUrl", () => {
+  /**
+   * @requirement REQ-F01
+   * @scenario 场景2
+   */
   it("builds a round-trip search URL with return date", () => {
     const data: SearchFormData = {
       ...baseFormData,
@@ -47,6 +54,10 @@ describe("buildFlightSearchUrl", () => {
     );
   });
 
+  /**
+   * @requirement REQ-F01
+   * @scenario 场景1
+   */
   it("omits return date for one-way trips even if provided", () => {
     const data: SearchFormData = {
       ...baseFormData,

@@ -4,8 +4,18 @@ import { describe, expect, it, vi } from "vitest";
 
 import { CancelOrderDialog } from "./cancel-order-dialog";
 
+/**
+ * @requirement REQ-O04
+ */
 describe("CancelOrderDialog Component", () => {
+  /**
+   * @requirement REQ-O04
+   */
   describe("Rendering", () => {
+    /**
+     * @requirement REQ-O04
+     * @scenario 场景1
+     */
     it("should not render when open is false", () => {
       const mockOnConfirm = vi.fn();
       const mockOnOpenChange = vi.fn();

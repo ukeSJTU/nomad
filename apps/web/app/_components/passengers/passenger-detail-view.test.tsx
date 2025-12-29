@@ -5,6 +5,9 @@ import type { PassengerDetailData } from "@/types/dto";
 
 import PassengerDetailView from "./passenger-detail-view";
 
+/**
+ * @requirement REQ-U12
+ */
 const mockPassenger: PassengerDetailData = {
   name: "测试用户",
   nationality: "中国大陆",
@@ -18,7 +21,14 @@ const mockPassenger: PassengerDetailData = {
   documentExpiryDate: "2030-12-31",
 };
 
+/**
+ * @requirement REQ-U12
+ */
 describe("PassengerDetailView Component", () => {
+  /**
+   * @requirement REQ-U12
+   * @scenario 场景1
+   */
   it("renders the component with mock data", () => {
     render(<PassengerDetailView passenger={mockPassenger} />);
 

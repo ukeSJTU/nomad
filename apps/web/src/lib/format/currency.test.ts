@@ -6,6 +6,10 @@
  * native number arithmetic.
  *
  * Coverage target: ≥70%
+ *
+ * @requirement REQ-O02
+ * @requirement REQ-O03
+ * @requirement REQ-F02
  */
 
 import { describe, expect, it } from "vitest";

@@ -6,6 +6,9 @@ import type { OrderListItem } from "@/types/dto";
 
 import OrderCard from "./order-card";
 
+/**
+ * @requirement REQ-O01
+ */
 // Mock order data helper
 const createMockOrder = (
   overrides?: Partial<OrderListItem>
@@ -36,6 +39,9 @@ const createMockOrder = (
   ...overrides,
 });
 
+/**
+ * @requirement REQ-O01
+ */
 describe("OrderCard Component", () => {
   const mockOnCheckChange = vi.fn();
   const mockOnDelete = vi.fn();
@@ -53,7 +59,14 @@ describe("OrderCard Component", () => {
     vi.clearAllMocks();
   });
 
+  /**
+   * @requirement REQ-O01
+   */
   describe("Rendering", () => {
+    /**
+     * @requirement REQ-O01
+     * @scenario 场景2
+     */
     it("should render order card with basic information", () => {
       render(<OrderCard {...defaultProps} />);
 

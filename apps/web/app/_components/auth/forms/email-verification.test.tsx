@@ -4,7 +4,14 @@ import { describe, expect, it, vi } from "vitest";
 
 import EmailVerificationForm from "./email-verification";
 
+/**
+ * @requirement REQ-U02
+ */
 describe("EmailVerificationForm", () => {
+  /**
+   * @requirement REQ-U02
+   * @scenario 场景2
+   */
   it("should show validation error for empty email", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -20,6 +27,10 @@ describe("EmailVerificationForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U02
+   * @scenario 场景4
+   */
   it("should show validation error for invalid OTP", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -39,6 +50,10 @@ describe("EmailVerificationForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U02
+   * @scenario 场景1
+   */
   it("should call onSubmit with correct data when form is valid", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();

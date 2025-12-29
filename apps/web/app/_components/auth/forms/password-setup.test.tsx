@@ -4,7 +4,15 @@ import { describe, expect, it, vi } from "vitest";
 
 import PasswordSetupForm from "./password-setup";
 
+/**
+ * @requirement REQ-U01
+ * @requirement REQ-U02
+ */
 describe("PasswordSetupForm", () => {
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
   it("should render all form fields correctly", () => {
     const onSubmit = vi.fn();
     render(<PasswordSetupForm onSubmit={onSubmit} />);
@@ -38,6 +46,9 @@ describe("PasswordSetupForm", () => {
     expect(screen.getByText(/包含至少一个特殊符号/)).toBeInTheDocument();
   });
 
+  /**
+   * @requirement REQ-U01
+   */
   it("should show validation error for empty password", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -55,6 +66,9 @@ describe("PasswordSetupForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U01
+   */
   it("should show validation error for short password", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -70,6 +84,9 @@ describe("PasswordSetupForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U01
+   */
   it("should show validation error when passwords do not match", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -88,6 +105,9 @@ describe("PasswordSetupForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U01
+   */
   it("should show validation error for password without uppercase letter", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();

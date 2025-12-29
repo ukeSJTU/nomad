@@ -35,6 +35,12 @@ beforeAll(() => {
   });
 });
 
+/**
+ * @requirement REQ-U01
+ * @requirement REQ-U02
+ * @requirement REQ-U05
+ * @requirement REQ-U07
+ */
 describe("useOtpCountdown", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -61,7 +67,15 @@ describe("useOtpCountdown", () => {
     });
   });
 
+  /**
+   * @requirement REQ-U01
+   * @requirement REQ-U05
+   */
   describe("start", () => {
+    /**
+     * @requirement REQ-U01
+     * @scenario 场景1
+     */
     it("should start countdown with default duration (60s)", () => {
       const { result } = renderHook(() => useOtpCountdown());
 

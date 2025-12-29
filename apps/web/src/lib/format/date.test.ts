@@ -12,7 +12,15 @@ import {
   getWeekdayLabel,
 } from "./date";
 
+/**
+ * @requirement REQ-F01
+ * @requirement REQ-F02
+ */
 describe("getRelativeDateLabel", () => {
+  /**
+   * @requirement REQ-F01
+   * @scenario 场景1
+   */
   it("returns '今天' for the same day", () => {
     const today = new Date("2025-11-15");
     expect(getRelativeDateLabel(today, today)).toBe("今天");
@@ -43,7 +51,14 @@ describe("getRelativeDateLabel", () => {
   });
 });
 
+/**
+ * @requirement REQ-F01
+ */
 describe("calculateTripDuration", () => {
+  /**
+   * @requirement REQ-F01
+   * @scenario 场景2
+   */
   it("returns 0 when departureDate is null", () => {
     const returnDate = new Date("2025-11-17");
     expect(calculateTripDuration(null, returnDate)).toBe(0);

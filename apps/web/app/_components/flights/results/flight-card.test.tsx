@@ -10,9 +10,13 @@ import {
 
 // Mock the currency formatter
 vi.mock("@/lib/format", () => ({
-  formatCurrency: (value: number) => `¥${value.toFixed(2)}`,
+  formatCurrency: (value: number) => `￥${value.toFixed(2)}`,
 }));
 
+/**
+ * @requirement REQ-F02
+ * @requirement REQ-F03
+ */
 describe("FlightCard", () => {
   const mockSinglePriceProps: FlightCardProps = {
     airlineLogo: "https://example.com/airline-logo.png",
@@ -59,7 +63,14 @@ describe("FlightCard", () => {
     lowestPrice: 850,
   };
 
+  /**
+   * @requirement REQ-F02
+   */
   describe("Single Price Mode", () => {
+    /**
+     * @requirement REQ-F02
+     * @scenario 场景2
+     */
     it("renders flight information correctly", () => {
       render(<FlightCard {...mockSinglePriceProps} />);
 

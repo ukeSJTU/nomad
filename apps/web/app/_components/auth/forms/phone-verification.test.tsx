@@ -4,7 +4,14 @@ import { describe, expect, it, vi } from "vitest";
 
 import PhoneVerificationForm from "./phone-verification";
 
+/**
+ * @requirement REQ-U01
+ */
 describe("PhoneVerificationForm", () => {
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
   it("should render all form fields correctly", () => {
     const onSubmit = vi.fn();
     render(<PhoneVerificationForm onSubmit={onSubmit} />);
@@ -21,6 +28,10 @@ describe("PhoneVerificationForm", () => {
     ).toBeInTheDocument();
   });
 
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景2
+   */
   it("should show validation error for empty phone number", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -38,6 +49,10 @@ describe("PhoneVerificationForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景2
+   */
   it("should show validation error for invalid phone number", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -56,6 +71,9 @@ describe("PhoneVerificationForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U01
+   */
   it("should show validation error for invalid OTP", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
@@ -72,6 +90,9 @@ describe("PhoneVerificationForm", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  /**
+   * @requirement REQ-U01
+   */
   it("should show validation error when terms are not agreed", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
