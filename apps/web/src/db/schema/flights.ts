@@ -95,7 +95,7 @@ export const flights = pgTable(
 
     // Constraints
     check(
-      "flights_flight_number_format",
+      "flights_flight_number_check",
       sql`${table.flightNumber} ~ '^[A-Z0-9]{2}[0-9]{1,4}$'`
     ), // Flight number must match format: 2 letters/digits + 1-4 digits (e.g., "CA1234", "9C8947")
     check(

@@ -249,6 +249,19 @@ async function seedFromScenario(config: SeedConfig) {
     usersSpinner.info("No users to seed (empty array)");
   }
 
+  // Seed accounts (skip if empty or missing)
+  const accountsSpinner = ora("Seeding accounts...").start();
+  let insertedAccounts: typeof scenario.accounts = [];
+  if (scenario.accounts?.length > 0) {
+    insertedAccounts = await db
+      .insert(account)
+      .values(scenario.accounts)
+      .returning();
+    accountsSpinner.succeed(`Seeded ${insertedAccounts.length} accounts`);
+  } else {
+    accountsSpinner.info("No accounts to seed (empty array)");
+  }
+
   // Seed passengers (skip if empty)
   const passengersSpinner = ora("Seeding passengers...").start();
   let insertedPassengers: typeof scenario.passengers = [];
@@ -265,6 +278,7 @@ async function seedFromScenario(config: SeedConfig) {
   // Summary
   logger.info("\nSummary:");
   logger.info(`   - Users: ${insertedUsers.length}`);
+  logger.info(`   - Accounts: ${insertedAccounts.length}`);
   logger.info(`   - Passengers: ${insertedPassengers.length}`);
   logger.info(`   - Cities: ${insertedCities.length}`);
   logger.info(`   - Airports: ${insertedAirports.length}`);

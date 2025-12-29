@@ -88,3 +88,5 @@ graph.html
 
 # VScode
 .vscode/settings.json
+
+temp/
