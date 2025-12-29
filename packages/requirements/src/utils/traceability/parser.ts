@@ -184,19 +184,57 @@ function buildTestTree(sourceFile: ts.SourceFile, filePath: string): TestNode {
  * Resolve tag inheritance from parent to children
  */
 function resolveTagInheritance(node: TestNode, parentTags?: TestTag): void {
-  // Merge parent tags with current tags
-  const hasTags =
-    node.tags.requirements.length > 0 ||
-    node.tags.scenarios.length > 0 ||
-    node.tags.userStories.length > 0;
+  // Start with parent tags (or empty tags if no parent)
+  const finalTags: TestTag = {
+    requirements: parentTags?.requirements || [],
+    scenarios: parentTags?.scenarios || [],
+    userStories: parentTags?.userStories || [],
+  };
 
-  if (hasTags) {
-    // Node has its own tags, use them
-    node.finalTags = { ...node.tags };
-  } else if (parentTags) {
-    // Inherit from parent
-    node.inheritedTags = { ...parentTags };
-    node.finalTags = { ...parentTags };
+  // Override with child's own tags for each tag type
+  if (node.tags.requirements.length > 0) {
+    finalTags.requirements = node.tags.requirements;
+  }
+  if (node.tags.scenarios.length > 0) {
+    finalTags.scenarios = node.tags.scenarios;
+  }
+  if (node.tags.userStories.length > 0) {
+    finalTags.userStories = node.tags.userStories;
+  }
+
+  node.finalTags = finalTags;
+
+  // Track inherited tags for transparency
+  if (parentTags) {
+    const inheritedTags: TestTag = {
+      requirements: [],
+      scenarios: [],
+      userStories: [],
+    };
+
+    if (
+      node.tags.requirements.length === 0 &&
+      parentTags.requirements.length > 0
+    ) {
+      inheritedTags.requirements = parentTags.requirements;
+    }
+    if (node.tags.scenarios.length === 0 && parentTags.scenarios.length > 0) {
+      inheritedTags.scenarios = parentTags.scenarios;
+    }
+    if (
+      node.tags.userStories.length === 0 &&
+      parentTags.userStories.length > 0
+    ) {
+      inheritedTags.userStories = parentTags.userStories;
+    }
+
+    if (
+      inheritedTags.requirements.length > 0 ||
+      inheritedTags.scenarios.length > 0 ||
+      inheritedTags.userStories.length > 0
+    ) {
+      node.inheritedTags = inheritedTags;
+    }
   }
 
   // Recursively resolve children
