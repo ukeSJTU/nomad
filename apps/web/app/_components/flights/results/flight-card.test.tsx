@@ -10,7 +10,7 @@ import {
 
 // Mock the currency formatter
 vi.mock("@/lib/format", () => ({
-  formatCurrency: (value: number) => `￥${value.toFixed(2)}`,
+  formatCurrency: (value: number) => `¥${value.toFixed(2)}`,
 }));
 
 /**
