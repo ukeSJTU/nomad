@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import { validateAccount } from "@/lib/validation";
 
+/**
+ * @requirement REQ-U01
+ * @requirement REQ-U05
+ */
 describe("validateAccount", () => {
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景2
+   */
   it("should validate phone numbers correctly", () => {
     expect(validateAccount("13800138000")).toEqual({
       isPhone: true,
@@ -11,6 +19,10 @@ describe("validateAccount", () => {
     });
   });
 
+  /**
+   * @requirement REQ-U02
+   * @scenario 场景2
+   */
   it("should validate emails correctly", () => {
     expect(validateAccount("test@example.com")).toEqual({
       isPhone: false,

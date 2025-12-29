@@ -66,6 +66,7 @@ next-env.d.ts
 /public/coverage/
 /public/playwright/
 public/index.html
+**/coverage-report.json
 
 # Fumadocs generated content
 .contentlayer

@@ -8,6 +8,54 @@
 pnpm add @nomad/requirements
 ```
 
+## 测试覆盖率追踪
+
+使用 JSDoc 标签将测试代码与需求关联，并生成覆盖率报告。
+
+### 快速开始
+
+在测试文件中添加 JSDoc 标签：
+
+```typescript
+/**
+ * @requirement REQ-U01
+ * @scenario 场景1
+ */
+test("should complete registration", () => {
+  // 测试代码
+});
+```
+
+运行覆盖率统计：
+
+```bash
+# 在 apps/web 目录
+pnpm test:ac-coverage
+
+# 输出 JSON 格式
+pnpm test:ac-coverage --json
+
+# 保存到文件
+pnpm test:ac-coverage --output report.json
+
+# 按模块筛选
+pnpm test:ac-coverage --module user,flight
+```
+
+### 支持的标签
+
+- `@requirement <ID>` - 关联需求（如：REQ-U01）
+- `@scenario <ID>` - 关联场景（如：场景1）
+- `@userStory <ID>` - 关联用户故事（可选）
+
+标签可以用在：
+
+- 测试文件顶部（文件级别）
+- `describe()` 块（describe 级别）
+- `test()` / `it()` 块（测试级别）
+
+子级标签会覆盖父级标签。
+
 ## 使用方式
 
 ### 1. 在测试代码中标记需求（JSDoc）
@@ -292,31 +340,30 @@ packages/requirements/
 │   │   └── index.ts            # 数据导出
 │   ├── utils/                   # 工具函数
 │   │   ├── stats.ts            # 统计函数
-│   │   └── query.ts            # 查询函数
-│   ├── jsdoc/                   # JSDoc 类型
-│   │   └── requirement-tags.ts # @requirement 标签
+│   │   ├── query.ts            # 查询函数
+│   │   ├── glob.ts             # 文件匹配
+│   │   └── traceability/       # 需求追踪
+│   │       ├── types.ts        # 追踪类型
+│   │       ├── parser.ts       # 测试文件解析器
+│   │       ├── validator.ts    # 标签验证
+│   │       ├── mapper.ts       # 覆盖率映射
+│   │       ├── stats.ts        # 统计计算
+│   │       └── reporter.ts     # 报告生成
+│   ├── cli/                     # CLI 工具
+│   │   └── coverage.ts         # 覆盖率命令
 │   └── index.ts                # 主导出
 └── README.md
 ```
 
 ## 当前状态
 
-目前仅包含**用户模块（user）**的 12 个需求：
+包含 5 个模块共 62 个需求，381 个验收场景：
 
-- REQ-U01: 手机号OTP注册
-- REQ-U02: 邮箱OTP注册
-- REQ-U03: GitHub OAuth注册
-- REQ-U04: 手机号密码登录
-- REQ-U05: 手机号OTP登录
-- REQ-U06: 邮箱密码登录
-- REQ-U07: 邮箱OTP登录
-- REQ-U08: 个人基本信息管理
-- REQ-U09: 密码管理
-- REQ-U10: 绑定信息更新
-- REQ-U11: 常用旅客CRUD
-- REQ-U12: 旅客信息快速填充
-
-其他模块（flight, order, payment, ui-ux）待迁移。
+- user（用户模块）: 12 个需求
+- flight（机票模块）: 13 个需求
+- order（订单模块）: 12 个需求
+- payment（支付模块）: 13 个需求
+- ui-ux（UI/UX模块）: 12 个需求
 
 ## License
 

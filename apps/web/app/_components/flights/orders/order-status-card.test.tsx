@@ -20,6 +20,10 @@ const createMockStatusData = (
   ...overrides,
 });
 
+/**
+ * @requirement REQ-O02
+ * @requirement REQ-O03
+ */
 describe("OrderStatusCard Component", () => {
   const mockOnGoToPayment = vi.fn();
   const mockOnResendConfirmation = vi.fn();
@@ -28,7 +32,14 @@ describe("OrderStatusCard Component", () => {
     vi.clearAllMocks();
   });
 
+  /**
+   * @requirement REQ-O02
+   */
   describe("Rendering", () => {
+    /**
+     * @requirement REQ-O02
+     * @scenario 场景2
+     */
     it("should render order status card with order number", () => {
       const data = createMockStatusData();
       render(<OrderStatusCard data={data} />);
@@ -37,6 +48,10 @@ describe("OrderStatusCard Component", () => {
       expect(screen.getByText(/订单号: NMD20251118001/)).toBeInTheDocument();
     });
 
+    /**
+     * @requirement REQ-O03
+     * @scenario 场景1
+     */
     it("should display correct status for PENDING_PAYMENT", () => {
       const data = createMockStatusData({ status: "PENDING_PAYMENT" });
       render(<OrderStatusCard data={data} />);
@@ -45,6 +60,10 @@ describe("OrderStatusCard Component", () => {
       expect(screen.getByText("去付款")).toBeInTheDocument();
     });
 
+    /**
+     * @requirement REQ-O02
+     * @scenario 场景2
+     */
     it("should display correct status for CONFIRMED", () => {
       const data = createMockStatusData({ status: "CONFIRMED" });
       render(<OrderStatusCard data={data} />);

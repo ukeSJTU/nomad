@@ -5,6 +5,9 @@ import type { PassengerPageFlight } from "@/types/dto";
 
 import { FlightSummaryCard } from "./flight-summary-card";
 
+/**
+ * @requirement REQ-F05
+ */
 // Mock flight data
 const mockOutboundFlight: PassengerPageFlight = {
   id: "flight-1",

@@ -4,10 +4,17 @@ import { describe, expect, it, vi } from "vitest";
 
 import PassengerForm from "./passenger-form";
 
+/**
+ * @requirement REQ-U12
+ */
 describe("PassengerForm Component", () => {
   const mockOnSubmit = vi.fn();
   const mockOnCancel = vi.fn();
 
+  /**
+   * @requirement REQ-U12
+   * @scenario 场景1
+   */
   it("renders the form with all required fields", () => {
     render(<PassengerForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 

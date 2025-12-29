@@ -31,8 +31,18 @@ const createMockFlight = (
   ...overrides,
 });
 
+/**
+ * @requirement REQ-O02
+ */
 describe("OrderFlightInfo Component", () => {
+  /**
+   * @requirement REQ-O02
+   */
   describe("Rendering", () => {
+    /**
+     * @requirement REQ-O02
+     * @scenario 场景2
+     */
     it("should render one-way flight correctly", () => {
       const outboundFlight = createMockFlight();
       render(

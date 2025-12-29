@@ -49,6 +49,12 @@ const mockFetchOptions = {
   headers: { "x-captcha-token": "test-token" },
 };
 
+/**
+ * @requirement REQ-U04
+ * @requirement REQ-U05
+ * @requirement REQ-U06
+ * @requirement REQ-U07
+ */
 describe("useSignInFlow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -59,6 +65,10 @@ describe("useSignInFlow", () => {
     expect(result.current.isLoading).toBe(false);
   });
 
+  /**
+   * @requirement REQ-U04
+   * @requirement REQ-U06
+   */
   describe("handlePasswordLogin", () => {
     const mockPasswordData: PasswordLoginData = {
       account: "user@example.com",
@@ -66,6 +76,10 @@ describe("useSignInFlow", () => {
       agreedToTerms: true,
     };
 
+    /**
+     * @requirement REQ-U04
+     * @scenario 场景1
+     */
     it("redirects on success", async () => {
       mockSignInWithPasswordAction.mockResolvedValue({
         success: true,
@@ -88,6 +102,10 @@ describe("useSignInFlow", () => {
       expect(result.current.isLoading).toBe(false);
     });
 
+    /**
+     * @requirement REQ-U04
+     * @scenario 场景3
+     */
     it("shows toast on failure", async () => {
       mockSignInWithPasswordAction.mockResolvedValue({
         success: false,
@@ -107,6 +125,10 @@ describe("useSignInFlow", () => {
     });
   });
 
+  /**
+   * @requirement REQ-U05
+   * @requirement REQ-U07
+   */
   describe("handleOtpLogin", () => {
     const mockOtpData: OtpLoginData = {
       account: "user@example.com",
@@ -114,6 +136,10 @@ describe("useSignInFlow", () => {
       agreedToTerms: true,
     };
 
+    /**
+     * @requirement REQ-U05
+     * @scenario 场景1
+     */
     it("redirects on success", async () => {
       mockSignInWithOtpAction.mockResolvedValue({
         success: true,
@@ -132,6 +158,10 @@ describe("useSignInFlow", () => {
       expect(mockRouterPush).toHaveBeenCalledWith("/");
     });
 
+    /**
+     * @requirement REQ-U05
+     * @scenario 场景5
+     */
     it("shows toast on failure", async () => {
       mockSignInWithOtpAction.mockResolvedValue({
         success: false,
@@ -149,6 +179,10 @@ describe("useSignInFlow", () => {
   });
 
   describe("handleSendOtp", () => {
+    /**
+     * @requirement REQ-U05
+     * @scenario 场景1
+     */
     it("sends phone OTP when account is phone number", async () => {
       mockValidateAccount.mockReturnValue({
         isPhone: true,
@@ -173,6 +207,10 @@ describe("useSignInFlow", () => {
       );
     });
 
+    /**
+     * @requirement REQ-U07
+     * @scenario 场景1
+     */
     it("sends email OTP when account is email", async () => {
       mockValidateAccount.mockReturnValue({
         isPhone: false,
@@ -198,6 +236,10 @@ describe("useSignInFlow", () => {
       );
     });
 
+    /**
+     * @requirement REQ-U05
+     * @scenario 场景2
+     */
     it("returns false for invalid account format", async () => {
       mockValidateAccount.mockReturnValue({
         isPhone: false,

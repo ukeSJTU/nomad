@@ -2,8 +2,19 @@ import { describe, expect, it } from "vitest";
 
 import { validateEmailFormat, validatePhoneNumberFormat } from "./auth.service";
 
+/**
+ * @requirement REQ-U01
+ * @requirement REQ-U02
+ */
 describe("Auth Service Validation", () => {
+  /**
+   * @requirement REQ-U01
+   */
   describe("validatePhoneNumberFormat", () => {
+    /**
+     * @requirement REQ-U01
+     * @scenario 场景1
+     */
     it("accepts 11-digit numbers and trims whitespace", () => {
       const result = validatePhoneNumberFormat(" 13812345678 ");
 
@@ -11,6 +22,10 @@ describe("Auth Service Validation", () => {
       expect(result.data).toBe("13812345678");
     });
 
+    /**
+     * @requirement REQ-U01
+     * @scenario 场景2
+     */
     it("rejects numbers with country prefix", () => {
       const result = validatePhoneNumberFormat("+8613812345678");
 
@@ -26,13 +41,24 @@ describe("Auth Service Validation", () => {
     });
   });
 
+  /**
+   * @requirement REQ-U02
+   */
   describe("validateEmailFormat", () => {
+    /**
+     * @requirement REQ-U02
+     * @scenario 场景1
+     */
     it("accepts standard email format", () => {
       const result = validateEmailFormat("user@example.com");
 
       expect(result.success).toBe(true);
     });
 
+    /**
+     * @requirement REQ-U02
+     * @scenario 场景2
+     */
     it("rejects invalid email format", () => {
       const result = validateEmailFormat("invalid-email");
 

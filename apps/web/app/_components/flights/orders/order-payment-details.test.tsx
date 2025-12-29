@@ -25,8 +25,20 @@ const createMockPaymentData = (
   ...overrides,
 });
 
+/**
+ * @requirement REQ-O02
+ * @requirement REQ-O03
+ */
 describe("OrderPaymentDetails Component", () => {
+  /**
+   * @requirement REQ-O02
+   * @requirement REQ-O03
+   */
   describe("Rendering", () => {
+    /**
+     * @requirement REQ-O02
+     * @scenario 场景2
+     */
     it("should render payment details card with title", () => {
       const paymentData = createMockPaymentData();
       render(<OrderPaymentDetails paymentData={paymentData} />);

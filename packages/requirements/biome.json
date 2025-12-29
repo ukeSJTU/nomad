@@ -4,5 +4,12 @@
   "files": {
     "ignoreUnknown": true,
     "includes": ["src/**", "!node_modules", "!dist"]
+  },
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "noConsole": "off"
+      }
+    }
   }
 }

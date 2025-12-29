@@ -8,6 +8,9 @@ import {
   validateContactInfo,
 } from "./contact-info-card";
 
+/**
+ * @requirement REQ-F05
+ */
 describe("ContactInfoCard Component", () => {
   const mockOnChange = vi.fn();
 

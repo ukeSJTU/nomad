@@ -34,10 +34,26 @@ vi.mock("../turnstile", () => ({
  * Note: CAPTCHA-related tests (countdown, verification flow) are excluded
  * as they require complex Turnstile mocking and are better suited for
  * integration or E2E tests.
+ *
+ * @requirement REQ-U04
+ * @requirement REQ-U05
+ * @requirement REQ-U06
+ * @requirement REQ-U07
  */
 
+/**
+ * @requirement REQ-U04
+ * @requirement REQ-U06
+ */
 describe("UnifiedLoginForm - Sequential Validation", () => {
+  /**
+   * @requirement REQ-U04
+   */
   describe("PasswordLoginForm - Sequential Error Display", () => {
+    /**
+     * @requirement REQ-U04
+     * @scenario 场景2
+     */
     it("should only show account error when all fields are empty", async () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
@@ -77,6 +93,10 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       expect(onPasswordSubmit).not.toHaveBeenCalled();
     });
 
+    /**
+     * @requirement REQ-U04
+     * @scenario 场景2
+     */
     it("should only show password error when account is filled but password is empty", async () => {
       const user = userEvent.setup();
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });

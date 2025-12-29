@@ -43,6 +43,10 @@ const mockFetchOptions = {
   headers: { "x-captcha-token": "test-token" },
 };
 
+/**
+ * @requirement REQ-U01
+ * @requirement REQ-U02
+ */
 describe("useSignUpFlow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -54,6 +58,10 @@ describe("useSignUpFlow", () => {
     expect(result.current.signUpMethod).toBe("phone");
   });
 
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
   it("advances after successful phone verification", async () => {
     mockSignInWithOtpAction.mockResolvedValue({
       success: true,
@@ -74,6 +82,9 @@ describe("useSignUpFlow", () => {
     expect(result.current.currentStep).toBe(2);
   });
 
+  /**
+   * @requirement REQ-U01
+   */
   it("shows error when phone verification fails", async () => {
     mockSignInWithOtpAction.mockResolvedValue({
       success: false,
@@ -94,6 +105,10 @@ describe("useSignUpFlow", () => {
     expect(result.current.currentStep).toBe(1);
   });
 
+  /**
+   * @requirement REQ-U02
+   * @scenario 场景1
+   */
   it("advances after successful email verification", async () => {
     mockVerifyEmailOtpAction.mockResolvedValue({
       success: true,
@@ -114,6 +129,10 @@ describe("useSignUpFlow", () => {
     expect(result.current.currentStep).toBe(2);
   });
 
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
   it("sends phone OTP", async () => {
     mockSendPhoneOtpAction.mockResolvedValue({
       success: true,
@@ -131,6 +150,10 @@ describe("useSignUpFlow", () => {
     );
   });
 
+  /**
+   * @requirement REQ-U02
+   * @scenario 场景1
+   */
   it("sends email OTP", async () => {
     mockSendEmailOtpAction.mockResolvedValue({
       success: true,
@@ -149,6 +172,10 @@ describe("useSignUpFlow", () => {
     );
   });
 
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
   it("moves to step 3 after setting password", async () => {
     mockSetInitialPasswordAction.mockResolvedValue({
       success: true,

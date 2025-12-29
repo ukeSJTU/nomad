@@ -11,7 +11,15 @@ import {
   getLowestPrice,
 } from "./flight";
 
+/**
+ * @requirement REQ-F02
+ * @requirement REQ-F03
+ */
 describe("calculateFlightDuration", () => {
+  /**
+   * @requirement REQ-F02
+   * @scenario 场景2
+   */
   it("should calculate duration for flights on the same day", () => {
     const departure = "2024-01-15T10:00:00Z";
     const arrival = "2024-01-15T12:30:00Z";

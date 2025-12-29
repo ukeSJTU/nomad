@@ -3,7 +3,14 @@ import { createOrderScenario } from "@/tests/integration/helpers/factories";
 
 import { getOrderForPayment } from "./payment.repository";
 
+/**
+ * @requirement REQ-O03
+ */
 describe("booking.payment.repository", () => {
+  /**
+   * @requirement REQ-O03
+   * @scenario 场景1
+   */
   it("returns payment page data with flights, passengers, and ancillary details", async () => {
     const scenario = await createOrderScenario({
       includeInbound: true,

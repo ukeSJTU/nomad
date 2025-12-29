@@ -4,6 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 
 import { RefundOrderDialog } from "./refund-order-dialog";
 
+/**
+ * @requirement REQ-O05
+ */
 describe("RefundOrderDialog", () => {
   const defaultProps = {
     open: true,
@@ -11,6 +14,10 @@ describe("RefundOrderDialog", () => {
     onConfirm: vi.fn(),
   };
 
+  /**
+   * @requirement REQ-O05
+   * @scenario 场景1
+   */
   it("renders dialog when open", () => {
     render(<RefundOrderDialog {...defaultProps} />);
 
@@ -24,6 +31,10 @@ describe("RefundOrderDialog", () => {
     expect(screen.queryByText("申请退款")).not.toBeInTheDocument();
   });
 
+  /**
+   * @requirement REQ-O05
+   * @scenario 场景2
+   */
   it("displays refund amount when provided", () => {
     render(<RefundOrderDialog {...defaultProps} refundAmount="1000.00" />);
 

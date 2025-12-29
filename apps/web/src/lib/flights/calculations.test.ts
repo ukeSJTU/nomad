@@ -56,7 +56,15 @@ function createFlight(id: string, prices: number[]): FlightSearchResult {
   };
 }
 
+/**
+ * @requirement REQ-F02
+ * @requirement REQ-F03
+ */
 describe("calculateLowestPriceOneWay", () => {
+  /**
+   * @requirement REQ-F02
+   * @scenario 场景2
+   */
   it("returns the minimum seat class price across flights", () => {
     const flights = [
       createFlight("1", [399, 599]),
@@ -76,7 +84,15 @@ describe("calculateLowestPriceOneWay", () => {
   });
 });
 
+/**
+ * @requirement REQ-F02
+ * @requirement REQ-F03
+ */
 describe("calculateLowestPriceRoundTrip", () => {
+  /**
+   * @requirement REQ-F03
+   * @scenario 场景1
+   */
   it("returns the lowest price across outbound and inbound flights", () => {
     const flights: RoundTripFlightSearchResult = {
       outbound: [createFlight("1", [500, 700])],

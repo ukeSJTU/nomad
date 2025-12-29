@@ -5,6 +5,10 @@ import type { FlightSearchResult } from "@/types/dto";
 
 import { useFlightSearchState } from "./use-flight-search-state";
 
+/**
+ * @requirement REQ-F02
+ * @requirement REQ-F03
+ */
 describe("useFlightSearchState", () => {
   // Mock flight search results
   const mockFlights: FlightSearchResult[] = [

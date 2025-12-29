@@ -4,6 +4,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useDateSelector } from "./use-date-selector";
 
+/**
+ * @requirement REQ-F01
+ */
 describe("useDateSelector", () => {
   const today = new Date("2025-11-15");
   today.setHours(0, 0, 0, 0);
@@ -21,7 +24,14 @@ describe("useDateSelector", () => {
     vi.clearAllMocks();
   });
 
+  /**
+   * @requirement REQ-F01
+   */
   describe("initial state", () => {
+    /**
+     * @requirement REQ-F01
+     * @scenario 场景1
+     */
     it("returns correct initial state", () => {
       const { result } = renderHook(() => useDateSelector(defaultProps));
 

@@ -25,11 +25,20 @@ const mockRechargeUserBalance = vi.mocked(rechargeUserBalanceRepo);
 const mockUpdateUserPhoneNumber = vi.mocked(updateUserPhoneNumberRepo);
 const mockUpdateUserEmail = vi.mocked(updateUserEmailRepo);
 
+/**
+ * @requirement REQ-U09
+ * @requirement REQ-U10
+ * @requirement REQ-U11
+ */
 describe("user.service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
+  /**
+   * @requirement REQ-U09
+   * @scenario 场景1
+   */
   it("builds update payload while clearing empty optional fields", async () => {
     const result = await updateUserInfo("user-1", {
       nickname: "",
@@ -68,6 +77,10 @@ describe("user.service", () => {
     });
   });
 
+  /**
+   * @requirement REQ-U10
+   * @scenario 场景1
+   */
   it("rounds amounts and returns balance on successful recharge", async () => {
     mockRechargeUserBalance.mockResolvedValueOnce("110.00");
 
