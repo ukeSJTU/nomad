@@ -18,7 +18,7 @@
     "format:check": "biome check --linter-enabled=false .",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist node_modules",
-    "coverage:ac": "tsx src/cli/ac-coverage.ts"
+    "coverage:ac": "tsx src/cli/coverage.ts"
   },
   "dependencies": {
     "glob": "^11.0.0",
