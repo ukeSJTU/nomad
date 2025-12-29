@@ -3,16 +3,16 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { Command } from "commander";
-import { buildCoverageMapping } from "../coverage/mapper";
-import { parseTestFiles } from "../coverage/parser";
-import {
-  generateJSONReport,
-  generateTableReport,
-  reportValidationErrors,
-} from "../coverage/reporter";
-import { calculateCoverageStatistics } from "../coverage/stats";
 import { allModules } from "../data/index";
 import { findAllTestFiles } from "../utils/glob";
+import { buildCoverageMapping } from "../utils/traceability/mapper";
+import { parseTestFiles } from "../utils/traceability/parser";
+import {
+  generateJsonReport,
+  generateTableReport,
+} from "../utils/traceability/reporter";
+import { calculateCoverageStatistics } from "../utils/traceability/stats";
+import { validateTestTags } from "../utils/traceability/validator";
 
 async function main() {
   const program = new Command();
@@ -52,33 +52,30 @@ async function main() {
     const parsedFiles = await parseTestFiles(testFiles);
 
     console.log("Building coverage mapping...");
-    const mapping = buildCoverageMapping(parsedFiles, allModules);
-
-    // Parse module filter
-    const filterModules = options.module
-      ? options.module.split(",").map((m: string) => m.trim())
-      : undefined;
+    const mapping = buildCoverageMapping(parsedFiles);
 
     console.log("Calculating statistics...\n");
-    const stats = calculateCoverageStatistics(
-      mapping,
-      allModules,
-      filterModules
-    );
+    const validationErrors = validateTestTags(parsedFiles, allModules);
+
+    // Filter modules if specified
+    let modulesToUse = allModules;
+    if (options.module) {
+      const filterModuleIds = options.module
+        .split(",")
+        .map((m: string) => m.trim());
+      modulesToUse = allModules.filter(mod => filterModuleIds.includes(mod.id));
+    }
+
+    const stats = calculateCoverageStatistics(mapping, modulesToUse);
 
     // Generate report
     let report = "";
 
-    // Show validation errors first
-    if (mapping.validationErrors.length > 0) {
-      report += reportValidationErrors(mapping.validationErrors);
-    }
-
     // Generate report based on format
     if (options.json) {
-      report += generateJSONReport(stats);
+      report = generateJsonReport(stats, validationErrors);
     } else {
-      report += generateTableReport(stats);
+      report = generateTableReport(stats, validationErrors);
     }
 
     // Output to file or console
@@ -90,10 +87,7 @@ async function main() {
     }
 
     // Exit with error code if there are validation errors
-    if (mapping.validationErrors.length > 0) {
-      console.error(
-        `\nFound ${mapping.validationErrors.length} validation error(s).`
-      );
+    if (validationErrors.length > 0) {
       process.exit(1);
     }
   } catch (error) {

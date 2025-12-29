@@ -341,14 +341,14 @@ packages/requirements/
 │   ├── utils/                   # 工具函数
 │   │   ├── stats.ts            # 统计函数
 │   │   ├── query.ts            # 查询函数
-│   │   └── glob.ts             # 文件匹配
-│   ├── coverage/                # 覆盖率追踪
-│   │   ├── types.ts            # 覆盖率类型
-│   │   ├── parser.ts           # 测试文件解析器
-│   │   ├── validator.ts        # 标签验证
-│   │   ├── mapper.ts           # 覆盖率映射
-│   │   ├── stats.ts            # 统计计算
-│   │   └── reporter.ts         # 报告生成
+│   │   ├── glob.ts             # 文件匹配
+│   │   └── traceability/       # 需求追踪
+│   │       ├── types.ts        # 追踪类型
+│   │       ├── parser.ts       # 测试文件解析器
+│   │       ├── validator.ts    # 标签验证
+│   │       ├── mapper.ts       # 覆盖率映射
+│   │       ├── stats.ts        # 统计计算
+│   │       └── reporter.ts     # 报告生成
 │   ├── cli/                     # CLI 工具
 │   │   └── coverage.ts         # 覆盖率命令
 │   └── index.ts                # 主导出
