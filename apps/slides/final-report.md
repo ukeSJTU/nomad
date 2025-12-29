@@ -269,12 +269,6 @@ layout: center
 | UI/UX模块 | 12       | ~51        | Must: 8, Should: 4             |
 | **总计**  | **62**   | **381**    | Must: 42, Should: 19, Could: 1 |
 
-<v-click>
-
-> 所有需求采用 BDD 风格（Given-When-Then），使用 MoSCoW 优先级管理
-
-</v-click>
-
 <!--
 让我们看看需求的数量和结构。
 
@@ -291,8 +285,6 @@ layout: center
 UI/UX 模块有 12 个需求，大约 51 个验收场景，8 个核心需求，4 个次要需求。
 
 总计 62 个需求，381 个验收场景。优先级分布是 42 个 Must Have，19 个 Should Have，1 个 Could Have。
-
-所有需求都采用 BDD 风格，使用 Given-When-Then 格式编写验收标准。我们还使用 MoSCoW 方法对需求进行优先级管理，确保团队优先实现核心功能。
 -->
 
 ---
