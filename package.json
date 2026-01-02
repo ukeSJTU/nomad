@@ -7,6 +7,11 @@
     "pnpm": ">=10.0.0"
   },
   "packageManager": "pnpm@10.17.1",
+  "pnpm": {
+    "overrides": {
+      "zod": "4.2.1"
+    }
+  },
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
