@@ -1,13 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import { useState } from "react";
-
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from "@nomad/ui/components/input-otp";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { useState } from "react";
 
 // Wrapper component for controlled OTP input
 function OTPExample({

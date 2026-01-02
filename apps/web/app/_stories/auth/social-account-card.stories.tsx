@@ -1,7 +1,6 @@
+import { Button } from "@nomad/ui/components/button";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-
 import SocialAccountCard from "@/components/auth/social-account-card";
-import { Button } from "@/components/ui/button";
 
 /**
  * SocialAccountCard displays a social provider with binding status.
