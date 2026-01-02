@@ -1,9 +1,17 @@
 "use client";
 
+import { Alert, AlertDescription } from "@nomad/ui/components/alert";
+import { Button } from "@nomad/ui/components/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/card";
+import { Separator } from "@nomad/ui/components/separator";
 import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-
 import {
   type UpdateOrderAncillaryResult,
   updateOrderAncillaryAction,
@@ -12,10 +20,6 @@ import {
   AncillarySelection,
   PaymentCountdownTimer,
 } from "@/components/flights/booking";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
   getAncillaryServiceByCode,
   getAncillaryServicesByCategory,

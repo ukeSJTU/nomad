@@ -1,16 +1,20 @@
 "use client";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/card";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-
 import {
   changePasswordAction,
   setPasswordForOAuthUserAction,
 } from "@/app/_actions/auth";
 import PasswordSetupForm from "@/components/auth/forms/password-setup";
 import ChangePasswordForm from "@/components/security/change-password-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import { type PasswordSetupData } from "@/types/validations";
 

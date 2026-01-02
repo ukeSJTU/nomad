@@ -1,20 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-import OtpInput from "@/components/auth/forms/otp-input";
-import PasswordSetupForm from "@/components/auth/forms/password-setup";
-import {
-  type TurnstileInstance,
-  TurnstileWidget,
-} from "@/components/auth/turnstile";
-import { Stepper, type StepperStep } from "@/components/common";
-import { Button } from "@/components/ui/button";
+import { Button } from "@nomad/ui/components/button";
 import {
   Form,
   FormControl,
@@ -22,8 +9,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/form";
+import { Input } from "@nomad/ui/components/input";
+import { CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import OtpInput from "@/components/auth/forms/otp-input";
+import PasswordSetupForm from "@/components/auth/forms/password-setup";
+import {
+  type TurnstileInstance,
+  TurnstileWidget,
+} from "@/components/auth/turnstile";
+import { Stepper, type StepperStep } from "@/components/common";
 import { useForgotPasswordFlow } from "@/hooks/use-forgot-password-flow";
 import type { FetchOptions } from "@/types/http";
 import {

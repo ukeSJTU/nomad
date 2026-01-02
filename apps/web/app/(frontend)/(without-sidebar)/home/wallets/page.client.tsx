@@ -1,20 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Wallet } from "lucide-react";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-import { rechargeBalanceAction } from "@/app/_actions/user";
-import { Button } from "@/components/ui/button";
+import { Button } from "@nomad/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@nomad/ui/components/card";
 import {
   Form,
   FormControl,
@@ -22,8 +16,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/form";
+import { Input } from "@nomad/ui/components/input";
+import { Wallet } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { rechargeBalanceAction } from "@/app/_actions/user";
 import { formatCurrency } from "@/lib/format";
 import {
   type RechargeBalanceData,

@@ -1,9 +1,8 @@
+import { Toaster } from "@nomad/ui/components/sonner";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-
 import { ThemeProvider } from "@/components/common/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Nomad - Your Travel Companion",

@@ -1,6 +1,3 @@
-import { getPopularAirportsAction } from "@/actions/airport-guide";
-
-import { AirportList, GuideSidebar } from "@/components/flights";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,7 +5,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@nomad/ui/components/breadcrumb";
+import { getPopularAirportsAction } from "@/actions/airport-guide";
+import { AirportList, GuideSidebar } from "@/components/flights";
 
 export const dynamic = "force-dynamic";
 

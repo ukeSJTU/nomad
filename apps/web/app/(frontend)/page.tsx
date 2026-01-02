@@ -1,9 +1,8 @@
+import { Button } from "@nomad/ui/components/button";
+import { Toaster } from "@nomad/ui/components/sonner";
 import { ArrowRight, Hotel, Plane, Train } from "lucide-react";
 import Link from "next/link";
-
 import { Footer, Header } from "@/components/common";
-import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function LandingPage() {
   return (

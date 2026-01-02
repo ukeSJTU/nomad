@@ -1,8 +1,7 @@
+import { SidebarInset, SidebarProvider } from "@nomad/ui/components/sidebar";
+import { Toaster } from "@nomad/ui/components/sonner";
 import { type ReactNode, Suspense } from "react";
-
 import { Footer, Header, MainSidebar } from "@/components/common";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Toaster } from "@/components/ui/sonner";
 
 export function SidebarWrapper({ children }: { children: ReactNode }) {
   return (
