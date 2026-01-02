@@ -27,6 +27,7 @@ import { Separator } from "@nomad/ui/components/separator";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -113,6 +114,9 @@ export default function DevUserSwitcher() {
       <SheetContent side="right" className="w-[400px] sm:w-[540px]">
         <SheetHeader>
           <SheetTitle>Switch User</SheetTitle>
+          <SheetDescription>
+            Select a user to switch to for development testing
+          </SheetDescription>
         </SheetHeader>
 
         <Separator className="my-4" />
