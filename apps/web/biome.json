@@ -43,11 +43,6 @@
       "!AGENTS.md"
     ]
   },
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
-    }
-  },
   "overrides": [
     {
       "includes": [
