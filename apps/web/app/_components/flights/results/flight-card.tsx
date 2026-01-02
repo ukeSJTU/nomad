@@ -7,10 +7,10 @@ import {
 } from "@nomad/ui/components/avatar";
 import { Button } from "@nomad/ui/components/button";
 import { Card, CardContent } from "@nomad/ui/components/card";
+import { cn } from "@nomad/ui/lib/utils";
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { formatCurrency } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
 export interface SeatClassOption {
   /** Seat class ID */

@@ -26,10 +26,10 @@ import {
   SelectValue,
 } from "@nomad/ui/components/select";
 import { Separator } from "@nomad/ui/components/separator";
+import { cn } from "@nomad/ui/lib/utils";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { dateToLocalDateString } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import {
   type PassengerFormData,
   passengerFormSchema,

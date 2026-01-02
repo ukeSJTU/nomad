@@ -1,11 +1,10 @@
 "use client";
 
+import { cn } from "@nomad/ui/lib/utils";
 import { FileText, Scale, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-
-import { cn } from "@/lib/utils";
 
 const legalPages = [
   {

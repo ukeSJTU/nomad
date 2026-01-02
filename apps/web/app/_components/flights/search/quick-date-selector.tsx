@@ -2,6 +2,7 @@
 
 import { Button } from "@nomad/ui/components/button";
 import { Skeleton } from "@nomad/ui/components/skeleton";
+import { cn } from "@nomad/ui/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
@@ -12,7 +13,6 @@ import {
   formatCurrency,
   formatDateWithWeekday,
 } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import { type QuickDatePrice } from "@/types/dto";
 
 const logger = createClientLogger({ module: "quick-date-selector" });

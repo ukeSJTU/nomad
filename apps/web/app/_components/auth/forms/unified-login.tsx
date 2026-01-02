@@ -16,6 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@nomad/ui/components/tooltip";
+import { cn } from "@nomad/ui/lib/utils";
 import { AlertCircle, Github } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
@@ -28,7 +29,6 @@ import {
 } from "@/components/auth/turnstile";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { buildOtpStorageKeyFromAccount } from "@/lib/otp";
-import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import {

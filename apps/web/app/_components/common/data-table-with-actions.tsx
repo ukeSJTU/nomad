@@ -21,8 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@nomad/ui/components/table";
+import { cn } from "@nomad/ui/lib/utils";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 
 // ============================================================================
 // Types

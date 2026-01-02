@@ -2,6 +2,7 @@
 
 import { Badge } from "@nomad/ui/components/badge";
 import { Card } from "@nomad/ui/components/card";
+import { cn } from "@nomad/ui/lib/utils";
 import { ArrowLeftRight, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -10,7 +11,6 @@ import {
   getWeekdayLabel,
   parseCurrency,
 } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import type { SearchHistoryRecord } from "@/types/dto";
 
 interface FlightSearchHistoryCardProps {

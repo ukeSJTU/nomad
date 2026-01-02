@@ -19,6 +19,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@nomad/ui/components/sidebar";
+import { cn } from "@nomad/ui/lib/utils";
 import {
   Album,
   Building2,
@@ -42,7 +43,6 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 // Type definitions
 type SubItem = {
