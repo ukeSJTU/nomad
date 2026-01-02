@@ -1,17 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { type Resolver, useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-import {
-  createAddressAction,
-  updateAddressAction,
-} from "@/app/_actions/addresses";
-import { Button } from "@/app/_components/ui/button";
-import { Checkbox } from "@/app/_components/ui/checkbox";
+import { Button } from "@nomad/ui/components/button";
+import { Checkbox } from "@nomad/ui/components/checkbox";
 import {
   Form,
   FormControl,
@@ -20,8 +11,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/app/_components/ui/form";
-import { Input } from "@/app/_components/ui/input";
+} from "@nomad/ui/components/form";
+import { Input } from "@nomad/ui/components/input";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { type Resolver, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import {
+  createAddressAction,
+  updateAddressAction,
+} from "@/app/_actions/addresses";
 import {
   type CreateAddressData,
   createAddressSchema,

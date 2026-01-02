@@ -1,14 +1,5 @@
 "use client";
 
-import { Edit, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import {
-  cancelDefaultAddressAction,
-  deleteAddressAction,
-  setDefaultAddressAction,
-} from "@/app/_actions/addresses";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,16 +10,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/app/_components/ui/alert-dialog";
-import { Badge } from "@/app/_components/ui/badge";
-import { Button } from "@/app/_components/ui/button";
+} from "@nomad/ui/components/alert-dialog";
+import { Badge } from "@nomad/ui/components/badge";
+import { Button } from "@nomad/ui/components/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/app/_components/ui/dialog";
+} from "@nomad/ui/components/dialog";
 import {
   Table,
   TableBody,
@@ -36,7 +27,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/app/_components/ui/table";
+} from "@nomad/ui/components/table";
+import { Edit, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import {
+  cancelDefaultAddressAction,
+  deleteAddressAction,
+  setDefaultAddressAction,
+} from "@/app/_actions/addresses";
 import { AddressForm } from "@/app/_components/user/address/address-form";
 import { type Address } from "@/types/db";
 
