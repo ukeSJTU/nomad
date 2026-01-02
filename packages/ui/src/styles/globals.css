@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* Below 3 lines are necessary for shadcn to function correctly in a monorepo */
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
