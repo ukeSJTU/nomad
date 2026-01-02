@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import { Button } from "@nomad/ui/components/button";
+import { Checkbox } from "@nomad/ui/components/checkbox";
+import { Input } from "@nomad/ui/components/input";
 import {
   Table,
   TableBody,
@@ -12,7 +10,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@nomad/ui/components/table";
+import { useState } from "react";
 import type { PassengerDTO } from "@/types/dto";
 
 interface PassengerListProps {

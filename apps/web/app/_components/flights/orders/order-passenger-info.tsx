@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/card";
 import { OrderDetailFull } from "@/types/dto";
 
 import { getIdentityTypeName } from "./utils";

@@ -1,9 +1,8 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/button";
+import { Input } from "@nomad/ui/components/input";
 import { useEffect, useRef } from "react";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export interface OtpInputProps {

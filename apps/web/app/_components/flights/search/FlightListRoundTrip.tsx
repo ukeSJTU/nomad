@@ -6,15 +6,14 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
-
-import { FlightCard } from "@/components/flights/results";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@nomad/ui/components/card";
+import { useRouter } from "next/navigation";
+import { FlightCard } from "@/components/flights/results";
 import { FLIGHT_UI_TEXT } from "@/config/ui";
 import {
   calculateDaysOffset,

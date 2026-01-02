@@ -1,11 +1,14 @@
 "use client";
 
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@nomad/ui/components/avatar";
+import { Button } from "@nomad/ui/components/button";
+import { Card, CardContent } from "@nomad/ui/components/card";
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 

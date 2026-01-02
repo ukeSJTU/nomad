@@ -1,11 +1,15 @@
 "use client";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/card";
+import { Input } from "@nomad/ui/components/input";
+import { Label } from "@nomad/ui/components/label";
+import { RadioGroup, RadioGroupItem } from "@nomad/ui/components/radio-group";
 import { Mail, Phone } from "lucide-react";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { emailSchema, phoneNumberSchema } from "@/types/validations";
 
 export type ContactMethod = "email" | "phone";

@@ -1,9 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@nomad/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +8,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
+} from "@nomad/ui/components/dialog";
+import { Separator } from "@nomad/ui/components/separator";
+import { X } from "lucide-react";
+import Link from "next/link";
 
 export interface SignUpModalProps {
   open: boolean;

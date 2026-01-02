@@ -1,11 +1,15 @@
+import { Badge } from "@nomad/ui/components/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/card";
+import { Separator } from "@nomad/ui/components/separator";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { ArrowLeftRight, ArrowRight } from "lucide-react";
 import Image from "next/image";
-
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { OrderDetailFull } from "@/types/dto";
 
 import { getSeatClassName } from "./utils";

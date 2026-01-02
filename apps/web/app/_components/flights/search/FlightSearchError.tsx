@@ -4,10 +4,13 @@
  * Displays error messages when flight search fails
  */
 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@nomad/ui/components/alert";
+import { Button } from "@nomad/ui/components/button";
 import { AlertCircle } from "lucide-react";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 
 interface FlightSearchErrorProps {
   /**

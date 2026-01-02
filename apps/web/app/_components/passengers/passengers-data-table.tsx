@@ -1,15 +1,14 @@
 "use client";
 
+import { Input } from "@nomad/ui/components/input";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
 import {
   type BatchAction,
   type ColumnDefinition,
   DataTableWithActions,
   type RowAction,
 } from "@/components/common/data-table-with-actions";
-import { Input } from "@/components/ui/input";
 import type { PassengerDTO } from "@/types/dto";
 
 interface PassengersDataTableProps {

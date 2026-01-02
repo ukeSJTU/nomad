@@ -1,6 +1,5 @@
+import { Card, CardContent } from "@nomad/ui/components/card";
 import Link from "next/link";
-
-import { Card, CardContent } from "@/components/ui/card";
 
 export function AirportSidebar() {
   return (

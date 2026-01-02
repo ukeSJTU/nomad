@@ -1,18 +1,17 @@
 "use client";
 
-import { Search } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@nomad/ui/components/button";
+import { Label } from "@nomad/ui/components/label";
+import { RadioGroup, RadioGroupItem } from "@nomad/ui/components/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@nomad/ui/components/select";
+import { Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { CityData } from "@/types/dto";
 
 import { CityInput } from "./city-selector";

@@ -1,7 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/card";
+import { Separator } from "@nomad/ui/components/separator";
 import { Clock, Plane } from "lucide-react";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
   addCurrency,
   formatCurrency,

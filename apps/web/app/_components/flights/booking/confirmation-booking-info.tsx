@@ -1,4 +1,4 @@
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@nomad/ui/components/separator";
 import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
 import { IdentityType } from "@/types/dto";
 

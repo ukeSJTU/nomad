@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@nomad/ui/components/alert-dialog";
 
 export type RefundOrderDialogProps = {
   open: boolean;

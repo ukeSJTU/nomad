@@ -1,10 +1,11 @@
 "use client";
 
-import { AlertCircle, AlertTriangle, XCircle } from "lucide-react";
-import Link from "next/link";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@nomad/ui/components/alert";
+import { Button } from "@nomad/ui/components/button";
 import {
   Card,
   CardContent,
@@ -12,7 +13,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@nomad/ui/components/card";
+import { AlertCircle, AlertTriangle, XCircle } from "lucide-react";
+import Link from "next/link";
 
 export type ErrorType = "warning" | "error" | "info";
 

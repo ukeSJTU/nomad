@@ -1,9 +1,8 @@
+import { SidebarProvider } from "@nomad/ui/components/sidebar";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 import { AppSidebar, data } from "./app-sidebar";
 

@@ -1,10 +1,9 @@
 "use client";
 
+import { Badge } from "@nomad/ui/components/badge";
+import { Card } from "@nomad/ui/components/card";
 import { ArrowLeftRight, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import {
   compareCurrency,
   formatCurrencyWithoutSymbol,

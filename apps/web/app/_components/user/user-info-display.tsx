@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@nomad/ui/components/button";
+import { Separator } from "@nomad/ui/components/separator";
 import type { UserInfo } from "@/types/dto";
 
 interface UserInfoDisplayProps {

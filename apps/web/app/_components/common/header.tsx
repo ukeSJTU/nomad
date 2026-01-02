@@ -1,19 +1,18 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useTheme } from "next-themes";
-
-import SearchBar from "@/components/common/search-bar";
-import UserMenu from "@/components/common/user-menu";
-import { Button } from "@/components/ui/button";
+import { Button } from "@nomad/ui/components/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Separator } from "@/components/ui/separator";
+} from "@nomad/ui/components/hover-card";
+import { Separator } from "@nomad/ui/components/separator";
+import { Moon, Sun } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import SearchBar from "@/components/common/search-bar";
+import UserMenu from "@/components/common/user-menu";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();

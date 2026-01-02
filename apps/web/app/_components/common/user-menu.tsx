@@ -1,19 +1,22 @@
 "use client";
 
-import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-import { signOutAction } from "@/app/_actions/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@nomad/ui/components/avatar";
+import { Badge } from "@nomad/ui/components/badge";
+import { Button } from "@nomad/ui/components/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Separator } from "@/components/ui/separator";
+} from "@nomad/ui/components/hover-card";
+import { Separator } from "@nomad/ui/components/separator";
+import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signOutAction } from "@/app/_actions/auth";
 import { useClientSession } from "@/hooks/use-client-session";
 import { getInitials } from "@/lib/format";
 

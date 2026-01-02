@@ -1,12 +1,11 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/button";
+import { Skeleton } from "@nomad/ui/components/skeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-
 import { getQuickDatePrices } from "@/app/_actions/quick-date-prices";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import {
   dateToLocalDateString,

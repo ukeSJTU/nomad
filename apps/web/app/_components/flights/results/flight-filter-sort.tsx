@@ -1,5 +1,15 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/button";
+import { Checkbox } from "@nomad/ui/components/checkbox";
+import { Label } from "@nomad/ui/components/label";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@nomad/ui/components/select";
+import { Separator } from "@nomad/ui/components/separator";
 import {
   Armchair,
   ArrowDownAZ,
@@ -9,17 +19,6 @@ import {
   Plane,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import type { FlightSearchResult } from "@/types/dto";
 
 export type SortOption =

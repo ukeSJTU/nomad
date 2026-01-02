@@ -6,15 +6,14 @@
 
 "use client";
 
-import { Clock } from "lucide-react";
-
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@nomad/ui/components/separator";
+import { Tabs, TabsList, TabsTrigger } from "@nomad/ui/components/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@nomad/ui/components/tooltip";
+import { Clock } from "lucide-react";
 import { FLIGHT_UI_TEXT, ROUND_TRIP_STEPS } from "@/config/ui";
 import { formatDateWithWeekday, formatTime } from "@/lib/format";
 import type { CityData } from "@/types/dto";

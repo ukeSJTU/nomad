@@ -1,9 +1,8 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/button";
 import { toast } from "sonner";
-
 import { linkSocialAccountAction } from "@/app/_actions/auth";
-import { Button } from "@/components/ui/button";
 import { createClientLogger } from "@/infra/logging/client-logger";
 
 const logger = createClientLogger({ module: "link-button" });

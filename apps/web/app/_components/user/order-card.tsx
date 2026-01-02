@@ -1,10 +1,9 @@
+import { Button } from "@nomad/ui/components/button";
+import { Card, CardContent, CardHeader } from "@nomad/ui/components/card";
+import { Checkbox } from "@nomad/ui/components/checkbox";
+import { Separator } from "@nomad/ui/components/separator";
 import { format } from "date-fns";
 import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import { OrderListItem } from "@/types/dto";
 
 export interface OrderCardProps {

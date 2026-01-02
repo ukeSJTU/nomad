@@ -1,10 +1,14 @@
 "use client";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/card";
+import { Label } from "@nomad/ui/components/label";
+import { RadioGroup, RadioGroupItem } from "@nomad/ui/components/radio-group";
 import { CreditCard, Wallet } from "lucide-react";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formatCurrency } from "@/lib/format";
 
 interface PaymentMethodSelectorProps {

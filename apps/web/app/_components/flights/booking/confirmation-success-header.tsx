@@ -1,6 +1,5 @@
+import { Card, CardContent } from "@nomad/ui/components/card";
 import { CheckCircle2 } from "lucide-react";
-
-import { Card, CardContent } from "@/components/ui/card";
 
 interface ConfirmationSuccessHeaderProps {
   orderNumber: string;

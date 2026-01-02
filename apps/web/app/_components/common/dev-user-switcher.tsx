@@ -15,26 +15,29 @@
 
 "use client";
 
-import { Loader2, Users } from "lucide-react";
-import { useEffect, useState } from "react";
-
 import {
-  type DevUserListResult,
-  getAllUsersForDevAction,
-  switchUserAction,
-} from "@/actions/dev-tools";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@nomad/ui/components/avatar";
+import { Badge } from "@nomad/ui/components/badge";
+import { Button } from "@nomad/ui/components/button";
+import { ScrollArea } from "@nomad/ui/components/scroll-area";
+import { Separator } from "@nomad/ui/components/separator";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@nomad/ui/components/sheet";
+import { Loader2, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  type DevUserListResult,
+  getAllUsersForDevAction,
+  switchUserAction,
+} from "@/actions/dev-tools";
 import { useClientSession } from "@/hooks/use-client-session";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import { getInitials } from "@/lib/format";

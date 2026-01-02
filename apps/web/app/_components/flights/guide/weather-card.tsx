@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@nomad/ui/components/card";
 
 export function WeatherCard() {
   return (

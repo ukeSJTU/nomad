@@ -1,11 +1,10 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/button";
+import { Input } from "@nomad/ui/components/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");

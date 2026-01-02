@@ -1,11 +1,10 @@
 "use client";
 
+import { Alert, AlertDescription } from "@nomad/ui/components/alert";
+import { Button } from "@nomad/ui/components/button";
+import { Card, CardContent } from "@nomad/ui/components/card";
 import { AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { OrderStatusCardData } from "@/types/dto";
 
 export type OrderStatusCardProps = {
