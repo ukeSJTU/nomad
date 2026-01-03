@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

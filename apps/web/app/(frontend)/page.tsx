@@ -1,5 +1,5 @@
-import { Button } from "@nomad/ui/components/button";
-import { Toaster } from "@nomad/ui/components/sonner";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Toaster } from "@nomad/ui/components/primitives/sonner";
 import { ArrowRight, Hotel, Plane, Train } from "lucide-react";
 import Link from "next/link";
 import { Footer, Header } from "@/components/common";

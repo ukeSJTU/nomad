@@ -10,16 +10,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@nomad/ui/components/alert-dialog";
-import { Badge } from "@nomad/ui/components/badge";
-import { Button } from "@nomad/ui/components/button";
+} from "@nomad/ui/components/primitives/alert-dialog";
+import { Badge } from "@nomad/ui/components/primitives/badge";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@nomad/ui/components/dialog";
+} from "@nomad/ui/components/primitives/dialog";
 import {
   Table,
   TableBody,
@@ -27,7 +27,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@nomad/ui/components/table";
+} from "@nomad/ui/components/primitives/table";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";

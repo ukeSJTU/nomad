@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
-import { Skeleton } from "@nomad/ui/components/skeleton";
+} from "@nomad/ui/components/primitives/card";
+import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
 import { Wallet } from "lucide-react";
 
 export default function WalletLoading() {

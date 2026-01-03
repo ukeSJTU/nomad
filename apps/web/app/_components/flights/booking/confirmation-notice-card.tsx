@@ -1,4 +1,8 @@
-import { Card, CardContent, CardHeader } from "@nomad/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from "@nomad/ui/components/primitives/card";
 
 export function ConfirmationNoticeCard() {
   return (

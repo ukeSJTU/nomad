@@ -1,4 +1,4 @@
-import { Checkbox } from "@nomad/ui/components/checkbox";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
 import {
   Field,
   FieldContent,
@@ -10,9 +10,12 @@ import {
   FieldSeparator,
   FieldSet,
   FieldTitle,
-} from "@nomad/ui/components/field";
-import { Input } from "@nomad/ui/components/input";
-import { RadioGroup, RadioGroupItem } from "@nomad/ui/components/radio-group";
+} from "@nomad/ui/components/primitives/field";
+import { Input } from "@nomad/ui/components/primitives/input";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@nomad/ui/components/primitives/radio-group";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta = {

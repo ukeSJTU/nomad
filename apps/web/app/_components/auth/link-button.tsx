@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import { toast } from "sonner";
 import { linkSocialAccountAction } from "@/app/_actions/auth";
 import { createClientLogger } from "@/infra/logging/client-logger";

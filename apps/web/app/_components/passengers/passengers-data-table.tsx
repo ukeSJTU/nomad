@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@nomad/ui/components/input";
+import { Input } from "@nomad/ui/components/primitives/input";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {

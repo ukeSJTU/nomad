@@ -1,4 +1,4 @@
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import SocialAccountCard from "@/components/auth/social-account-card";
 

@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@nomad/ui/components/alert-dialog";
+} from "@nomad/ui/components/primitives/alert-dialog";
 
 interface DeleteOrderDialogProps {
   open: boolean;

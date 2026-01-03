@@ -3,8 +3,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
-import { Separator } from "@nomad/ui/components/separator";
+} from "@nomad/ui/components/primitives/card";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { ArrowRight } from "lucide-react";

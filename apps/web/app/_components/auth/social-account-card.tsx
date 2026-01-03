@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@nomad/ui/components/card";
+import { Card } from "@nomad/ui/components/primitives/card";
 import { Check } from "lucide-react";
 import { useState } from "react";
 

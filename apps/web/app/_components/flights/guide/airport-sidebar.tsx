@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@nomad/ui/components/card";
+import { Card, CardContent } from "@nomad/ui/components/primitives/card";
 import Link from "next/link";
 
 export function AirportSidebar() {

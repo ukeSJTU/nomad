@@ -1,7 +1,11 @@
-import { Button } from "@nomad/ui/components/button";
-import { Card, CardContent, CardHeader } from "@nomad/ui/components/card";
-import { Checkbox } from "@nomad/ui/components/checkbox";
-import { Separator } from "@nomad/ui/components/separator";
+import { Button } from "@nomad/ui/components/primitives/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from "@nomad/ui/components/primitives/card";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { format } from "date-fns";
 import Link from "next/link";
 import { OrderListItem } from "@/types/dto";

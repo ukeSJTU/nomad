@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@nomad/ui/components/hover-card";
-import { Separator } from "@nomad/ui/components/separator";
+} from "@nomad/ui/components/primitives/hover-card";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   useSidebar,
-} from "@nomad/ui/components/sidebar";
+} from "@nomad/ui/components/primitives/sidebar";
 import { cn } from "@nomad/ui/lib/utils";
 import {
   Album,

@@ -4,8 +4,8 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@nomad/ui/components/alert";
-import { Button } from "@nomad/ui/components/button";
+} from "@nomad/ui/components/primitives/alert";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
+} from "@nomad/ui/components/primitives/card";
 import { AlertCircle, AlertTriangle, XCircle } from "lucide-react";
 import Link from "next/link";
 

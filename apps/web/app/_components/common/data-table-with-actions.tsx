@@ -9,10 +9,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@nomad/ui/components/alert-dialog";
-import { Button } from "@nomad/ui/components/button";
-import { Checkbox } from "@nomad/ui/components/checkbox";
-import { Skeleton } from "@nomad/ui/components/skeleton";
+} from "@nomad/ui/components/primitives/alert-dialog";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@nomad/ui/components/table";
+} from "@nomad/ui/components/primitives/table";
 import { cn } from "@nomad/ui/lib/utils";
 import { useState } from "react";
 

@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@nomad/ui/components/sidebar";
+import { SidebarProvider } from "@nomad/ui/components/primitives/sidebar";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

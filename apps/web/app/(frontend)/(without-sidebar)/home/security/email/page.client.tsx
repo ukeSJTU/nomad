@@ -5,7 +5,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
+} from "@nomad/ui/components/primitives/card";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";

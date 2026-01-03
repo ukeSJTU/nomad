@@ -5,7 +5,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/tabs";
+} from "@nomad/ui/components/primitives/tabs";
 import { cn } from "@nomad/ui/lib/utils";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";

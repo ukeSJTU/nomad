@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, AlertDescription } from "@nomad/ui/components/alert";
+import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
 import { Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 

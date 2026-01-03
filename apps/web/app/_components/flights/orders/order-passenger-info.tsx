@@ -3,7 +3,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
+} from "@nomad/ui/components/primitives/card";
 import { OrderDetailFull } from "@/types/dto";
 
 import { getIdentityTypeName } from "./utils";

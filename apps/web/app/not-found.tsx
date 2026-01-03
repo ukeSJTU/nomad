@@ -1,6 +1,6 @@
 import "./(frontend)/globals.css";
 
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import Link from "next/link";
 
 export default function NotFound() {

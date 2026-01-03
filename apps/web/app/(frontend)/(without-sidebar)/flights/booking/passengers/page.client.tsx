@@ -1,7 +1,7 @@
 "use client";
 
-import { Alert, AlertDescription } from "@nomad/ui/components/alert";
-import { Button } from "@nomad/ui/components/button";
+import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
+import { Button } from "@nomad/ui/components/primitives/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { CreateOrderResult, createOrderAction } from "@/app/_actions";

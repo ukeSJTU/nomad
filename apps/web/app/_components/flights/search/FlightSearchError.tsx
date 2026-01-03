@@ -8,8 +8,8 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@nomad/ui/components/alert";
-import { Button } from "@nomad/ui/components/button";
+} from "@nomad/ui/components/primitives/alert";
+import { Button } from "@nomad/ui/components/primitives/button";
 import { AlertCircle } from "lucide-react";
 
 interface FlightSearchErrorProps {

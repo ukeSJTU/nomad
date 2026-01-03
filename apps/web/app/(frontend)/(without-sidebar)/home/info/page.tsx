@@ -1,4 +1,4 @@
-import { Separator } from "@nomad/ui/components/separator";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AddressList, UserInfoForm } from "@/components/user";

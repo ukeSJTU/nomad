@@ -11,7 +11,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
+} from "@nomad/ui/components/primitives/card";
 import { useRouter } from "next/navigation";
 import { FlightCard } from "@/components/flights/results";
 import { FLIGHT_UI_TEXT } from "@/config/ui";

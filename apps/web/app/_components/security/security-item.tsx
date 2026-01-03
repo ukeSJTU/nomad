@@ -1,5 +1,5 @@
-import { Button } from "@nomad/ui/components/button";
-import { Card } from "@nomad/ui/components/card";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Card } from "@nomad/ui/components/primitives/card";
 import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import Link from "next/link";
 

@@ -5,15 +5,15 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@nomad/ui/components/accordion";
+} from "@nomad/ui/components/primitives/accordion";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
-import { Checkbox } from "@nomad/ui/components/checkbox";
-import { Label } from "@nomad/ui/components/label";
+} from "@nomad/ui/components/primitives/card";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Label } from "@nomad/ui/components/primitives/label";
 import { Car, Shield, Utensils } from "lucide-react";
 import {
   type AncillaryService,

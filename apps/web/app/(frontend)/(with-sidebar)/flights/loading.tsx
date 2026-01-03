@@ -1,4 +1,4 @@
-import { Skeleton } from "@nomad/ui/components/skeleton";
+import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
 
 export default function FlightsLoading() {
   return (

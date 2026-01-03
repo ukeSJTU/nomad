@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nomad/ui/components/button";
-import { Checkbox } from "@nomad/ui/components/checkbox";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
 import {
   Form,
   FormControl,
@@ -11,8 +11,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/form";
-import { Input } from "@nomad/ui/components/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { type Resolver, useForm } from "react-hook-form";

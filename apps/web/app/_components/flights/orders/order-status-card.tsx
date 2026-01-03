@@ -1,8 +1,8 @@
 "use client";
 
-import { Alert, AlertDescription } from "@nomad/ui/components/alert";
-import { Button } from "@nomad/ui/components/button";
-import { Card, CardContent } from "@nomad/ui/components/card";
+import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Card, CardContent } from "@nomad/ui/components/primitives/card";
 import { AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { OrderStatusCardData } from "@/types/dto";

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Form,
   FormControl,
@@ -9,8 +9,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/form";
-import { Input } from "@nomad/ui/components/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
 import { Check, Eye, EyeOff, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

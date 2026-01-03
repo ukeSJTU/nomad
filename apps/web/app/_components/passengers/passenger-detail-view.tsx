@@ -1,4 +1,4 @@
-import { Separator } from "@nomad/ui/components/separator";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { formatDateString } from "@/lib/format";
 import type { PassengerDetailData } from "@/types/dto";
 

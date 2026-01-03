@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Dialog,
   DialogContent,
@@ -8,8 +8,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@nomad/ui/components/dialog";
-import { Separator } from "@nomad/ui/components/separator";
+} from "@nomad/ui/components/primitives/dialog";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { X } from "lucide-react";
 import Link from "next/link";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { Badge } from "@nomad/ui/components/badge";
-import { Card } from "@nomad/ui/components/card";
+import { Badge } from "@nomad/ui/components/primitives/badge";
+import { Card } from "@nomad/ui/components/primitives/card";
 import { cn } from "@nomad/ui/lib/utils";
 import { ArrowLeftRight, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";

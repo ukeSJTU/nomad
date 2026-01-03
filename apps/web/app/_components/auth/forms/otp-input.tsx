@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
-import { Input } from "@nomad/ui/components/input";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Input } from "@nomad/ui/components/primitives/input";
 import { cn } from "@nomad/ui/lib/utils";
 import { useEffect, useRef } from "react";
 

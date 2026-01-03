@@ -1,19 +1,19 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@nomad/ui/components/dropdown-menu";
-import { Separator } from "@nomad/ui/components/separator";
+} from "@nomad/ui/components/primitives/dropdown-menu";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/tabs";
+} from "@nomad/ui/components/primitives/tabs";
 import { ArrowLeftRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { CityData } from "@/types/dto";

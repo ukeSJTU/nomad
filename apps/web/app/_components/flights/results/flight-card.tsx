@@ -4,9 +4,9 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@nomad/ui/components/avatar";
-import { Button } from "@nomad/ui/components/button";
-import { Card, CardContent } from "@nomad/ui/components/card";
+} from "@nomad/ui/components/primitives/avatar";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Card, CardContent } from "@nomad/ui/components/primitives/card";
 import { cn } from "@nomad/ui/lib/utils";
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";

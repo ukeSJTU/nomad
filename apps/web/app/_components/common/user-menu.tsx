@@ -4,15 +4,15 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@nomad/ui/components/avatar";
-import { Badge } from "@nomad/ui/components/badge";
-import { Button } from "@nomad/ui/components/button";
+} from "@nomad/ui/components/primitives/avatar";
+import { Badge } from "@nomad/ui/components/primitives/badge";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@nomad/ui/components/hover-card";
-import { Separator } from "@nomad/ui/components/separator";
+} from "@nomad/ui/components/primitives/hover-card";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

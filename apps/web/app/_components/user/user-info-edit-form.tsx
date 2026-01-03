@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Form,
   FormControl,
@@ -9,10 +9,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/form";
-import { Input } from "@nomad/ui/components/input";
-import { RadioGroup, RadioGroupItem } from "@nomad/ui/components/radio-group";
-import { Separator } from "@nomad/ui/components/separator";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@nomad/ui/components/primitives/radio-group";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { updateUserInfoAction } from "@/app/_actions";

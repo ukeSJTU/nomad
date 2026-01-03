@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { unlinkAccountAction } from "@/app/_actions/auth";

@@ -6,13 +6,17 @@
 
 "use client";
 
-import { Separator } from "@nomad/ui/components/separator";
-import { Tabs, TabsList, TabsTrigger } from "@nomad/ui/components/tabs";
+import { Separator } from "@nomad/ui/components/primitives/separator";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@nomad/ui/components/primitives/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@nomad/ui/components/tooltip";
+} from "@nomad/ui/components/primitives/tooltip";
 import { Clock } from "lucide-react";
 import { FLIGHT_UI_TEXT, ROUND_TRIP_STEPS } from "@/config/ui";
 import { formatDateWithWeekday, formatTime } from "@/lib/format";

@@ -1,6 +1,10 @@
 "use client";
 
-import { Tabs, TabsList, TabsTrigger } from "@nomad/ui/components/tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@nomad/ui/components/primitives/tabs";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function FlightsLayout({

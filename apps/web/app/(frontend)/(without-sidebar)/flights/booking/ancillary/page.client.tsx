@@ -1,14 +1,14 @@
 "use client";
 
-import { Alert, AlertDescription } from "@nomad/ui/components/alert";
-import { Button } from "@nomad/ui/components/button";
+import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/card";
-import { Separator } from "@nomad/ui/components/separator";
+} from "@nomad/ui/components/primitives/card";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";

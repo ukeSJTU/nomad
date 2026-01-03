@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/button";
-import { Checkbox } from "@nomad/ui/components/checkbox";
-import { Input } from "@nomad/ui/components/input";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Input } from "@nomad/ui/components/primitives/input";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@nomad/ui/components/table";
+} from "@nomad/ui/components/primitives/table";
 import { useState } from "react";
 import type { PassengerDTO } from "@/types/dto";
 
