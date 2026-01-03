@@ -43,12 +43,5 @@ From the ui package directory:
 
 ```bash
 cd packages/ui
-npx shadcn@latest add <component-name>
+pnpm dlx shadcn@latest add <component-name>
 ```
-
-## Components
-
-- 53 components including Button, Card, Dialog, Form, Table, and more
-- Built on Radix UI for accessibility
-- Styled with Tailwind CSS v4
-- Full TypeScript support
