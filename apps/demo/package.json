@@ -20,6 +20,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@nomad/ui": "workspace:*",
     "@remotion/cli": "4.0.375",
     "@remotion/lambda": "4.0.375",
     "@remotion/paths": "4.0.375",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
     "@remotion/bundler": "4.0.375",
+    "@remotion/tailwind-v4": "4.0.375",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
