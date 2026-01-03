@@ -9,7 +9,7 @@
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
-    "./components/*": "./src/components/*",
+    "./components/primitives/*": "./src/components/primitives/*",
     "./platform": "./src/platform.tsx",
     "./hooks/*": "./src/hooks/*.ts"
   },

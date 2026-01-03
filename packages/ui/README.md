@@ -19,8 +19,8 @@ This package is part of the Nomad monorepo. Add it to your app:
 ### Import Components
 
 ```tsx
-import { Button } from "@nomad/ui/components/button";
-import { Card } from "@nomad/ui/components/card";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Card } from "@nomad/ui/components/primitives/card";
 ```
 
 ### Import Styles

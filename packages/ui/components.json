@@ -14,7 +14,7 @@
   "aliases": {
     "components": "@nomad/ui/components",
     "utils": "@nomad/ui/lib/utils",
-    "ui": "@nomad/ui/components",
+    "ui": "@nomad/ui/components/primitives",
     "lib": "@nomad/ui/lib",
     "hooks": "@nomad/ui/hooks"
   }
