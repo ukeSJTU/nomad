@@ -13,7 +13,8 @@
       "@/stories/*": ["./app/_stories/*"],
       "@/app/*": ["./app/*"],
       "@/*": ["./src/*"],
-      "@/tests/*": ["./tests/*"]
+      "@/tests/*": ["./tests/*"],
+      "@nomad/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [
