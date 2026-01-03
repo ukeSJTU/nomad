@@ -1,4 +1,5 @@
 import "../styles/global.css";
+import "@nomad/ui/globals.css";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
