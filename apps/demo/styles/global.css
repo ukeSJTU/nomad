@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Scan through apps/demo components folders to include all relevant styles */
+@source "../remotion/**/*.{ts,tsx}";
+@source "../app/**/*.{ts,tsx}";
+
 :root {
   --background: #fff;
   --foreground: #000;
