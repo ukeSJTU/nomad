@@ -2,10 +2,10 @@
 
 import { Player } from "@remotion/player";
 import type { NextPage } from "next";
+import { SiteHeaderScene } from "@/remotion/components/SiteHeaderScene";
 
-import { BusinessShowcase } from "@/remotion/compositions/BusinessShowcase";
 import {
-  TOTAL_FRAMES,
+  DURATION_HEADER_DEMO,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
@@ -17,8 +17,9 @@ const Home: NextPage = () => {
       <div className="max-w-3xl m-auto mb-5">
         <div className="overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)] mb-10 mt-16">
           <Player
-            component={BusinessShowcase}
-            durationInFrames={TOTAL_FRAMES}
+            // 直接播放场景组件，避免在 Player 中再挂 Composition
+            component={SiteHeaderScene}
+            durationInFrames={DURATION_HEADER_DEMO}
             fps={VIDEO_FPS}
             compositionHeight={VIDEO_HEIGHT}
             compositionWidth={VIDEO_WIDTH}
