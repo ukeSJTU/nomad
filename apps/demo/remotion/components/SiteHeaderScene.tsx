@@ -21,9 +21,9 @@ const LinkStub = ({
     {children}
   </a>
 );
-const ImgStub = (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-  <Img {...props} />
-);
+const ImgStub = (
+  props: React.ImgHTMLAttributes<HTMLImageElement> & { src: string }
+) => <Img {...props} />;
 
 const ORDER_LINKS = [
   { label: "机票订单", href: "#" },
