@@ -1,0 +1,10 @@
+/**
+ * System fonts for Storybook (fastest, matches Geist closely)
+ * Replaces next/font with CSS variables
+ */
+:root {
+	--font-geist-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+		Roboto, "Helvetica Neue", Arial, sans-serif;
+	--font-geist-mono: ui-monospace, "SF Mono", Monaco, "Cascadia Code",
+		"Roboto Mono", "Courier New", monospace;
+}
