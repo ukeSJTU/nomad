@@ -80,11 +80,13 @@ const preview: Preview = {
       // Provide HTML fallbacks for Link and Image adapters
       // (Storybook doesn't need Next.js features)
       const uiComponents = {
+        // biome-ignore lint/suspicious/noExplicitAny: Type any for Storybook adapter
         Link: ({ href, children, ...props }: any) => (
           <a href={href} {...props}>
             {children}
           </a>
         ),
+        // biome-ignore lint/suspicious/noExplicitAny: Type any for Storybook adapter
         Image: ({ src, alt, ...props }: any) => (
           <img src={src} alt={alt} {...props} />
         ),
