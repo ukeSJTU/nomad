@@ -10,6 +10,7 @@
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
     "./components/primitives/*": "./src/components/primitives/*",
+    "./components/*": "./src/components/*",
     "./platform": "./src/platform.tsx",
     "./hooks/*": "./src/hooks/*.ts"
   },
