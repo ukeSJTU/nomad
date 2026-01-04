@@ -1,10 +1,10 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
 /* Below 3 lines are necessary for shadcn to function correctly in a monorepo */
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
-
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
