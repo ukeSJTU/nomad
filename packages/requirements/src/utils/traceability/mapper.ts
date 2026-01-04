@@ -25,7 +25,7 @@ export function buildCoverageMapping(
         if (!requirementToTests.has(reqId)) {
           requirementToTests.set(reqId, []);
         }
-        requirementToTests.get(reqId)!.push(testRef);
+        requirementToTests.get(reqId)?.push(testRef);
       }
 
       // Map scenarios (need to combine with requirement ID)
@@ -35,7 +35,7 @@ export function buildCoverageMapping(
           if (!scenarioToTests.has(key)) {
             scenarioToTests.set(key, []);
           }
-          scenarioToTests.get(key)!.push(testRef);
+          scenarioToTests.get(key)?.push(testRef);
         }
       }
 
@@ -44,7 +44,7 @@ export function buildCoverageMapping(
         if (!userStoryToTests.has(storyId)) {
           userStoryToTests.set(storyId, []);
         }
-        userStoryToTests.get(storyId)!.push(testRef);
+        userStoryToTests.get(storyId)?.push(testRef);
       }
     }
   }
