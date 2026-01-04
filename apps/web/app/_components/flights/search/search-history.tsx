@@ -1,17 +1,16 @@
 "use client";
 
+import { Badge } from "@nomad/ui/components/primitives/badge";
+import { Card } from "@nomad/ui/components/primitives/card";
+import { cn } from "@nomad/ui/lib/utils";
 import { ArrowLeftRight, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import {
   compareCurrency,
   formatCurrencyWithoutSymbol,
   getWeekdayLabel,
   parseCurrency,
 } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import type { SearchHistoryRecord } from "@/types/dto";
 
 interface FlightSearchHistoryCardProps {

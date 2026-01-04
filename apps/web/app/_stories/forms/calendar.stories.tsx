@@ -1,8 +1,7 @@
+import { Calendar } from "@nomad/ui/components/primitives/calendar";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
-
-import { Calendar } from "@/components/ui/calendar";
 
 // Wrapper component for single date selection
 function SingleCalendar() {

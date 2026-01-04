@@ -1,8 +1,9 @@
 "use client";
 
+import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
+import { Button } from "@nomad/ui/components/primitives/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-
 import { CreateOrderResult, createOrderAction } from "@/app/_actions";
 import {
   type ContactInfo,
@@ -12,8 +13,6 @@ import {
   PassengerFormCard,
   validateContactInfo,
 } from "@/components/flights/booking";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { usePassengerForms } from "@/hooks/use-passenger-forms";
 import type { PassengerPageFlight, SavedPassenger } from "@/types/dto";
 

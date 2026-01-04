@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@nomad/ui/components/primitives/card";
+import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
+import { cn } from "@nomad/ui/lib/utils";
 
 export interface FlightCardSkeletonProps {
   /** Custom className */

@@ -1,16 +1,19 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
-import Link from "next/link";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@nomad/ui/components/primitives/avatar";
+import { Badge } from "@nomad/ui/components/primitives/badge";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Separator } from "@/components/ui/separator";
+} from "@nomad/ui/components/primitives/hover-card";
+import { Separator } from "@nomad/ui/components/primitives/separator";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
+import Link from "next/link";
 import storyLogger from "@/infra/logging/storybook-logger";
 import { getInitials } from "@/lib/format";
 

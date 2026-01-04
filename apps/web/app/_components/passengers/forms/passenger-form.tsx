@@ -1,11 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Calendar } from "@nomad/ui/components/primitives/calendar";
 import {
   Form,
   FormControl,
@@ -13,24 +10,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+} from "@nomad/ui/components/primitives/popover";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@nomad/ui/components/primitives/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+} from "@nomad/ui/components/primitives/select";
+import { Separator } from "@nomad/ui/components/primitives/separator";
+import { cn } from "@nomad/ui/lib/utils";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { dateToLocalDateString } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import {
   type PassengerFormData,
   passengerFormSchema,

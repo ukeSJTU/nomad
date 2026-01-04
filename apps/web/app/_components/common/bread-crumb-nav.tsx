@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,7 +5,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@nomad/ui/components/primitives/breadcrumb";
+import Link from "next/link";
 
 /**
  * Breadcrumb Navigation Component

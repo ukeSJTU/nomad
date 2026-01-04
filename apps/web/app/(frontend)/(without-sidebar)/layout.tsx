@@ -1,7 +1,6 @@
+import { Toaster } from "@nomad/ui/components/primitives/sonner";
 import { type ReactNode } from "react";
-
 import { Footer, Header } from "@/components/common";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function WithoutSidebarLayout({
   children,

@@ -15,26 +15,30 @@
 
 "use client";
 
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@nomad/ui/components/primitives/avatar";
+import { Badge } from "@nomad/ui/components/primitives/badge";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { ScrollArea } from "@nomad/ui/components/primitives/scroll-area";
+import { Separator } from "@nomad/ui/components/primitives/separator";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@nomad/ui/components/primitives/sheet";
 import { Loader2, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-
 import {
   type DevUserListResult,
   getAllUsersForDevAction,
   switchUserAction,
 } from "@/actions/dev-tools";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { useClientSession } from "@/hooks/use-client-session";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import { getInitials } from "@/lib/format";
@@ -110,6 +114,9 @@ export default function DevUserSwitcher() {
       <SheetContent side="right" className="w-[400px] sm:w-[540px]">
         <SheetHeader>
           <SheetTitle>Switch User</SheetTitle>
+          <SheetDescription>
+            Select a user to switch to for development testing
+          </SheetDescription>
         </SheetHeader>
 
         <Separator className="my-4" />

@@ -1,11 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
 import {
   Form,
   FormControl,
@@ -13,8 +10,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import {
   type PhoneVerificationData,
   phoneVerificationSchema,

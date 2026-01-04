@@ -1,35 +1,34 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, Github } from "lucide-react";
-import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-import type { OtpSendActionResult } from "@/app/_actions/auth";
-import {
-  type TurnstileInstance,
-  TurnstileWidget,
-} from "@/components/auth/turnstile";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@nomad/ui/components/primitives/tooltip";
+import { cn } from "@nomad/ui/lib/utils";
+import { AlertCircle, Github } from "lucide-react";
+import Link from "next/link";
+import { useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { OtpSendActionResult } from "@/app/_actions/auth";
+import {
+  type TurnstileInstance,
+  TurnstileWidget,
+} from "@/components/auth/turnstile";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { buildOtpStorageKeyFromAccount } from "@/lib/otp";
-import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import {

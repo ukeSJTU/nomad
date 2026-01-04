@@ -1,10 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
-import OtpInput from "@/components/auth/forms/otp-input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Form,
   FormControl,
@@ -12,8 +9,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
+import { useForm } from "react-hook-form";
+import OtpInput from "@/components/auth/forms/otp-input";
 import { type UpdatePhoneData, updatePhoneSchema } from "@/types/validations";
 
 export type PhoneFormMode = "bind" | "verify" | "update";

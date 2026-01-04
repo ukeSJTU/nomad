@@ -1,8 +1,7 @@
+import { Button } from "@nomad/ui/components/primitives/button";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
-
 import { Stepper } from "@/components/common/stepper";
-import { Button } from "@/components/ui/button";
 
 const meta = {
   title: "Common/Stepper",

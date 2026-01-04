@@ -1,13 +1,17 @@
 "use client";
 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@nomad/ui/components/primitives/tabs";
+import { cn } from "@nomad/ui/lib/utils";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-
 import type { OtpSendActionResult } from "@/app/_actions/auth";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { buildOtpStorageKey } from "@/lib/otp";
-import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
 import type {

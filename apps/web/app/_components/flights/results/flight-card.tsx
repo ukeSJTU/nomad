@@ -1,13 +1,16 @@
 "use client";
 
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@nomad/ui/components/primitives/avatar";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Card, CardContent } from "@nomad/ui/components/primitives/card";
+import { cn } from "@nomad/ui/lib/utils";
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
 export interface SeatClassOption {
   /** Seat class ID */

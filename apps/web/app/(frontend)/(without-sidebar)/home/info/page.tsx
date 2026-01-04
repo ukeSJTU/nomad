@@ -1,7 +1,6 @@
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-
-import { Separator } from "@/components/ui/separator";
 import { AddressList, UserInfoForm } from "@/components/user";
 import { getUserAddresses, getUserInfo } from "@/domains/user";
 import { requireSessionUser } from "@/infra/auth/session";

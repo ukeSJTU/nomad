@@ -1,9 +1,8 @@
 "use client";
 
+import { Card } from "@nomad/ui/components/primitives/card";
 import { Check } from "lucide-react";
 import { useState } from "react";
-
-import { Card } from "@/components/ui/card";
 
 /**
  * Props for SocialAccountCard component

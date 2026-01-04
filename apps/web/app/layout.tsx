@@ -1,9 +1,11 @@
+import { Toaster } from "@nomad/ui/components/primitives/sonner";
+import { UiProvider } from "@nomad/ui/platform";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-
+import NextImage from "next/image";
+import NextLink from "next/link";
 import { ThemeProvider } from "@/components/common/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Nomad - Your Travel Companion",
@@ -21,15 +23,17 @@ export default function RootLayout({
         className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <UiProvider components={{ Link: NextLink, Image: NextImage }}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </UiProvider>
       </body>
     </html>
   );

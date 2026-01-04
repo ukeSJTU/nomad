@@ -1,10 +1,9 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Input } from "@nomad/ui/components/primitives/input";
+import { cn } from "@nomad/ui/lib/utils";
 import { useEffect, useRef } from "react";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 
 export interface OtpInputProps {
   /** Current OTP value */

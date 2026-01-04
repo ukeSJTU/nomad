@@ -1,5 +1,3 @@
-import { PlaneLanding, PlaneTakeoff } from "lucide-react";
-import Image from "next/image";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,7 +5,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@nomad/ui/components/primitives/breadcrumb";
+import { PlaneLanding, PlaneTakeoff } from "lucide-react";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 

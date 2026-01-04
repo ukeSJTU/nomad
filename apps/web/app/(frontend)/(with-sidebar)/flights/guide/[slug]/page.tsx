@@ -1,8 +1,3 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getAirportByIataCodeAction } from "@/actions/airport-guide";
-
-import { AirportSidebar } from "@/components/flights";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,9 +5,23 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@nomad/ui/components/primitives/breadcrumb";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/primitives/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@nomad/ui/components/primitives/tabs";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getAirportByIataCodeAction } from "@/actions/airport-guide";
+import { AirportSidebar } from "@/components/flights";
 
 interface PageProps {
   params: Promise<{

@@ -1,9 +1,8 @@
 "use client";
 
+import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
 import { Clock } from "lucide-react";
 import { useEffect, useState } from "react";
-
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PaymentCountdownTimerProps {
   paymentDeadline: Date;

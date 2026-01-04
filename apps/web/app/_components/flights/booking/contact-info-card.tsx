@@ -1,11 +1,18 @@
 "use client";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/primitives/card";
+import { Input } from "@nomad/ui/components/primitives/input";
+import { Label } from "@nomad/ui/components/primitives/label";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@nomad/ui/components/primitives/radio-group";
 import { Mail, Phone } from "lucide-react";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { emailSchema, phoneNumberSchema } from "@/types/validations";
 
 export type ContactMethod = "email" | "phone";

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,10 +9,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@nomad/ui/components/primitives/alert-dialog";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
 import {
   Table,
   TableBody,
@@ -22,8 +20,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+} from "@nomad/ui/components/primitives/table";
+import { cn } from "@nomad/ui/lib/utils";
+import { useState } from "react";
 
 // ============================================================================
 // Types

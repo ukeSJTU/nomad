@@ -1,9 +1,9 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/primitives/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-
 import { processPaymentAction } from "@/app/_actions/payments";
 import {
   PaymentCountdownTimer,
@@ -11,7 +11,6 @@ import {
   PaymentOrderSummary,
   PaymentPriceBreakdown,
 } from "@/components/flights/booking";
-import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/format";
 import { PaymentPageOrder } from "@/types/dto";
 

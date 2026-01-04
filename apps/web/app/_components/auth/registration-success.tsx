@@ -1,8 +1,7 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/primitives/button";
 import { useRouter } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
 
 export interface RegistrationSuccessProps {
   /** Success title */

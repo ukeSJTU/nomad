@@ -1,13 +1,12 @@
-import { Wallet } from "lucide-react";
-
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@nomad/ui/components/primitives/card";
+import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
+import { Wallet } from "lucide-react";
 
 export default function WalletLoading() {
   return (

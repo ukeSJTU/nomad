@@ -1,16 +1,20 @@
 "use client";
 
-import { Car, Shield, Utensils } from "lucide-react";
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+} from "@nomad/ui/components/primitives/accordion";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/primitives/card";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Label } from "@nomad/ui/components/primitives/label";
+import { Car, Shield, Utensils } from "lucide-react";
 import {
   type AncillaryService,
   getAncillaryServicesByCategory,

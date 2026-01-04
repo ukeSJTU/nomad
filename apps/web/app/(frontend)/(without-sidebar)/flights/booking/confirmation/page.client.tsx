@@ -1,8 +1,15 @@
 "use client";
 
+import { Button } from "@nomad/ui/components/primitives/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/primitives/card";
+import { Separator } from "@nomad/ui/components/primitives/separator";
 import { FileText, Home, Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
-
 import {
   ConfirmationBookingInfo,
   ConfirmationFlightDetails,
@@ -10,9 +17,6 @@ import {
   ConfirmationPaymentSummary,
   ConfirmationSuccessHeader,
 } from "@/components/flights/booking";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { ConfirmationPageOrder } from "@/types/dto";
 
 export default function ConfirmationPageClient({

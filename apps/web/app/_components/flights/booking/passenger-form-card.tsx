@@ -1,19 +1,23 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@nomad/ui/components/primitives/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/primitives/card";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Input } from "@nomad/ui/components/primitives/input";
+import { Label } from "@nomad/ui/components/primitives/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@nomad/ui/components/primitives/select";
+import { Plus, X } from "lucide-react";
 import { shouldShowDeleteButton } from "@/hooks/use-passenger-forms";
 import type { SavedPassenger } from "@/types/dto";
 

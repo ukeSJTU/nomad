@@ -1,14 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import {
-  batchDeletePassengersAction,
-  deletePassengerAction,
-} from "@/app/_actions";
-import { PassengersDataTable } from "@/components/passengers/passengers-data-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,7 +9,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@nomad/ui/components/primitives/alert-dialog";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import {
+  batchDeletePassengersAction,
+  deletePassengerAction,
+} from "@/app/_actions";
+import { PassengersDataTable } from "@/components/passengers/passengers-data-table";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import type { PassengerDTO } from "@/types/dto";
 

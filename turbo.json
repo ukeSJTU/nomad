@@ -11,7 +11,8 @@
         "!.next/cache/**",
         "dist/**",
         "out/**",
-        ".source/**"
+        ".source/**",
+        "storybook-static/**"
       ],
       "env": [
         "NEXT_PUBLIC_*",
@@ -53,6 +54,16 @@
     },
     "clean": {
       "cache": false
+    },
+    "storybook:dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "storybook:build": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"],
+      "cache": true
     }
   }
 }

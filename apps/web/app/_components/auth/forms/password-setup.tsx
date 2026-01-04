@@ -1,12 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Eye, EyeOff, X } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import zxcvbn from "zxcvbn";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@nomad/ui/components/primitives/button";
 import {
   Form,
   FormControl,
@@ -14,8 +9,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
+import { Check, Eye, EyeOff, X } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import zxcvbn from "zxcvbn";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import {
   type PasswordSetupData,

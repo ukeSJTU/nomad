@@ -1,10 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@nomad/ui/components/primitives/button";
+import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
 import {
   Form,
   FormControl,
@@ -13,16 +9,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@nomad/ui/components/primitives/form";
+import { Input } from "@nomad/ui/components/primitives/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@nomad/ui/components/primitives/select";
+import { Textarea } from "@nomad/ui/components/primitives/textarea";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import storyLogger from "@/infra/logging/storybook-logger";
 
 // Simple form schema for demonstration

@@ -1,9 +1,14 @@
 "use client";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nomad/ui/components/primitives/card";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-
 import {
   sendPhoneOtpAction,
   signInWithOtpAction,
@@ -14,7 +19,6 @@ import {
   type SecurityStatus,
   UpdatePhoneForm,
 } from "@/components/security";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { createClientLogger } from "@/infra/logging/client-logger";
 import { buildOtpStorageKey } from "@/lib/otp";

@@ -1,5 +1,3 @@
-import { ConstructionIcon } from "lucide-react";
-
 import {
   Empty,
   EmptyContent,
@@ -7,7 +5,8 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@nomad/ui/components/primitives/empty";
+import { ConstructionIcon } from "lucide-react";
 
 export default function UnderConstruction({
   title,

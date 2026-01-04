@@ -1,14 +1,13 @@
 "use client";
 
-import { type DateRange } from "react-day-picker";
-
-import { Badge } from "@/components/ui/badge";
-import { Calendar } from "@/components/ui/calendar";
+import { Badge } from "@nomad/ui/components/primitives/badge";
+import { Calendar } from "@nomad/ui/components/primitives/calendar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@nomad/ui/components/primitives/dropdown-menu";
+import { type DateRange } from "react-day-picker";
 import { type ActiveField } from "@/hooks/use-date-selector";
 
 import { DateDisplay } from "./date-display";
