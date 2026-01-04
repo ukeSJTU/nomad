@@ -12,12 +12,12 @@
 
 ### 🗂️ 域迁移文档
 
-- [Auth 域迁移](./.codex/migrations/auth-migration.md) - 13 组件 (登录/注册/验证) - **批次2**
-- [Common 域迁移](./.codex/migrations/common-migration.md) - 12 组件 (导航/通用) - **批次1**
-- [Flights 域迁移](./.codex/migrations/flights-migration.md) - 40 组件 (搜索/订舱/订单) - **批次1+3**
-- [Passengers 域迁移](./.codex/migrations/passengers-migration.md) - 4 组件 (乘客管理) - **批次3**
-- [Security 域迁移](./.codex/migrations/security-migration.md) - 4 组件 (安全设置) - **批次4**
-- [User 域迁移](./.codex/migrations/user-migration.md) - 8 组件 (用户信息) - **批次4**
+- [Auth 域迁移](./docs/migrations/auth-migration.md) - 13 组件 (登录/注册/验证) - **批次2**
+- [Common 域迁移](./docs/migrations/common-migration.md) - 12 组件 (导航/通用) - **批次1**
+- [Flights 域迁移](./docs/migrations/flights-migration.md) - 40 组件 (搜索/订舱/订单) - **批次1+3**
+- [Passengers 域迁移](./docs/migrations/passengers-migration.md) - 4 组件 (乘客管理) - **批次3**
+- [Security 域迁移](./docs/migrations/security-migration.md) - 4 组件 (安全设置) - **批次4**
+- [User 域迁移](./docs/migrations/user-migration.md) - 8 组件 (用户信息) - **批次4**
 
 ---
 
@@ -49,7 +49,7 @@
 
 ### 参考实现
 
-- ✅ [common/header.tsx](./packages/ui/src/components/site-header.tsx) - Link/Image 适配器使用示例
+- ✅ [common/header.tsx](packages/ui/src/components/common/site-header.tsx) - Link/Image 适配器使用示例
 
 ---
 
@@ -238,7 +238,7 @@
 
 ### 示例代码
 
-- ✅ [common/header.tsx](./packages/ui/src/components/site-header.tsx) - 完整的迁移示例
+- ✅ [common/header.tsx](packages/ui/src/components/common/site-header.tsx) - 完整的迁移示例
 
 ---
 
