@@ -24,7 +24,7 @@ export function AirportList({
               className="group block"
             >
               <div className="flex flex-row items-baseline gap-2 min-w-0">
-                <div className="font-bold text-foreground group-hover:text-primary transition-colors shrink-0">
+                <div className="font-bold text-foreground group-hover:text-primary transition-colors truncate">
                   {airport.cityName}
                 </div>
                 <div className="text-sm text-muted-foreground group-hover:text-primary transition-colors truncate">
