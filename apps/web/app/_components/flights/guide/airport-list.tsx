@@ -1,6 +1,6 @@
 import {
   type AirportListProps,
-  AirportList as AirportLisUI,
+  AirportList as AirportListUI,
 } from "@nomad/ui/components/flights/guide";
 
 export function AirportList({
@@ -9,7 +9,7 @@ export function AirportList({
   emptyMessage,
 }: AirportListProps) {
   return (
-    <AirportLisUI
+    <AirportListUI
       title={title}
       airports={airports}
       emptyMessage={emptyMessage}
