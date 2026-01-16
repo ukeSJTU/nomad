@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@nomad/ui/components/primitives/button";
 import {
   HoverCard,
