@@ -1,3 +1,5 @@
+"use client";
+
 import { AirportListProps } from "@nomad/ui/components/flights/guide/types";
 import { useUiComponents } from "@nomad/ui/platform";
 
