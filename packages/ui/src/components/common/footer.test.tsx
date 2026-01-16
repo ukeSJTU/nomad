@@ -1,42 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import Footer from "@/components/common/footer";
-
-// Mock Next.js Link component
-vi.mock("next/link", () => ({
-  default: ({
-    children,
-    href,
-    ...props
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  ),
-}));
-
-// Mock Next.js Image component
-vi.mock("next/image", () => ({
-  default: ({
-    src,
-    alt,
-    width,
-    height,
-    ...props
-  }: {
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-  }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} width={width} height={height} {...props} />
-  ),
-}));
+import { Footer } from "./footer";
 
 describe("Footer Component", () => {
   it("should render the company name and logo", () => {
