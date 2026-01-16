@@ -1,3 +1,4 @@
+// React context for Link/Image adapters. Must be client to support context APIs in Next RSC runtime.
 "use client";
 
 import * as React from "react";
