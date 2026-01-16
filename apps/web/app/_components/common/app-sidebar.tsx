@@ -1,25 +1,11 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@nomad/ui/components/primitives/hover-card";
-import { Separator } from "@nomad/ui/components/primitives/separator";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
-  useSidebar,
-} from "@nomad/ui/components/primitives/sidebar";
-import { cn } from "@nomad/ui/lib/utils";
+import { AppSidebar as AppSidebarUI } from "@nomad/ui/components/common/app-sidebar";
+import type {
+  MenuItem,
+  SubItem,
+} from "@nomad/ui/components/common/app-sidebar-types";
+import { Sidebar } from "@nomad/ui/components/primitives/sidebar";
 import {
   Album,
   Building2,
@@ -34,34 +20,30 @@ import {
   Info,
   LucideIcon,
   Map,
-  Menu,
   Plane,
   Sparkles,
   Ticket,
   Train,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
 
-// Type definitions
-type SubItem = {
-  title: string;
-  url: string;
-};
+// Type definitions for data structure (without isActive/activeSubItemKey)
+type DataSubItem = Omit<SubItem, "key"> & { title: string; url: string };
 
-type MenuItem = {
+type DataMenuItem = {
   title: string;
   url: string;
   icon: LucideIcon;
-  items?: SubItem[];
+  items?: DataSubItem[];
 };
 
 type SidebarData = {
-  travel: MenuItem[];
-  business: MenuItem[];
-  finance: MenuItem[];
-  extras: MenuItem[];
+  travel: DataMenuItem[];
+  business: DataMenuItem[];
+  finance: DataMenuItem[];
+  extras: DataMenuItem[];
 };
 
 // Sidebar data structure
@@ -195,14 +177,10 @@ export const data: SidebarData = {
   ],
 };
 
-// Menu item component with hover card for sub-items
-function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
+export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { state: sidebarState } = useSidebar();
-  const Icon = item.icon;
-  const hasSubItems = item.items && item.items.length > 0;
 
   // Helper function to check if a URL matches the current location
   const isUrlActive = useCallback(
@@ -235,177 +213,61 @@ function SidebarMenuItemWithHover({ item }: { item: MenuItem }) {
     [pathname, searchParams]
   );
 
-  // Check if current item or any of its sub-items is active
-  const isMainActive = isUrlActive(item.url);
-  const activeSubItem = hasSubItems
-    ? item.items?.find(subItem => isUrlActive(subItem.url))
-    : null;
-  const isActive = isMainActive || !!activeSubItem;
-
-  // Only expand sub-items if active AND sidebar is expanded
-  const shouldExpandSubItems = isActive && sidebarState === "expanded";
-
-  const handleClick = (url: string, title: string) => {
-    if (url === "#") {
-      toast.info(`"${title}" 功能暂未实现`, {
-        description: "该功能正在开发中，敬请期待",
-      });
-    } else {
-      router.push(url);
-    }
+  // Helper to generate key from title
+  const generateKey = (title: string): string => {
+    return title.toLowerCase().replace(/\s+/g, "-");
   };
 
-  const menuButton = (
-    <SidebarMenuButton
-      onClick={() => handleClick(item.url, item.title)}
-      className={cn(
-        "h-9 cursor-pointer px-2 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:[&>span:last-child]:hidden [&>svg]:size-6",
-        "group-data-[collapsible=icon]:[&>svg]:-translate-x-[0.5px]",
-        isActive &&
-          "bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-full"
-      )}
-    >
-      <Icon className="size-4" strokeWidth={1.5} />
-      <span className="text-sm">{item.title}</span>
-    </SidebarMenuButton>
+  // Transform data to include isActive and activeSubItemKey
+  const sections = useMemo(() => {
+    const transformMenuItems = (items: DataMenuItem[]): MenuItem[] => {
+      return items.map(item => {
+        const isMainActive = isUrlActive(item.url);
+        const activeSubItem = item.items?.find(subItem =>
+          isUrlActive(subItem.url)
+        );
+        const isActive = isMainActive || !!activeSubItem;
+
+        return {
+          key: generateKey(item.title),
+          title: item.title,
+          url: item.url,
+          icon: item.icon,
+          items: item.items?.map(subItem => ({
+            key: generateKey(subItem.title),
+            title: subItem.title,
+            url: subItem.url,
+          })),
+          isActive,
+          activeSubItemKey: activeSubItem
+            ? generateKey(activeSubItem.title)
+            : undefined,
+        };
+      });
+    };
+
+    return {
+      travel: transformMenuItems(data.travel),
+      extras: transformMenuItems(data.extras),
+      business: transformMenuItems(data.business),
+      finance: transformMenuItems(data.finance),
+    };
+  }, [isUrlActive]);
+
+  const handleNavigate = useCallback(
+    (url: string, title: string) => {
+      if (url === "#") {
+        toast.info(`"${title}" 功能暂未实现`, {
+          description: "该功能正在开发中，敬请期待",
+        });
+      } else {
+        router.push(url);
+      }
+    },
+    [router]
   );
 
-  // If no sub-items, just return the button
-  if (!hasSubItems) {
-    return <SidebarMenuItem>{menuButton}</SidebarMenuItem>;
-  }
-
-  // If has sub-items and should expand, show sub-items below
-  if (shouldExpandSubItems) {
-    return (
-      <div className="space-y-0">
-        <SidebarMenuItem>{menuButton}</SidebarMenuItem>
-        <div className="ml-2 space-y-0">
-          {item.items?.map(subItem => {
-            const isSubActive = isUrlActive(subItem.url);
-            return (
-              <Button
-                key={subItem.title}
-                variant="ghost"
-                onClick={() => handleClick(subItem.url, subItem.title)}
-                className={cn(
-                  "w-full text-left px-3 py-2 text-sm rounded-md transition-colors justify-start",
-                  isSubActive
-                    ? "text-blue-500 font-medium"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {subItem.title}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  // If has sub-items but not expanded, wrap with HoverCard
   return (
-    <SidebarMenuItem>
-      <HoverCard openDelay={100} closeDelay={100}>
-        <HoverCardTrigger asChild>{menuButton}</HoverCardTrigger>
-        <HoverCardContent
-          side="right"
-          align="start"
-          className="w-56 p-2"
-          sideOffset={8}
-        >
-          <div className="space-y-1">
-            {item.items?.map(subItem => (
-              <button
-                key={subItem.title}
-                onClick={() => handleClick(subItem.url, subItem.title)}
-                className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                {subItem.title}
-              </button>
-            ))}
-          </div>
-        </HoverCardContent>
-      </HoverCard>
-    </SidebarMenuItem>
-  );
-}
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { toggleSidebar } = useSidebar();
-
-  return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="gap-2 p-2 pl-3 flex items-center justify-start">
-        {/* Toggle sidebar button */}
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              aria-label="Toggle Sidebar"
-              className="size-9 grid place-items-center rounded-md group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:ml-[8.5px] [&>svg]:size-6 [&>svg]:-translate-y-[3px] [&>svg]:translate-x-[-1px] 
-              group-data-[collapsible=icon]:[&>svg]:translate-x-0 group-data-[collapsible=icon]:[&>svg]:translate-y-0 transition-transform duration-200 ease-linear"
-              onClick={() => toggleSidebar()}
-            >
-              <Menu strokeWidth={1.25} className="text-black" />
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-
-      <SidebarContent className="px-2">
-        {/* Travel Group */}
-        <SidebarGroup className="px-1">
-          <SidebarGroupContent>
-            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
-              {data.travel.map(item => (
-                <SidebarMenuItemWithHover key={item.title} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <Separator className="mx-auto w-[calc(100%-1rem)]" />
-
-        {/* Extras Group */}
-        <SidebarGroup className="px-1">
-          <SidebarGroupContent>
-            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
-              {data.extras.map(item => (
-                <SidebarMenuItemWithHover key={item.title} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <Separator className="mx-auto w-[calc(100%-1rem)]" />
-
-        {/* Business Group */}
-        <SidebarGroup className="px-1">
-          <SidebarGroupContent>
-            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
-              {data.business.map(item => (
-                <SidebarMenuItemWithHover key={item.title} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <Separator className="mx-auto w-[calc(100%-1rem)]" />
-
-        {/* Finance Group */}
-        <SidebarGroup className="px-1">
-          <SidebarGroupContent>
-            <SidebarMenu className="group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:grid group-data-[collapsible=icon]:place-items-center">
-              {data.finance.map(item => (
-                <SidebarMenuItemWithHover key={item.title} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarRail />
-    </Sidebar>
+    <AppSidebarUI sections={sections} onNavigate={handleNavigate} {...props} />
   );
 }
