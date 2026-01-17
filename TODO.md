@@ -25,23 +25,24 @@
 
 | 域             | 组件数 | 已完成 | 进行中 | 未开始 | 批次    | 优先级 |
 | -------------- | ------ | ------ | ------ | ------ | ------- | ------ |
-| **Common**     | 12     | 4      | 0      | 8      | 批次1   | 高     |
+| **Common**     | 12     | 5      | 0      | 7      | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 批次2   | 高     |
 | **Flights**    | 40     | 2      | 0      | 38     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 批次4   | 低     |
-| **总计**       | **81** | **6**  | **0**  | **75** | -       | -      |
+| **总计**       | **81** | **7**  | **0**  | **74** | -       | -      |
 
-**完成度**: 7.4% (6/81)
+**完成度**: 8.6% (7/81)
 
 ### 已完成组件
 
-**Common (4/12)**:
+**Common (5/12)**:
 
 - [x] SiteHeader - packages/ui/src/components/common/site-header.tsx
 - [x] Footer - packages/ui/src/components/common/footer.tsx
 - [x] AppSidebar - packages/ui/src/components/common/app-sidebar.tsx
+- [x] BreadcrumbNav - packages/ui/src/components/common/breadcrumb-nav.tsx
 
 **Flights (2/40)**:
 

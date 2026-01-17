@@ -2,8 +2,8 @@
 
 > **批次分配**: 批次1 (高优先级 - 基础组件 + Link/Image 适配器模式建立)
 > **组件总数**: 12
-> **状态**: 已完成 1 | 进行中 0 | 未开始 11
-> **最后更新**: 2026-01-03
+> **状态**: 已完成 5 | 进行中 0 | 未开始 7
+> **最后更新**: 2026-01-17
 
 ## 域概览
 
@@ -52,163 +52,46 @@ Common 域包含应用级通用组件:
 
 ---
 
-### 🚧 进行中
-
-(暂无)
-
-### 📋 未开始
-
-#### ./common/footer.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/common/footer.tsx`
-- 复杂度: 低
-- 优先级: P1
-- **状态**: 未完成
-
-**依赖问题**
-
-- [x] Next.js Image (logo/图标)
-- [x] Next.js Link (导航链接)
-- [x] use_client
-
-**重构策略**
-
-```
-容器职责:
-- 提供导航链接配置
-- 处理导航回调
-
-UI 职责:
-- Footer 布局
-- Image 适配器用于 logo/图标
-- Link 适配器用于导航
-- 保留布局和文案
-
-适配器需求:
-- LinkAdapter
-- ImageAdapter
-
-参考: header.tsx 的实现模式
-```
-
-**View Model 接口**
-参考 [ARCHITECTURE.md - Header/Footer](../../ARCHITECTURE.md#headerfooter)
-
-**测试要点**
-
-- [ ] 布局渲染
-- [ ] 链接导航
-- [ ] 响应式设计
-
-**实现笔记**
-
-- 待实施时记录
-- 可复用 header.tsx 的模式
-
----
-
-#### ./common/app-sidebar.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/common/app-sidebar.tsx`
-- 复杂度: 高
-- 优先级: P0
-
-**依赖问题**
-
-- [x] Next.js Link
-- [x] Router hooks (useRouter/usePathname - 用于 active 状态)
-- [x] use_client
-- [x] 全局副作用 (事件监听/localStorage - 折叠状态持久化)
-
-**重构策略**
-
-```
-容器职责:
-- 提供菜单列表结构
-- 从当前路由计算 active 状态
-- 处理导航回调
-- 管理折叠/展开状态
-- localStorage 读写 (折叠状态持久化)
-- 事件监听逻辑
-
-UI 职责:
-- 侧边栏布局
-- 菜单项渲染 (Link 适配器)
-- Active 状态视觉反馈
-- 折叠/展开动画
-- 接收受控 collapsed 状态
-
-适配器需求:
-- LinkAdapter
-```
-
-**View Model 接口**
-参考 [ARCHITECTURE.md - AppSidebar](../../ARCHITECTURE.md#appsidebar)
-
-**测试要点**
-
-- [ ] 菜单渲染
-- [ ] Active 状态高亮
-- [ ] 折叠/展开交互
-- [ ] 链接导航
-
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需要确定折叠状态的 localStorage key 命名策略
-
----
-
 #### ./common/bread-crumb-nav.tsx
 
-**基本信息**
+**状态**: ✅ 已完成 (2026-01-17)
 
-- 路径: `apps/web/app/_components/common/bread-crumb-nav.tsx`
-- 复杂度: 低
-- 优先级: P1
+**实现位置**:
 
-**依赖问题**
+- UI 组件: `packages/ui/src/components/common/breadcrumb-nav.tsx`
+- 测试: `packages/ui/src/components/common/breadcrumb-nav.test.tsx`
+- 容器: `apps/web/app/_components/common/bread-crumb-nav.tsx`
+- Story: `apps/storybook/src/stories/common/breadcrumb-nav.stories.tsx`
 
-- [x] Next.js Link
+**实现亮点**:
 
-**重构策略**
+- 完全受控的 items 数组配置
+- 正确使用 Link 适配器，无 Next.js 依赖
+- 支持自定义 onClick 回调
+- 支持自定义 aria-label 和 className
+- 自动识别最后一项或无 href 的项为当前页
+- 包含 11 个测试用例，覆盖各种场景
+- Storybook 包含 9 个示例状态
 
-```
-容器职责:
-- 从路由生成 breadcrumb items
-- 提供导航回调
+**测试覆盖**:
 
-UI 职责:
-- Breadcrumb 布局
-- Link 适配器用于可点击项
-- 分隔符渲染
+- ✅ 基本渲染和内容显示
+- ✅ 链接 href 正确性
+- ✅ 当前页非链接渲染
+- ✅ 导航 landmark 和 aria-label
+- ✅ 分隔符渲染逻辑
+- ✅ 空数组处理
+- ✅ 自定义 className
 
-适配器需求:
-- LinkAdapter
-```
+**参考价值**:
 
-**View Model 接口**
-参考 [ARCHITECTURE.md - BreadCrumb](../../ARCHITECTURE.md#breadcrumb)
-
-**测试要点**
-
-- [ ] Items 渲染
-- [ ] 分隔符
-- [ ] 最后一项非链接
-- [ ] 链接导航
-
-**实现笔记**
-
-- 待实施时记录
+- 展示了如何将硬编码配置迁移为受控组件
+- 演示了正确的 Link 适配器使用模式
+- 可作为其他简单导航组件的参考模板
 
 ---
+
+### 📋 未开始
 
 #### ./common/user-menu.tsx
 
