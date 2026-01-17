@@ -36,9 +36,10 @@
    - 在 `apps/storybook/src/stories/...` 添加/更新 story，使用新 UI 组件，提供最小可交互示例；确保适配器可用（默认 UiProvider）。
 
 6. 验证
-   - 静态检查：`pnpm lint`。如果出现报错，那么用 `pnpm --filter ui(或者对应的name) lint --fix`。
+   - 静态检查：`pnpm lint`。如果出现报错，那么用 `pnpm --filter ui(或者对应的name) lint --fix`或者直接修改代码进行修复。
+   - 测试：`pnpm --filter ui test:run -- <pattern>` 运行新增/迁移测试。
+   - 再次静态检查: `pnpm lint` 确保无遗漏。
    - 构建：`pnpm --filter web build` + `pnpm --filter storybook build`。
-   - 测试：`pnpm --filter ui test -- <pattern>` 运行新增/迁移测试。
 
 7. 自查清单
    - [ ] UI 组件无 Next 依赖/无副作用，使用 Link/Image 适配器。
@@ -49,4 +50,4 @@
    - [ ] 测试与组件同级，覆盖渲染与交互。
    - [ ] 构建/测试命令通过或记录阻塞原因。
 
-8. 更新 TODO.md 进度状态与链接并向用户反馈。
+8. 更新 TODO.md 进度状态与链接并向用户反馈完成内容，同时提供一个英文的 commit message，"refactor: xxx" 需要 body message 但是不需要 scope 。
