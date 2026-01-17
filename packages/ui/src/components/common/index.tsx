@@ -20,6 +20,8 @@ export { Footer } from "./footer";
 export type { SearchBarProps } from "./search-bar";
 export { SearchBar } from "./search-bar";
 export { SiteHeader } from "./site-header";
+export type { StepperProps, StepperStep } from "./stepper";
+export { Stepper } from "./stepper";
 export type { LogoProps, NavItem, SiteHeaderProps } from "./types";
 export type { UserMenuProps, UserMenuSession } from "./user-menu";
 export { UserMenu } from "./user-menu";

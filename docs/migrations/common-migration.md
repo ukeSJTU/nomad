@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (高优先级 - 基础组件 + Link/Image 适配器模式建立)
 > **组件总数**: 12
-> **状态**: 已完成 6 | 进行中 0 | 未开始 6
+> **状态**: 已完成 9 | 进行中 0 | 未开始 3
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -272,57 +272,48 @@ UI 职责:
 
 #### ./common/stepper.tsx
 
-**基本信息**
+**状态**: ✅ 已完成 (2026-01-17)
 
-- 路径: `apps/web/app/_components/common/stepper.tsx`
-- 复杂度: 低
-- 优先级: P2
+**实现位置**:
 
-**依赖问题**
+- UI 组件: `packages/ui/src/components/common/stepper.tsx`
+- 测试: `packages/ui/src/components/common/stepper.test.tsx`
+- 容器: `apps/web/app/_components/common/stepper.tsx` (re-export)
+- Story: `apps/storybook/src/stories/common/stepper.stories.tsx`
 
-- [x] use_client (可能可以移除)
+**实现亮点**:
 
-**重构策略**
+- 纯展示组件，无 Next.js 依赖，无副作用
+- 完全受控的 `steps` 和 `currentStep` props
+- 支持 `default` 和 `compact` 两种展示模式
+- 自动显示已完成步骤的对勾图标
+- 平滑的过渡动画和视觉反馈
+- 包含 14 个测试用例，覆盖所有核心功能
+- Storybook 包含 13 个示例状态，包括交互式动画演示
 
-```
-容器职责:
-- 管理当前步骤状态
-- 处理步骤切换逻辑
+**测试覆盖**:
 
-UI 职责:
-- 步骤指示器渲染
-- 步骤标题/描述
-- 完成/当前/未完成状态视觉反馈
-- 受控 current/onChange
+- ✅ 基本渲染和内容显示
+- ✅ default 模式下显示步骤描述
+- ✅ compact 模式下隐藏步骤描述
+- ✅ 步骤编号正确显示
+- ✅ 已完成步骤显示对勾图标
+- ✅ 当前步骤的激活样式
+- ✅ 已完成步骤的样式
+- ✅ 连接线渲染
+- ✅ 已完成步骤的连接线填充
+- ✅ 无描述步骤的处理
+- ✅ 自定义 className
+- ✅ 单步骤处理
+- ✅ 最后一步为当前步骤
+- ✅ ref 正确转发
 
-适配器需求:
-- 无
-```
+**参考价值**:
 
-**View Model 接口**
-
-```typescript
-interface StepperProps {
-  steps: Array<{
-    key: string;
-    title: string;
-    description?: string;
-  }>;
-  current: number;
-  onChange?: (step: number) => void;
-  clickable?: boolean;
-}
-```
-
-**测试要点**
-
-- [ ] 步骤渲染
-- [ ] 状态视觉反馈
-- [ ] 点击切换 (如果 clickable)
-
-**实现笔记**
-
-- 若纯展示可移除 use_client
+- 展示了纯 UI 组件的最佳实践（无副作用，完全受控）
+- 演示了如何处理复杂的视觉状态（完成/进行中/未开始）
+- 可作为其他进度指示组件的参考模板
+- Storybook 交互式示例展示了如何测试动画效果
 
 ---
 
