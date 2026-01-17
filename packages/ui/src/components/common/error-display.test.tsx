@@ -1,20 +1,21 @@
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-
+import { UiProvider } from "../../platform";
 import { ErrorDisplay } from "./error-display";
 
-// Mock window.history.back
-const mockHistoryBack = vi.fn();
-Object.defineProperty(window, "history", {
-  value: { back: mockHistoryBack },
-  writable: true,
-});
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <UiProvider>{children}</UiProvider>
+);
 
 describe("ErrorDisplay Component", () => {
   describe("Rendering", () => {
     it("should render with default props", () => {
-      render(<ErrorDisplay title="测试标题" message="测试消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay title="测试标题" message="测试消息" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText("测试标题")).toBeInTheDocument();
       expect(screen.getByText("测试消息")).toBeInTheDocument();
@@ -22,7 +23,9 @@ describe("ErrorDisplay Component", () => {
 
     it("should render error type icon correctly", () => {
       const { container } = render(
-        <ErrorDisplay type="error" title="错误" message="发生错误" />
+        <TestWrapper>
+          <ErrorDisplay type="error" title="错误" message="发生错误" />
+        </TestWrapper>
       );
 
       // Check for icon presence (lucide-react icons have specific svg attributes)
@@ -31,14 +34,22 @@ describe("ErrorDisplay Component", () => {
     });
 
     it("should render warning type correctly", () => {
-      render(<ErrorDisplay type="warning" title="警告" message="警告消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay type="warning" title="警告" message="警告消息" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText("警告")).toBeInTheDocument();
       expect(screen.getByText("重要提示")).toBeInTheDocument();
     });
 
     it("should render info type correctly", () => {
-      render(<ErrorDisplay type="info" title="信息" message="信息消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay type="info" title="信息" message="信息消息" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText("信息")).toBeInTheDocument();
       expect(screen.getByText("温馨提示")).toBeInTheDocument();
@@ -47,7 +58,11 @@ describe("ErrorDisplay Component", () => {
 
   describe("Action Buttons", () => {
     it("should render action button with default label", () => {
-      render(<ErrorDisplay title="错误" message="消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay title="错误" message="消息" />
+        </TestWrapper>
+      );
 
       const button = screen.getByRole("link", { name: "Go Back" });
       expect(button).toBeInTheDocument();
@@ -56,12 +71,14 @@ describe("ErrorDisplay Component", () => {
 
     it("should render custom action label and href", () => {
       render(
-        <ErrorDisplay
-          title="错误"
-          message="消息"
-          actionLabel="返回首页"
-          actionHref="/home"
-        />
+        <TestWrapper>
+          <ErrorDisplay
+            title="错误"
+            message="消息"
+            actionLabel="返回首页"
+            actionHref="/home"
+          />
+        </TestWrapper>
       );
 
       const button = screen.getByRole("link", { name: "返回首页" });
@@ -71,7 +88,9 @@ describe("ErrorDisplay Component", () => {
 
     it("should show back button when showBackButton is true", () => {
       render(
-        <ErrorDisplay title="错误" message="消息" showBackButton={true} />
+        <TestWrapper>
+          <ErrorDisplay title="错误" message="消息" showBackButton={true} />
+        </TestWrapper>
       );
 
       const backButton = screen.getByRole("button", { name: "返回上一页" });
@@ -79,44 +98,67 @@ describe("ErrorDisplay Component", () => {
     });
 
     it("should not show back button by default", () => {
-      render(<ErrorDisplay title="错误" message="消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay title="错误" message="消息" />
+        </TestWrapper>
+      );
 
       const backButton = screen.queryByRole("button", { name: "返回上一页" });
       expect(backButton).not.toBeInTheDocument();
     });
 
-    it("should call window.history.back when back button is clicked", async () => {
+    it("should call onBackClick when back button is clicked", async () => {
       const user = userEvent.setup();
-      mockHistoryBack.mockClear();
+      const handleBackClick = vi.fn();
 
       render(
-        <ErrorDisplay title="错误" message="消息" showBackButton={true} />
+        <TestWrapper>
+          <ErrorDisplay
+            title="错误"
+            message="消息"
+            showBackButton={true}
+            onBackClick={handleBackClick}
+          />
+        </TestWrapper>
       );
 
       const backButton = screen.getByRole("button", { name: "返回上一页" });
       await user.click(backButton);
 
-      expect(mockHistoryBack).toHaveBeenCalledTimes(1);
+      expect(handleBackClick).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("Alert Content", () => {
     it("should show error alert content for error type", () => {
-      render(<ErrorDisplay type="error" title="错误" message="消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay type="error" title="错误" message="消息" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText("错误详情")).toBeInTheDocument();
       expect(screen.getByText(/发生了意外错误/)).toBeInTheDocument();
     });
 
     it("should show warning alert content for warning type", () => {
-      render(<ErrorDisplay type="warning" title="警告" message="消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay type="warning" title="警告" message="消息" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText("重要提示")).toBeInTheDocument();
       expect(screen.getByText(/此操作需要您的注意/)).toBeInTheDocument();
     });
 
     it("should show info alert content for info type", () => {
-      render(<ErrorDisplay type="info" title="信息" message="消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay type="info" title="信息" message="消息" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText("温馨提示")).toBeInTheDocument();
       expect(screen.getByText(/请仔细阅读以上信息/)).toBeInTheDocument();
@@ -126,7 +168,9 @@ describe("ErrorDisplay Component", () => {
   describe("Styling", () => {
     it("should apply destructive styling for error type", () => {
       const { container } = render(
-        <ErrorDisplay type="error" title="错误" message="消息" />
+        <TestWrapper>
+          <ErrorDisplay type="error" title="错误" message="消息" />
+        </TestWrapper>
       );
 
       // Check for destructive text color class
@@ -138,7 +182,9 @@ describe("ErrorDisplay Component", () => {
 
     it("should apply primary styling for non-error types", () => {
       const { container } = render(
-        <ErrorDisplay type="info" title="信息" message="消息" />
+        <TestWrapper>
+          <ErrorDisplay type="info" title="信息" message="消息" />
+        </TestWrapper>
       );
 
       // Check for primary color class
@@ -149,7 +195,11 @@ describe("ErrorDisplay Component", () => {
 
   describe("Accessibility", () => {
     it("should have proper heading structure", () => {
-      render(<ErrorDisplay title="错误标题" message="错误消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay title="错误标题" message="错误消息" />
+        </TestWrapper>
+      );
 
       // CardTitle should be a heading or have heading-like attributes
       const title = screen.getByText("错误标题");
@@ -158,7 +208,9 @@ describe("ErrorDisplay Component", () => {
 
     it("should have alert role", () => {
       const { container } = render(
-        <ErrorDisplay title="错误" message="消息" />
+        <TestWrapper>
+          <ErrorDisplay title="错误" message="消息" />
+        </TestWrapper>
       );
 
       const alert = container.querySelector('[role="alert"]');
@@ -167,7 +219,9 @@ describe("ErrorDisplay Component", () => {
 
     it("should have accessible button", () => {
       render(
-        <ErrorDisplay title="错误" message="消息" showBackButton={true} />
+        <TestWrapper>
+          <ErrorDisplay title="错误" message="消息" showBackButton={true} />
+        </TestWrapper>
       );
 
       const backButton = screen.getByRole("button", { name: "返回上一页" });
@@ -178,20 +232,32 @@ describe("ErrorDisplay Component", () => {
   describe("Edge Cases", () => {
     it("should handle very long title", () => {
       const longTitle = "这是一个非常非常非常非常非常长的标题".repeat(5);
-      render(<ErrorDisplay title={longTitle} message="消息" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay title={longTitle} message="消息" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText(longTitle)).toBeInTheDocument();
     });
 
     it("should handle very long message", () => {
       const longMessage = "这是一个非常非常非常非常非常长的消息".repeat(10);
-      render(<ErrorDisplay title="标题" message={longMessage} />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay title="标题" message={longMessage} />
+        </TestWrapper>
+      );
 
       expect(screen.getByText(longMessage)).toBeInTheDocument();
     });
 
     it("should handle special characters in text", () => {
-      render(<ErrorDisplay title="错误 <>&" message="消息包含特殊字符: <>&" />);
+      render(
+        <TestWrapper>
+          <ErrorDisplay title="错误 <>&" message="消息包含特殊字符: <>&" />
+        </TestWrapper>
+      );
 
       expect(screen.getByText("错误 <>&")).toBeInTheDocument();
       expect(screen.getByText("消息包含特殊字符: <>&")).toBeInTheDocument();
@@ -199,7 +265,9 @@ describe("ErrorDisplay Component", () => {
 
     it("should handle empty actionHref gracefully", () => {
       const { container } = render(
-        <ErrorDisplay title="错误" message="消息" actionHref="" />
+        <TestWrapper>
+          <ErrorDisplay title="错误" message="消息" actionHref="" />
+        </TestWrapper>
       );
 
       const link = container.querySelector('a[href=""]');

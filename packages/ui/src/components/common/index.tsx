@@ -16,6 +16,8 @@ export type {
   RowAction,
 } from "./data-table-with-actions";
 export { DataTableWithActions } from "./data-table-with-actions";
+export type { ErrorDisplayProps, ErrorType } from "./error-display";
+export { ErrorDisplay } from "./error-display";
 export { Footer } from "./footer";
 export type { SearchBarProps } from "./search-bar";
 export { SearchBar } from "./search-bar";

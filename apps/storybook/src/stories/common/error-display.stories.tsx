@@ -1,6 +1,5 @@
 import { ErrorDisplay } from "@nomad/ui/components/common";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { ERROR_CONFIGS } from "@/config/errors";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
   title: "Common/ErrorDisplay",
@@ -54,13 +53,20 @@ export const WithBackButton: Story = {
     actionLabel: "返回首页",
     actionHref: "/",
     showBackButton: true,
+    onBackClick: () => {},
   },
 };
 
 // ========== Flight Search Errors ==========
 
 export const MissingFlight: Story = {
-  args: ERROR_CONFIGS.missing_flight,
+  args: {
+    type: "warning",
+    title: "未选择航班",
+    message: "请先选择航班后再继续。",
+    actionLabel: "返回搜索",
+    actionHref: "/flights/search",
+  },
   parameters: {
     docs: {
       description: {
@@ -71,7 +77,13 @@ export const MissingFlight: Story = {
 };
 
 export const FlightNotFound: Story = {
-  args: ERROR_CONFIGS.flight_not_found,
+  args: {
+    type: "error",
+    title: "航班不存在",
+    message: "您选择的航班已不存在或被取消。",
+    actionLabel: "返回搜索",
+    actionHref: "/flights/search",
+  },
   parameters: {
     docs: {
       description: {
@@ -82,7 +94,13 @@ export const FlightNotFound: Story = {
 };
 
 export const NoSearchResults: Story = {
-  args: ERROR_CONFIGS.no_search_results,
+  args: {
+    type: "info",
+    title: "未找到航班",
+    message: "没有找到符合条件的航班,请尝试修改搜索条件。",
+    actionLabel: "重新搜索",
+    actionHref: "/flights/search",
+  },
   parameters: {
     docs: {
       description: {
@@ -93,7 +111,13 @@ export const NoSearchResults: Story = {
 };
 
 export const InvalidSearchParams: Story = {
-  args: ERROR_CONFIGS.invalid_search_params,
+  args: {
+    type: "warning",
+    title: "搜索参数错误",
+    message: "搜索参数不完整或格式错误，请重新搜索。",
+    actionLabel: "返回搜索",
+    actionHref: "/flights/search",
+  },
   parameters: {
     docs: {
       description: {
@@ -106,7 +130,14 @@ export const InvalidSearchParams: Story = {
 // ========== Booking Errors ==========
 
 export const BookingFailed: Story = {
-  args: ERROR_CONFIGS.booking_failed,
+  args: {
+    type: "error",
+    title: "预订失败",
+    message: "预订过程中发生错误，请稍后重试。",
+    actionLabel: "返回搜索",
+    actionHref: "/flights/search",
+    showBackButton: true,
+  },
   parameters: {
     docs: {
       description: {
@@ -117,7 +148,13 @@ export const BookingFailed: Story = {
 };
 
 export const SeatUnavailable: Story = {
-  args: ERROR_CONFIGS.seat_unavailable,
+  args: {
+    type: "warning",
+    title: "座位不可用",
+    message: "您选择的舱位座位已满，请选择其他舱位。",
+    actionLabel: "返回搜索",
+    actionHref: "/flights/search",
+  },
   parameters: {
     docs: {
       description: {
@@ -128,7 +165,13 @@ export const SeatUnavailable: Story = {
 };
 
 export const PassengerLimitExceeded: Story = {
-  args: ERROR_CONFIGS.passenger_limit_exceeded,
+  args: {
+    type: "warning",
+    title: "超出乘客限制",
+    message: "单次预订最多支持9位乘客。",
+    actionLabel: "返回搜索",
+    actionHref: "/flights/search",
+  },
   parameters: {
     docs: {
       description: {
@@ -141,7 +184,14 @@ export const PassengerLimitExceeded: Story = {
 // ========== Payment Errors ==========
 
 export const PaymentFailed: Story = {
-  args: ERROR_CONFIGS.payment_failed,
+  args: {
+    type: "error",
+    title: "支付失败",
+    message: "支付处理失败，请检查支付信息后重试。",
+    actionLabel: "重新支付",
+    actionHref: "/orders/pending",
+    showBackButton: true,
+  },
   parameters: {
     docs: {
       description: {
@@ -152,7 +202,13 @@ export const PaymentFailed: Story = {
 };
 
 export const InsufficientBalance: Story = {
-  args: ERROR_CONFIGS.insufficient_balance,
+  args: {
+    type: "warning",
+    title: "余额不足",
+    message: "账户余额不足以完成支付，请充值或选择其他支付方式。",
+    actionLabel: "去充值",
+    actionHref: "/account/balance",
+  },
   parameters: {
     docs: {
       description: {
@@ -163,7 +219,13 @@ export const InsufficientBalance: Story = {
 };
 
 export const PaymentTimeout: Story = {
-  args: ERROR_CONFIGS.payment_timeout,
+  args: {
+    type: "error",
+    title: "支付超时",
+    message: "支付超时，订单已取消。",
+    actionLabel: "返回首页",
+    actionHref: "/",
+  },
   parameters: {
     docs: {
       description: {
@@ -176,7 +238,13 @@ export const PaymentTimeout: Story = {
 // ========== Order Errors ==========
 
 export const OrderNotFound: Story = {
-  args: ERROR_CONFIGS.order_not_found,
+  args: {
+    type: "error",
+    title: "订单不存在",
+    message: "订单不存在或您无权访问此订单。",
+    actionLabel: "返回首页",
+    actionHref: "/",
+  },
   parameters: {
     docs: {
       description: {
@@ -187,103 +255,17 @@ export const OrderNotFound: Story = {
 };
 
 export const OrderExpired: Story = {
-  args: ERROR_CONFIGS.order_expired,
+  args: {
+    type: "warning",
+    title: "订单已过期",
+    message: "订单支付时限已过，订单已自动取消。",
+    actionLabel: "重新搜索",
+    actionHref: "/flights/search",
+  },
   parameters: {
     docs: {
       description: {
         story: "订单支付时限已过时显示。",
-      },
-    },
-  },
-};
-
-export const OrderCancelled: Story = {
-  args: ERROR_CONFIGS.order_cancelled,
-  parameters: {
-    docs: {
-      description: {
-        story: "订单已被取消时显示。",
-      },
-    },
-  },
-};
-
-// ========== Authentication Errors ==========
-
-export const Unauthorized: Story = {
-  args: ERROR_CONFIGS.unauthorized,
-  parameters: {
-    docs: {
-      description: {
-        story: "需要登录才能访问页面时显示。",
-      },
-    },
-  },
-};
-
-export const SessionExpired: Story = {
-  args: ERROR_CONFIGS.session_expired,
-  parameters: {
-    docs: {
-      description: {
-        story: "用户会话已过期时显示。",
-      },
-    },
-  },
-};
-
-export const Forbidden: Story = {
-  args: ERROR_CONFIGS.forbidden,
-  parameters: {
-    docs: {
-      description: {
-        story: "用户无权访问资源时显示。",
-      },
-    },
-  },
-};
-
-// ========== General Errors ==========
-
-export const NotFound: Story = {
-  args: ERROR_CONFIGS.not_found,
-  parameters: {
-    docs: {
-      description: {
-        story: "页面或资源不存在时显示。",
-      },
-    },
-  },
-};
-
-export const ServerError: Story = {
-  args: ERROR_CONFIGS.server_error,
-  parameters: {
-    docs: {
-      description: {
-        story: "服务器内部错误时显示。",
-      },
-    },
-  },
-};
-
-export const NetworkError: Story = {
-  args: ERROR_CONFIGS.network_error,
-  parameters: {
-    docs: {
-      description: {
-        story: "网络连接失败时显示。",
-      },
-    },
-  },
-};
-
-export const Maintenance: Story = {
-  args: ERROR_CONFIGS.maintenance,
-  parameters: {
-    docs: {
-      description: {
-        story: "系统维护期间显示。",
       },
     },
   },
@@ -294,8 +276,9 @@ export const Maintenance: Story = {
 export const LongTitle: Story = {
   args: {
     type: "error",
-    title: "这是一个非常非常非常非常非常非常非常非常非常长的错误标题",
-    message: "错误消息",
+    title:
+      "这是一个非常非常非常非常非常长的标题文本用于测试组件的文本溢出处理能力",
+    message: "测试长标题的显示效果。",
     actionLabel: "返回",
     actionHref: "/",
   },
@@ -303,12 +286,26 @@ export const LongTitle: Story = {
 
 export const LongMessage: Story = {
   args: {
-    type: "error",
-    title: "错误",
+    type: "info",
+    title: "长消息测试",
     message:
-      "这是一个非常非常非常非常非常非常非常非常非常长的错误消息。它包含了大量的文本内容，用于测试组件如何处理长文本。在实际应用中，错误消息可能会包含详细的错误信息、建议的解决方案以及相关的帮助链接等内容。",
-    actionLabel: "返回",
+      "这是一个非常非常非常非常非常长的消息文本，用于测试组件在处理大量文本内容时的显示效果和布局是否合理。我们需要确保在各种情况下，组件都能正确地显示所有信息，并且不会出现布局错乱的情况。同时也要测试文本的自动换行功能是否正常工作。",
+    actionLabel: "了解更多",
+    actionHref: "/",
+  },
+};
+
+export const CustomCallback: Story = {
+  args: {
+    type: "info",
+    title: "自定义回调",
+    message: "测试自定义返回按钮回调功能。",
+    actionLabel: "继续",
     actionHref: "/",
     showBackButton: true,
+    onBackClick: () => {
+      // eslint-disable-next-line no-alert
+      alert("自定义返回按钮被点击！");
+    },
   },
 };
