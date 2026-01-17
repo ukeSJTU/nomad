@@ -37,7 +37,7 @@
    - 在 `apps/storybook/src/stories/...` 添加/更新 story，使用新 UI 组件，提供最小可交互示例；确保适配器可用（默认 UiProvider）。
 
 6. 验证
-   - 静态检查：`pnpm lint`。如果出现报错，那么用 `pnpm --filter ui(或者对应的name) lint --fix`或者直接修改代码进行修复。
+   - 静态检查：`pnpm lint`。如果出现报错，那么用 `bash lint.sh`或者直接修改代码进行修复。
    - 测试：`pnpm --filter ui test:run -- <pattern>` 运行新增/迁移测试。
    - 再次静态检查: `pnpm lint` 确保无遗漏。
    - 构建：`pnpm --filter web build` + `pnpm --filter storybook build`。
