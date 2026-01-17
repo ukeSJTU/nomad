@@ -19,4 +19,13 @@ export { OneWaySelector } from "./one-way-selector";
 export type { RoundTripSelectorProps } from "./round-trip-selector";
 export { RoundTripSelector } from "./round-trip-selector";
 export { SearchForm } from "./search-form";
-export type { CityData, SearchFormData, SearchFormProps } from "./types";
+export type { SearchHistoryCardProps } from "./search-history-card";
+export { SearchHistoryCard } from "./search-history-card";
+export type { SearchHistorySectionProps } from "./search-history-section";
+export { SearchHistorySection } from "./search-history-section";
+export type {
+  CityData,
+  SearchFormData,
+  SearchFormProps,
+  SearchHistoryRecord,
+} from "./types";

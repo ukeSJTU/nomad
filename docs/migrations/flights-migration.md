@@ -2,8 +2,8 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 13 | 进行中 0 | 未开始 27
-> **最后更新**: 2026-01-17
+> **状态**: 已完成 15 | 进行中 0 | 未开始 25
+> **最后更新**: 2026-01-18
 
 ## 域概览
 
@@ -395,6 +395,7 @@ UI 职责:
 - 复杂度: 中
 - 优先级: P2
 - 批次: 1
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
@@ -409,11 +410,22 @@ UI 职责:
 - 调用 action 获取搜索历史
 - 处理清空历史
 - 处理导航到历史搜索
+- 格式化价格和日期
+- 计算价格状态
 
 UI 职责:
-- 历史记录列表
+- 历史记录列表渲染
 - 清空按钮
+- 空状态展示
 ```
+
+**迁移详情**:
+
+- **UI 组件**: `packages/ui/src/components/flights/search/search-history-section.tsx`
+- **容器**: `apps/web/app/_components/flights/search/search-history-section.tsx`
+- **测试**: `packages/ui/src/components/flights/search/search-history-section.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/search-history-section.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 
@@ -424,6 +436,7 @@ UI 职责:
 - 复杂度: 低
 - 优先级: P2
 - 批次: 1
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
@@ -433,8 +446,24 @@ UI 职责:
 **重构策略**
 
 ```
-可能是 search-history-section 的子组件
+容器职责:
+- 处理点击导航
+- 格式化价格和日期
+- 计算价格状态 (降价/涨价/稳定)
+
+UI 职责:
+- 搜索历史卡片渲染
+- 航线展示 (单程/往返)
+- 价格和价格状态展示
 ```
+
+**迁移详情**:
+
+- **UI 组件**: `packages/ui/src/components/flights/search/search-history-card.tsx`
+- **容器**: `apps/web/app/_components/flights/search/search-history.tsx`
+- **测试**: `packages/ui/src/components/flights/search/search-history-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/search-history-card.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 

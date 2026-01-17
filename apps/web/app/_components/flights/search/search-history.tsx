@@ -1,9 +1,6 @@
 "use client";
 
-import { Badge } from "@nomad/ui/components/primitives/badge";
-import { Card } from "@nomad/ui/components/primitives/card";
-import { cn } from "@nomad/ui/lib/utils";
-import { ArrowLeftRight, ArrowRight } from "lucide-react";
+import { SearchHistoryCard } from "@nomad/ui/components/flights/search";
 import { useRouter } from "next/navigation";
 import {
   compareCurrency,
@@ -68,6 +65,24 @@ export function FlightSearchHistoryCard({
     return `${month}-${day} ${label}`;
   };
 
+  // Format date based on trip type
+  const formatDate = () => {
+    if (record.tripType === "one-way") {
+      return formatOneWayDate(record.departureDate);
+    } else {
+      const departure = formatRoundTripDate(record.departureDate, "departure");
+      const returnPart = record.returnDate
+        ? formatRoundTripDate(record.returnDate, "return")
+        : "";
+      return `${departure}  ${returnPart}`;
+    }
+  };
+
+  // Format price
+  const formatPrice = (price: string) => {
+    return formatCurrencyWithoutSymbol(Math.round(parseCurrency(price).value));
+  };
+
   // Handle card click - navigate to search page
   const handleClick = () => {
     if (onClick) {
@@ -88,70 +103,16 @@ export function FlightSearchHistoryCard({
     router.push(`/flights/search?${params.toString()}`);
   };
 
+  const formattedPrice = formatPrice(record.currentLowestPrice || "0");
+  const formattedDate = formatDate();
+
   return (
-    <Card
-      className="p-4 hover:shadow-lg transition-shadow cursor-pointer max-w-2xl"
+    <SearchHistoryCard
+      record={record}
+      formattedPrice={formattedPrice}
+      priceStatus={priceStatus}
+      formattedDate={formattedDate}
       onClick={handleClick}
-    >
-      <div className="flex items-start justify-between gap-4">
-        {/* Left section - Route and Date */}
-        <div className="flex-1 space-y-2">
-          {/* Route */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-lg font-semibold whitespace-nowrap">
-              {record.departureCityName}
-            </span>
-            {record.tripType === "round-trip" ? (
-              <ArrowLeftRight className="h-4 w-4 text-gray-400 shrink-0" />
-            ) : (
-              <ArrowRight className="h-4 w-4 text-gray-400 shrink-0" />
-            )}
-            <span className="text-lg font-semibold whitespace-nowrap">
-              {record.arrivalCityName}
-            </span>
-          </div>
-
-          {/* Date Info */}
-          <div className="text-sm text-gray-500 whitespace-nowrap">
-            {record.tripType === "one-way" ? (
-              // One-way: "2025-10-30 周四"
-              <span>{formatOneWayDate(record.departureDate)}</span>
-            ) : (
-              // Round-trip: "10-30 去  11-02 回"
-              <span>
-                {formatRoundTripDate(record.departureDate, "departure")}
-                {"  "}
-                {record.returnDate &&
-                  formatRoundTripDate(record.returnDate, "return")}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Right section - Price */}
-        {record.currentLowestPrice && record.currentLowestPrice !== "0" && (
-          <div className="text-right space-y-1 shrink-0">
-            <div className="text-xl font-bold text-orange-500">
-              ¥
-              {formatCurrencyWithoutSymbol(
-                Math.round(parseCurrency(record.currentLowestPrice).value)
-              )}
-              <span className="text-xs font-normal text-gray-500 ml-1">起</span>
-            </div>
-            {priceStatus && (
-              <Badge
-                variant="secondary"
-                className={cn(
-                  "text-xs hover:bg-gray-100",
-                  priceStatus.colorClass
-                )}
-              >
-                {priceStatus.label}
-              </Badge>
-            )}
-          </div>
-        )}
-      </div>
-    </Card>
+    />
   );
 }
