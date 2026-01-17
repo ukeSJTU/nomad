@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 6 | 进行中 0 | 未开始 34
+> **状态**: 已完成 7 | 进行中 0 | 未开始 33
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -63,6 +63,14 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **容器**: `apps/web/app/_components/flights/search/FlightSearchHeader.tsx`
 - **测试**: `packages/ui/src/components/flights/search/flight-search-header.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/search/flight-search-header.stories.tsx`
+- **完成日期**: 2026-01-17
+
+#### ./flights/search/FlightListOneWay.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/search/flight-list-one-way.tsx`
+- **容器**: `apps/web/app/_components/flights/search/FlightListOneWay.tsx`
+- **测试**: `packages/ui/src/components/flights/search/flight-list-one-way.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/flight-list-one-way.stories.tsx`
 - **完成日期**: 2026-01-17
 
 ### 🚧 进行中
@@ -177,6 +185,7 @@ UI 职责:
 - 复杂度: 中
 - 优先级: P0
 - 批次: 1
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
@@ -205,9 +214,9 @@ UI 职责:
 
 **测试要点**
 
-- [ ] 航班列表渲染
-- [ ] 选中交互
-- [ ] 查看详情按钮
+- [x] 航班列表渲染
+- [x] 选中交互
+- [x] 查看详情按钮
 
 ---
 

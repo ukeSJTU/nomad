@@ -27,13 +27,13 @@
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
-| **Flights**    | 40     | 6      | 0      | 34     | 0     | 批次1+3 | 中     |
+| **Flights**    | 40     | 7      | 0      | 33     | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **17** | **0**  | **63** | **1** | -       | -      |
+| **总计**       | **81** | **18** | **0**  | **62** | **1** | -       | -      |
 
-**完成度**: 21.3% (17/80 可迁移组件)
+**完成度**: 22.5% (18/80 可迁移组件)
 
 ### 已完成组件
 
@@ -51,7 +51,7 @@
 - [x] UnderConstruction - packages/ui/src/components/common/under-construction.tsx
 - [~] DevUserSwitcher - 不迁移 (仅开发环境使用)
 
-**Flights (6/40)**:
+**Flights (7/40)**:
 
 - [x] AirportList - packages/ui/src/components/flights/guide/airport-list.tsx
 - [x] DatePriceSelector - packages/ui/src/components/flights/search/date-price-selector.tsx
@@ -59,13 +59,14 @@
 - [x] FlightCard - packages/ui/src/components/flights/results/flight-card.tsx
 - [x] QuickDateSelector - packages/ui/src/components/flights/search/date-price-selector.tsx (UI) + apps/web/app/\_components/flights/search/quick-date-selector.tsx (容器)
 - [x] FlightSearchHeader - packages/ui/src/components/flights/search/flight-search-header.tsx
+- [x] FlightListOneWay - packages/ui/src/components/flights/search/flight-list-one-way.tsx
 
 ### 批次进度
 
 | 批次      | 名称                                | 组件数 | 完成度 | 状态   |
 | --------- | ----------------------------------- | ------ | ------ | ------ |
 | **批次0** | 适配层                              | -      | 100%   | 已完成 |
-| **批次1** | Common + Flights Search             | 24     | 62.5%  | 进行中 |
+| **批次1** | Common + Flights Search             | 24     | 66.7%  | 进行中 |
 | **批次2** | Auth 认证链路                       | 13     | 0%     | 待启动 |
 | **批次3** | Flights Booking/Orders + Passengers | 24     | 0%     | 待启动 |
 | **批次4** | User + Security                     | 12     | 0%     | 待启动 |
