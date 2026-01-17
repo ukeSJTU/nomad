@@ -1,5 +1,5 @@
 import { UnderConstruction } from "@nomad/ui/components/common";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
   title: "Common/UnderConstruction",
@@ -64,9 +64,49 @@ export const WithChildren: Story = {
     description:
       "This page is being built. Want to be notified when it's ready?",
     children: (
-      <button className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+      <button
+        type="button"
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+      >
         Notify Me
       </button>
+    ),
+  },
+};
+
+/**
+ * Short and concise message for maintenance pages.
+ */
+export const Maintenance: Story = {
+  args: {
+    title: "Scheduled Maintenance",
+    description: "We'll be back shortly. Thank you for your patience.",
+  },
+};
+
+/**
+ * Feature-specific construction message with action button.
+ */
+export const FeaturePreview: Story = {
+  args: {
+    title: "New Feature Preview",
+    description:
+      "Get early access to our upcoming features. Sign up to be notified!",
+    children: (
+      <div className="flex gap-2">
+        <button
+          type="button"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Sign Up
+        </button>
+        <button
+          type="button"
+          className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+        >
+          Learn More
+        </button>
+      </div>
     ),
   },
 };

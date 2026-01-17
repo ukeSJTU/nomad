@@ -25,19 +25,19 @@
 
 | 域             | 组件数 | 已完成 | 进行中 | 未开始 | 批次    | 优先级 |
 | -------------- | ------ | ------ | ------ | ------ | ------- | ------ |
-| **Common**     | 12     | 10     | 0      | 2      | 批次1   | 高     |
+| **Common**     | 12     | 11     | 0      | 1      | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 批次2   | 高     |
 | **Flights**    | 40     | 3      | 0      | 37     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 批次4   | 低     |
-| **总计**       | **81** | **13** | **0**  | **68** | -       | -      |
+| **总计**       | **81** | **14** | **0**  | **67** | -       | -      |
 
-**完成度**: 16.0% (13/81)
+**完成度**: 17.3% (14/81)
 
 ### 已完成组件
 
-**Common (10/12)**:
+**Common (11/12)**:
 
 - [x] SiteHeader - packages/ui/src/components/common/site-header.tsx
 - [x] Footer - packages/ui/src/components/common/footer.tsx
@@ -48,6 +48,7 @@
 - [x] SearchBar - packages/ui/src/components/common/search-bar.tsx
 - [x] Stepper - packages/ui/src/components/common/stepper.tsx
 - [x] ErrorDisplay - packages/ui/src/components/common/error-display.tsx
+- [x] UnderConstruction - packages/ui/src/components/common/under-construction.tsx
 
 **Flights (3/40)**:
 
@@ -60,7 +61,7 @@
 | 批次      | 名称                                | 组件数 | 完成度 | 状态   |
 | --------- | ----------------------------------- | ------ | ------ | ------ |
 | **批次0** | 适配层                              | -      | 100%   | 已完成 |
-| **批次1** | Common + Flights Search             | 24     | 50.0%  | 进行中 |
+| **批次1** | Common + Flights Search             | 24     | 54.2%  | 进行中 |
 | **批次2** | Auth 认证链路                       | 13     | 0%     | 待启动 |
 | **批次3** | Flights Booking/Orders + Passengers | 24     | 0%     | 待启动 |
 | **批次4** | User + Security                     | 12     | 0%     | 待启动 |

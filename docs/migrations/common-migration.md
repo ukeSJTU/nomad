@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (高优先级 - 基础组件 + Link/Image 适配器模式建立)
 > **组件总数**: 12
-> **状态**: 已完成 9 | 进行中 0 | 未开始 3
+> **状态**: 已完成 10 | 进行中 0 | 未开始 2
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -380,33 +380,54 @@ interface ErrorDisplayProps {
 
 #### ./common/construction.tsx
 
-**基本信息**
+**状态**: ✅ 已完成 (2026-01-17)
 
-- 路径: `apps/web/app/_components/common/construction.tsx`
-- 复杂度: 低
-- 优先级: P2
+**实现位置**:
 
-**依赖问题**
+- UI 组件: `packages/ui/src/components/common/under-construction.tsx`
+- 测试: `packages/ui/src/components/common/under-construction.test.tsx`
+- 容器: `apps/web/app/_components/common/construction.tsx`
+- Story: `apps/storybook/src/stories/common/under-construction.stories.tsx`
 
-- 待确认 (深度笔记中未提及,可能是纯 UI)
+**实现亮点**:
 
-**重构策略**
+- 完全纯展示组件，无任何依赖或副作用
+- 使用 Empty 原始组件构建，保持一致设计
+- 支持自定义标题、描述和可选子内容
+- 自动显示施工图标(ConstructionIcon)
+- 完全无 Next.js 依赖，纯 UI 组件
+- 包含 8 个测试用例，覆盖所有场景
+- Storybook 包含 5 个示例状态
 
-```
-如果是纯展示组件:
+**测试覆盖**:
 
-UI 职责:
-- 施工中提示页面
-- 图标/插图
+- ✅ 标题和描述渲染
+- ✅ 无 children 时不渲染 EmptyContent
+- ✅ 带 children 时正确渲染
+- ✅ 施工图标显示
+- ✅ 自定义标题文本
+- ✅ 自定义描述文本
+- ✅ 复杂 children 内容支持
+- ✅ Empty 组件结构维护
+
+**参考价值**:
+
+- 展示了最简单的纯 UI 组件迁移模式
+- 演示了如何利用现有原始组件构建新组件
+- 可作为其他简单展示组件的参考模板
+- 完美示例：零依赖、零副作用的纯组件
 - 提示文案
 
 Props:
+
 - title?: string
 - description?: string
 - backLink?: { label: string; href: string; onClick?: () => void }
 
 适配器需求:
+
 - LinkAdapter (如果有返回链接)
+
 ```
 
 **测试要点**
@@ -441,19 +462,24 @@ Props:
 **重构策略**
 
 ```
+
 容器职责:
+
 - 处理 localStorage 读写
 - 处理用户切换逻辑
 - 提供用户列表
 
 UI 职责:
+
 - 用户选择器下拉
 - 当前用户显示
 - 切换回调
 
 适配器需求:
+
 - 无
-```
+
+````
 
 **View Model 接口**
 
@@ -467,7 +493,7 @@ interface DevUserSwitcherProps {
   currentUserId?: string;
   onSwitch: (userId: string) => void;
 }
-```
+````
 
 **测试要点**
 

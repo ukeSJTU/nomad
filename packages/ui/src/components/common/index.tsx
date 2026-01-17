@@ -25,6 +25,8 @@ export { SiteHeader } from "./site-header";
 export type { StepperProps, StepperStep } from "./stepper";
 export { Stepper } from "./stepper";
 export type { LogoProps, NavItem, SiteHeaderProps } from "./types";
+export type { UnderConstructionProps } from "./under-construction";
+export { UnderConstruction } from "./under-construction";
 export type { UserMenuProps, UserMenuSession } from "./user-menu";
 export { UserMenu } from "./user-menu";
 export { getInitials } from "./utils";
