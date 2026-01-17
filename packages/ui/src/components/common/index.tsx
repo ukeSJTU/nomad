@@ -17,6 +17,8 @@ export type {
 } from "./data-table-with-actions";
 export { DataTableWithActions } from "./data-table-with-actions";
 export { Footer } from "./footer";
+export type { SearchBarProps } from "./search-bar";
+export { SearchBar } from "./search-bar";
 export { SiteHeader } from "./site-header";
 export type { LogoProps, NavItem, SiteHeaderProps } from "./types";
 export type { UserMenuProps, UserMenuSession } from "./user-menu";

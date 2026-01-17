@@ -25,19 +25,19 @@
 
 | 域             | 组件数 | 已完成 | 进行中 | 未开始 | 批次    | 优先级 |
 | -------------- | ------ | ------ | ------ | ------ | ------- | ------ |
-| **Common**     | 12     | 7      | 0      | 5      | 批次1   | 高     |
+| **Common**     | 12     | 8      | 0      | 4      | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 批次2   | 高     |
 | **Flights**    | 40     | 3      | 0      | 37     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 批次4   | 低     |
-| **总计**       | **81** | **10** | **0**  | **71** | -       | -      |
+| **总计**       | **81** | **11** | **0**  | **70** | -       | -      |
 
-**完成度**: 12.3% (10/81)
+**完成度**: 13.6% (11/81)
 
 ### 已完成组件
 
-**Common (7/12)**:
+**Common (8/12)**:
 
 - [x] SiteHeader - packages/ui/src/components/common/site-header.tsx
 - [x] Footer - packages/ui/src/components/common/footer.tsx
@@ -45,6 +45,7 @@
 - [x] BreadcrumbNav - packages/ui/src/components/common/breadcrumb-nav.tsx
 - [x] UserMenu - packages/ui/src/components/common/user-menu.tsx
 - [x] DataTableWithActions - packages/ui/src/components/common/data-table-with-actions.tsx
+- [x] SearchBar - packages/ui/src/components/common/search-bar.tsx
 
 **Flights (3/40)**:
 
@@ -57,7 +58,7 @@
 | 批次      | 名称                                | 组件数 | 完成度 | 状态   |
 | --------- | ----------------------------------- | ------ | ------ | ------ |
 | **批次0** | 适配层                              | -      | 100%   | 已完成 |
-| **批次1** | Common + Flights Search             | 24     | 37.5%  | 进行中 |
+| **批次1** | Common + Flights Search             | 24     | 41.7%  | 进行中 |
 | **批次2** | Auth 认证链路                       | 13     | 0%     | 待启动 |
 | **批次3** | Flights Booking/Orders + Passengers | 24     | 0%     | 待启动 |
 | **批次4** | User + Security                     | 12     | 0%     | 待启动 |

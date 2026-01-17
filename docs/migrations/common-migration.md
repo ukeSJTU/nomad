@@ -231,56 +231,42 @@ UI 职责:
 
 #### ./common/search-bar.tsx
 
-**基本信息**
+**状态**: ✅ 已完成 (2026-01-17)
 
-- 路径: `apps/web/app/_components/common/search-bar.tsx`
-- 复杂度: 低
-- 优先级: P2
+**实现位置**:
 
-**依赖问题**
+- UI 组件: `packages/ui/src/components/common/search-bar.tsx`
+- 测试: `packages/ui/src/components/common/search-bar.test.tsx`
+- 容器: `apps/web/app/_components/common/search-bar.tsx`
+- Story: `apps/storybook/src/stories/common/search-bar.stories.tsx`
 
-- [x] use_client
+**实现亮点**:
 
-**重构策略**
+- 完全受控的搜索输入组件
+- 支持 loading 状态禁用交互
+- 支持自定义 placeholder 和搜索按钮标签
+- 支持自定义 className
+- 无任何 Next.js 依赖，纯 UI 组件
+- 包含 11 个测试用例，覆盖所有核心功能
+- Storybook 包含 7 个示例状态
 
-```
-容器职责:
-- 管理搜索值状态
-- 处理提交回调
-- 处理搜索结果导航
+**测试覆盖**:
 
-UI 职责:
-- 输入框渲染
-- 搜索图标
-- 清除按钮
-- 受控输入 value/onChange
-- onSubmit 回调
+- ✅ 默认和自定义 placeholder 渲染
+- ✅ 受控值显示
+- ✅ onChange 回调触发（键盘输入）
+- ✅ onSubmit 回调（按钮点击和 Enter 键）
+- ✅ 搜索图标渲染
+- ✅ loading 状态下禁用输入和按钮
+- ✅ 自定义 className 应用
+- ✅ 自定义搜索按钮标签
+- ✅ 表单默认行为阻止
 
-适配器需求:
-- 无
-```
+**参考价值**:
 
-**View Model 接口**
-
-```typescript
-interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  placeholder?: string;
-  loading?: boolean;
-}
-```
-
-**测试要点**
-
-- [ ] 输入交互
-- [ ] 提交事件
-- [ ] 清除功能
-
-**实现笔记**
-
-- 待实施时记录
+- 展示了简单受控表单组件的迁移模式
+- 演示了 loading 状态的正确处理
+- 可作为其他搜索/输入组件的参考模板
 
 ---
 
