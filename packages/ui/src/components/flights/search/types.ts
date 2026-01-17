@@ -39,3 +39,25 @@ export type SearchFormProps = {
   onSwap: () => void;
   onSearch?: () => void;
 };
+
+export type FlightSearchHeaderProps = {
+  tripType: "one-way" | "round-trip";
+  departureCity: CityData;
+  arrivalCity: CityData;
+  formattedDepartureDate: string;
+  formattedReturnDate?: string;
+  formattedLastUpdateTime: string;
+  activeTab?: "outbound" | "return";
+  onTabChange?: (tab: "outbound" | "return") => void;
+  text: {
+    oneWay: string;
+    tabSelectOutbound: string;
+    tabSelectReturn: string;
+    lastUpdate: string;
+    priceFluctuationNotice: string;
+  };
+  roundTripSteps: {
+    outbound: number;
+    return: number;
+  };
+};

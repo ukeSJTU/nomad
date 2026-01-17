@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 4 | 进行中 0 | 未开始 36
+> **状态**: 已完成 6 | 进行中 0 | 未开始 34
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -55,6 +55,14 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **容器**: `apps/web/app/_components/flights/results/flight-card.tsx`
 - **测试**: `packages/ui/src/components/flights/results/flight-card.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/results/flight-card.stories.tsx`
+- **完成日期**: 2026-01-17
+
+#### ./flights/search/FlightSearchHeader.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/search/flight-search-header.tsx`
+- **容器**: `apps/web/app/_components/flights/search/FlightSearchHeader.tsx`
+- **测试**: `packages/ui/src/components/flights/search/flight-search-header.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/flight-search-header.stories.tsx`
 - **完成日期**: 2026-01-17
 
 ### 🚧 进行中
@@ -233,6 +241,7 @@ UI 职责:
 - 复杂度: 中
 - 优先级: P1
 - 批次: 1
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
@@ -242,20 +251,27 @@ UI 职责:
 
 ```
 容器职责:
-- 管理筛选开关状态
-- URL 同步 (在容器)
+- 提供格式化的日期和时间字符串
+- 提供 UI 文本常量
+- 提供 round trip 步骤数字
 
 UI 职责:
-- 搜索摘要显示
-- 筛选开关 UI
-- 受控状态
+- 显示行程信息 (单程/往返)
+- 显示城市和日期
+- 显示最后更新时间
+- 往返时提供标签页切换
 
 适配器需求:
 - 无
 ```
 
-**View Model 接口**
-参考 [ARCHITECTURE.md - FlightSearchHeader](../../ARCHITECTURE.md#flightsearchheader)
+**完成信息**
+
+- **UI 组件**: `packages/ui/src/components/flights/search/flight-search-header.tsx`
+- **容器**: `apps/web/app/_components/flights/search/FlightSearchHeader.tsx`
+- **测试**: `packages/ui/src/components/flights/search/flight-search-header.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/flight-search-header.stories.tsx`
+- **完成日期**: 2026-01-17
 
 ---
 
