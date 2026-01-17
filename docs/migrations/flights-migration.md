@@ -2,8 +2,8 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 0 | 进行中 0 | 未开始 40
-> **最后更新**: 2026-01-03
+> **状态**: 已完成 4 | 进行中 0 | 未开始 36
+> **最后更新**: 2026-01-17
 
 ## 域概览
 
@@ -47,6 +47,14 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **容器**: `apps/web/app/_components/flights/search/search-form.tsx`
 - **测试**: `packages/ui/src/components/flights/search/search-form.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/search/search-form.stories.tsx`
+- **完成日期**: 2026-01-17
+
+#### ./flights/results/flight-card.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/results/flight-card.tsx`
+- **容器**: `apps/web/app/_components/flights/results/flight-card.tsx`
+- **测试**: `packages/ui/src/components/flights/results/flight-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/results/flight-card.stories.tsx`
 - **完成日期**: 2026-01-17
 
 ### 🚧 进行中
@@ -770,9 +778,11 @@ Props:
 
 **基本信息**
 
+- 路径: `apps/web/app/_components/flights/results/flight-card.tsx`
 - 复杂度: 中
 - 优先级: P1
 - 批次: 待定
+- **状态**: ✅ 已完成 (2026-01-17)
 
 **依赖问题**
 
@@ -782,18 +792,27 @@ Props:
 
 ```
 容器职责:
-- 处理点击/收藏/展开等交互回调
+- 注入 formatCurrency 工具函数
 
 UI 职责:
 - 航班卡片渲染
+- 单/多舱位模式切换
+- 展开/收起交互
 - 所有视觉交互
 
 Props:
-- flight: view-model 数据
-- onSelect?: () => void
-- onFavorite?: () => void
-- onExpand?: () => void
+- 航班数据 (airlineName, flightNumber, etc.)
+- formatCurrency: (value: number) => string
+- onButtonClick?: () => void
+- onSeatClassClick?: (seatClass: SeatClassOption) => void
 ```
+
+**迁移完成**
+
+- ✅ UI 组件: `packages/ui/src/components/flights/results/flight-card.tsx`
+- ✅ 容器: `apps/web/app/_components/flights/results/flight-card.tsx`
+- ✅ 测试: `packages/ui/src/components/flights/results/flight-card.test.tsx` (25 tests)
+- ✅ Storybook: `apps/storybook/src/stories/flights/results/flight-card.stories.tsx`
 
 ---
 

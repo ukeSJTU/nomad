@@ -27,13 +27,13 @@
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
-| **Flights**    | 40     | 3      | 0      | 37     | 0     | 批次1+3 | 中     |
+| **Flights**    | 40     | 4      | 0      | 36     | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **14** | **0**  | **66** | **1** | -       | -      |
+| **总计**       | **81** | **15** | **0**  | **65** | **1** | -       | -      |
 
-**完成度**: 17.5% (14/80 可迁移组件)
+**完成度**: 18.8% (15/80 可迁移组件)
 
 ### 已完成组件
 
@@ -51,11 +51,12 @@
 - [x] UnderConstruction - packages/ui/src/components/common/under-construction.tsx
 - [~] DevUserSwitcher - 不迁移 (仅开发环境使用)
 
-**Flights (3/40)**:
+**Flights (4/40)**:
 
 - [x] AirportList - packages/ui/src/components/flights/guide/airport-list.tsx
 - [x] DatePriceSelector - packages/ui/src/components/flights/search/date-price-selector.tsx
 - [x] SearchForm - packages/ui/src/components/flights/search/search-form.tsx
+- [x] FlightCard - packages/ui/src/components/flights/results/flight-card.tsx
 
 ### 批次进度
 
