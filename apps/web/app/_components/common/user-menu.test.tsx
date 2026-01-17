@@ -19,22 +19,6 @@ vi.mock("next/navigation", () => ({
   usePathname: () => "/",
 }));
 
-// Mock Next.js Link component
-vi.mock("next/link", () => ({
-  default: ({
-    children,
-    href,
-    ...props
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  ),
-}));
-
 // Mock auth actions + session hook
 const mockUseSession = vi.fn();
 const mockSignOutAction = vi.fn();
@@ -45,7 +29,7 @@ vi.mock("@/app/_actions/auth", () => ({
   signOutAction: (...args: unknown[]) => mockSignOutAction(...args),
 }));
 
-describe("UserMenu Component", () => {
+describe("UserMenu Container", () => {
   describe("when user is logged in", () => {
     const mockSession = {
       id: "user-123",
@@ -54,7 +38,7 @@ describe("UserMenu Component", () => {
       image: "https://github.com/shadcn.png",
     };
 
-    it("should display standardized text '尊敬的用户' instead of username", () => {
+    it("should pass session data to UI component", () => {
       mockUseSession.mockReturnValue({
         data: mockSession,
         isPending: false,
@@ -62,50 +46,11 @@ describe("UserMenu Component", () => {
 
       render(<UserMenu />);
 
-      // Should show "尊敬的用户" in collapsed state
+      // Should show "尊敬的用户"
       expect(screen.getByText("尊敬的用户")).toBeInTheDocument();
-
-      // Should NOT show the actual username "张三" in collapsed state
-      const usernameElements = screen.queryAllByText("张三");
-      expect(usernameElements.length).toBe(0);
     });
 
-    it("should display ChevronDown icon with correct styling", () => {
-      mockUseSession.mockReturnValue({
-        data: mockSession,
-        isPending: false,
-      });
-
-      const { container } = render(<UserMenu />);
-
-      // Find ChevronDown icon by checking for lucide-react svg
-      const chevronIcon = container.querySelector(
-        'svg[class*="lucide-chevron-down"]'
-      );
-      expect(chevronIcon).toBeInTheDocument();
-
-      // Check icon has correct size and color classes
-      expect(chevronIcon).toHaveClass("size-3.5");
-      expect(chevronIcon).toHaveClass("text-muted-foreground");
-    });
-
-    it("should wrap trigger area in Link component pointing to /home/info", () => {
-      mockUseSession.mockReturnValue({
-        data: mockSession,
-        isPending: false,
-      });
-
-      const { container } = render(<UserMenu />);
-
-      // Find Link element
-      const linkElement = container.querySelector('a[href="/home/info"]');
-      expect(linkElement).toBeInTheDocument();
-
-      // Link should contain the trigger content
-      expect(linkElement).toHaveTextContent("尊敬的用户");
-    });
-
-    it("should render avatar with user initials as fallback", () => {
+    it("should handle sign out action", async () => {
       mockUseSession.mockReturnValue({
         data: mockSession,
         isPending: false,
@@ -113,9 +58,14 @@ describe("UserMenu Component", () => {
 
       render(<UserMenu />);
 
-      // Avatar fallback should show initials "张" for "张三"
-      // Check that the avatar fallback text is rendered
-      expect(screen.getByText("张")).toBeInTheDocument();
+      const signOutButton = screen.getByText("退出登录");
+      signOutButton.click();
+
+      // Wait for async action
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      expect(mockSignOutAction).toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalledWith("/");
     });
   });
 
@@ -131,17 +81,6 @@ describe("UserMenu Component", () => {
       expect(screen.getByRole("link", { name: /登录/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /注册/i })).toBeInTheDocument();
     });
-
-    it("should NOT display '尊敬的用户' text", () => {
-      mockUseSession.mockReturnValue({
-        data: null,
-        isPending: false,
-      });
-
-      render(<UserMenu />);
-
-      expect(screen.queryByText("尊敬的用户")).not.toBeInTheDocument();
-    });
   });
 
   describe("when session is loading", () => {
@@ -153,44 +92,8 @@ describe("UserMenu Component", () => {
 
       const { container } = render(<UserMenu />);
 
-      // Find skeleton loader
       const skeleton = container.querySelector(".animate-pulse");
       expect(skeleton).toBeInTheDocument();
-    });
-  });
-
-  describe("when user has no name (anonymous)", () => {
-    it("should still display '尊敬的用户' text", () => {
-      const sessionWithoutName = {
-        id: "user-456",
-        email: "anonymous@example.com",
-      };
-
-      mockUseSession.mockReturnValue({
-        data: sessionWithoutName,
-        isPending: false,
-      });
-
-      render(<UserMenu />);
-
-      expect(screen.getByText("尊敬的用户")).toBeInTheDocument();
-    });
-
-    it("should display 'A' as avatar fallback for anonymous users", () => {
-      const sessionWithoutName = {
-        id: "user-456",
-        email: "anonymous@example.com",
-      };
-
-      mockUseSession.mockReturnValue({
-        data: sessionWithoutName,
-        isPending: false,
-      });
-
-      render(<UserMenu />);
-
-      // Avatar fallback should show "A" for anonymous
-      expect(screen.getByText("A")).toBeInTheDocument();
     });
   });
 });

@@ -95,6 +95,8 @@ Common 域包含应用级通用组件:
 
 #### ./common/user-menu.tsx
 
+**状态**: ✅ 已完成 (2026-01-17)
+
 **基本信息**
 
 - 路径: `apps/web/app/_components/common/user-menu.tsx`
@@ -131,14 +133,48 @@ UI 职责:
 
 **测试要点**
 
-- [ ] 菜单打开/关闭
-- [ ] 用户信息显示
-- [ ] 菜单项渲染
-- [ ] 退出登录流程
+- [x] 用户信息显示
+- [x] 头像与initials fallback
+- [x] Loading skeleton
+- [x] 未登录状态的登录/注册按钮
+- [x] 匿名用户处理
 
-**实现笔记**
+**实现位置**
 
-- 待实施时记录
+- UI 组件: `packages/ui/src/components/common/user-menu.tsx`
+- 测试: `packages/ui/src/components/common/user-menu.test.tsx`
+- 容器: `apps/web/app/_components/common/user-menu.tsx`
+- 容器测试: `apps/web/app/_components/common/user-menu.test.tsx`
+- Story: `apps/storybook/src/stories/common/user-menu.stories.tsx`
+- Utils: `packages/ui/src/components/common/utils.ts` (getInitials函数)
+
+**实现亮点**
+
+- 完全受控的 session/isPending/onSignOut props
+- 正确使用 Link 适配器，无 Next.js 依赖
+- 支持自定义所有导航 hrefs
+- 使用 HoverCard 实现悬浮菜单
+- 包含 12 个测试用例，覆盖各种状态
+- Storybook 包含 8 个示例状态
+- 迁移了 getInitials 工具函数到 UI 包
+
+**测试覆盖**
+
+- ✅ "尊敬的用户" 标准化文本显示
+- ✅ ChevronDown 图标正确样式
+- ✅ Link 包装触发区域指向正确路径
+- ✅ 头像与 initials fallback 渲染
+- ✅ 未登录状态显示登录/注册按钮
+- ✅ Loading skeleton 渲染
+- ✅ 匿名用户 'A' fallback
+- ✅ 自定义 hrefs 支持
+
+**参考价值**
+
+- 展示了如何处理用户会话状态的 UI 组件
+- 演示了 HoverCard 在纯 UI 组件中的使用
+- 提供了工具函数迁移的模式参考
+- 可作为其他需要 session 数据的组件参考
 
 ---
 

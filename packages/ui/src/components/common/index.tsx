@@ -10,3 +10,6 @@ export { BreadcrumbNav } from "./breadcrumb-nav";
 export { Footer } from "./footer";
 export { SiteHeader } from "./site-header";
 export type { LogoProps, NavItem, SiteHeaderProps } from "./types";
+export type { UserMenuProps, UserMenuSession } from "./user-menu";
+export { UserMenu } from "./user-menu";
+export { getInitials } from "./utils";
