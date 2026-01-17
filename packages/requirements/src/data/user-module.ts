@@ -2077,6 +2077,310 @@ const REQ_U12: Requirement = {
     '所需UI元素："从常用旅客中选择"按钮/链接、常用旅客选择弹窗/下拉列表、旅客复选框列表（显示姓名、证件类型）、"已选"状态标记。关键交互：勾选旅客后自动填充对应表单字段；取消勾选后清空对应字段；支持多人预订时选择多名旅客。',
 };
 
+const REQ_U13: Requirement = {
+  id: "REQ-U13",
+  module: "user",
+  name: "遗忘密码",
+  overview:
+    "本功能允许忘记密码的用户通过注册邮箱和验证码重置账户密码。流程包括邮箱验证、OTP验证和新密码设置三个步骤，确保账户安全。",
+  priority: "Must Have",
+  userStories: [
+    {
+      id: "US-01",
+      content:
+        "作为一个忘记登录密码的用户，我希望能通过我的注册邮箱找回并重置密码，以便恢复对我的账户的访问权限。",
+    },
+  ],
+  acceptanceCriteria: [
+    {
+      id: "场景1",
+      title: "成功重置密码 (Happy Path)",
+      steps: [
+        {
+          type: "given",
+          description: "用户位于登录页面点击'忘记密码'",
+        },
+        {
+          type: "when",
+          description: "用户输入注册邮箱并获取验证码",
+        },
+        {
+          type: "and",
+          description: "输入收到的正确验证码",
+        },
+        {
+          type: "and",
+          description: "输入符合要求的新密码并确认",
+        },
+        {
+          type: "then",
+          description: "系统应提示'密码重置成功'",
+        },
+        {
+          type: "and",
+          description: "自动跳转至登录页面",
+        },
+      ],
+    },
+    {
+      id: "场景2",
+      title: "邮箱格式错误",
+      steps: [
+        {
+          type: "given",
+          description: "用户位于找回密码页面第一步",
+        },
+        {
+          type: "when",
+          description: "用户输入无效格式的邮箱",
+        },
+        {
+          type: "then",
+          description: "系统应提示'请输入有效的邮箱地址'",
+        },
+        {
+          type: "and",
+          description: "获取验证码按钮应不可点击",
+        },
+      ],
+    },
+    {
+      id: "场景3",
+      title: "邮箱未注册",
+      steps: [
+        {
+          type: "given",
+          description: "用户输入未在平台注册的邮箱",
+        },
+        {
+          type: "when",
+          description: "点击'获取验证码'",
+        },
+        {
+          type: "then",
+          description: "系统应提示'该邮箱未注册'",
+        },
+        {
+          type: "and",
+          description: "不发送验证码",
+        },
+      ],
+    },
+    {
+      id: "场景4",
+      title: "验证码错误或过期",
+      steps: [
+        {
+          type: "given",
+          description: "用户已收到验证码",
+        },
+        {
+          type: "when",
+          description: "用户输入错误的或已过期的验证码",
+        },
+        {
+          type: "then",
+          description: "系统应提示'验证码错误或已失效'",
+        },
+        {
+          type: "and",
+          description: "无法进入设置密码步骤",
+        },
+      ],
+    },
+    {
+      id: "场景5",
+      title: "新密码强度不足",
+      steps: [
+        {
+          type: "given",
+          description: "用户进入设置新密码步骤",
+        },
+        {
+          type: "when",
+          description: "输入的新密码不符合强度要求",
+        },
+        {
+          type: "then",
+          description: "系统应提示具体的密码要求",
+        },
+        {
+          type: "and",
+          description: "提交按钮不可用",
+        },
+      ],
+    },
+    {
+      id: "场景6",
+      title: "两次密码输入不一致",
+      steps: [
+        {
+          type: "given",
+          description: "用户进入设置新密码步骤",
+        },
+        {
+          type: "when",
+          description: "确认密码与新密码不匹配",
+        },
+        {
+          type: "then",
+          description: "系统应提示'两次输入的密码不一致'",
+        },
+      ],
+    },
+  ],
+  notes:
+    "所需UI元素：邮箱输入框、验证码输入框、新密码输入框、确认密码输入框、步骤指示器。流程：1.验证身份(邮箱+OTP) -> 2.重置密码 -> 3.完成。",
+};
+
+const REQ_U14: Requirement = {
+  id: "REQ-U14",
+  module: "user",
+  name: "地址管理",
+  overview:
+    "本功能允许用户在个人中心管理收货或联系地址。用户可以添加、编辑、删除地址，并设置默认地址，以便在预订或相关业务中快速使用。",
+  priority: "Should Have",
+  userStories: [
+    {
+      id: "US-01",
+      content:
+        "作为一个用户，我希望能保存和管理我的常用地址，以便在需要填写地址信息时能快速选择，节省时间。",
+    },
+  ],
+  acceptanceCriteria: [
+    {
+      id: "场景1",
+      title: "查看地址列表 (Happy Path)",
+      steps: [
+        {
+          type: "given",
+          description: "用户已登录并访问'地址管理'页面",
+        },
+        {
+          type: "when",
+          description: "页面加载完成",
+        },
+        {
+          type: "then",
+          description: "应显示用户保存的所有地址列表",
+        },
+        {
+          type: "and",
+          description: "默认地址应有明显标记",
+        },
+      ],
+    },
+    {
+      id: "场景2",
+      title: "添加新地址 (Happy Path)",
+      steps: [
+        {
+          type: "given",
+          description: "用户点击'添加地址'按钮",
+        },
+        {
+          type: "when",
+          description: "填写完整地址信息并保存",
+        },
+        {
+          type: "then",
+          description: "系统应提示'添加成功'",
+        },
+        {
+          type: "and",
+          description: "新地址应出现在列表中",
+        },
+      ],
+    },
+    {
+      id: "场景3",
+      title: "编辑地址 (Happy Path)",
+      steps: [
+        {
+          type: "given",
+          description: "用户点击某地址的'编辑'按钮",
+        },
+        {
+          type: "when",
+          description: "修改信息后点击保存",
+        },
+        {
+          type: "then",
+          description: "系统应提示'更新成功'",
+        },
+        {
+          type: "and",
+          description: "列表中的信息应更新",
+        },
+      ],
+    },
+    {
+      id: "场景4",
+      title: "删除地址 (Happy Path)",
+      steps: [
+        {
+          type: "given",
+          description: "用户点击某地址的'删除'按钮",
+        },
+        {
+          type: "when",
+          description: "在确认对话框中点击'确认'",
+        },
+        {
+          type: "then",
+          description: "该地址应从列表中移除",
+        },
+      ],
+    },
+    {
+      id: "场景5",
+      title: "设置默认地址",
+      steps: [
+        {
+          type: "given",
+          description: "用户拥有多个地址",
+        },
+        {
+          type: "when",
+          description: "将非默认地址设为默认",
+        },
+        {
+          type: "then",
+          description: "该地址应标记为'默认'",
+        },
+        {
+          type: "and",
+          description: "之前的默认地址标记应自动取消",
+        },
+      ],
+    },
+    {
+      id: "场景6",
+      title: "必填项校验失败",
+      steps: [
+        {
+          type: "given",
+          description: "用户正在添加或编辑地址",
+        },
+        {
+          type: "when",
+          description: "未填写必填字段(如联系人、手机号)提交",
+        },
+        {
+          type: "then",
+          description: "系统应提示相应的错误信息",
+        },
+        {
+          type: "and",
+          description: "保存操作被阻止",
+        },
+      ],
+    },
+  ],
+  notes:
+    "所需UI元素：地址列表卡片、添加/编辑地址表单(联系人、手机号、地区、详细地址、标签)、设为默认开关。地址列表为空时应显示空状态引导。",
+};
+
 export const userModule: ModuleDefinition = {
   id: "user",
   name: "用户模块",
@@ -2095,5 +2399,7 @@ export const userModule: ModuleDefinition = {
     REQ_U10,
     REQ_U11,
     REQ_U12,
+    REQ_U13,
+    REQ_U14,
   ],
 };

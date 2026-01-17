@@ -1083,6 +1083,100 @@ const REQ_UI_12: Requirement = {
     "表单错误在字段下方内联显示（红色文字+红色边框高亮），页面错误使用Alert组件或专用错误页。包含Alert组件（错误variant）、错误图标、错误文字说明、操作按钮（重试/返回）。支持可关闭错误提示、提供解决方案或操作入口。破坏性错误使用variant='destructive'（红色），一般提示使用default variant。",
 };
 
+const REQ_UI_13: Requirement = {
+  id: "REQ-UI-13",
+  module: "ui-ux",
+  name: "设计系统与样式规范",
+  overview:
+    "本功能定义了全局的设计系统、颜色规范、排版规则和组件库配置，确保应用具有一致的视觉风格和用户体验。基于Shadcn/UI和Tailwind CSS实现。",
+  priority: "Must Have",
+  userStories: [
+    {
+      id: "US-01",
+      content:
+        "作为一个**开发者/设计师**，我希望**系统有一套统一的设计规范**，以便**快速构建风格一致的界面**。",
+    },
+  ],
+  acceptanceCriteria: [
+    {
+      id: "场景1",
+      title: "颜色系统应用",
+      steps: [
+        { type: "given", description: "开发新组件" },
+        { type: "when", description: "应用主题颜色" },
+        {
+          type: "then",
+          description:
+            "应使用CSS变量定义的语义化颜色（如--primary, --secondary）",
+        },
+        {
+          type: "and",
+          description:
+            "Primary色应为oklch(0.55 0.18 240)（蓝色系），Secondary色应为oklch(0.68 0.17 45)（橙色系）",
+        },
+      ],
+    },
+    {
+      id: "场景2",
+      title: "圆角规范一致性",
+      steps: [
+        { type: "given", description: "查看不同组件（卡片、按钮、输入框）" },
+        { type: "when", description: "测量圆角大小" },
+        {
+          type: "then",
+          description: "所有组件应遵循--radius变量定义的圆角（0.75rem）",
+        },
+      ],
+    },
+    {
+      id: "场景3",
+      title: "深色模式颜色适配",
+      steps: [
+        { type: "given", description: "切换到深色模式" },
+        { type: "when", description: "查看界面元素" },
+        {
+          type: "then",
+          description: "背景色应变为oklch(0.15 0.01 240)，文字变为浅色",
+        },
+        {
+          type: "and",
+          description: "Primary色应自动调整为深色模式下的亮蓝色",
+        },
+      ],
+    },
+    {
+      id: "场景4",
+      title: "字体排版规范",
+      steps: [
+        { type: "given", description: "查看文本内容" },
+        { type: "when", description: "检查字体设置" },
+        {
+          type: "then",
+          description: "应优先使用Geist Sans（无衬线）和Geist Mono（等宽）字体",
+        },
+      ],
+    },
+    {
+      id: "场景5",
+      title: "打印样式优化",
+      steps: [
+        { type: "given", description: "用户打印页面（如行程单）" },
+        { type: "when", description: "触发浏览器打印预览" },
+        {
+          type: "then",
+          description: "应隐藏导航栏、页脚等非内容元素",
+        },
+        {
+          type: "and",
+          description: "背景应强制为白色，文字为黑色，链接显示URL",
+        },
+      ],
+    },
+  ],
+  notes:
+    "基于Shadcn/UI 'new-york' 风格配置。核心颜色：Primary(蓝), Secondary(橙)。圆角：0.75rem。字体：Geist Sans/Mono。支持深色模式自动适配（OKLCH色彩空间）。包含针对打印场景的专用样式优化。",
+};
+
 export const uiUxModule: ModuleDefinition = {
   id: "ui-ux",
   name: "UI/UX模块",
@@ -1101,5 +1195,6 @@ export const uiUxModule: ModuleDefinition = {
     REQ_UI_10,
     REQ_UI_11,
     REQ_UI_12,
+    REQ_UI_13,
   ],
 };

@@ -2089,6 +2089,124 @@ const REQ_F13: Requirement = {
     "此需求主要涉及后端逻辑，无直接UI。订单号显示在支付页面和确认页面，座位锁定状态通过可用座位数间接体现。",
 };
 
+const REQ_F14: Requirement = {
+  id: "REQ-F14",
+  module: "flight",
+  name: "机场攻略",
+  overview:
+    "本功能在首页提供机场攻略板块，为用户提供登机流程指引、机场服务设施介绍、目的地天气等实用信息，帮助用户更好地规划行程。",
+  priority: "Could Have",
+  userStories: [
+    {
+      id: "US-01",
+      content:
+        "作为一个即将出行的旅客，我希望能查看机场的登机流程和设施指南，以便我能顺利完成登机并享受机场服务。",
+    },
+  ],
+  acceptanceCriteria: [
+    {
+      id: "场景1",
+      title: "查看攻略主页",
+      steps: [
+        {
+          type: "given",
+          description: "用户访问机票首页",
+        },
+        {
+          type: "when",
+          description: "向下滚动至机场攻略区域",
+        },
+        {
+          type: "then",
+          description: "应显示热门机场的攻略入口列表",
+        },
+        {
+          type: "and",
+          description: "显示登机流程概览图",
+        },
+      ],
+    },
+    {
+      id: "场景2",
+      title: "查看特定机场详情",
+      steps: [
+        {
+          type: "given",
+          description: "用户点击某个具体机场(如上海浦东)",
+        },
+        {
+          type: "when",
+          description: "进入机场详情页",
+        },
+        {
+          type: "then",
+          description: "应显示该机场的航站楼地图、交通指引",
+        },
+        {
+          type: "and",
+          description: "显示机场特色服务设施",
+        },
+      ],
+    },
+    {
+      id: "场景3",
+      title: "查看登机流程指引",
+      steps: [
+        {
+          type: "given",
+          description: "用户查看攻略详情",
+        },
+        {
+          type: "when",
+          description: "点击登机流程板块",
+        },
+        {
+          type: "then",
+          description: "应以步骤条或图文形式展示值机、安检、候机、登机全流程",
+        },
+      ],
+    },
+    {
+      id: "场景4",
+      title: "查看目的地天气",
+      steps: [
+        {
+          type: "given",
+          description: "用户查看特定城市/机场攻略",
+        },
+        {
+          type: "when",
+          description: "页面加载完成",
+        },
+        {
+          type: "then",
+          description: "应显示该地未来几天的天气预报卡片",
+        },
+      ],
+    },
+    {
+      id: "场景5",
+      title: "切换不同机场攻略",
+      steps: [
+        {
+          type: "given",
+          description: "用户正在查看北京大兴机场攻略",
+        },
+        {
+          type: "when",
+          description: "使用侧边栏或顶部菜单切换城市",
+        },
+        {
+          type: "then",
+          description: "页面内容应更新为新选定机场的攻略信息",
+        },
+      ],
+    },
+  ],
+  notes:
+    "所需UI元素：机场列表卡片、天气Widget、流程步骤条(Steps)、富文本展示区。支持动态路由 `/flights/guide/[slug]`。",
+};
+
 export const flightModule: ModuleDefinition = {
   id: "flight",
   name: "核心业务模块 - 机票",
@@ -2108,5 +2226,6 @@ export const flightModule: ModuleDefinition = {
     REQ_F11,
     REQ_F12,
     REQ_F13,
+    REQ_F14,
   ],
 };
