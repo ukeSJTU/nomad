@@ -27,13 +27,13 @@
 | -------------- | ------ | ------ | ------ | ------ | ------- | ------ |
 | **Common**     | 12     | 5      | 0      | 7      | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 批次2   | 高     |
-| **Flights**    | 40     | 2      | 0      | 38     | 批次1+3 | 中     |
+| **Flights**    | 40     | 3      | 0      | 37     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 批次4   | 低     |
-| **总计**       | **81** | **7**  | **0**  | **74** | -       | -      |
+| **总计**       | **81** | **8**  | **0**  | **73** | -       | -      |
 
-**完成度**: 8.6% (7/81)
+**完成度**: 9.9% (8/81)
 
 ### 已完成组件
 
@@ -44,17 +44,18 @@
 - [x] AppSidebar - packages/ui/src/components/common/app-sidebar.tsx
 - [x] BreadcrumbNav - packages/ui/src/components/common/breadcrumb-nav.tsx
 
-**Flights (2/40)**:
+**Flights (3/40)**:
 
 - [x] AirportList - packages/ui/src/components/flights/guide/airport-list.tsx
 - [x] DatePriceSelector - packages/ui/src/components/flights/search/date-price-selector.tsx
+- [x] SearchForm - packages/ui/src/components/flights/search/search-form.tsx
 
 ### 批次进度
 
 | 批次      | 名称                                | 组件数 | 完成度 | 状态   |
 | --------- | ----------------------------------- | ------ | ------ | ------ |
 | **批次0** | 适配层                              | -      | 100%   | 已完成 |
-| **批次1** | Common + Flights Search             | 24     | 25%    | 进行中 |
+| **批次1** | Common + Flights Search             | 24     | 29%    | 进行中 |
 | **批次2** | Auth 认证链路                       | 13     | 0%     | 待启动 |
 | **批次3** | Flights Booking/Orders + Passengers | 24     | 0%     | 待启动 |
 | **批次4** | User + Security                     | 12     | 0%     | 待启动 |

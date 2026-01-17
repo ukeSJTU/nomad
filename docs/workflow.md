@@ -10,6 +10,7 @@
 - 导航：命令式导航用回调；声明式用 Link 适配器。
 - 副作用：计时/URL/localStorage/Server Action 等留在容器；UI 仅渲染受控数据。
 - 测试：非基础组件需要 Vitest+RTL，测试文件与组件同级 `*.test.tsx`。
+- UI：新的重构的组件必须和原本组件显示完全一样的内容，不要添加新的内容，也不要缺失原本的内容。
 
 ## 步骤
 
@@ -50,4 +51,4 @@
    - [ ] 测试与组件同级，覆盖渲染与交互。
    - [ ] 构建/测试命令通过或记录阻塞原因。
 
-8. 更新 TODO.md 进度状态与链接并向用户反馈完成内容，同时提供一个英文的 commit message，"refactor: xxx" 需要 body message 但是不需要 scope 。
+8. 更新 TODO.md 进度状态与链接并向用户反馈完成内容以及建议重构的下一个组件，同时提供一个英文的 commit message，"refactor: xxx" 需要 body message 但是不需要 scope 。

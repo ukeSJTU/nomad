@@ -41,7 +41,13 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 
 ### ✅ 已完成并测试
 
-(暂无)
+#### ./flights/search/search-form.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/search/search-form.tsx`
+- **容器**: `apps/web/app/_components/flights/search/search-form.tsx`
+- **测试**: `packages/ui/src/components/flights/search/search-form.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/search-form.stories.tsx`
+- **完成日期**: 2026-01-17
 
 ### 🚧 进行中
 
@@ -92,11 +98,11 @@ UI 职责:
 
 **测试要点**
 
-- [ ] 字段输入
-- [ ] 往返/单程切换
-- [ ] 出发地/目的地交换
-- [ ] 表单验证
-- [ ] 提交流程
+- [x] 字段输入
+- [x] 往返/单程切换
+- [x] 出发地/目的地交换
+- [x] 表单验证
+- [x] 提交流程
 
 ---
 
