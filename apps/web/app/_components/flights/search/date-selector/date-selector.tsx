@@ -1,9 +1,11 @@
 "use client";
 
+import {
+  OneWaySelector,
+  RoundTripSelector,
+} from "@nomad/ui/components/flights/search";
 import { type TripType, useDateSelector } from "@/hooks/use-date-selector";
-
-import { OneWaySelector } from "./one-way-selector";
-import { RoundTripSelector } from "./round-trip-selector";
+import { getRelativeDateLabel, getWeekdayLabel } from "@/lib/format/date-utils";
 
 export interface DateSelectorProps {
   tripType: TripType;
@@ -66,17 +68,20 @@ export function DateSelector({
           onReturnClick={handleReturnClick}
           onDateSelect={handleDateSelect}
           getDisabledDates={getDisabledDates}
+          getRelativeDateLabel={getRelativeDateLabel}
+          getWeekdayLabel={getWeekdayLabel}
         />
       ) : (
         <OneWaySelector
           departureDate={departureDate}
           today={today}
-          activeField={activeField}
           calendarOpen={calendarOpen}
           onCalendarOpenChange={setCalendarOpen}
           onAddReturnDate={handleAddReturnDate}
           onDateSelect={handleDateSelect}
           getDisabledDates={getDisabledDates}
+          getRelativeDateLabel={getRelativeDateLabel}
+          getWeekdayLabel={getWeekdayLabel}
         />
       )}
     </div>

@@ -2,13 +2,13 @@
 
 import { format } from "date-fns";
 
-import { getRelativeDateLabel, getWeekdayLabel } from "@/lib/format";
-
 export interface DateDisplayProps {
   date: Date | null;
   today: Date;
   placeholder?: string;
   align?: "left" | "right";
+  getRelativeDateLabel: (date: Date, today: Date) => string;
+  getWeekdayLabel: (date: Date) => string;
 }
 
 export function DateDisplay({
@@ -16,6 +16,8 @@ export function DateDisplay({
   today,
   placeholder = "选择日期",
   align = "left",
+  getRelativeDateLabel,
+  getWeekdayLabel,
 }: DateDisplayProps) {
   if (!date) {
     return (

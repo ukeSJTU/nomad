@@ -1,16 +1,15 @@
 "use client";
 
-import { Badge } from "@nomad/ui/components/primitives/badge";
-import { Calendar } from "@nomad/ui/components/primitives/calendar";
+import { type DateRange } from "react-day-picker";
+
+import { Badge } from "../../primitives/badge";
+import { Calendar } from "../../primitives/calendar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@nomad/ui/components/primitives/dropdown-menu";
-import { type DateRange } from "react-day-picker";
-import { type ActiveField } from "@/hooks/use-date-selector";
-
-import { DateDisplay } from "./date-display";
+} from "../../primitives/dropdown-menu";
+import { DateDisplay, type DateDisplayProps } from "./date-display";
 
 export interface RoundTripSelectorProps {
   departureDate: Date | null;
@@ -19,11 +18,13 @@ export interface RoundTripSelectorProps {
   tripDuration: number;
   calendarOpen: boolean;
   onCalendarOpenChange: (open: boolean) => void;
-  activeField: ActiveField;
+  activeField: "departure" | "return";
   onDepartureClick: () => void;
   onReturnClick: () => void;
   onDateSelect: (date: Date | DateRange | undefined) => void;
   getDisabledDates: (date: Date) => boolean;
+  getRelativeDateLabel: DateDisplayProps["getRelativeDateLabel"];
+  getWeekdayLabel: DateDisplayProps["getWeekdayLabel"];
 }
 
 export function RoundTripSelector({
@@ -38,6 +39,8 @@ export function RoundTripSelector({
   onReturnClick,
   onDateSelect,
   getDisabledDates,
+  getRelativeDateLabel,
+  getWeekdayLabel,
 }: RoundTripSelectorProps) {
   return (
     <DropdownMenu open={calendarOpen} onOpenChange={onCalendarOpenChange}>
@@ -55,7 +58,12 @@ export function RoundTripSelector({
           <div className="flex-1 px-4 py-3 cursor-pointer">
             <div className="text-xs text-muted-foreground mb-1">出发日期</div>
             <div className="flex items-baseline gap-2">
-              <DateDisplay date={departureDate} today={today} />
+              <DateDisplay
+                date={departureDate}
+                today={today}
+                getRelativeDateLabel={getRelativeDateLabel}
+                getWeekdayLabel={getWeekdayLabel}
+              />
             </div>
           </div>
         </DropdownMenuTrigger>
@@ -88,7 +96,13 @@ export function RoundTripSelector({
               返回日期
             </div>
             <div className="flex items-baseline gap-2 justify-end">
-              <DateDisplay date={returnDate} today={today} align="right" />
+              <DateDisplay
+                date={returnDate}
+                today={today}
+                align="right"
+                getRelativeDateLabel={getRelativeDateLabel}
+                getWeekdayLabel={getWeekdayLabel}
+              />
             </div>
           </div>
         </DropdownMenuTrigger>

@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 8 | 进行中 0 | 未开始 32
+> **状态**: 已完成 11 | 进行中 0 | 未开始 29
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -87,6 +87,25 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **容器**: `apps/web/app/_components/flights/search/city-selector.tsx` (简单 re-export)
 - **测试**: `packages/ui/src/components/flights/search/city-selector.test.tsx` + `city-input.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/search/city-input.stories.tsx`
+- **完成日期**: 2026-01-17
+
+#### ./flights/search/date-selector/\* (3个UI组件)
+
+- **UI 组件**:
+  - `packages/ui/src/components/flights/search/date-display.tsx`
+  - `packages/ui/src/components/flights/search/one-way-selector.tsx`
+  - `packages/ui/src/components/flights/search/round-trip-selector.tsx`
+- **容器**: `apps/web/app/_components/flights/search/date-selector/date-selector.tsx` (使用 useDateSelector hook)
+- **测试**:
+  - `packages/ui/src/components/flights/search/date-display.test.tsx`
+  - `packages/ui/src/components/flights/search/one-way-selector.test.tsx`
+  - `packages/ui/src/components/flights/search/round-trip-selector.test.tsx`
+  - `apps/web/app/_components/flights/search/date-selector/date-selector.test.tsx` (容器集成测试)
+- **Storybook**:
+  - `apps/storybook/src/stories/flights/search/date-display.stories.tsx`
+  - `apps/storybook/src/stories/flights/search/one-way-selector.stories.tsx`
+  - `apps/storybook/src/stories/flights/search/round-trip-selector.stories.tsx`
+- **工具函数**: `apps/web/src/lib/format/date-utils.ts` (getRelativeDateLabel, getWeekdayLabel)
 - **完成日期**: 2026-01-17
 
 ### 🚧 进行中
@@ -366,33 +385,6 @@ UI 职责:
 - **测试**: `packages/ui/src/components/flights/search/city-selector.test.tsx` + `city-input.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/search/city-input.stories.tsx`
 - **完成日期**: 2026-01-17
-
----
-
-### ./flights/search/date-selector/\* (4个组件)
-
-**组件列表**:
-
-- date-display.tsx
-- date-selector.tsx (容器组件)
-- one-way-selector.tsx
-- round-trip-selector.tsx
-
-**基本信息**
-
-- 复杂度: 中
-- 优先级: P1
-- 批次: 1
-
-**重构策略**
-
-```
-统一策略:
-- 受控 API (selected range/onChange/bounds)
-- 日期格式化在 utils
-- date-selector.tsx 可能作为容器保留在 apps/web
-- 其他三个作为纯 UI 迁移到 packages/ui
-```
 
 ---
 

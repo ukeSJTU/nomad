@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { addDays, format } from "date-fns";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { DateDisplay } from "./date-display";
 import { DateSelector } from "./date-selector";
 
 const getTestDates = () => {
