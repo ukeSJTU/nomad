@@ -23,21 +23,21 @@
 
 ### 总体进度
 
-| 域             | 组件数 | 已完成 | 进行中 | 未开始 | 批次    | 优先级 |
-| -------------- | ------ | ------ | ------ | ------ | ------- | ------ |
-| **Common**     | 12     | 11     | 0      | 1      | 批次1   | 高     |
-| **Auth**       | 13     | 0      | 0      | 13     | 批次2   | 高     |
-| **Flights**    | 40     | 3      | 0      | 37     | 批次1+3 | 中     |
-| **Passengers** | 4      | 0      | 0      | 4      | 批次3   | 低     |
-| **Security**   | 4      | 0      | 0      | 4      | 批次4   | 低     |
-| **User**       | 8      | 0      | 0      | 8      | 批次4   | 低     |
-| **总计**       | **81** | **14** | **0**  | **67** | -       | -      |
+| 域             | 组件数 | 已完成 | 进行中 | 未开始 | 跳过  | 批次    | 优先级 |
+| -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
+| **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
+| **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
+| **Flights**    | 40     | 3      | 0      | 37     | 0     | 批次1+3 | 中     |
+| **Passengers** | 4      | 0      | 0      | 4      | 0     | 批次3   | 低     |
+| **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
+| **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
+| **总计**       | **81** | **14** | **0**  | **66** | **1** | -       | -      |
 
-**完成度**: 17.3% (14/81)
+**完成度**: 17.5% (14/80 可迁移组件)
 
 ### 已完成组件
 
-**Common (11/12)**:
+**Common (11/11 可迁移)**:
 
 - [x] SiteHeader - packages/ui/src/components/common/site-header.tsx
 - [x] Footer - packages/ui/src/components/common/footer.tsx
@@ -49,6 +49,7 @@
 - [x] Stepper - packages/ui/src/components/common/stepper.tsx
 - [x] ErrorDisplay - packages/ui/src/components/common/error-display.tsx
 - [x] UnderConstruction - packages/ui/src/components/common/under-construction.tsx
+- [~] DevUserSwitcher - 不迁移 (仅开发环境使用)
 
 **Flights (3/40)**:
 
@@ -89,8 +90,8 @@
 
 **范围**:
 
-- **Common** (2 组件待完成): construction, dev-user-switcher
-- **Flights Search** (12 组件): quick-date-selector, FlightListOneWay/RoundTrip, FlightSearchHeader, city-selector, date-selector/\*, search-history-section, search-history, FlightSearchError
+- **Common** (已全部完成): 11 个组件已迁移完成，dev-user-switcher 不迁移
+- **Flights Search** (11 组件待完成): quick-date-selector, FlightListOneWay/RoundTrip, FlightSearchHeader, city-selector, date-selector/\*, search-history-section, search-history, FlightSearchError
 
 **关键模式**:
 
