@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (高优先级 - 基础组件 + Link/Image 适配器模式建立)
 > **组件总数**: 12
-> **状态**: 已完成 5 | 进行中 0 | 未开始 7
+> **状态**: 已完成 6 | 进行中 0 | 未开始 6
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -180,84 +180,52 @@ UI 职责:
 
 #### ./common/data-table-with-actions.tsx
 
-**基本信息**
+**状态**: ✅ 已完成 (2026-01-17)
 
-- 路径: `apps/web/app/_components/common/data-table-with-actions.tsx`
-- 复杂度: 高
-- 优先级: P1
+**实现位置**:
 
-**依赖问题**
+- UI 组件: `packages/ui/src/components/common/data-table-with-actions.tsx`
+- 测试: `packages/ui/src/components/common/data-table-with-actions.test.tsx`
+- 容器: `apps/web/app/_components/common/data-table-with-actions.tsx` (re-export)
+- Story: `apps/storybook/src/stories/common/data-table-with-actions.stories.tsx`
 
-- [x] use_client
+**实现亮点**:
 
-**重构策略**
+- 完全受控的数据表格组件，支持泛型类型 `<T>`
+- 支持自定义列定义(ColumnDefinition)，可用 `cell` 或 `render` 函数定制单元格渲染
+- 行操作(RowAction)与批量操作(BatchAction)，支持条件显示
+- 支持行选择(受控/非受控模式)，带全选功能
+- 内置分页支持(PaginationConfig)
+- 内置 AlertDialog 确认删除流程
+- 支持 loading skeleton 和 empty state
+- 支持 error 状态显示
+- 支持 compact variant
+- 完全无 Next.js 依赖，纯 UI 组件
+- 包含 27 个测试用例，覆盖所有核心功能
+- Storybook 包含 14 个示例状态
 
-```
-容器职责:
-- 提供数据源
-- 定义列配置
-- 处理行/批量操作回调
-- 处理路由相关逻辑 (如果有)
-- 处理副作用 (删除确认等)
+**测试覆盖**:
 
-UI 职责:
-- 表格渲染
-- 排序/筛选 UI
-- 分页 UI
-- 选择行 checkbox
-- 操作按钮渲染
-- 接收完全受控的数据和回调
+- ✅ 基本数据渲染和列头
+- ✅ 空状态和 loading skeleton
+- ✅ 错误状态显示
+- ✅ 自定义单元格渲染
+- ✅ 标题和筛选槽
+- ✅ 添加/搜索按钮
+- ✅ 行操作和条件显示
+- ✅ 行选择和全选
+- ✅ 批量操作和确认对话框
+- ✅ 分页控制
+- ✅ Compact variant
+- ✅ 自定义样式和 aria-label
+- ✅ 受控选择模式
 
-适配器需求:
-- 无 (所有路由/副作用由容器处理)
-```
+**参考价值**:
 
-**View Model 接口**
-
-```typescript
-interface DataTableWithActionsProps<TData> {
-  columns: ColumnDef<TData>[];
-  data: TData[];
-  // 行操作
-  rowActions?: Array<{
-    key: string;
-    label: string;
-    onClick: (row: TData) => void;
-    disabled?: (row: TData) => boolean;
-  }>;
-  // 批量操作
-  batchActions?: Array<{
-    key: string;
-    label: string;
-    onClick: (rows: TData[]) => void;
-  }>;
-  // 分页
-  pagination?: {
-    page: number;
-    pageSize: number;
-    total: number;
-    onPageChange: (page: number) => void;
-  };
-  // 排序
-  sorting?: {
-    column: string;
-    direction: "asc" | "desc";
-    onSortChange: (column: string, direction: "asc" | "desc") => void;
-  };
-}
-```
-
-**测试要点**
-
-- [ ] 数据渲染
-- [ ] 排序交互
-- [ ] 分页交互
-- [ ] 行选择
-- [ ] 批量操作
-
-**实现笔记**
-
-- 待实施时记录
+- 展示了复杂交互组件如何保持纯 UI 特性
+- 演示了泛型组件的类型设计
+- 提供了完整的表格 UI 解决方案模板
+- 可作为其他数据展示组件的参考
 
 ---
 
