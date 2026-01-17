@@ -14,7 +14,7 @@
 ## 步骤
 
 1. 读取上下文
-   - 打开 `TODO.md`、对应域的 `docs/migrations/*-migration.md`、`COMPONENT-NAMING-CONVENTIONS.md`、`ARCHITECTURE.md` 相关 View Model/适配器段落。
+   - 打开 `TODO.md`、对应域的 `docs/migrations/*-migration.md`、`ARCHITECTURE.md` 相关 View Model/适配器段落。
    - 如果已有 `apps/web` 容器/测试/story，先浏览了解现状与差异。
 
 2. 拆分职责
@@ -23,7 +23,7 @@
 
 3. 在 `packages/ui` 创建组件
    - 位置：`packages/ui/src/components/{domain[/subdomain]}/{component}.tsx`，必要时补 `index.tsx` 导出。
-   - 只保留 UI 逻辑；使用 `useUiComponents` 获取 Link/Image；保持受控 props、回调命名一致。
+   - 只保留 UI 逻辑；使用 `useUiComponents` 获取 Link/Image（如果使用了 useUiComponents，那么一定要添加"use client"标记）；保持受控 props、回调命名一致。
    - 更新/迁移测试到同目录 `*.test.tsx`；补必要的 mock/受控 props。
    - 若需要共享类型/工具，放域级 `types.ts`/`utils.ts`，避免新建多余层级。
 
