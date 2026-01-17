@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 15 | 进行中 0 | 未开始 25
+> **状态**: 已完成 17 | 进行中 0 | 未开始 23
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -708,7 +708,69 @@ Props:
 **组件列表**:
 
 - payment-order-summary.tsx
-- payment-price-breakdown.tsx
+- ✅ payment-price-breakdown.tsx
+
+#### ./flights/booking/payment-price-breakdown.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/flights/booking/payment-price-breakdown.tsx`
+- 复杂度: 低
+- 优先级: P1
+- 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
+
+**依赖问题**
+
+- [x] 无 Next.js 依赖
+- [x] 无副作用
+
+**重构策略**
+
+```
+纯展示组件:
+
+UI 职责:
+- 费用明细卡片渲染
+- 订单号/机票费用/增值服务/总金额显示
+- 余额支付时显示账户余额与支付后余额
+- 余额不足时显示警告
+
+容器职责:
+- 格式化货币金额 (formatCurrency)
+- 计算支付后余额
+- 判断余额是否充足
+- 判断是否显示增值服务项
+```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/payment-price-breakdown.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/payment-price-breakdown.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/payment-price-breakdown.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/payment-price-breakdown.stories.tsx`
+
+**测试要点**
+
+- [x] 订单号渲染
+- [x] 基础金额渲染
+- [x] 增值服务金额渲染 (当 > 0)
+- [x] 增值服务不渲染 (当 = 0)
+- [x] 总金额渲染
+- [x] 非余额支付不显示余额信息
+- [x] 余额支付显示余额信息
+- [x] 余额不足显示警告
+- [x] 余额充足不显示警告
+- [x] 余额不足时红色文字
+- [x] 余额充足时蓝色文字
+
+---
+
+### Payment 其他组件
+
+**组件列表**:
+
+- payment-order-summary.tsx
 
 **基本信息**
 
