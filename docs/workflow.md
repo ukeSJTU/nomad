@@ -48,3 +48,5 @@
    - [ ] Storybook 覆盖主要态（loading/empty/error/selected 等）。
    - [ ] 测试与组件同级，覆盖渲染与交互。
    - [ ] 构建/测试命令通过或记录阻塞原因。
+
+8. 更新 TODO.md 进度状态与链接并向用户反馈。
