@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 7 | 进行中 0 | 未开始 33
+> **状态**: 已完成 8 | 进行中 0 | 未开始 32
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -71,6 +71,14 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **容器**: `apps/web/app/_components/flights/search/FlightListOneWay.tsx`
 - **测试**: `packages/ui/src/components/flights/search/flight-list-one-way.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/search/flight-list-one-way.stories.tsx`
+- **完成日期**: 2026-01-17
+
+#### ./flights/search/FlightListRoundTrip.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/search/flight-list-round-trip.tsx`
+- **容器**: `apps/web/app/_components/flights/search/FlightListRoundTrip.tsx`
+- **测试**: `packages/ui/src/components/flights/search/flight-list-round-trip.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/flight-list-round-trip.stories.tsx`
 - **完成日期**: 2026-01-17
 
 ### 🚧 进行中
@@ -228,6 +236,7 @@ UI 职责:
 - 复杂度: 高
 - 优先级: P0
 - 批次: 1
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
@@ -238,7 +247,38 @@ UI 职责:
 
 ```
 同 FlightListOneWay,但需要处理往返航班组合选择
+
+容器职责:
+- 转换 FlightSearchResult[] 为 FlightCardProps[]
+- 处理去程/返程选择逻辑
+- 管理导航到预订页面
+- 计算航班数据 (duration, daysOffset)
+- 格式化显示数据
+
+UI 职责:
+- 渲染航班卡片列表
+- 显示空状态
+- 接收 activeTab 并传递给子组件
 ```
+
+**View Model 接口**
+参考 [ARCHITECTURE.md - FlightListOneWay/RoundTrip](../../ARCHITECTURE.md#flightlistoneway roundtrip)
+
+**测试要点**
+
+- [x] 去程航班列表渲染
+- [x] 返程航班列表渲染
+- [x] activeTab 切换
+- [x] 空状态显示
+- [x] 自定义空状态文本
+
+**完成信息**
+
+- **UI 组件**: `packages/ui/src/components/flights/search/flight-list-round-trip.tsx`
+- **容器**: `apps/web/app/_components/flights/search/FlightListRoundTrip.tsx`
+- **测试**: `packages/ui/src/components/flights/search/flight-list-round-trip.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/flight-list-round-trip.stories.tsx`
+- **完成日期**: 2026-01-17
 
 ---
 
