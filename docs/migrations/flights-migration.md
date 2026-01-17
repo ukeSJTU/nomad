@@ -81,6 +81,14 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **Storybook**: `apps/storybook/src/stories/flights/search/flight-list-round-trip.stories.tsx`
 - **完成日期**: 2026-01-17
 
+#### ./flights/search/city-selector.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/search/city-selector.tsx` + `city-input.tsx`
+- **容器**: `apps/web/app/_components/flights/search/city-selector.tsx` (简单 re-export)
+- **测试**: `packages/ui/src/components/flights/search/city-selector.test.tsx` + `city-input.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/city-input.stories.tsx`
+- **完成日期**: 2026-01-17
+
 ### 🚧 进行中
 
 (暂无)
@@ -324,10 +332,11 @@ UI 职责:
 
 ---
 
-### ./flights/search/city-selector.tsx
+#### ./flights/search/city-selector.tsx
 
 **基本信息**
 
+- 路径: `apps/web/app/_components/flights/search/city-selector.tsx`
 - 复杂度: 中
 - 优先级: P1
 - 批次: 1
@@ -340,14 +349,23 @@ UI 职责:
 
 ```
 容器职责:
-- 提供城市列表数据
-- 处理城市搜索
+- 提供城市列表数据 (从数据源获取)
 
 UI 职责:
-- 城市选择器下拉
-- 搜索输入
+- 城市选择器下拉菜单
+- 国内/国际切换
+- 字母分组/大洲分组标签页
 - 城市列表渲染
+- CityInput 整合出发地/目的地选择器
 ```
+
+**完成信息**
+
+- **UI 组件**: `packages/ui/src/components/flights/search/city-selector.tsx` + `city-input.tsx`
+- **容器**: `apps/web/app/_components/flights/search/city-selector.tsx` (简单 re-export)
+- **测试**: `packages/ui/src/components/flights/search/city-selector.test.tsx` + `city-input.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/city-input.stories.tsx`
+- **完成日期**: 2026-01-17
 
 ---
 

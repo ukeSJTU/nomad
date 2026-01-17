@@ -1,3 +1,7 @@
+export type { CityInputProps } from "./city-input";
+export { CityInput } from "./city-input";
+export type { CitySelectorProps } from "./city-selector";
+export { CitySelector } from "./city-selector";
 export type { DatePriceSelectorProps } from "./date-price-selector";
 export { DatePriceSelector } from "./date-price-selector";
 export type { FlightListOneWayProps } from "./flight-list-one-way";

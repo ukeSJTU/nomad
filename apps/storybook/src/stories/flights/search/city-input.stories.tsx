@@ -1,8 +1,7 @@
+import type { CityData } from "@nomad/ui/components/flights/search";
+import { CityInput } from "@nomad/ui/components/flights/search";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
-
-import { CityInput } from "@/components/flights/search/city-selector";
-import type { CityData } from "@/types/dto";
 
 // Mock city data for Storybook
 const mockCities: CityData[] = [
