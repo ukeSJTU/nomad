@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 11 | 进行中 0 | 未开始 29
+> **状态**: 已完成 13 | 进行中 0 | 未开始 27
 > **最后更新**: 2026-01-17
 
 ## 域概览
@@ -440,29 +440,18 @@ UI 职责:
 
 ### ./flights/search/FlightSearchError.tsx
 
-**基本信息**
+- **UI 组件**: `packages/ui/src/components/flights/search/flight-search-error.tsx`
+- **容器**: `apps/web/app/_components/flights/search/FlightSearchError.tsx` (简单 re-export)
+- **测试**: `packages/ui/src/components/flights/search/flight-search-error.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/search/flight-search-error.stories.tsx`
+- **完成日期**: 2026-01-17
 
-- 复杂度: 低
-- 优先级: P2
-- 批次: 1
+**重构说明**:
 
-**依赖问题**
-
-- 待确认 (可能是纯 UI)
-
-**重构策略**
-
-```
-如果是纯展示组件:
-
-UI 职责:
-- 错误消息显示
-- 重试按钮
-
-Props:
-- error: { message: string; code?: string }
-- onRetry?: () => void
-```
+- 纯 UI 组件，无 Next.js 依赖
+- 受控 props: `message` (string) 和 `onRetry` (callback)
+- 使用 Alert 和 Button 基础组件
+- 测试覆盖: 默认消息、自定义消息、有/无重试按钮、点击事件
 
 ---
 

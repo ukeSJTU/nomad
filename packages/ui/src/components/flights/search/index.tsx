@@ -10,6 +10,8 @@ export type { FlightListOneWayProps } from "./flight-list-one-way";
 export { FlightListOneWay } from "./flight-list-one-way";
 export type { FlightListRoundTripProps } from "./flight-list-round-trip";
 export { FlightListRoundTrip } from "./flight-list-round-trip";
+export type { FlightSearchErrorProps } from "./flight-search-error";
+export { FlightSearchError } from "./flight-search-error";
 export type { FlightSearchHeaderProps } from "./flight-search-header";
 export { FlightSearchHeader } from "./flight-search-header";
 export type { OneWaySelectorProps } from "./one-way-selector";

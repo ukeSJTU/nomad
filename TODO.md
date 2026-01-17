@@ -27,13 +27,13 @@
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
-| **Flights**    | 40     | 12     | 0      | 28     | 0     | 批次1+3 | 中     |
+| **Flights**    | 40     | 13     | 0      | 27     | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **20** | **0**  | **60** | **1** | -       | -      |
+| **总计**       | **81** | **24** | **0**  | **56** | **1** | -       | -      |
 
-**完成度**: 25.0% (20/80 可迁移组件)
+**完成度**: 30.0% (24/80 可迁移组件)
 
 ### 已完成组件
 
@@ -51,7 +51,7 @@
 - [x] UnderConstruction - packages/ui/src/components/common/under-construction.tsx
 - [~] DevUserSwitcher - 不迁移 (仅开发环境使用)
 
-**Flights (12/40)**:
+**Flights (13/40)**:
 
 - [x] AirportList - packages/ui/src/components/flights/guide/airport-list.tsx
 - [x] DatePriceSelector - packages/ui/src/components/flights/search/date-price-selector.tsx
@@ -65,13 +65,14 @@
 - [x] DateDisplay - packages/ui/src/components/flights/search/date-display.tsx
 - [x] OneWaySelector - packages/ui/src/components/flights/search/one-way-selector.tsx
 - [x] RoundTripSelector - packages/ui/src/components/flights/search/round-trip-selector.tsx
+- [x] FlightSearchError - packages/ui/src/components/flights/search/flight-search-error.tsx
 
 ### 批次进度
 
 | 批次      | 名称                                | 组件数 | 完成度 | 状态   |
 | --------- | ----------------------------------- | ------ | ------ | ------ |
 | **批次0** | 适配层                              | -      | 100%   | 已完成 |
-| **批次1** | Common + Flights Search             | 24     | 83.3%  | 进行中 |
+| **批次1** | Common + Flights Search             | 24     | 91.7%  | 进行中 |
 | **批次2** | Auth 认证链路                       | 13     | 0%     | 待启动 |
 | **批次3** | Flights Booking/Orders + Passengers | 24     | 0%     | 待启动 |
 | **批次4** | User + Security                     | 12     | 0%     | 待启动 |
@@ -100,7 +101,7 @@
 **范围**:
 
 - **Common** (已全部完成): 11 个组件已迁移完成，dev-user-switcher 不迁移
-- **Flights Search** (5 组件待完成): search-history-section, search-history, FlightSearchError
+- **Flights Search** (2 组件待完成): search-history-section, search-history
 
 **关键模式**:
 
