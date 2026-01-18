@@ -30,10 +30,10 @@
 | **Flights**    | 40     | 33     | 0      | 7      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
-| **User**       | 8      | 1      | 0      | 7      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **53** | **0**  | **27** | **1** | -       | -      |
+| **User**       | 8      | 2      | 0      | 6      | 0     | 批次4   | 低     |
+| **总计**       | **81** | **54** | **0**  | **26** | **1** | -       | -      |
 
-**完成度**: 66.25% (53/80 可迁移组件)
+**完成度**: 67.5% (54/80 可迁移组件)
 
 ### 已完成组件
 
@@ -65,9 +65,10 @@
 - [x] UpdatePhoneForm - packages/ui/src/components/security/update-phone-form.tsx
 - [x] SecurityItem - packages/ui/src/components/security/security-item.tsx
 
-**User (1/8)**:
+**User (2/8)**:
 
 - [x] AddressForm - packages/ui/src/components/user/address/address-form.tsx
+- [x] AddressList - packages/ui/src/components/user/address/address-list.tsx
 
 **Flights (32/40)**:
 

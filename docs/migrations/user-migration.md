@@ -2,8 +2,8 @@
 
 > **批次分配**: 批次4 (低优先级 - 应用已建立的表单和列表模式)
 > **组件总数**: 8
-> **状态**: 已完成 0 | 进行中 0 | 未开始 8
-> **最后更新**: 2026-01-03
+> **状态**: 已完成 2 | 进行中 0 | 未开始 6
+> **最后更新**: 2026-01-18
 
 ## 域概览
 
@@ -33,126 +33,25 @@ User 域负责用户个人信息管理,包括:
 
 ### ✅ 已完成并测试
 
-(暂无)
+#### ./user/address/address-form.tsx
+
+- **UI 组件**: `packages/ui/src/components/user/address/address-form.tsx`
+- **容器组件**: `apps/web/app/_components/user/address/address-form.tsx`
+- **测试**: `packages/ui/src/components/user/address/address-form.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/address-form.stories.tsx`
+
+#### ./user/address/address-list.tsx
+
+- **UI 组件**: `packages/ui/src/components/user/address/address-list.tsx`
+- **容器组件**: `apps/web/app/_components/user/address/address-list.tsx`
+- **测试**: `packages/ui/src/components/user/address/address-list.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/address-list.stories.tsx`
 
 ### 🚧 进行中
 
 (暂无)
 
 ### 📋 未开始
-
-#### ./user/address/address-form.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/user/address/address-form.tsx`
-- 复杂度: 中
-- 优先级: P1
-- 批次: 4
-
-**依赖问题**
-
-- [x] react-hook-form + zod
-- [x] Server Action: 创建/更新地址
-- [x] use_client
-
-**重构策略**
-
-```
-容器职责:
-- Schema 管理 (addressSchema)
-- 表单提交与 Server Action 调用
-- 默认值回填 (编辑模式)
-- 错误处理
-- 模式管理 (create/edit)
-
-UI 职责:
-- 受控表单字段
-  - 收件人姓名
-  - 手机号
-  - 省/市/区
-  - 详细地址
-  - 地址标签 (家/公司等)
-  - 设为默认地址
-- 验证错误显示
-- 提交/取消按钮
-- Loading 状态
-
-适配器需求:
-- 无
-```
-
-**View Model 接口**
-参考 [ARCHITECTURE.md - AddressForm](../../ARCHITECTURE.md#addressform)
-
-**测试要点**
-
-- [ ] 所有字段输入
-- [ ] 表单验证
-- [ ] 创建/编辑模式切换
-- [ ] 提交流程
-- [ ] 取消操作
-
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需要明确省/市/区的数据来源 (静态数据还是 API)
-
----
-
-#### ./user/address/address-list.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/user/address/address-list.tsx`
-- 复杂度: 中
-- 优先级: P1
-- 批次: 4
-
-**依赖问题**
-
-- [x] Server Action: 删除地址、设为默认
-- [x] use_client
-
-**重构策略**
-
-```
-容器职责:
-- 提供地址列表数据
-- 处理设为默认 action
-- 处理删除 action (带确认)
-- 处理选择/编辑回调
-
-UI 职责:
-- 地址卡片列表渲染
-- 默认地址标识
-- 操作按钮 (设为默认、编辑、删除)
-- 空状态提示
-- 添加地址按钮
-
-适配器需求:
-- 无
-```
-
-**View Model 接口**
-参考 [ARCHITECTURE.md - AddressList](../../ARCHITECTURE.md#addresslist)
-
-**测试要点**
-
-- [ ] 列表渲染
-- [ ] 默认地址标识
-- [ ] 设为默认操作
-- [ ] 删除操作 (带确认)
-- [ ] 编辑/添加按钮
-
-**实现笔记**
-
-- 待实施时记录
-
----
 
 #### ./user/user-info-edit-form.tsx
 
