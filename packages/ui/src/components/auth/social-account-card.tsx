@@ -1,13 +1,13 @@
 "use client";
 
-import { Card } from "@nomad/ui/components/primitives/card";
 import { Check } from "lucide-react";
 import { useState } from "react";
+import { Card } from "../primitives/card";
 
 /**
  * Props for SocialAccountCard component
  */
-interface SocialAccountCardProps {
+export interface SocialAccountCardProps {
   /** Social provider identifier */
   provider: "github" | "google";
   /** Display name of the provider */
@@ -83,11 +83,11 @@ function GoogleIcon({ className }: { className?: string }) {
  *   provider="github"
  *   providerName="GitHub"
  *   isLinked={true}
- *   unlinkButton={<UnlinkButton providerId="github" providerName="GitHub" />}
+ *   unlinkButton={<UnlinkButton onClick={handleUnlink} />}
  * />
  * ```
  */
-export default function SocialAccountCard({
+export function SocialAccountCard({
   provider,
   providerName,
   isLinked,

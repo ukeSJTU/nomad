@@ -1,7 +1,7 @@
+import { SocialAccountCard } from "@nomad/ui/components/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
-import { LinkButton, SocialAccountCard, UnlinkButton } from "@/components/auth";
+import { LinkButton, UnlinkButton } from "@/components/auth";
 import { auth } from "@/infra/auth";
 
 export const dynamic = "force-dynamic";

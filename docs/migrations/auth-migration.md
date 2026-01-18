@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 5 | 进行中 0 | 未开始 8
+> **状态**: 已完成 6 | 进行中 0 | 未开始 7
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -151,6 +151,70 @@ Props:
 - 容器通过 `countdown > 0` 推导 `hasSent` 状态
 - 删除旧的 apps/web 版本
 - 所有测试通过，lint 通过，构建成功
+
+---
+
+#### ./auth/social-account-card.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/social-account-card.tsx` (已删除)
+- UI 组件: `packages/ui/src/components/auth/social-account-card.tsx`
+- 测试: `packages/ui/src/components/auth/social-account-card.test.tsx`
+- Storybook: `apps/storybook/src/stories/auth/social-account-card.stories.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 完成日期: 2026-01-18
+
+**依赖解决方案**
+
+- ✅ 已经是纯 UI 组件
+- ✅ 使用 useState 管理 hover 状态 (UI 层面状态)
+- ✅ 通过 composition pattern 接收 linkButton 和 unlinkButton
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 提供 LinkButton 和 UnlinkButton 组件实例
+- 管理社交账号数据和状态
+- 页面级容器在 apps/web/app/(frontend)/(without-sidebar)/home/accounts/page.tsx
+
+UI 职责 (packages/ui):
+- 卡片布局和样式
+- Provider 图标渲染 (GitHub/Google SVG)
+- 绑定状态显示 (已绑定徽章 + 绿色勾选图标)
+- Hover 交互 (鼠标悬停显示解绑按钮)
+- 按钮插槽 (通过 props 接收)
+
+Props:
+- provider: 'github' | 'google'
+- providerName: string
+- isLinked: boolean
+- accountId?: string
+- linkButton?: React.ReactNode
+- unlinkButton?: React.ReactNode
+```
+
+**测试覆盖**
+
+- ✅ GitHub/Google provider 渲染
+- ✅ Linked 状态显示 (已绑定文本 + 勾选图标)
+- ✅ Hover 显示解绑按钮
+- ✅ Unhover 恢复状态显示
+- ✅ Unlinked 状态显示 linkButton
+- ✅ 卡片样式 (宽度、hover shadow)
+- ✅ AccountId prop 支持
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过 (11 tests)，构建成功
+- 组件已经是纯 UI 组件，只需迁移到 UI 包
+- 使用 composition pattern 接收按钮组件，保持灵活性
+- Hover 状态管理保留在 UI 层 (纯视觉交互)
+- Storybook 展示多种状态 (GitHub/Google, Linked/Unlinked, Multiple cards, Interactive)
+- 删除 apps/web 旧版本和测试文件
+- 删除 apps/web/\_stories 中的旧 story 文件
 
 ### 🚧 进行中
 
@@ -649,59 +713,6 @@ Props:
 
 ---
 
-#### ./auth/social-account-card.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/social-account-card.tsx`
-- 复杂度: 低
-- 优先级: P2
-
-**依赖问题**
-
-- [x] use_client
-- [x] Context (外部上下文)
-
-**重构策略**
-
-```
-容器职责:
-- 从 context 获取社交账号数据
-- 以 props 传递数据给 UI
-
-UI 职责:
-- 卡片布局
-- Provider 图标/名称
-- 状态徽章
-- 绑定/解绑按钮插槽
-
-Props:
-- provider: 'github' | 'google' | etc.
-- status: 'linked' | 'unlinked'
-- account?: { avatar, name, email }
-- onLink?: () => void
-- onUnlink?: () => void
-- loading?: boolean
-
-适配器需求:
-- 无
-```
-
-**测试要点**
-
-- [ ] 各状态显示
-- [ ] 按钮交互
-
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 明确使用的是哪个 context (user context? session context?)
-
----
-
 #### ./auth/link-button.tsx
 
 **基本信息**
@@ -922,8 +933,8 @@ Link/Unlink 组件应有统一接口:
 | 类别          | 总数   | 已完成 | 进行中 | 未开始 |
 | ------------- | ------ | ------ | ------ | ------ |
 | Forms         | 6      | 0      | 0      | 6      |
-| UI Components | 7      | 0      | 0      | 7      |
-| **总计**      | **13** | **0**  | **0**  | **13** |
+| UI Components | 7      | 6      | 0      | 1      |
+| **总计**      | **13** | **6**  | **0**  | **7**  |
 
 ---
 

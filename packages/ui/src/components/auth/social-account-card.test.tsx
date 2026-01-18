@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import SocialAccountCard from "./social-account-card";
+import { SocialAccountCard } from "./social-account-card";
 
 describe("SocialAccountCard", () => {
   describe("Rendering", () => {
