@@ -5,6 +5,11 @@ export {
 } from "./flight-card";
 
 export {
+  FlightCardSkeleton,
+  type FlightCardSkeletonProps,
+} from "./flight-card-skeleton";
+
+export {
   type AirlineOption,
   FlightFilterSort,
   type FlightFilterSortProps,

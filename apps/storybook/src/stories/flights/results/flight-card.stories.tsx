@@ -1,9 +1,9 @@
 import {
   FlightCard,
+  FlightCardSkeleton,
   type SeatClassOption,
 } from "@nomad/ui/components/flights/results";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FlightCardSkeleton } from "@/components/flights/results/flight-card-skeleton";
 
 const meta = {
   title: "Flights/Results/FlightCard",

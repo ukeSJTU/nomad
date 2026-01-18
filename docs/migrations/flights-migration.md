@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 30 | 进行中 0 | 未开始 10
+> **状态**: 已完成 31 | 进行中 0 | 未开始 9
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -1427,16 +1427,28 @@ UI 职责:
 
 **基本信息**
 
+- 路径: `apps/web/app/_components/flights/results/flight-card-skeleton.tsx`
 - 复杂度: 低
 - 优先级: P2
-- 批次: 待定
+- 批次: 1
+- **状态**: ✅ 已完成
 
 **重构策略**
 
 ```
 纯 UI 组件:
 - Skeleton 加载状态
+- 无业务逻辑
+- 无 Next.js 依赖
 ```
+
+**迁移结果**
+
+- ✅ UI 组件: `packages/ui/src/components/flights/results/flight-card-skeleton.tsx`
+- ✅ 容器: `apps/web/app/_components/flights/results/flight-card-skeleton.tsx` (简单 re-export)
+- ✅ 测试: `packages/ui/src/components/flights/results/flight-card-skeleton.test.tsx` (8 tests)
+- ✅ Storybook: `apps/storybook/src/stories/flights/results/flight-card.stories.tsx` (已更新导入)
+- ✅ 完成日期: 2026-01-18
 
 ---
 
