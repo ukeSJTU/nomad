@@ -2,15 +2,20 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { UiProvider } from "../../platform";
 import { SignUpModal } from "./sign-up-modal";
 
 describe("SignUpModal", () => {
+  const renderWithProvider = (ui: React.ReactElement) => {
+    return render(<UiProvider>{ui}</UiProvider>);
+  };
+
   it("should render the modal when open is true", () => {
     const onOpenChange = vi.fn();
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}
@@ -30,7 +35,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={false}
         onOpenChange={onOpenChange}
@@ -49,7 +54,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}
@@ -68,7 +73,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}
@@ -88,7 +93,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}
@@ -119,7 +124,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}
@@ -141,7 +146,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}
@@ -163,7 +168,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}
@@ -184,7 +189,7 @@ describe("SignUpModal", () => {
     const onAgree = vi.fn();
     const onDisagree = vi.fn();
 
-    render(
+    renderWithProvider(
       <SignUpModal
         open={true}
         onOpenChange={onOpenChange}

@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 6 | 进行中 0 | 未开始 7
+> **状态**: 已完成 7 | 进行中 0 | 未开始 6
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -668,48 +668,59 @@ Props:
 
 **基本信息**
 
-- 路径: `apps/web/app/_components/auth/sign-up-modal.tsx`
+- 路径: `apps/web/app/_components/auth/sign-up-modal.tsx` (已转为 re-export)
+- UI 组件: `packages/ui/src/components/auth/sign-up-modal.tsx`
+- 测试: `packages/ui/src/components/auth/sign-up-modal.test.tsx` (9 tests ✓)
+- Storybook: `apps/storybook/src/stories/auth/sign-up-modal.stories.tsx`
 - 复杂度: 低
 - 优先级: P2
 
-**依赖问题**
+**依赖解决方案**
 
-- [x] Next.js Link (条款/隐私链接)
-- [x] use_client
+- ✅ Next.js Link - 使用 `useUiComponents` 的 Link 适配器
+- ✅ 组件已是纯展示 - 无需容器逻辑，仅 re-export UI 组件
 
-**重构策略**
+**重构实现**
 
 ```
-容器职责:
-- 控制 modal 打开状态
-- 处理同意/不同意回调
+容器职责 (apps/web):
+- 无 (组件已是纯 UI，直接 re-export)
+- 父组件负责控制 modal 打开状态
+- 父组件处理同意/不同意回调
 
-UI 职责:
-- Modal 对话框
-- 条款文本与链接 (Link 适配器)
+UI 职责 (packages/ui):
+- Modal 对话框渲染
+- 服务协议和隐私政策内容展示
+- 使用 Link 适配器渲染条款/隐私链接
 - 同意/不同意按钮
+- 联系邮箱链接
 
 Props:
 - open: boolean
 - onOpenChange: (open: boolean) => void
 - onAgree: () => void
 - onDisagree: () => void
-- termsLink?: string
-- privacyLink?: string
-
-适配器需求:
-- LinkAdapter (条款和隐私政策链接)
 ```
 
-**测试要点**
+**测试覆盖**
 
-- [ ] Modal 打开/关闭
-- [ ] 按钮交互
-- [ ] 链接渲染
+- ✅ Modal 打开/关闭状态
+- ✅ 服务协议条款显示 (19项)
+- ✅ 隐私政策条款显示 (16项)
+- ✅ 条款和隐私链接渲染及属性
+- ✅ 联系邮箱链接
+- ✅ 同意按钮点击回调
+- ✅ 不同意按钮点击回调
+- ✅ 隐私政策描述文本
 
 **实现笔记**
 
-- 待实施时记录
+- 2026-01-18: 完成迁移，所有测试通过 (9 tests)，构建成功
+- 组件已是纯 UI 组件，无业务逻辑
+- 使用 `useUiComponents` 获取 Link 适配器
+- 容器仅为 re-export，无额外逻辑
+- Storybook 展示多种状态 (Default, Closed, Interactive)
+- 静态内容（服务条款、隐私政策条目）保留在组件内部
 
 ---
 
@@ -933,8 +944,8 @@ Link/Unlink 组件应有统一接口:
 | 类别          | 总数   | 已完成 | 进行中 | 未开始 |
 | ------------- | ------ | ------ | ------ | ------ |
 | Forms         | 6      | 0      | 0      | 6      |
-| UI Components | 7      | 6      | 0      | 1      |
-| **总计**      | **13** | **6**  | **0**  | **7**  |
+| UI Components | 7      | 7      | 0      | 0      |
+| **总计**      | **13** | **7**  | **0**  | **6**  |
 
 ---
 
