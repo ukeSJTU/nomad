@@ -16,6 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@nomad/ui/components/primitives/tooltip";
+import { OtpInput } from "@nomad/ui/components/security/otp-input";
 import { cn } from "@nomad/ui/lib/utils";
 import { AlertCircle, Github } from "lucide-react";
 import Link from "next/link";
@@ -37,8 +38,6 @@ import {
   type PasswordLoginData,
   passwordLoginSchema,
 } from "@/types/validations";
-
-import OtpInput from "./otp-input";
 
 // ============================================
 // Shared Components
@@ -486,6 +485,7 @@ function OtpLoginForm({
                   onChange={field.onChange}
                   onSendOtp={handleSendOtp}
                   countdown={countdown}
+                  hasSent={countdown > 0}
                   isLoading={isLoading}
                   isVerifying={isVerifying}
                   placeholder="短信验证码"

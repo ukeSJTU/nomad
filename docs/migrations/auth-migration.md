@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 1 | 进行中 0 | 未开始 12
+> **状态**: 已完成 2 | 进行中 0 | 未开始 11
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -88,6 +88,69 @@ Props:
 - UI 组件完全受控，无 Next.js 依赖
 - 容器负责路由状态管理和导航
 - Storybook 展示多种状态 (默认、激活项、嵌套激活等)
+
+---
+
+#### ./auth/forms/otp-input.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/forms/otp-input.tsx` (已删除)
+- UI 组件: `packages/ui/src/components/security/otp-input.tsx`
+- 测试: `packages/ui/src/components/security/otp-input.test.tsx` (17 tests ✓)
+- Storybook: `apps/storybook/src/stories/security/otp-input.stories.tsx`
+- 复杂度: 低
+- 优先级: P1 (被其他组件依赖)
+- 完成日期: 2026-01-18
+
+**依赖解决方案**
+
+- ✅ 移除 useEffect + useRef - 改为受控 `hasSent` prop
+- ✅ 容器管理倒计时状态 (使用 `useOtpCountdown` hook)
+
+**重构实现**
+
+```
+容器职责:
+- 使用 useOtpCountdown 管理倒计时状态
+- 传递 countdown 和 hasSent (从 countdown > 0 推导)
+- 处理 onSendOtp 回调 (验证码发送)
+
+UI 职责 (packages/ui):
+- 输入框渲染 (自动过滤非数字字符)
+- 发送/重发按钮 (根据 hasSent 和 countdown 状态显示文本)
+- 倒计时显示 ("30秒后重试")
+- 验证中状态显示
+
+Props:
+- value: string
+- onChange: (value: string) => void
+- onSendOtp: () => void | Promise<void>
+- countdown: number
+- hasSent: boolean
+- isLoading?: boolean
+- isVerifying?: boolean
+- placeholder?: string
+- maxLength?: number
+- disabled?: boolean
+```
+
+**测试覆盖**
+
+- ✅ 基本渲染和受控值
+- ✅ 过滤非数字字符输入
+- ✅ 发送/重发按钮状态 (首次、重发、倒计时、验证中)
+- ✅ 倒计时禁用状态
+- ✅ loading/disabled 状态
+- ✅ 自定义样式和属性
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，UI 组件已存在于 security 包
+- 更新所有消费者使用新的 UI 组件 (phone-verification, email-verification, unified-login, forgot-password)
+- 容器通过 `countdown > 0` 推导 `hasSent` 状态
+- 删除旧的 apps/web 版本
+- 所有测试通过，lint 通过，构建成功
 
 ### 🚧 进行中
 
@@ -336,56 +399,6 @@ UI 职责:
 
 - [x] ⚠️ **必须解决**: useEffect 副作用逻辑需要识别并迁移到容器
 - [ ] 共享倒计时 hook
-
----
-
-#### ./auth/forms/otp-input.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/forms/otp-input.tsx`
-- 复杂度: 低
-- 优先级: P1 (被其他组件依赖)
-
-**依赖问题**
-
-- [x] useEffect: 焦点管理
-- [x] use_client
-
-**重构策略**
-
-```
-这是一个适合作为纯 UI 组件的候选:
-
-UI 职责 (保留所有逻辑):
-- 输入框数组渲染
-- 自动焦点逻辑 (useEffect 用于 DOM 操作是可接受的)
-- 粘贴处理
-- 键盘导航 (方向键, backspace)
-
-Props:
-- value: string[] | string
-- onChange: (value: string) => void
-- length: number (默认 6)
-- autoFocus?: boolean
-- disabled?: boolean
-
-适配器需求:
-- 无
-```
-
-**测试要点**
-
-- [ ] 输入数字/字符
-- [ ] 粘贴6位码
-- [ ] 键盘导航
-- [ ] 自动焦点
-
-**实现笔记**
-
-- 这个组件几乎是纯 UI - useEffect 用于焦点管理是可接受的
-- 可以几乎原封不动地迁移,只需少量更改
-- 考虑暴露更多定制选项 (className, inputClassName 等)
 
 ---
 

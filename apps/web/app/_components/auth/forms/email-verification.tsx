@@ -12,14 +12,13 @@ import {
   FormMessage,
 } from "@nomad/ui/components/primitives/form";
 import { Input } from "@nomad/ui/components/primitives/input";
+import { OtpInput } from "@nomad/ui/components/security/otp-input";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   type EmailVerificationData,
   emailVerificationSchema,
 } from "@/types/validations";
-
-import OtpInput from "./otp-input";
 
 interface EmailVerificationFormProps {
   onSubmit: (data: EmailVerificationData) => void;
@@ -107,6 +106,7 @@ export default function EmailVerificationForm({
                     onChange={field.onChange}
                     onSendOtp={handleSendOtp}
                     countdown={countdown}
+                    hasSent={countdown > 0}
                     isLoading={isLoading}
                     placeholder="6位数字"
                   />
