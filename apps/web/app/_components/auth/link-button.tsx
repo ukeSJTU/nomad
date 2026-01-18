@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { LinkButton as LinkButtonUI } from "@nomad/ui/components/auth/link-button";
+import { useState } from "react";
 import { toast } from "sonner";
 import { linkSocialAccountAction } from "@/app/_actions/auth";
 import { createClientLogger } from "@/infra/logging/client-logger";
@@ -8,7 +9,7 @@ import { createClientLogger } from "@/infra/logging/client-logger";
 const logger = createClientLogger({ module: "link-button" });
 
 /**
- * Props for LinkButton component
+ * Props for LinkButton container component
  */
 interface LinkButtonProps {
   /** Social provider identifier */
@@ -18,10 +19,10 @@ interface LinkButtonProps {
 }
 
 /**
- * LinkButton Component
+ * LinkButton Container Component
  *
- * A client component that handles OAuth linking for social accounts.
- * When clicked, it requests a server-generated OAuth URL and redirects the browser.
+ * Wraps the pure UI LinkButton component with OAuth linking logic.
+ * Handles server actions, OAuth redirects, error handling, and notifications.
  *
  * This component must be a Client Component because:
  * - Browser must perform the redirect after receiving the URL from the server
@@ -33,11 +34,14 @@ interface LinkButtonProps {
  * ```
  */
 export function LinkButton({ providerId, providerName }: LinkButtonProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
   /**
    * Handle linking a social account
    * Initiates OAuth flow via better-auth
    */
   const handleLink = async () => {
+    setIsLoading(true);
     try {
       // Initiate OAuth flow for linking account
       const result = await linkSocialAccountAction(
@@ -53,6 +57,7 @@ export function LinkButton({ providerId, providerName }: LinkButtonProps) {
         toast.error(`Failed to link ${providerName} account`, {
           description: result.error || "Please try again later",
         });
+        setIsLoading(false);
         return;
       }
 
@@ -63,17 +68,9 @@ export function LinkButton({ providerId, providerName }: LinkButtonProps) {
       toast.error(`Error linking ${providerName} account`, {
         description: "An unexpected error occurred",
       });
+      setIsLoading(false);
     }
   };
 
-  return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={handleLink}
-      className="text-sm"
-    >
-      绑定账号
-    </Button>
-  );
+  return <LinkButtonUI onClick={handleLink} loading={isLoading} />;
 }

@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { UnlinkButton as UnlinkButtonUI } from "@nomad/ui/components/auth/unlink-button";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { unlinkAccountAction } from "@/app/_actions/auth";
 
 /**
- * Props for UnlinkButton component
+ * Props for UnlinkButton container component
  */
 interface UnlinkButtonProps {
   /** Social provider identifier */
@@ -14,10 +14,10 @@ interface UnlinkButtonProps {
 }
 
 /**
- * UnlinkButton Component
+ * UnlinkButton Container Component
  *
- * A minimal client component that wraps the unlinkAccountAction Server Action.
- * Handles the unlinking of social accounts with loading state and toast notifications.
+ * Wraps the pure UI UnlinkButton component with unlinking logic.
+ * Handles server actions, transition state, and toast notifications.
  *
  * This component must be a Client Component because:
  * - Uses useTransition hook for pending state
@@ -48,15 +48,5 @@ export function UnlinkButton({ providerId }: UnlinkButtonProps) {
     });
   };
 
-  return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={handleUnlink}
-      disabled={isPending}
-      className="text-sm"
-    >
-      {isPending ? "解绑中..." : "取消绑定"}
-    </Button>
-  );
+  return <UnlinkButtonUI onClick={handleUnlink} loading={isPending} />;
 }

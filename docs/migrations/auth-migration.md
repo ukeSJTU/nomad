@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 3 | 进行中 0 | 未开始 10
+> **状态**: 已完成 5 | 进行中 0 | 未开始 8
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -707,96 +707,121 @@ Props:
 **基本信息**
 
 - 路径: `apps/web/app/_components/auth/link-button.tsx`
+- UI 组件: `packages/ui/src/components/auth/link-button.tsx`
+- 测试: `packages/ui/src/components/auth/link-button.test.tsx` + `apps/web/app/_components/auth/link-button.test.tsx`
+- Storybook: `apps/storybook/src/stories/auth/link-button.stories.tsx`
 - 复杂度: 中
 - 优先级: P2
 
-**依赖问题**
+**依赖解决方案**
 
-- [x] Server Action: linkSocialAccountAction
-- [x] use_client
-- [x] 全局副作用 (可能用于 OAuth 的 window/location)
+- ✅ Server Action 保留在容器
+- ✅ OAuth 重定向保留在容器 (window.location)
+- ✅ 错误处理和 toast 保留在容器
+- ✅ UI 仅处理渲染和 loading 状态
 
-**重构策略**
+**重构实现**
 
 ```
-容器职责:
-- 发起 OAuth 流程
-- 处理绑定 action
-- 管理重定向/弹窗
+容器职责 (apps/web):
+- 调用 linkSocialAccountAction
+- 处理 OAuth 重定向 (window.location.href)
+- 错误处理和日志记录
+- Toast 通知
+- 管理 loading 状态
 
-UI 职责:
-- 带 Provider 图标的按钮
-- Loading 状态
+UI 职责 (packages/ui):
+- 按钮渲染 (使用 Button 原语)
+- 显示 loading 状态 ("绑定中...")
+- 处理 disabled 状态
+- 接收 onClick 回调
 
 Props:
-- provider: string
 - onClick: () => void
 - loading?: boolean
 - disabled?: boolean
-
-适配器需求:
-- OAuth 重定向流程需要平台抽象 (window.location 处理)
+- className?: string
 ```
 
-**测试要点**
+**测试覆盖**
 
-- [ ] 按钮渲染
-- [ ] Loading 状态
-- [ ] 禁用状态
-
----
-
-#### ./auth/turnstile.tsx
-
-#### ./auth/user-sidebar.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/user-sidebar.tsx`
-- 复杂度: 中
-- 优先级: P2
-
-**依赖问题**
-
-- [x] Next.js Link
-- [x] use_client
-- [x] Router (用于 active 状态)
-
-**重构策略**
-
-```
-容器职责:
-- 从路由确定 active 菜单项
-- 提供菜单结构
-
-UI 职责:
-- 侧边栏布局
-- 带 Link 适配器的菜单项
-- Active 状态样式
-
-Props:
-- items: Array<{
-    key: string
-    label: string
-    href: string
-    icon?: ReactNode
-    active?: boolean
-  }>
-- onItemClick?: (key: string) => void
-
-适配器需求:
-- LinkAdapter
-```
-
-**测试要点**
-
-- [ ] 菜单渲染
-- [ ] Active 状态高亮
-- [ ] 链接导航
+- ✅ 按钮渲染 (默认文本)
+- ✅ onClick 回调触发
+- ✅ Loading 状态显示和禁用
+- ✅ Disabled 状态
+- ✅ 自定义 className
+- ✅ 容器：成功 OAuth 重定向
+- ✅ 容器：错误处理和 toast
+- ✅ 容器：缺失 URL 处理
+- ✅ 容器：网络错误处理
 
 **实现笔记**
 
-- 待实施时记录
+- 2026-01-18: 完成迁移，所有测试通过 (UI 8 tests, 容器 6 tests)，构建成功
+- UI 组件完全受控，无副作用
+- 容器使用 useState 管理 loading 状态
+- OAuth 流程完全在容器内处理
+- Storybook 展示所有状态 (Default, Loading, Disabled, Interactive)
+
+---
+
+#### ./auth/unlink-button.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/unlink-button.tsx`
+- UI 组件: `packages/ui/src/components/auth/unlink-button.tsx`
+- 测试: `packages/ui/src/components/auth/unlink-button.test.tsx` + `apps/web/app/_components/auth/unlink-button.test.tsx`
+- Storybook: `apps/storybook/src/stories/auth/unlink-button.stories.tsx`
+- 复杂度: 中
+- 优先级: P2
+
+**依赖解决方案**
+
+- ✅ Server Action 保留在容器
+- ✅ useTransition hook 保留在容器
+- ✅ Toast 通知保留在容器
+- ✅ UI 仅处理渲染和 loading 状态
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 调用 unlinkAccountAction
+- 使用 useTransition 管理 isPending 状态
+- 处理成功/失败 toast 通知
+
+UI 职责 (packages/ui):
+- 按钮渲染 (使用 Button 原语)
+- 显示 loading 状态 ("解绑中...")
+- 处理 disabled 状态
+- 接收 onClick 回调
+
+Props:
+- onClick: () => void
+- loading?: boolean
+- disabled?: boolean
+- className?: string
+```
+
+**测试覆盖**
+
+- ✅ 按钮渲染 (默认文本)
+- ✅ onClick 回调触发
+- ✅ Loading 状态显示和禁用
+- ✅ Disabled 状态
+- ✅ 自定义 className
+- ✅ 容器：成功解绑和 toast
+- ✅ 容器：错误处理和 toast
+- ✅ 容器：loading 状态期间禁用
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过 (UI 8 tests, 容器 5 tests)，构建成功
+- UI 组件完全受控，无副作用
+- 容器使用 useTransition 管理异步状态
+- Server Action 调用完全在容器内处理
+- Storybook 展示所有状态 (Default, Loading, Disabled, Interactive)
 
 ---
 
