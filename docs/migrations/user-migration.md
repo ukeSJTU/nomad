@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次4 (低优先级 - 应用已建立的表单和列表模式)
 > **组件总数**: 8
-> **状态**: 已完成 2 | 进行中 0 | 未开始 6
+> **状态**: 已完成 3 | 进行中 0 | 未开始 5
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -47,81 +47,14 @@ User 域负责用户个人信息管理,包括:
 - **测试**: `packages/ui/src/components/user/address/address-list.test.tsx`
 - **Story**: `apps/storybook/src/stories/user/address-list.stories.tsx`
 
-### 🚧 进行中
-
-(暂无)
-
-### 📋 未开始
-
 #### ./user/user-info-edit-form.tsx
 
-**基本信息**
+- **UI 组件**: `packages/ui/src/components/user/user-info-edit-form.tsx`
+- **容器组件**: `apps/web/app/_components/user/user-info-edit-form.tsx`
+- **测试**: `packages/ui/src/components/user/user-info-edit-form.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/user-info-edit-form.stories.tsx`
 
-- 路径: `apps/web/app/_components/user/user-info-edit-form.tsx`
-- 复杂度: 中
-- 优先级: P1
-- 批次: 4
-
-**依赖问题**
-
-- [x] react-hook-form + zod
-- [x] Server Action: 更新用户信息
-- [x] use_client
-
-**重构策略**
-
-```
-容器职责:
-- Schema 管理 (userInfoSchema)
-- 表单提交与 Server Action 调用
-- 默认值回填 (当前用户信息)
-- 错误处理
-
-UI 职责:
-- 受控表单字段
-  - 昵称
-  - 性别
-  - 生日
-  - 头像上传 (可选)
-- 验证错误显示
-- 提交/取消按钮
-- Loading 状态
-
-适配器需求:
-- 无
-```
-
-**View Model 接口**
-
-```typescript
-interface UserInfoEditFormProps {
-  values: {
-    nickname: string;
-    gender?: string;
-    birthday?: string;
-    avatar?: string;
-  };
-  errors?: Record<string, string>;
-  onFieldChange: (field: string, value: string) => void;
-  onSubmit: () => void;
-  onCancel?: () => void;
-  loading?: boolean;
-}
-```
-
-**测试要点**
-
-- [ ] 所有字段输入
-- [ ] 表单验证
-- [ ] 头像上传 (如果有)
-- [ ] 提交流程
-- [ ] 取消操作
-
-**实现笔记**
-
-- 待实施时记录
-
----
+### 📋 未开始
 
 #### ./user/user-info-form.tsx
 
