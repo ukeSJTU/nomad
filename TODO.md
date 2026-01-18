@@ -26,14 +26,14 @@
 | 域             | 组件数 | 已完成 | 进行中 | 未开始 | 跳过  | 批次    | 优先级 |
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
-| **Auth**       | 13     | 7      | 0      | 6      | 0     | 批次2   | 高     |
+| **Auth**       | 13     | 8      | 0      | 5      | 0     | 批次2   | 高     |
 | **Flights**    | 40     | 40     | 0      | 0      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
 | **User**       | 8      | 8      | 0      | 0      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **75** | **0**  | **5**  | **1** | -       | -      |
+| **总计**       | **81** | **76** | **0**  | **4**  | **1** | -       | -      |
 
-**完成度**: 84.27% (75/89 可迁移组件)
+**完成度**: 85.39% (76/89 可迁移组件)
 
 ### 已完成组件
 
@@ -76,7 +76,7 @@
 - [x] OrderCard - packages/ui/src/components/user/order-card.tsx
 - [x] DeleteOrderDialog - packages/ui/src/components/user/delete-order-dialog.tsx
 
-**Auth (7/13)**:
+**Auth (8/13)**:
 
 - [x] UserSidebar - packages/ui/src/components/auth/user-sidebar.tsx
 - [x] OtpInput - packages/ui/src/components/security/otp-input.tsx
@@ -85,6 +85,7 @@
 - [x] UnlinkButton - packages/ui/src/components/auth/unlink-button.tsx
 - [x] SocialAccountCard - packages/ui/src/components/auth/social-account-card.tsx
 - [x] SignUpModal - packages/ui/src/components/auth/sign-up-modal.tsx
+- [x] RegistrationSuccess - packages/ui/src/components/auth/registration-success.tsx
 
 **Flights (32/40)**:
 

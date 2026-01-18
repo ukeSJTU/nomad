@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 7 | 进行中 0 | 未开始 6
+> **状态**: 已完成 8 | 进行中 0 | 未开始 5
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -215,6 +215,66 @@ Props:
 - Storybook 展示多种状态 (GitHub/Google, Linked/Unlinked, Multiple cards, Interactive)
 - 删除 apps/web 旧版本和测试文件
 - 删除 apps/web/\_stories 中的旧 story 文件
+
+---
+
+#### ./auth/registration-success.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/registration-success.tsx`
+- UI 组件: `packages/ui/src/components/auth/registration-success.tsx`
+- 测试: `packages/ui/src/components/auth/registration-success.test.tsx` (6 tests ✓) + `apps/web/app/_components/auth/registration-success.test.tsx` (3 tests ✓)
+- Storybook: `apps/storybook/src/stories/auth/registration-success.stories.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 完成日期: 2026-01-18
+
+**依赖解决方案**
+
+- ✅ 移除 Next.js router - 使用 `onStartBooking` 和 `onGoToProfile` 回调
+- ✅ 容器处理导航逻辑 (router.push)
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 使用 useRouter 管理导航
+- 处理 onStartBooking 回调 (router.push("/flights"))
+- 处理 onGoToProfile 回调 (router.push("/home/info"))
+- 传递可选的 title/description/className
+
+UI 职责 (packages/ui):
+- 成功图标渲染 (绿色勾选)
+- 标题和描述显示
+- 两个行动按钮布局 (开始订票/前往个人中心)
+- 响应式居中布局
+
+Props:
+- title?: string (默认: "注册成功！")
+- description?: string (默认: "您的账户已成功创建，欢迎使用 Nomad")
+- onStartBooking: () => void
+- onGoToProfile: () => void
+- className?: string
+```
+
+**测试覆盖**
+
+- ✅ 默认文本渲染
+- ✅ 自定义 title/description
+- ✅ onStartBooking 回调触发
+- ✅ onGoToProfile 回调触发
+- ✅ 自定义 className 应用
+- ✅ 成功图标显示
+- ✅ 容器导航功能 (router.push 调用)
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过，构建成功
+- UI 组件完全受控，无 Next.js 依赖
+- 容器负责路由导航
+- Storybook 展示多种状态 (默认、自定义文本、长文本等)
+- 两层测试覆盖: UI 层 (交互和渲染) + 容器层 (导航逻辑)
 
 ### 🚧 进行中
 

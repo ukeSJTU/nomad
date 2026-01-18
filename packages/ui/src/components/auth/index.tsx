@@ -5,6 +5,8 @@ export type {
   PasswordSetupFormProps,
 } from "./password-setup-form";
 export { PasswordSetupForm } from "./password-setup-form";
+export type { RegistrationSuccessProps } from "./registration-success";
+export { RegistrationSuccess } from "./registration-success";
 export type { SignUpModalProps } from "./sign-up-modal";
 export { SignUpModal } from "./sign-up-modal";
 export type { SocialAccountCardProps } from "./social-account-card";
