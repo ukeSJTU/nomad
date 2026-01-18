@@ -28,12 +28,12 @@
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
 | **Flights**    | 40     | 33     | 0      | 7      | 0     | 批次1+3 | 中     |
-| **Passengers** | 4      | 0      | 0      | 4      | 0     | 批次3   | 低     |
+| **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **44** | **0**  | **36** | **1** | -       | -      |
+| **总计**       | **81** | **48** | **0**  | **32** | **1** | -       | -      |
 
-**完成度**: 55.00% (44/80 可迁移组件)
+**完成度**: 60.00% (48/80 可迁移组件)
 
 ### 已完成组件
 
@@ -50,6 +50,13 @@
 - [x] ErrorDisplay - packages/ui/src/components/common/error-display.tsx
 - [x] UnderConstruction - packages/ui/src/components/common/under-construction.tsx
 - [~] DevUserSwitcher - 不迁移 (仅开发环境使用)
+
+**Passengers (4/4)**:
+
+- [x] PassengerForm - packages/ui/src/components/passengers/passenger-form.tsx
+- [x] PassengerList - packages/ui/src/components/passengers/passenger-list.tsx
+- [x] PassengersDataTable - packages/ui/src/components/passengers/passengers-data-table.tsx
+- [x] PassengerDetailView - packages/ui/src/components/passengers/passenger-detail-view.tsx
 
 **Flights (32/40)**:
 

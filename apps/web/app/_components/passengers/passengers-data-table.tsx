@@ -1,14 +1,8 @@
 "use client";
 
-import { Input } from "@nomad/ui/components/primitives/input";
+import { PassengersDataTable as PassengersDataTableUI } from "@nomad/ui/components/passengers";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  type BatchAction,
-  type ColumnDefinition,
-  DataTableWithActions,
-  type RowAction,
-} from "@/components/common/data-table-with-actions";
 import type { PassengerDTO } from "@/types/dto";
 
 interface PassengersDataTableProps {
@@ -50,9 +44,7 @@ const getGenderDisplay = (gender: string | null) => {
     female: "女",
     other: "未知",
   };
-  return (
-    <div className="text-right font-bold">{genderMap[gender] || gender}</div>
-  );
+  return genderMap[gender] || gender;
 };
 
 export function PassengersDataTable({
@@ -83,146 +75,44 @@ export function PassengersDataTable({
     );
   });
 
-  // Column definitions
-  const columns: ColumnDefinition<PassengerDTO>[] = [
-    {
-      key: "name",
-      header: "姓名",
-      cell: ({ row }) => <div className="text-center">{row.name}</div>,
-      width: "150px",
-    },
-    {
-      key: "phone",
-      header: "手机/电话",
-      cell: ({ value }) => (
-        <div className="text-center">{maskPhone(value as string | null)}</div>
-      ),
-      width: "130px",
-    },
-    {
-      key: "documentType",
-      header: () => <div className="text-center">证件类型</div>,
-      cell: ({ value }) => (
-        <div className="text-center">
-          {getDocumentTypeDisplay(value as string)}
-        </div>
-      ),
-      width: "100px",
-    },
-    {
-      key: "documentNumber",
-      header: "证件号码",
-      cell: ({ value }) => (
-        <div className="font-mono text-center">
-          {maskDocumentNumber(value as string)}
-        </div>
-      ),
-      width: "180px",
-    },
-    {
-      key: "nationality",
-      header: "国籍(国家/地区)",
-      cell: ({ value }) => (
-        <div className="text-center">{(value as string | null) || "-"}</div>
-      ),
-      width: "150px",
-    },
-    {
-      key: "gender",
-      header: () => <div className="text-center">性别</div>,
-      cell: ({ value }) => (
-        <div className="text-center">
-          {getGenderDisplay(value as string | null)}
-        </div>
-      ),
-      width: "80px",
-    },
-    {
-      key: "frequentFlyerCard",
-      header: () => <div className="text-center">常旅客卡</div>,
-      cell: () => <div className="text-center">无</div>,
-      width: "100px",
-    },
-  ];
+  // Map data to UI component format
+  const passengerDataItems = filteredData.map(passenger => ({
+    id: passenger.id,
+    name: passenger.name,
+    phone: maskPhone(passenger.phone),
+    documentType: getDocumentTypeDisplay(passenger.documentType),
+    documentNumber: maskDocumentNumber(passenger.documentNumber),
+    nationality: passenger.nationality,
+    gender: getGenderDisplay(passenger.gender),
+  }));
 
-  // Row actions
-  const rowActions: RowAction<PassengerDTO>[] = [
-    {
-      label: "查看",
-      onClick: row => {
-        router.push(`/home/passengers/${row.id}`);
-      },
-      variant: "link",
-      className: "text-blue-600 h-auto p-0",
-    },
-    {
-      label: "编辑",
-      onClick: row => {
-        router.push(`/home/passengers/${row.id}/edit`);
-      },
-      variant: "link",
-      className: "text-blue-600 h-auto p-0",
-    },
-    {
-      label: "删除",
-      onClick: row => {
-        onDelete(row.id);
-      },
-      variant: "link",
-      className: "text-blue-600 h-auto p-0",
-    },
-  ];
+  // Navigation handlers
+  const handleView = (id: string) => {
+    router.push(`/home/passengers/${id}`);
+  };
 
-  // Batch actions
-  const batchActions: BatchAction<PassengerDTO>[] = [
-    {
-      label: "✕ 删除",
-      onClick: selectedRows => {
-        const ids = selectedRows.map(row => row.id);
-        onBatchDelete(ids);
-      },
-      variant: "default",
-    },
-  ];
+  const handleEdit = (id: string) => {
+    router.push(`/home/passengers/${id}/edit`);
+  };
 
-  // Handle search
   const handleSearch = () => {
     // Search is handled by filtering the data
     // This function is called when the search button is clicked
     // The actual filtering happens in the filteredData computation
   };
 
-  // Filter slot with search input
-  const filterSlot = (
-    <div className="flex items-center gap-2">
-      <span className="font-semibold whitespace-nowrap">旅客姓名</span>
-      <Input
-        placeholder="中文名/英文名"
-        value={searchQuery}
-        onChange={e => setSearchQuery(e.target.value)}
-        className="w-64"
-      />
-    </div>
-  );
-
   return (
-    <DataTableWithActions
-      data={filteredData}
-      columns={columns}
-      keyExtractor={row => row.id}
-      filterSlot={filterSlot}
-      onSearch={handleSearch}
+    <PassengersDataTableUI
+      data={passengerDataItems}
+      onView={handleView}
+      onEdit={handleEdit}
+      onDelete={onDelete}
+      onBatchDelete={onBatchDelete}
       onAdd={onAdd}
-      addButtonText="新增"
-      searchButtonText="查询"
-      showAddButton={true}
-      showSearchButton={true}
-      rowActions={rowActions}
-      batchActions={batchActions}
-      enableSelection={true}
+      onSearch={handleSearch}
+      searchQuery={searchQuery}
+      onSearchQueryChange={setSearchQuery}
       loading={isLoading}
-      emptyMessage="暂无旅客信息"
-      variant="default"
     />
   );
 }

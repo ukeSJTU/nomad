@@ -2,8 +2,8 @@
 
 > **批次分配**: 批次3 (与 flights booking/orders 一起 - 表单模式应用)
 > **组件总数**: 4
-> **状态**: 已完成 0 | 进行中 0 | 未开始 4
-> **最后更新**: 2026-01-03
+> **状态**: 已完成 4 | 进行中 0 | 未开始 0
+> **最后更新**: 2026-01-18
 
 ## 域概览
 
@@ -33,7 +33,33 @@ Passengers 域负责乘客信息管理,包括:
 
 ### ✅ 已完成并测试
 
-(暂无)
+#### ./passengers/forms/passenger-form.tsx
+
+**UI 组件**: `packages/ui/src/components/passengers/passenger-form.tsx`
+**容器组件**: `apps/web/app/_components/passengers/forms/passenger-form.tsx`
+**测试文件**: `packages/ui/src/components/passengers/passenger-form.test.tsx`
+**Storybook**: `apps/storybook/src/stories/passengers/passenger-form.stories.tsx`
+
+#### ./passengers/passenger-list.tsx
+
+**UI 组件**: `packages/ui/src/components/passengers/passenger-list.tsx`
+**容器组件**: `apps/web/app/_components/passengers/passenger-list.tsx`
+**测试文件**: `packages/ui/src/components/passengers/passenger-list.test.tsx`
+**Storybook**: `apps/storybook/src/stories/passengers/passenger-list.stories.tsx`
+
+#### ./passengers/passengers-data-table.tsx
+
+**UI 组件**: `packages/ui/src/components/passengers/passengers-data-table.tsx`
+**容器组件**: `apps/web/app/_components/passengers/passengers-data-table.tsx`
+**测试文件**: `packages/ui/src/components/passengers/passengers-data-table.test.tsx`
+**Storybook**: `apps/storybook/src/stories/passengers/passengers-data-table.stories.tsx`
+
+#### ./passengers/passenger-detail-view.tsx
+
+**UI 组件**: `packages/ui/src/components/passengers/passenger-detail-view.tsx`
+**容器组件**: `apps/web/app/_components/passengers/passenger-detail-view.tsx`
+**测试文件**: `packages/ui/src/components/passengers/passenger-detail-view.test.tsx`
+**Storybook**: `apps/storybook/src/stories/passengers/passenger-detail-view.stories.tsx`
 
 ### 🚧 进行中
 
@@ -41,7 +67,13 @@ Passengers 域负责乘客信息管理,包括:
 
 ### 📋 未开始
 
-#### ./passengers/forms/passenger-form.tsx
+(暂无)
+
+---
+
+## 已移除的组件规划
+
+#### ./passengers/forms/passenger-form.tsx (已完成)
 
 **基本信息**
 
@@ -318,21 +350,29 @@ Props:
 
 | 类别      | 总数  | 已完成 | 进行中 | 未开始 |
 | --------- | ----- | ------ | ------ | ------ |
-| 表单      | 1     | 0      | 0      | 1      |
-| 列表/详情 | 2     | 0      | 0      | 2      |
-| 数据表格  | 1     | 0      | 0      | 1      |
-| **总计**  | **4** | **0**  | **0**  | **4**  |
+| 表单      | 1     | 1      | 0      | 0      |
+| 列表/详情 | 2     | 2      | 0      | 0      |
+| 数据表格  | 1     | 1      | 0      | 0      |
+| **总计**  | **4** | **4**  | **0**  | **0**  |
 
 ---
 
 ## 下一步行动
 
-1. 完成批次0 (适配层) - 前置依赖
-2. 完成批次1 (common/data-table-with-actions) - 表格模式参考
-3. 完成批次2 (auth 表单) - 表单模式参考
-4. 从 `passenger-form.tsx` 开始 (核心表单)
-5. 处理 `passengers-data-table.tsx` (复杂表格)
-6. 其余展示组件
+✅ **Passengers 域迁移已完成！**
+
+所有 4 个组件已成功迁移到 `packages/ui`，并包含:
+
+- ✅ UI 组件 (无 Next.js 依赖)
+- ✅ 容器组件 (处理导航、数据格式化)
+- ✅ 单元测试 (Vitest + RTL)
+- ✅ Storybook stories
+- ✅ 构建验证通过
+
+**建议下一步**:
+
+- 继续 Auth 域迁移 (批次2，13个组件)
+- 或继续 Flights Booking/Orders 组件 (批次3，8个剩余组件)
 
 ---
 
