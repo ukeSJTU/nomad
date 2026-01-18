@@ -26,14 +26,14 @@
 | 域             | 组件数 | 已完成 | 进行中 | 未开始 | 跳过  | 批次    | 优先级 |
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
-| **Auth**       | 13     | 2      | 0      | 11     | 0     | 批次2   | 高     |
+| **Auth**       | 13     | 3      | 0      | 10     | 0     | 批次2   | 高     |
 | **Flights**    | 40     | 33     | 0      | 7      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
 | **User**       | 8      | 8      | 0      | 0      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **63** | **0**  | **17** | **1** | -       | -      |
+| **总计**       | **81** | **64** | **0**  | **16** | **1** | -       | -      |
 
-**完成度**: 78.75% (63/80 可迁移组件)
+**完成度**: 80.00% (64/80 可迁移组件)
 
 ### 已完成组件
 
@@ -76,10 +76,11 @@
 - [x] OrderCard - packages/ui/src/components/user/order-card.tsx
 - [x] DeleteOrderDialog - packages/ui/src/components/user/delete-order-dialog.tsx
 
-**Auth (2/13)**:
+**Auth (3/13)**:
 
 - [x] UserSidebar - packages/ui/src/components/auth/user-sidebar.tsx
 - [x] OtpInput - packages/ui/src/components/security/otp-input.tsx
+- [x] PasswordSetupForm - packages/ui/src/components/auth/password-setup-form.tsx
 
 **Flights (32/40)**:
 

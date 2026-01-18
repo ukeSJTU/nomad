@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 2 | 进行中 0 | 未开始 11
+> **状态**: 已完成 3 | 进行中 0 | 未开始 10
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -271,33 +271,183 @@ UI 职责:
 **基本信息**
 
 - 路径: `apps/web/app/_components/auth/forms/password-setup.tsx`
-- 复杂度: 低
+- UI 组件: `packages/ui/src/components/auth/password-setup-form.tsx`
+- 测试: `packages/ui/src/components/auth/password-setup-form.test.tsx` (13 tests ✓)
+- Storybook: `apps/storybook/src/stories/auth/password-setup-form.stories.tsx`
+- 复杂度: 中
 - 优先级: P2
+
+**依赖解决方案**
+
+- ✅ react-hook-form + zod - 容器管理表单 schema 和验证
+- ✅ zxcvbn 密码强度检查 - 容器计算 strengthScore 并传递给 UI
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 管理 react-hook-form 实例
+- 定义 passwordSetupSchema (zod)
+- 计算密码强度 (zxcvbn)
+- 处理表单提交
+- 日志记录
+
+UI 职责 (packages/ui):
+- 受控 password + confirmPassword 字段
+- 密码显示/隐藏切换
+- 实时密码要求验证显示
+- 密码强度指示器 (基于 strengthScore prop)
+- 可选的 maskedIdentifier 显示
+- 可选的帮助链接
+
+Props:
+- control: Control<PasswordSetupFormData>
+- errors: FieldErrors<PasswordSetupFormData>
+- onSubmit: (e?: React.BaseSyntheticEvent) => void
+- passwordValue: string (用于实时要求验证)
+- strengthScore: number (0-4, 由 zxcvbn 计算)
+- isLoading?: boolean
+- maskedIdentifier?: string
+- submitButtonText?: string
+- showHelpLink?: boolean
+- onHelpClick?: () => void
+```
+
+**测试覆盖**
+
+- ✅ 表单字段渲染
+- ✅ 密码显示/隐藏切换
+- ✅ 实时密码要求验证
+- ✅ 密码强度指示器 (弱/中/强)
+- ✅ 可选要求样式 (数字和特殊字符)
+- ✅ maskedIdentifier 显示
+- ✅ 自定义按钮文本
+- ✅ 帮助链接显示和回调
+- ✅ Loading 状态
+- ✅ 表单提交
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过，构建成功
+- UI 组件完全受控，密码强度计算在容器层
+- 使用与 change-password-form 一致的模式
+- Storybook 展示多种密码强度状态
+- 可复用于注册和忘记密码流程
+
+---
+
+### 🚧 进行中
+
+(暂无)
+
+---
+
+### 📋 未开始
+
+#### ./auth/forms/unified-login.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/forms/unified-login.tsx`
+- 复杂度: 高
+- 优先级: P1
 
 **依赖问题**
 
+- [x] Server Action: loginAction + sendOTPAction
 - [x] react-hook-form + zod
+- [x] Turnstile widget (第三方)
 - [x] use_client
 
 **重构策略**
 
 ```
 容器职责:
-- 密码验证 schema
-- 密码强度检查
-- 提交处理
+- 管理登录模式状态 (password | otp)
+- OTP 倒计时 hook 调用
+- 验证码发送 action
+- 登录提交 action
+- 错误处理与显示
+- 表单 schema 管理
 
 UI 职责:
-- 受控 password + confirm 字段
-- 密码强度指示器
-- 验证错误
-- 显示/隐藏密码切换
+- 模式切换 UI (password ↔ otp)
+- 受控表单字段
+- OTP 输入和发送按钮
+- Turnstile widget (由容器注入或作为 children)
+- 条款勾选框
+- 提交按钮与 loading 状态
+
+适配器需求:
+- 无 (但 Turnstile 可能需要 Provider 支持)
+```
+
+**View Model 接口**
+参考 [ARCHITECTURE.md - UnifiedLogin](../../ARCHITECTURE.md#unifiedlogin)
+
+**测试要点**
+
+- [ ] 模式切换 (password ↔ otp)
+- [ ] 表单验证错误显示
+- [ ] OTP 倒计时 UI (容器传入 mock 值)
+- [ ] 提交按钮禁用状态
+- [ ] 条款勾选状态
+- [ ] Turnstile 验证流程
+
+**实现笔记**
+
+- 待实施时记录
+
+**阻塞问题**
+
+- [ ] 需要先完成 OTP 倒计时 hook 提取(可与 phone/email verification 共享)
+- [ ] Turnstile widget 需要平台抽象
+
+---
+
+#### ./auth/forms/unified-signup.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/forms/unified-signup.tsx`
+- 复杂度: 中
+- 优先级: P1
+
+**依赖问题**
+
+- [x] Server Action: signupAction
+- [x] use_client
+
+**重构策略**
+
+```
+容器职责:
+- 调用 signup action
+- 错误处理
+- 成功后导航
+
+UI 职责:
+- 受控表单字段 (account, password)
+- 验证错误显示
+- 提交按钮与 loading 状态
 
 适配器需求:
 - 无
 ```
 
 **测试要点**
+
+- [ ] 字段验证
+- [ ] 提交流程
+- [ ] 错误显示
+
+**实现笔记**
+
+- 待实施时记录
+
+**阻塞问题**
+
+- [ ] 需确认表单验证是客户端还是仅服务端
 
 - [ ] 密码匹配验证
 - [ ] 密码强度指示器
