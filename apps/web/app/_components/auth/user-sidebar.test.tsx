@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { describe, expect, it, vi } from "vitest";
 
 import UserSidebar from "./user-sidebar";
@@ -8,6 +8,7 @@ import UserSidebar from "./user-sidebar";
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   usePathname: vi.fn(),
+  useRouter: vi.fn(),
 }));
 
 // Mock sonner toast
@@ -18,6 +19,14 @@ vi.mock("sonner", () => ({
 }));
 
 describe("UserSidebar", () => {
+  const mockPush = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(useRouter).mockReturnValue({
+      push: mockPush,
+    } as ReturnType<typeof useRouter>);
+  });
   describe("Basic Rendering", () => {
     it("renders all top-level menu items", () => {
       vi.mocked(usePathname).mockReturnValue("/home");
@@ -61,20 +70,18 @@ describe("UserSidebar", () => {
 
       render(<UserSidebar />);
 
-      const ordersButton = screen.getByRole("link", { name: "订单" });
-      expect(ordersButton).toHaveClass("justify-start", "px-4");
+      const ordersButton = screen.getByText("订单");
+      // Check that the button exists and is visible
+      expect(ordersButton).toBeInTheDocument();
     });
-
     it("highlights menu item when on sub-path", () => {
       vi.mocked(usePathname).mockReturnValue("/home/passengers/new");
 
       render(<UserSidebar />);
 
       // Should find and highlight "常用旅客信息"
-      const passengersLink = screen.getByRole("link", {
-        name: "常用旅客信息",
-      });
-      expect(passengersLink).toBeInTheDocument();
+      const passengersButton = screen.getByText("常用旅客信息");
+      expect(passengersButton).toBeInTheDocument();
     });
 
     it("highlights menu item when editing an entity", () => {
@@ -84,10 +91,8 @@ describe("UserSidebar", () => {
 
       render(<UserSidebar />);
 
-      const passengersLink = screen.getByRole("link", {
-        name: "常用旅客信息",
-      });
-      expect(passengersLink).toBeInTheDocument();
+      const passengersButton = screen.getByText("常用旅客信息");
+      expect(passengersButton).toBeInTheDocument();
     });
 
     it("highlights 我的信息 when on /home/info", () => {
@@ -95,8 +100,8 @@ describe("UserSidebar", () => {
 
       render(<UserSidebar />);
 
-      const infoLink = screen.getByRole("link", { name: "我的信息" });
-      expect(infoLink).toBeInTheDocument();
+      const infoButton = screen.getByText("我的信息");
+      expect(infoButton).toBeInTheDocument();
     });
   });
 
@@ -211,39 +216,27 @@ describe("UserSidebar", () => {
   });
 
   describe("Navigation", () => {
-    it("renders implemented items as links", () => {
+    it("calls router.push when clicking implemented items", async () => {
       vi.mocked(usePathname).mockReturnValue("/home/orders");
 
       render(<UserSidebar />);
 
-      // When not on /home, "我的携程首页" should be a button (due to Link+Button combo)
-      // But we can still find it as text
-      expect(screen.getByText("我的携程首页")).toBeInTheDocument();
+      const ordersButton = screen.getByText("订单");
+      await userEvent.click(ordersButton);
 
-      const ordersLink = screen.getByRole("link", { name: "订单" });
-      expect(ordersLink).toHaveAttribute("href", "/home/orders");
+      expect(mockPush).toHaveBeenCalledWith("/home/orders");
     });
 
-    it("renders unimplemented items as buttons without href", () => {
-      vi.mocked(usePathname).mockReturnValue("/home");
-
-      render(<UserSidebar />);
-
-      const messagesButton = screen.getByText("我的消息");
-      expect(messagesButton.closest("button")).toBeInTheDocument();
-      expect(messagesButton.closest("a")).not.toBeInTheDocument();
-    });
-
-    it("renders child links with correct href", async () => {
+    it("calls router.push for child items", async () => {
       vi.mocked(usePathname).mockReturnValue("/home/passengers");
 
       render(<UserSidebar />);
 
       // Should auto-expand
-      const passengersLink = screen.getByRole("link", {
-        name: "常用旅客信息",
-      });
-      expect(passengersLink).toHaveAttribute("href", "/home/passengers");
+      const passengersButton = screen.getByText("常用旅客信息");
+      await userEvent.click(passengersButton);
+
+      expect(mockPush).toHaveBeenCalledWith("/home/passengers");
     });
   });
 

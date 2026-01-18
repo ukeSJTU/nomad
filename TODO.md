@@ -26,14 +26,14 @@
 | 域             | 组件数 | 已完成 | 进行中 | 未开始 | 跳过  | 批次    | 优先级 |
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
-| **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
+| **Auth**       | 13     | 1      | 0      | 12     | 0     | 批次2   | 高     |
 | **Flights**    | 40     | 33     | 0      | 7      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
 | **User**       | 8      | 8      | 0      | 0      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **61** | **0**  | **19** | **1** | -       | -      |
+| **总计**       | **81** | **62** | **0**  | **18** | **1** | -       | -      |
 
-**完成度**: 76.25% (61/80 可迁移组件)
+**完成度**: 77.50% (62/80 可迁移组件)
 
 ### 已完成组件
 
@@ -65,7 +65,7 @@
 - [x] UpdatePhoneForm - packages/ui/src/components/security/update-phone-form.tsx
 - [x] SecurityItem - packages/ui/src/components/security/security-item.tsx
 
-**User (6/8)**:
+**User (8/8)**:
 
 - [x] AddressForm - packages/ui/src/components/user/address/address-form.tsx
 - [x] AddressList - packages/ui/src/components/user/address/address-list.tsx
@@ -75,6 +75,10 @@
 - [x] SuccessDialog - packages/ui/src/components/user/success-dialog.tsx
 - [x] OrderCard - packages/ui/src/components/user/order-card.tsx
 - [x] DeleteOrderDialog - packages/ui/src/components/user/delete-order-dialog.tsx
+
+**Auth (1/13)**:
+
+- [x] UserSidebar - packages/ui/src/components/auth/user-sidebar.tsx
 
 **Flights (32/40)**:
 

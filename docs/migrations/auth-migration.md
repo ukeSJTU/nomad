@@ -2,8 +2,8 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 0 | 进行中 0 | 未开始 13
-> **最后更新**: 2026-01-03
+> **状态**: 已完成 1 | 进行中 0 | 未开始 12
+> **最后更新**: 2026-01-18
 
 ## 域概览
 
@@ -33,7 +33,61 @@ Auth 域处理用户认证流程,包括:
 
 ### ✅ 已完成并测试
 
-(暂无)
+#### ./auth/user-sidebar.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/user-sidebar.tsx`
+- UI 组件: `packages/ui/src/components/auth/user-sidebar.tsx`
+- 测试: `packages/ui/src/components/auth/user-sidebar.test.tsx` + `apps/web/app/_components/auth/user-sidebar.test.tsx`
+- Storybook: `apps/storybook/src/stories/auth/user-sidebar.stories.tsx`
+- 复杂度: 中
+- 优先级: P2
+
+**依赖解决方案**
+
+- ✅ 移除 Next.js Link - 使用 `onNavigate` 回调
+- ✅ 移除 usePathname - 容器计算 `isActive` 状态并通过 props 传递
+- ✅ 移除 useRouter - 容器处理 `router.push`
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 从 usePathname 确定当前路径
+- 计算每个菜单项的 isActive 状态
+- 处理 onNavigate 回调 (router.push)
+- 处理 onUnimplementedClick (toast 通知)
+
+UI 职责 (packages/ui):
+- 侧边栏布局和样式
+- 递归渲染菜单项 (支持嵌套)
+- 可折叠/展开父级菜单
+- 自动展开包含活动子项的父菜单
+- 根据 isActive 状态高亮菜单项
+- 区分已实现/未实现功能 (不同交互)
+
+Props:
+- items: UserSidebarMenuItem[] (包含 title, href, isActive, isImplemented, children)
+- onNavigate: (href: string) => void
+- onUnimplementedClick: (title: string) => void
+```
+
+**测试覆盖**
+
+- ✅ 菜单渲染 (顶级和嵌套项)
+- ✅ Active 状态高亮 (精确匹配和子路径匹配)
+- ✅ 可折叠展开逻辑 (手动和自动展开)
+- ✅ 导航回调
+- ✅ 未实现功能点击回调
+- ✅ 边界情况 (非匹配路径、部分匹配路径)
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过，构建成功
+- UI 组件完全受控，无 Next.js 依赖
+- 容器负责路由状态管理和导航
+- Storybook 展示多种状态 (默认、激活项、嵌套激活等)
 
 ### 🚧 进行中
 
@@ -527,61 +581,9 @@ Props:
 - [ ] Loading 状态
 - [ ] 禁用状态
 
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] OAuth 重定向流程需要平台抽象
-
 ---
 
-#### ./auth/unlink-button.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/unlink-button.tsx`
-- 复杂度: 低
-- 优先级: P2
-
-**依赖问题**
-
-- [x] Server Action: unlinkSocialAccountAction
-- [x] use_client
-
-**重构策略**
-
-```
-容器职责:
-- 调用解绑 action
-- 处理确认对话框
-- 错误处理
-
-UI 职责:
-- 带确认的按钮
-- Loading 状态
-
-Props:
-- provider: string
-- onUnlink: () => void
-- loading?: boolean
-- disabled?: boolean
-
-适配器需求:
-- 无
-```
-
-**测试要点**
-
-- [ ] 按钮渲染
-- [ ] Loading 状态
-
-**实现笔记**
-
-- 待实施时记录
-
----
+#### ./auth/turnstile.tsx
 
 #### ./auth/user-sidebar.tsx
 
