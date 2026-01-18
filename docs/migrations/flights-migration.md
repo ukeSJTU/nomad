@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 32 | 进行中 0 | 未开始 8
+> **状态**: 已完成 33 | 进行中 0 | 未开始 7
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -1215,31 +1215,21 @@ UI 职责:
 
 ## 3. Orders 子区 (7 组件) - 批次3
 
-### ./flights/orders/order-flight-info.tsx
+### ✅ ./flights/orders/order-flight-info.tsx
 
-**基本信息**
+- **UI 组件**: `packages/ui/src/components/flights/orders/order-flight-info.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/order-flight-info.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/order-flight-info.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/order-flight-info.stories.tsx`
+- **完成日期**: 2026-01-18
 
-- 复杂度: 低
-- 优先级: P1
-- 批次: 3
+**迁移要点**:
 
-**依赖问题**
-
-- [x] Image (航班图片)
-
-**重构策略**
-
-```
-容器职责:
-- 提供航班 view-model
-
-UI 职责:
-- 航班信息展示
-- Image 适配器
-
-适配器需求:
-- ImageAdapter
-```
+- 纯 UI 展示组件，无副作用
+- 使用 Image 适配器渲染航空公司 Logo
+- 提供可选的格式化函数作为 props（默认实现基于 date-fns）
+- 容器负责数据映射，UI 负责渲染时间线布局
+- 支持单程/往返两种模式，自动切换箭头图标和标签显示
 
 ---
 

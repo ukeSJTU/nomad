@@ -1,4 +1,9 @@
 export type {
+  OrderFlightInfoFlightData,
+  OrderFlightInfoProps,
+} from "./order-flight-info";
+export { OrderFlightInfo } from "./order-flight-info";
+export type {
   OrderStatus,
   OrderStatusCardData,
   OrderStatusCardProps,
