@@ -27,13 +27,13 @@
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
-| **Flights**    | 40     | 25     | 0      | 15     | 0     | 批次1+3 | 中     |
+| **Flights**    | 40     | 27     | 0      | 13     | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **36** | **0**  | **44** | **1** | -       | -      |
+| **总计**       | **81** | **38** | **0**  | **42** | **1** | -       | -      |
 
-**完成度**: 45.00% (36/80 可迁移组件)
+**完成度**: 47.50% (38/80 可迁移组件)
 
 ### 已完成组件
 
@@ -51,7 +51,7 @@
 - [x] UnderConstruction - packages/ui/src/components/common/under-construction.tsx
 - [~] DevUserSwitcher - 不迁移 (仅开发环境使用)
 
-**Flights (22/40)**:
+**Flights (24/40)**:
 
 - [x] AirportList - packages/ui/src/components/flights/guide/airport-list.tsx
 - [x] DatePriceSelector - packages/ui/src/components/flights/search/date-price-selector.tsx
@@ -76,6 +76,8 @@
 - [x] ContactInfoCard - packages/ui/src/components/flights/booking/contact-info-card.tsx
 - [x] PassengerFormCard - packages/ui/src/components/flights/booking/passenger-form-card.tsx
 - [x] FlightSummaryCard - packages/ui/src/components/flights/booking/flight-summary-card.tsx
+- [x] ConfirmationNoticeCard - packages/ui/src/components/flights/booking/confirmation-notice-card.tsx
+- [x] ConfirmationPaymentSummary - packages/ui/src/components/flights/booking/confirmation-payment-summary.tsx
 
 ### 批次进度
 

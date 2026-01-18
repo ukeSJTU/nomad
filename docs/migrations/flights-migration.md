@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 24 | 进行中 0 | 未开始 16
+> **状态**: 已完成 26 | 进行中 0 | 未开始 14
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -130,6 +130,22 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **容器**: `apps/web/app/_components/flights/booking/confirmation-success-header.tsx`
 - **测试**: `packages/ui/src/components/flights/booking/confirmation-success-header.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-success-header.stories.tsx`
+- **完成日期**: 2026-01-18
+
+#### ./flights/booking/confirmation-notice-card.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-notice-card.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-notice-card.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-notice-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-notice-card.stories.tsx`
+- **完成日期**: 2026-01-18
+
+#### ./flights/booking/confirmation-payment-summary.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-payment-summary.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-payment-summary.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-payment-summary.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-payment-summary.stories.tsx`
 - **完成日期**: 2026-01-18
 
 ### 🚧 进行中
@@ -807,8 +823,8 @@ UI 职责:
 
 - ✅ confirmation-booking-info.tsx
 - ✅ confirmation-flight-details.tsx
-- confirmation-notice-card.tsx
-- confirmation-payment-summary.tsx
+- ✅ confirmation-notice-card.tsx
+- ✅ confirmation-payment-summary.tsx
 - ✅ confirmation-success-header.tsx
 
 **基本信息**
@@ -816,7 +832,7 @@ UI 职责:
 - 复杂度: 低
 - 优先级: P2
 - 批次: 3
-- **状态**: 部分完成 (3/5) - 2026-01-18
+- **状态**: ✅ 全部完成 (5/5) - 2026-01-18
 
 **重构策略**
 
@@ -967,6 +983,103 @@ UI 职责:
 - [x] 订单号渲染
 - [x] 成功状态样式
 - [x] 图标渲染
+
+---
+
+#### ./flights/booking/confirmation-notice-card.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/flights/booking/confirmation-notice-card.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
+
+**依赖问题**
+
+- [x] 无 Next.js 依赖
+- [x] 无副作用
+
+**重构策略**
+
+```
+纯展示组件，静态内容:
+
+UI 职责:
+- 温馨提示卡片渲染
+- 注意事项列表展示
+- 支持自定义标题和提示内容
+
+容器职责:
+- 简单 re-export (无额外逻辑)
+```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-notice-card.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-notice-card.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-notice-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-notice-card.stories.tsx`
+
+**测试要点**
+
+- [x] 默认标题和提示内容渲染
+- [x] 自定义标题渲染
+- [x] 自定义提示列表渲染
+- [x] 空提示列表时正确渲染
+- [x] 样式类正确应用
+
+---
+
+#### ./flights/booking/confirmation-payment-summary.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/flights/booking/confirmation-payment-summary.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
+
+**依赖问题**
+
+- [x] 货币格式化 (formatCurrencyWithoutSymbol)
+- [x] 日期格式化 (date-fns)
+
+**重构策略**
+
+```
+容器职责:
+- 调用 formatCurrencyWithoutSymbol 格式化金额
+- 格式化支付时间 (date-fns)
+- 检查是否有增值服务费用
+
+UI 职责:
+- 费用明细渲染
+- 机票费用/增值服务/总额展示
+- 支付时间显示 (可选)
+- 金额高亮样式
+```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-payment-summary.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-payment-summary.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-payment-summary.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-payment-summary.stories.tsx`
+
+**测试要点**
+
+- [x] 基础机票费用和总额渲染
+- [x] 有增值服务时显示增值服务费用
+- [x] 增值服务费用为0时隐藏
+- [x] 增值服务费用为空字符串时隐藏
+- [x] 支付信息和时间渲染 (当提供时)
+- [x] 无支付信息时不显示支付时间
+- [x] 无格式化时间时不显示支付时间
+- [x] 总金额高亮样式 (橙色)
+- [x] 分隔线正确渲染
 
 ---
 

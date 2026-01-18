@@ -18,6 +18,13 @@ export type {
   ConfirmationFlightDetailsSeatClassProps,
 } from "./confirmation-flight-details";
 export { ConfirmationFlightDetails } from "./confirmation-flight-details";
+export type { ConfirmationNoticeCardProps } from "./confirmation-notice-card";
+export { ConfirmationNoticeCard } from "./confirmation-notice-card";
+export type {
+  ConfirmationPaymentSummaryPayment,
+  ConfirmationPaymentSummaryProps,
+} from "./confirmation-payment-summary";
+export { ConfirmationPaymentSummary } from "./confirmation-payment-summary";
 export type { ConfirmationSuccessHeaderProps } from "./confirmation-success-header";
 export { ConfirmationSuccessHeader } from "./confirmation-success-header";
 export type {
