@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 31 | 进行中 0 | 未开始 9
+> **状态**: 已完成 32 | 进行中 0 | 未开始 8
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -146,6 +146,14 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
 - **容器**: `apps/web/app/_components/flights/booking/confirmation-payment-summary.tsx`
 - **测试**: `packages/ui/src/components/flights/booking/confirmation-payment-summary.test.tsx`
 - **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-payment-summary.stories.tsx`
+- **完成日期**: 2026-01-18
+
+#### ./flights/orders/order-status-card.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/orders/order-status-card.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/order-status-card.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/order-status-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/order-status-card.stories.tsx`
 - **完成日期**: 2026-01-18
 
 ### 🚧 进行中
@@ -1206,46 +1214,6 @@ UI 职责:
 ---
 
 ## 3. Orders 子区 (7 组件) - 批次3
-
-### ./flights/orders/order-status-card.tsx
-
-**基本信息**
-
-- 复杂度: 中
-- 优先级: P1
-- 批次: 3
-
-**依赖问题**
-
-- [x] useEffect: 倒计时
-- [x] use_client
-- [x] 全局副作用
-
-**重构策略**
-
-```
-容器职责:
-- 计算订单状态
-- 计算剩余时间 (如果有倒计时)
-- 到期回调处理
-
-UI 职责:
-- 状态卡片渲染
-- 状态标签
-- 倒计时显示
-- 触发 onExpire
-
-Props:
-- status: string
-- remainingSeconds?: number
-- onExpire?: () => void
-- meta?: Record<string, any>
-```
-
-**View Model 接口**
-参考 [ARCHITECTURE.md - OrderStatusCard](../../ARCHITECTURE.md#orderstatuscard)
-
----
 
 ### ./flights/orders/order-flight-info.tsx
 
