@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 20 | 进行中 0 | 未开始 20
+> **状态**: 已完成 21 | 进行中 0 | 未开始 19
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -612,22 +612,47 @@ UI 职责:
 - 复杂度: 中
 - 优先级: P1
 - 批次: 3
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
 - [x] use_client
+- [x] Zod validation schemas
 
 **重构策略**
 
 ```
 容器职责:
-- 表单验证
-- 提交逻辑
+- 表单验证逻辑 (validateContactInfo 函数)
+- 使用 Zod schemas (emailSchema, phoneNumberSchema)
+- 处理验证错误消息生成
 
 UI 职责:
-- 联系人表单字段
-- 错误显示
+- 联系方式选择 (邮箱/手机 radio group)
+- 邮箱/手机输入字段渲染
+- 错误消息显示
+- 受控状态管理
 ```
+
+**完成信息**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/contact-info-card.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/contact-info-card.tsx`
+- **测试**:
+  - UI 测试: `packages/ui/src/components/flights/booking/contact-info-card.test.tsx` (31 tests)
+  - 容器测试: `apps/web/app/_components/flights/booking/contact-info-card.test.tsx` (27 validation tests)
+- **Storybook**: `apps/storybook/src/stories/flights/booking/contact-info-card.stories.tsx`
+- **完成日期**: 2026-01-18
+
+**测试要点**
+
+- [x] 联系方式切换 (邮箱/手机)
+- [x] 输入字段显示逻辑
+- [x] 错误消息显示和样式
+- [x] 验证函数对邮箱格式的检测
+- [x] 验证函数对手机号格式的检测 (11位，1开头，3-9为第二位)
+- [x] 空值和空格的验证
+- [x] 方法特定验证 (仅验证选中的联系方式)
 
 ---
 

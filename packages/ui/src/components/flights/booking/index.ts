@@ -4,6 +4,13 @@ export type {
   AncillaryService,
 } from "./ancillary-selection";
 export { AncillarySelection } from "./ancillary-selection";
+export type {
+  ContactInfo,
+  ContactInfoCardProps,
+  ContactInfoValidationErrors,
+  ContactMethod,
+} from "./contact-info-card";
+export { ContactInfoCard } from "./contact-info-card";
 export type { PaymentCountdownTimerProps } from "./payment-countdown-timer";
 export { PaymentCountdownTimer } from "./payment-countdown-timer";
 export type { PaymentMethodSelectorProps } from "./payment-method-selector";

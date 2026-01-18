@@ -1,22 +1,22 @@
-import {
-  type ContactInfo,
-  ContactInfoCard,
-  type ContactInfoValidationErrors,
+import type {
+  ContactInfo,
+  ContactInfoValidationErrors,
 } from "@nomad/ui/components/flights/booking";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { ContactInfoCard } from "@nomad/ui/components/flights/booking";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 
-const meta: Meta<typeof ContactInfoCard> = {
+const meta = {
   title: "Flights/Booking/ContactInfoCard",
   component: ContactInfoCard,
   parameters: {
     layout: "padded",
   },
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof ContactInfoCard>;
 
 export default meta;
-type Story = StoryObj<typeof ContactInfoCard>;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Wrapper component to handle state in Storybook
