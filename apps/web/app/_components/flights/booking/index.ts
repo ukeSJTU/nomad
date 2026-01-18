@@ -21,6 +21,7 @@ export { FlightSummaryCard } from "./flight-summary-card";
 export {
   PassengerFormCard,
   type PassengerFormData,
+  type SavedPassenger,
 } from "./passenger-form-card";
 export { PaymentCountdownTimer } from "./payment-countdown-timer";
 export { PaymentMethodSelector } from "./payment-method-selector";

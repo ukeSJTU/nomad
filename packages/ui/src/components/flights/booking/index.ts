@@ -11,6 +11,18 @@ export type {
   ContactMethod,
 } from "./contact-info-card";
 export { ContactInfoCard } from "./contact-info-card";
+export type {
+  PassengerFormCardProps,
+  PassengerFormData,
+  PassengerInfoFormProps,
+  QuickPassengerSelectProps,
+  SavedPassenger,
+} from "./passenger-form-card";
+export {
+  PassengerFormCard,
+  PassengerInfoForm,
+  QuickPassengerSelect,
+} from "./passenger-form-card";
 export type { PaymentCountdownTimerProps } from "./payment-countdown-timer";
 export { PaymentCountdownTimer } from "./payment-countdown-timer";
 export type { PaymentMethodSelectorProps } from "./payment-method-selector";

@@ -656,13 +656,15 @@ UI 职责:
 
 ---
 
-### ./flights/booking/passenger-form-card.tsx
+#### ./flights/booking/passenger-form-card.tsx
 
 **基本信息**
 
+- 路径: `apps/web/app/_components/flights/booking/passenger-form-card.tsx`
 - 复杂度: 中
 - 优先级: P1
 - 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
 
 **依赖问题**
 
@@ -672,13 +674,55 @@ UI 职责:
 
 ```
 容器职责:
-- 乘客信息验证
-- 提交处理
+- 提供 shouldShowDeleteButton 逻辑（从 use-passenger-forms hook）
+- 组装 props
 
 UI 职责:
-- 乘客表单字段
-- 错误显示
+- 乘机人表单卡片整体布局
+- 快速选择已保存乘客（QuickPassengerSelect）
+- 乘客信息表单（PassengerInfoForm）
+- 表单验证错误显示
+- 新增乘机人按钮
 ```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/passenger-form-card.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/passenger-form-card.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/passenger-form-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/passenger-form-card.stories.tsx`
+
+**测试要点**
+
+- [x] QuickPassengerSelect: 无保存乘客时不显示
+- [x] QuickPassengerSelect: 渲染已保存乘客为可选择的 chip
+- [x] QuickPassengerSelect: 标记已选择乘客为 checked
+- [x] QuickPassengerSelect: 点击乘客时调用 onTogglePassenger
+- [x] QuickPassengerSelect: 超过 5 位乘客时显示"更多"按钮
+- [x] PassengerInfoForm: 渲染乘客表单及数据
+- [x] PassengerInfoForm: 显示乘客编号
+- [x] PassengerInfoForm: 根据 showRemove 显示/隐藏删除按钮
+- [x] PassengerInfoForm: 名称输入改变时调用 onChange
+- [x] PassengerInfoForm: 证件号改变时调用 onChange
+- [x] PassengerInfoForm: 电话号码改变时调用 onChange
+- [x] PassengerInfoForm: 点击删除按钮时调用 onRemove
+- [x] PassengerFormCard: 渲染卡片标题
+- [x] PassengerFormCard: 有保存乘客时渲染快速选择
+- [x] PassengerFormCard: 无保存乘客时不渲染快速选择
+- [x] PassengerFormCard: 渲染所有乘客表单
+- [x] PassengerFormCard: 表单字段改变时调用 onChange（带正确索引）
+- [x] PassengerFormCard: 点击新增按钮时调用 onAddPassenger
+- [x] PassengerFormCard: 点击删除时调用 onRemovePassenger（带正确索引）
+- [x] PassengerFormCard: 使用默认 showDeleteButton 逻辑（未提供时）
+- [x] PassengerFormCard: 使用自定义 showDeleteButton 逻辑（提供时）
+
+**实现笔记**
+
+- 组件拆分为三个独立的具名导出：PassengerFormCard、QuickPassengerSelect、PassengerInfoForm
+- showDeleteButton 作为可选 props 注入，默认逻辑：单个空表单不显示删除，多个表单或有数据的表单显示删除
+- 容器组件负责提供 shouldShowDeleteButton 函数（来自 use-passenger-forms hook）
+- SavedPassenger 和 PassengerFormData 类型在 UI 组件中定义并导出
+- 测试覆盖率 100%，22 个测试用例全部通过
 
 ---
 
