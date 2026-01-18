@@ -29,11 +29,11 @@
 | **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
 | **Flights**    | 40     | 33     | 0      | 7      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
-| **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
+| **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **48** | **0**  | **32** | **1** | -       | -      |
+| **总计**       | **81** | **52** | **0**  | **28** | **1** | -       | -      |
 
-**完成度**: 60.00% (48/80 可迁移组件)
+**完成度**: 65.00% (52/80 可迁移组件)
 
 ### 已完成组件
 
@@ -57,6 +57,13 @@
 - [x] PassengerList - packages/ui/src/components/passengers/passenger-list.tsx
 - [x] PassengersDataTable - packages/ui/src/components/passengers/passengers-data-table.tsx
 - [x] PassengerDetailView - packages/ui/src/components/passengers/passenger-detail-view.tsx
+
+**Security (4/4)**:
+
+- [x] ChangePasswordForm - packages/ui/src/components/security/change-password-form.tsx
+- [x] UpdateEmailForm - packages/ui/src/components/security/update-email-form.tsx
+- [x] UpdatePhoneForm - packages/ui/src/components/security/update-phone-form.tsx
+- [x] SecurityItem - packages/ui/src/components/security/security-item.tsx
 
 **Flights (32/40)**:
 

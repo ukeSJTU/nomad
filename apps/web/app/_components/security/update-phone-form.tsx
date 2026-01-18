@@ -1,23 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nomad/ui/components/primitives/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
+import { Form } from "@nomad/ui/components/primitives/form";
+import { UpdatePhoneForm } from "@nomad/ui/components/security";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import OtpInput from "@/components/auth/forms/otp-input";
 import { type UpdatePhoneData, updatePhoneSchema } from "@/types/validations";
 
 export type PhoneFormMode = "bind" | "verify" | "update";
 
-interface UpdatePhoneFormProps {
+interface UpdatePhoneFormContainerProps {
   /** Current phone number (empty for bind mode) */
   currentPhoneNumber?: string | null;
   /** Form mode: bind (first time), verify (existing unverified), update (change verified) */
@@ -30,41 +22,10 @@ interface UpdatePhoneFormProps {
 }
 
 /**
- * Get mode-specific configuration for UI labels and descriptions
+ * Container component for update phone form
+ * Manages form state, schema validation, OTP countdown tracking
  */
-function getModeConfig(mode: PhoneFormMode) {
-  switch (mode) {
-    case "bind":
-      return {
-        title: "绑定手机号",
-        currentLabel: null,
-        phoneLabel: "手机号",
-        phonePlaceholder: "请输入手机号",
-        submitText: "确认绑定",
-        description: "首次绑定手机号，验证后可用于登录和找回密码",
-      };
-    case "verify":
-      return {
-        title: "验证手机号",
-        currentLabel: "待验证的手机号",
-        phoneLabel: null, // Don't show phone input, use current phone
-        phonePlaceholder: null,
-        submitText: "确认验证",
-        description: "您的手机号尚未验证，请输入验证码完成验证",
-      };
-    case "update":
-      return {
-        title: "修改手机号",
-        currentLabel: "当前手机号",
-        phoneLabel: "新手机号",
-        phonePlaceholder: "请输入新手机号",
-        submitText: "确认修改",
-        description: "修改手机号后，新手机号将用于登录和接收通知",
-      };
-  }
-}
-
-export default function UpdatePhoneForm({
+export default function UpdatePhoneFormContainer({
   currentPhoneNumber,
   mode,
   onSubmit,
@@ -72,9 +33,7 @@ export default function UpdatePhoneForm({
   isLoading = false,
   isVerifying = false,
   countdown = 0,
-}: UpdatePhoneFormProps) {
-  const config = getModeConfig(mode);
-
+}: UpdatePhoneFormContainerProps) {
   const form = useForm<UpdatePhoneData>({
     resolver: zodResolver(updatePhoneSchema),
     defaultValues: {
@@ -86,6 +45,16 @@ export default function UpdatePhoneForm({
 
   // Watch for changes in phoneNumber
   const phoneNumber = form.watch("phoneNumber");
+
+  /** Track if OTP has been sent at least once */
+  const hasSentRef = useRef(false);
+
+  // Mark as sent when countdown starts
+  useEffect(() => {
+    if (countdown > 0) {
+      hasSentRef.current = true;
+    }
+  }, [countdown]);
 
   const handleSubmit = (data: UpdatePhoneData) => {
     onSubmit(data);
@@ -109,97 +78,19 @@ export default function UpdatePhoneForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        {/* Description */}
-        {config.description && (
-          <div className="rounded-lg bg-primary/10 p-4">
-            <p className="text-sm text-primary">{config.description}</p>
-          </div>
-        )}
-
-        {/* Current Phone Number Display */}
-        {config.currentLabel && currentPhoneNumber && (
-          <div className="rounded-lg bg-muted p-4">
-            <p className="text-sm text-muted-foreground">
-              {config.currentLabel}：
-              <span className="font-medium">{currentPhoneNumber}</span>
-            </p>
-          </div>
-        )}
-
-        <div className="space-y-4">
-          {/* Phone Number Field (hidden for verify mode) */}
-          {config.phoneLabel && (
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-foreground">
-                    {config.phoneLabel}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="tel"
-                      placeholder={config.phonePlaceholder || ""}
-                      className="h-12"
-                      maxLength={11}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          {/* Hidden phone field for verify mode */}
-          {mode === "verify" && (
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => <input {...field} type="hidden" />}
-            />
-          )}
-
-          {/* OTP Field */}
-          <FormField
-            control={form.control}
-            name="otp"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium text-foreground">
-                  短信验证码
-                </FormLabel>
-                <FormControl>
-                  <OtpInput
-                    value={field.value}
-                    onChange={field.onChange}
-                    onSendOtp={handleSendOtp}
-                    countdown={countdown}
-                    isLoading={isLoading}
-                    isVerifying={isVerifying}
-                    placeholder="6位数字"
-                    maxLength={6}
-                    disabled={mode !== "verify" && !phoneNumber}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          className="w-full h-12 bg-secondary hover:bg-secondary/90 text-white font-medium"
-          disabled={isLoading}
-        >
-          {isLoading ? "验证中..." : config.submitText}
-        </Button>
-      </form>
+      <UpdatePhoneForm
+        control={form.control}
+        errors={form.formState.errors}
+        onSubmit={form.handleSubmit(handleSubmit)}
+        onSendOtp={handleSendOtp}
+        currentPhoneNumber={currentPhoneNumber}
+        phoneNumberValue={phoneNumber}
+        mode={mode}
+        isLoading={isLoading}
+        isVerifying={isVerifying}
+        countdown={countdown}
+        hasSent={hasSentRef.current}
+      />
     </Form>
   );
 }

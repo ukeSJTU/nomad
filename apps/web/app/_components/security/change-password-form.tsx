@@ -1,18 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nomad/ui/components/primitives/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
-import { Check, Eye, EyeOff, X } from "lucide-react";
-import { useState } from "react";
+import { Form } from "@nomad/ui/components/primitives/form";
+import { ChangePasswordForm } from "@nomad/ui/components/security";
 import { useForm } from "react-hook-form";
 import {
   type ChangePasswordData,
@@ -22,9 +12,9 @@ import {
 type ChangePasswordFormData = ChangePasswordData;
 
 /**
- * Props for the ChangePasswordForm component
+ * Props for the ChangePasswordFormContainer component
  */
-interface ChangePasswordFormProps {
+interface ChangePasswordFormContainerProps {
   /** Callback function called when form is submitted with valid data */
   onSubmit: (data: ChangePasswordFormData) => Promise<void>;
   /** Whether the form is in loading state (disables submit button) */
@@ -32,13 +22,13 @@ interface ChangePasswordFormProps {
 }
 
 /**
- * Change password form component for users who already have a password
- * Includes real-time password requirement validation with visual feedback
+ * Container component for change password form
+ * Manages form state, schema validation, and submission logic
  */
-export default function ChangePasswordForm({
+export default function ChangePasswordFormContainer({
   onSubmit,
   isLoading = false,
-}: ChangePasswordFormProps) {
+}: ChangePasswordFormContainerProps) {
   // Initialize form with Zod validation schema
   const form = useForm<ChangePasswordFormData>({
     resolver: zodResolver(changePasswordSchema),
@@ -49,10 +39,6 @@ export default function ChangePasswordForm({
     },
   });
 
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   // Handle form submission
   const handleSubmit = async (data: ChangePasswordFormData) => {
     await onSubmit(data);
@@ -61,160 +47,15 @@ export default function ChangePasswordForm({
   // Watch new password field for real-time validation feedback
   const newPassword = form.watch("newPassword");
 
-  // Define password requirements with real-time validation
-  const requirements = [
-    {
-      label: "至少 8 个字符",
-      met: newPassword.length >= 8,
-    },
-    {
-      label: "包含至少一个数字",
-      met: /\d/.test(newPassword),
-    },
-    {
-      label: "包含至少一个字母",
-      met: /[a-zA-Z]/.test(newPassword),
-    },
-  ];
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        {/* Current Password Field */}
-        <FormField
-          control={form.control}
-          name="currentPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>当前密码</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    {...field}
-                    type={showCurrentPassword ? "text" : "password"}
-                    placeholder="请输入当前密码"
-                    disabled={isLoading}
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showCurrentPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* New Password Field */}
-        <FormField
-          control={form.control}
-          name="newPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>新密码</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    {...field}
-                    type={showNewPassword ? "text" : "password"}
-                    placeholder="请输入新密码"
-                    disabled={isLoading}
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showNewPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </FormControl>
-              <FormMessage />
-
-              {/* Password Requirements */}
-              {newPassword && (
-                <div className="mt-3 space-y-2">
-                  <p className="text-sm text-muted-foreground">密码要求：</p>
-                  <div className="space-y-1">
-                    {requirements.map((req, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 text-sm"
-                      >
-                        {req.met ? (
-                          <Check className="h-4 w-4 text-chart-5" />
-                        ) : (
-                          <X className="h-4 w-4 text-muted-foreground" />
-                        )}
-                        <span
-                          className={
-                            req.met ? "text-chart-5" : "text-muted-foreground"
-                          }
-                        >
-                          {req.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </FormItem>
-          )}
-        />
-
-        {/* Confirm Password Field */}
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>确认新密码</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    {...field}
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="请再次输入新密码"
-                    disabled={isLoading}
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Submit Button */}
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "修改中..." : "确认修改"}
-        </Button>
-      </form>
+      <ChangePasswordForm
+        control={form.control}
+        errors={form.formState.errors}
+        onSubmit={form.handleSubmit(handleSubmit)}
+        newPasswordValue={newPassword}
+        isLoading={isLoading}
+      />
     </Form>
   );
 }
