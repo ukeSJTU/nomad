@@ -36,7 +36,7 @@ import {
   deleteAddressAction,
   setDefaultAddressAction,
 } from "@/app/_actions/addresses";
-import { AddressForm } from "@/app/_components/user/address/address-form";
+import AddressForm from "@/app/_components/user/address/address-form";
 import { type Address } from "@/types/db";
 
 interface AddressListProps {

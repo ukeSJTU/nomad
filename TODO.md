@@ -30,10 +30,10 @@
 | **Flights**    | 40     | 33     | 0      | 7      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
-| **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **52** | **0**  | **28** | **1** | -       | -      |
+| **User**       | 8      | 1      | 0      | 7      | 0     | 批次4   | 低     |
+| **总计**       | **81** | **53** | **0**  | **27** | **1** | -       | -      |
 
-**完成度**: 65.00% (52/80 可迁移组件)
+**完成度**: 66.25% (53/80 可迁移组件)
 
 ### 已完成组件
 
@@ -64,6 +64,10 @@
 - [x] UpdateEmailForm - packages/ui/src/components/security/update-email-form.tsx
 - [x] UpdatePhoneForm - packages/ui/src/components/security/update-phone-form.tsx
 - [x] SecurityItem - packages/ui/src/components/security/security-item.tsx
+
+**User (1/8)**:
+
+- [x] AddressForm - packages/ui/src/components/user/address/address-form.tsx
 
 **Flights (32/40)**:
 
@@ -103,15 +107,15 @@
 - [x] CancelOrderDialog - packages/ui/src/components/flights/orders/cancel-order-dialog.tsx
 - [x] CancelOrderDialog - packages/ui/src/components/flights/orders/cancel-order-dialog.tsx
 
-### 批次进度
-
-| 批次      | 名称                                | 组件数 | 完成度 | 状态   |
-| --------- | ----------------------------------- | ------ | ------ | ------ |
-| **批次0** | 适配层                              | -      | 100%   | 已完成 |
-| **批次1** | Common + Flights Search             | 24     | 95.8%  | 进行中 |
-| **批次2** | Auth 认证链路                       | 13     | 0%     | 待启动 |
-| **批次3** | Flights Booking/Orders + Passengers | 24     | 0%     | 待启动 |
-| **批次4** | User + Security                     | 12     | 0%     | 待启动 |
+| **批次0** | 适配层 | - | 100% | 已完成 |
+| **批次1** | Common + Flights Search | 24 | 95.8% | 进行中 |
+| **批次2** | Auth 认证链路 | 13 | 0% | 待启动 |
+| **批次3** | Flights Booking/Orders + Passengers | 24 | 0% | 待启动 |
+| **批次4** | User + Security | 12 | 41.7% | 进行中 |
+| **批次1** | Common + Flights Search | 24 | 95.8% | 进行中 |
+| **批次2** | Auth 认证链路 | 13 | 0% | 待启动 |
+| **批次3** | Flights Booking/Orders + Passengers | 24 | 0% | 待启动 |
+| **批次4** | User + Security | 12 | 0% | 待启动 |
 
 ---
 
