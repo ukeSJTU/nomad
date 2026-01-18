@@ -1,4 +1,4 @@
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "../primitives/button";
 import {
   Dialog,
   DialogContent,
@@ -6,13 +6,22 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@nomad/ui/components/primitives/dialog";
+} from "../primitives/dialog";
 
-interface SuccessDialogProps {
+/**
+ * Props for SuccessDialog component
+ */
+export interface SuccessDialogProps {
+  /** Controls dialog visibility */
   open: boolean;
+  /** Callback when dialog open state changes */
   onOpenChange: (open: boolean) => void;
 }
 
+/**
+ * SuccessDialog component - displays success message after user info update
+ * Pure UI component for showing save confirmation
+ */
 export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

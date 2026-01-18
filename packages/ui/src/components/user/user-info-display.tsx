@@ -1,9 +1,22 @@
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Separator } from "@nomad/ui/components/primitives/separator";
-import type { UserInfo } from "@/types/dto";
+import { Button } from "../primitives/button";
+import { Separator } from "../primitives/separator";
 
-interface UserInfoDisplayProps {
-  userData: UserInfo;
+/**
+ * Props for UserInfoDisplay component
+ */
+export interface UserInfoDisplayProps {
+  /** User information to display */
+  userData: {
+    /** User's nickname */
+    nickname?: string | null;
+    /** User's real name */
+    name: string;
+    /** User's gender */
+    gender?: "male" | "female" | "other" | null;
+    /** User's birthday */
+    birthday?: string | null;
+  };
+  /** Callback when edit button is clicked */
   onEdit: () => void;
 }
 
@@ -13,6 +26,10 @@ const genderLabels = {
   other: "其他",
 };
 
+/**
+ * UserInfoDisplay component - displays user personal information
+ * Pure UI component for showing user data in read-only mode
+ */
 export function UserInfoDisplay({ userData, onEdit }: UserInfoDisplayProps) {
   return (
     <div className="space-y-6 bg-white p-6 rounded-lg border">

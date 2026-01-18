@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次4 (低优先级 - 应用已建立的表单和列表模式)
 > **组件总数**: 8
-> **状态**: 已完成 3 | 进行中 0 | 未开始 5
+> **状态**: 已完成 7 | 进行中 0 | 未开始 1
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -54,49 +54,29 @@ User 域负责用户个人信息管理,包括:
 - **测试**: `packages/ui/src/components/user/user-info-edit-form.test.tsx`
 - **Story**: `apps/storybook/src/stories/user/user-info-edit-form.stories.tsx`
 
-### 📋 未开始
-
 #### ./user/user-info-form.tsx
 
-**基本信息**
+- **UI 组件**: `packages/ui/src/components/user/user-info-form.tsx`
+- **容器组件**: `apps/web/app/_components/user/user-info-form.tsx`
+- **测试**: `packages/ui/src/components/user/user-info-form.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/user-info-form.stories.tsx`
+- **说明**: 协调器组件，管理 UserInfoDisplay 和 UserInfoEditForm 之间的切换，处理成功对话框和路由刷新
 
-- 路径: `apps/web/app/_components/user/user-info-form.tsx`
-- 复杂度: 中
-- 优先级: P2
-- 批次: 4
+#### ./user/user-info-display.tsx
 
-**依赖问题**
+- **UI 组件**: `packages/ui/src/components/user/user-info-display.tsx`
+- **容器组件**: 无需容器（纯展示）
+- **测试**: `packages/ui/src/components/user/user-info-display.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/user-info-display.stories.tsx`
 
-- [x] Next.js Link/Router
-- [x] use_client
+#### ./user/success-dialog.tsx
 
-**重构策略**
+- **UI 组件**: `packages/ui/src/components/user/success-dialog.tsx`
+- **容器组件**: 无需容器（纯 UI）
+- **测试**: `packages/ui/src/components/user/success-dialog.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/success-dialog.stories.tsx`
 
-```
-容器职责:
-- 管理表单状态
-- 处理导航回调
-- 提供用户数据
-
-UI 职责:
-- 表单渲染 (可能与 user-info-edit-form 重复)
-- 导航相关 UI
-
-适配器需求:
-- LinkAdapter (如果使用)
-```
-
-**测试要点**
-
-- [ ] 待确认是否与 user-info-edit-form 重复
-
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需要确认与 user-info-edit-form 的区别
+### 📋 未开始
 
 ---
 
