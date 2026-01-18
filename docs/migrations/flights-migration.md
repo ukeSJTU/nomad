@@ -707,8 +707,61 @@ Props:
 
 **组件列表**:
 
-- payment-order-summary.tsx
+- ✅ payment-order-summary.tsx
 - ✅ payment-price-breakdown.tsx
+
+#### ./flights/booking/payment-order-summary.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/flights/booking/payment-order-summary.tsx`
+- 复杂度: 低
+- 优先级: P1
+- 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
+
+**依赖问题**
+
+- [x] 数据格式化 (日期/时间)
+- [x] getAncillaryServiceByCode 调用
+
+**重构策略**
+
+```
+容器职责:
+- 调用 getAncillaryServiceByCode 获取增值服务详情
+- 格式化日期 (formatFlightDate)
+- 格式化时间 (formatFlightTime)
+- 映射 PaymentPageOrder 到 UI props
+
+UI 职责:
+- 订单信息卡片渲染
+- 去程/返程航班信息展示
+- 乘机人列表展示
+- 联系人信息展示
+- 增值服务列表展示
+```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/payment-order-summary.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/payment-order-summary.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/payment-order-summary.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/payment-order-summary.stories.tsx`
+
+**测试要点**
+
+- [x] 去程航班信息渲染
+- [x] 返程航班信息渲染 (可选)
+- [x] 返程航班不存在时不渲染返程区域
+- [x] 乘机人列表渲染
+- [x] 联系人信息渲染 (电话/邮箱)
+- [x] 仅电话或仅邮箱时正确渲染
+- [x] 增值服务列表渲染 (可选)
+- [x] 增值服务为空时不渲染增值服务区域
+- [x] 所有数据完整时渲染所有区域
+
+---
 
 #### ./flights/booking/payment-price-breakdown.tsx
 
@@ -768,28 +821,7 @@ UI 职责:
 
 ### Payment 其他组件
 
-**组件列表**:
-
-- payment-order-summary.tsx
-
-**基本信息**
-
-- 复杂度: 低
-- 优先级: P1
-- 批次: 3
-
-**重构策略**
-
-```
-纯展示组件:
-
-UI 职责:
-- 订单摘要
-- 价格明细
-
-容器职责:
-- 价格计算/格式化
-```
+(所有组件已完成迁移)
 
 ---
 
