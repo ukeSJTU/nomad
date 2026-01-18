@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 26 | 进行中 0 | 未开始 14
+> **状态**: 已完成 30 | 进行中 0 | 未开始 10
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -1389,7 +1389,8 @@ Props:
 
 - 复杂度: 中
 - 优先级: P1
-- 批次: 待定
+- 批次: 批次1
+- **状态**: ✅ 已完成 (2026-01-18)
 
 **依赖问题**
 
@@ -1400,15 +1401,25 @@ Props:
 ```
 容器职责:
 - 管理筛选/排序状态
-- URL 同步
+- 提取航空公司列表
+- 过滤和排序逻辑
+- 通知父组件结果变化
 
 UI 职责:
-- 筛选/排序 UI
-- 受控状态
+- 筛选/排序 UI 渲染
+- 受控状态展示
+- 回调：onFiltersChange, onSortChange
 ```
 
 **View Model 接口**
 参考 [ARCHITECTURE.md - FlightFilterSort](../../ARCHITECTURE.md#flightfiltersort)
+
+**迁移完成**
+
+- ✅ UI 组件: `packages/ui/src/components/flights/results/flight-filter-sort.tsx`
+- ✅ 容器: `apps/web/app/_components/flights/results/flight-filter-sort.tsx`
+- ✅ 测试: `packages/ui/src/components/flights/results/flight-filter-sort.test.tsx` (14 tests)
+- ✅ Storybook: `apps/storybook/src/stories/flights/results/flight-filter-sort.stories.tsx`
 
 ---
 
