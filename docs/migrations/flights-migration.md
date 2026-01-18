@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 19 | 进行中 0 | 未开始 21
+> **状态**: 已完成 20 | 进行中 0 | 未开始 20
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -568,13 +568,14 @@ UI 职责:
 
 ---
 
-### ./flights/booking/ancillary-selection.tsx
+#### ./flights/booking/ancillary-selection.tsx
 
 **基本信息**
 
 - 复杂度: 中
 - 优先级: P1
 - 批次: 3
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
@@ -584,18 +585,23 @@ UI 职责:
 
 ```
 容器职责:
-- 定价逻辑
-- 数量变更处理
-- 总价计算
+- 提供服务数据 (getAncillaryServicesByCategory)
+- 价格格式化 (formatCurrency)
 
 UI 职责:
-- 附加服务列表
-- 复选框/数量选择器
-- 总价显示
+- 附加服务列表渲染
+- 按类别分组展示 (保险/接送机/餐食)
+- 复选框选择交互
+- 服务详情显示 (名称/描述/价格)
 ```
 
-**View Model 接口**
-参考 [ARCHITECTURE.md - AncillarySelection](../../ARCHITECTURE.md#ancillaryselection)
+**完成信息**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/ancillary-selection.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/ancillary-selection.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/ancillary-selection.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/ancillary-selection.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 

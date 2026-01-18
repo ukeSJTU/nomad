@@ -38,7 +38,7 @@
 
 6. 验证
    - 静态检查：`pnpm lint`。如果出现报错，那么用 `bash lint.sh`或者直接修改代码进行修复。
-   - 测试：`pnpm --filter ui test:run -- <pattern>` 运行新增/迁移测试。
+   - 测试：`pnpm --filter ui test:run <pattern>` 运行新增/迁移测试。
    - 再次静态检查: `pnpm lint` 确保无遗漏。
    - 构建：`pnpm --filter web build` + `pnpm --filter storybook build`。
 
