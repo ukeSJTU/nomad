@@ -1,5 +1,7 @@
 export type { PaymentCountdownTimerProps } from "./payment-countdown-timer";
 export { PaymentCountdownTimer } from "./payment-countdown-timer";
+export type { PaymentMethodSelectorProps } from "./payment-method-selector";
+export { PaymentMethodSelector } from "./payment-method-selector";
 export type {
   PaymentOrderSummaryAncillaryProps,
   PaymentOrderSummaryFlightProps,

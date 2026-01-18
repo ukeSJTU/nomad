@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 17 | 进行中 0 | 未开始 23
+> **状态**: 已完成 19 | 进行中 0 | 未开始 21
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -534,9 +534,11 @@ Props:
 
 **基本信息**
 
+- 路径: `apps/web/app/_components/flights/booking/payment-method-selector.tsx`
 - 复杂度: 低
 - 优先级: P0
 - 批次: 3
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
@@ -546,16 +548,23 @@ Props:
 
 ```
 容器职责:
-- 提供支付方式列表
-- 处理选择回调
+- 格式化用户余额 (使用 formatCurrency)
+- 处理支付方式变更回调
 
 UI 职责:
-- 支付方式列表渲染
-- 选中状态
+- 支付方式列表渲染 (平台余额、微信支付、支付宝)
+- 显示用户余额（已格式化）
+- 显示不可用选项的禁用状态
+- 受控 Radio Group 交互
 ```
 
-**View Model 接口**
-参考 [ARCHITECTURE.md - PaymentMethodSelector](../../ARCHITECTURE.md#paymentmethodselector)
+**完成信息**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/payment-method-selector.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/payment-method-selector.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/payment-method-selector.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/payment-method-selector.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 
