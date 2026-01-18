@@ -12,6 +12,11 @@ export type {
 } from "./contact-info-card";
 export { ContactInfoCard } from "./contact-info-card";
 export type {
+  FlightSummaryCardFlightProps,
+  FlightSummaryCardProps,
+} from "./flight-summary-card";
+export { FlightSummaryCard } from "./flight-summary-card";
+export type {
   PassengerFormCardProps,
   PassengerFormData,
   PassengerInfoFormProps,

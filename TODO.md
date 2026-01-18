@@ -27,13 +27,13 @@
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
 | **Auth**       | 13     | 0      | 0      | 13     | 0     | 批次2   | 高     |
-| **Flights**    | 40     | 22     | 0      | 18     | 0     | 批次1+3 | 中     |
+| **Flights**    | 40     | 23     | 0      | 17     | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 0      | 0      | 4      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 0      | 0      | 4      | 0     | 批次4   | 低     |
 | **User**       | 8      | 0      | 0      | 8      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **33** | **0**  | **47** | **1** | -       | -      |
+| **总计**       | **81** | **34** | **0**  | **46** | **1** | -       | -      |
 
-**完成度**: 41.25% (33/80 可迁移组件)
+**完成度**: 42.50% (34/80 可迁移组件)
 
 ### 已完成组件
 
@@ -75,6 +75,7 @@
 - [x] AncillarySelection - packages/ui/src/components/flights/booking/ancillary-selection.tsx
 - [x] ContactInfoCard - packages/ui/src/components/flights/booking/contact-info-card.tsx
 - [x] PassengerFormCard - packages/ui/src/components/flights/booking/passenger-form-card.tsx
+- [x] FlightSummaryCard - packages/ui/src/components/flights/booking/flight-summary-card.tsx
 
 ### 批次进度
 

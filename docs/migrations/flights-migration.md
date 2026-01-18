@@ -730,27 +730,50 @@ UI 职责:
 
 **基本信息**
 
+- 路径: `apps/web/app/_components/flights/booking/flight-summary-card.tsx`
 - 复杂度: 低
 - 优先级: P1
 - 批次: 3
+- **状态**: ✅ 已完成
 
 **依赖问题**
 
-- [x] Image (航班图片)
+- [x] Image (航班图片) - 使用 useUiComponents
 
 **重构策略**
 
 ```
 容器职责:
-- 价格格式化 (或使用 utils)
+- 提供价格格式化函数 (formatCurrency)
+- 提供日期格式化函数 (formatDateWithWeekday)
 
 UI 职责:
-- 航班摘要卡片
-- Image 适配器
+- 航班摘要卡片渲染
+- 往返航班信息展示
+- 价格计算与显示
+- Image 适配器使用
 
 适配器需求:
-- ImageAdapter
+- ImageAdapter (用于航空公司 logo)
 ```
+
+**测试要点**
+
+- [x] 单程/往返航班渲染
+- [x] 价格计算与显示
+- [x] 乘客人数计算
+- [x] 航空公司 logo 显示
+- [x] 舱位类型显示
+- [x] 航班时间与时长显示
+- [x] 空状态处理 (null outboundFlight)
+
+**完成内容**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/flight-summary-card.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/flight-summary-card.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/flight-summary-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/flight-summary-card.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 
