@@ -34,7 +34,7 @@
    - 保留/迁移原有逻辑：表单 schema、Server Action 调用、倒计时 hook、URL searchParams、localStorage。
 
 5. Storybook
-   - 在 `apps/storybook/src/stories/...` 添加/更新 story，使用新 UI 组件，提供最小可交互示例；确保适配器可用（默认 UiProvider）。
+   - 在 `apps/storybook/src/stories/...` 添加/更新 story，使用新 UI 组件，提供最小可交互示例；确保适配器可用（默认 UiProvider）。要注意应该是 `import { fn } from "storybook/test";` 而不是 `import { fn } from "@storybook/test";`。
 
 6. 验证
    - 静态检查：`pnpm lint`。如果出现报错，那么用 `bash lint.sh`或者直接修改代码进行修复。

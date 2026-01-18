@@ -3,8 +3,8 @@ import {
   type PassengerFormData,
 } from "@nomad/ui/components/passengers";
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
 import { useForm } from "react-hook-form";
+import { fn } from "storybook/test";
 
 // Wrapper component to provide form context
 function PassengerFormWrapper(props: {

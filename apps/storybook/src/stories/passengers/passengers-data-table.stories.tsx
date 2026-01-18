@@ -3,7 +3,7 @@ import {
   PassengersDataTable,
 } from "@nomad/ui/components/passengers";
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 const mockData: PassengerDataItem[] = [
   {
