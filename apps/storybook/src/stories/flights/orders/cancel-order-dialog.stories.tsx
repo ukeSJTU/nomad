@@ -1,6 +1,6 @@
 import { CancelOrderDialog } from "@nomad/ui/components/flights/orders";
 import { Button } from "@nomad/ui/components/primitives/button";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 
 const meta: Meta<typeof CancelOrderDialog> = {
@@ -45,6 +45,39 @@ export const Default: Story = {
           isLoading={isLoading}
         />
       </div>
+    );
+  },
+  args: {},
+};
+
+export const Loading: Story = {
+  render: args => {
+    const [open, setOpen] = useState(true);
+
+    return (
+      <CancelOrderDialog
+        {...args}
+        open={open}
+        onOpenChange={setOpen}
+        onConfirm={() => {}}
+        isLoading={true}
+      />
+    );
+  },
+  args: {},
+};
+
+export const Open: Story = {
+  render: args => {
+    const [open, setOpen] = useState(true);
+
+    return (
+      <CancelOrderDialog
+        {...args}
+        open={open}
+        onOpenChange={setOpen}
+        onConfirm={() => {}}
+      />
     );
   },
   args: {},

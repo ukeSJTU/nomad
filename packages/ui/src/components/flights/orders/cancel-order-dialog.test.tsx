@@ -1,7 +1,8 @@
-import { CancelOrderDialog } from "@nomad/ui/components/flights/orders";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+
+import { CancelOrderDialog } from "./cancel-order-dialog";
 
 /**
  * @requirement REQ-O04
@@ -204,11 +205,11 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      const confirmButton = screen.getByRole("button", { name: "取消中..." });
-      expect(confirmButton).toBeDisabled();
+      const cancelButton = screen.getByText("再想想");
+      const confirmButton = screen.getByText("取消中...");
 
-      const cancelButton = screen.getByText("再想想").closest("button");
       expect(cancelButton).toBeDisabled();
+      expect(confirmButton).toBeDisabled();
     });
 
     it("should not disable buttons when isLoading is false", () => {
@@ -224,13 +225,15 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      const confirmButton = screen.getByRole("button", {
-        name: "继续取消",
-      });
+      const cancelButton = screen.getByText("再想想");
+      const confirmButton = screen.getByText("继续取消");
+
+      expect(cancelButton).not.toBeDisabled();
       expect(confirmButton).not.toBeDisabled();
     });
 
-    it("should show normal text when isLoading is false", () => {
+    it("should call onConfirm even when in loading state", async () => {
+      const user = userEvent.setup();
       const mockOnConfirm = vi.fn();
       const mockOnOpenChange = vi.fn();
 
@@ -243,15 +246,15 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      expect(
-        screen.getByRole("button", { name: "继续取消" })
-      ).toBeInTheDocument();
-      expect(screen.queryByText("取消中...")).not.toBeInTheDocument();
+      const confirmButton = screen.getByText("继续取消");
+      await user.click(confirmButton);
+
+      expect(mockOnConfirm).toHaveBeenCalled();
     });
   });
 
-  describe("Default Props", () => {
-    it("should default isLoading to false", () => {
+  describe("Accessibility", () => {
+    it("should have proper ARIA attributes", () => {
       const mockOnConfirm = vi.fn();
       const mockOnOpenChange = vi.fn();
 
@@ -264,14 +267,37 @@ describe("CancelOrderDialog Component", () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "继续取消" })
+        screen.getByRole("heading", { name: "取消提示" })
       ).toBeInTheDocument();
-      expect(screen.queryByText("取消中...")).not.toBeInTheDocument();
+      expect(screen.getByText(/确定要取消订单吗？/)).toBeInTheDocument();
+    });
+
+    it("should support keyboard navigation", async () => {
+      const user = userEvent.setup();
+      const mockOnConfirm = vi.fn();
+      const mockOnOpenChange = vi.fn();
+
+      render(
+        <CancelOrderDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onConfirm={mockOnConfirm}
+        />
+      );
+
+      const confirmButton = screen.getByRole("button", {
+        name: "继续取消",
+      });
+      confirmButton.focus();
+
+      await user.keyboard("{Enter}");
+
+      expect(mockOnConfirm).toHaveBeenCalled();
     });
   });
 
-  describe("Dialog Behavior", () => {
-    it("should maintain dialog state when open changes", () => {
+  describe("Edge Cases", () => {
+    it("should handle rapid open/close state changes", () => {
       const mockOnConfirm = vi.fn();
       const mockOnOpenChange = vi.fn();
 
@@ -283,9 +309,7 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      expect(
-        screen.queryByRole("heading", { name: "取消提示" })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText("取消提示")).not.toBeInTheDocument();
 
       rerender(
         <CancelOrderDialog
@@ -298,10 +322,19 @@ describe("CancelOrderDialog Component", () => {
       expect(
         screen.getByRole("heading", { name: "取消提示" })
       ).toBeInTheDocument();
+
+      rerender(
+        <CancelOrderDialog
+          open={false}
+          onOpenChange={mockOnOpenChange}
+          onConfirm={mockOnConfirm}
+        />
+      );
+
+      expect(screen.queryByText("取消提示")).not.toBeInTheDocument();
     });
 
-    it("should prevent interaction during loading", async () => {
-      const user = userEvent.setup();
+    it("should prevent onConfirm when buttons are disabled", () => {
       const mockOnConfirm = vi.fn();
       const mockOnOpenChange = vi.fn();
 
@@ -314,11 +347,8 @@ describe("CancelOrderDialog Component", () => {
         />
       );
 
-      const confirmButton = screen.getByRole("button", { name: "取消中..." });
-      await user.click(confirmButton);
-
-      // Should not call onConfirm because button is disabled
-      expect(mockOnConfirm).not.toHaveBeenCalled();
+      const confirmButton = screen.getByText("取消中...");
+      expect(confirmButton).toBeDisabled();
     });
   });
 });

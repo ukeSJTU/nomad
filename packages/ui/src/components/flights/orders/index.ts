@@ -1,3 +1,5 @@
+export type { CancelOrderDialogProps } from "./cancel-order-dialog";
+export { CancelOrderDialog } from "./cancel-order-dialog";
 export type {
   OrderFlightInfoFlightData,
   OrderFlightInfoProps,
