@@ -1,54 +1,18 @@
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@nomad/ui/components/primitives/alert-dialog";
-
-interface DeleteOrderDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-  isLoading: boolean;
-}
+  type DeleteOrderDialogProps,
+  DeleteOrderDialog as DeleteOrderDialogUI,
+} from "@nomad/ui/components/user";
 
 /**
- * Delete Order Confirmation Dialog Component
+ * Delete Order Confirmation Dialog Component (Container)
  *
  * @description
- * Reusable confirmation dialog for order deletion with loading state support.
+ * Container component that wraps the UI component from @nomad/ui.
+ * This component can add Next.js-specific logic or state management if needed.
  *
  * @remarks
- * - Displays a warning message about irreversible deletion
- * - Disables interaction during deletion process
- * - Provides cancel and confirm actions
+ * Currently passes through all props to the UI component without modification.
  */
-export default function DeleteOrderDialog({
-  open,
-  onOpenChange,
-  onConfirm,
-  isLoading,
-}: DeleteOrderDialogProps) {
-  return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>确认删除</AlertDialogTitle>
-          <AlertDialogDescription>
-            您确定要删除这个订单吗？删除后将无法恢复。
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>取消</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} disabled={isLoading}>
-            {isLoading ? "删除中..." : "确认删除"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+export default function DeleteOrderDialog(props: DeleteOrderDialogProps) {
+  return <DeleteOrderDialogUI {...props} />;
 }

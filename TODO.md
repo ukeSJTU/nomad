@@ -30,10 +30,10 @@
 | **Flights**    | 40     | 33     | 0      | 7      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
-| **User**       | 8      | 7      | 0      | 1      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **59** | **0**  | **21** | **1** | -       | -      |
+| **User**       | 8      | 8      | 0      | 0      | 0     | 批次4   | 低     |
+| **总计**       | **81** | **61** | **0**  | **19** | **1** | -       | -      |
 
-**完成度**: 73.75% (59/80 可迁移组件)
+**完成度**: 76.25% (61/80 可迁移组件)
 
 ### 已完成组件
 
@@ -65,7 +65,7 @@
 - [x] UpdatePhoneForm - packages/ui/src/components/security/update-phone-form.tsx
 - [x] SecurityItem - packages/ui/src/components/security/security-item.tsx
 
-**User (7/8)**:
+**User (6/8)**:
 
 - [x] AddressForm - packages/ui/src/components/user/address/address-form.tsx
 - [x] AddressList - packages/ui/src/components/user/address/address-list.tsx
@@ -73,6 +73,8 @@
 - [x] UserInfoForm - packages/ui/src/components/user/user-info-form.tsx
 - [x] UserInfoDisplay - packages/ui/src/components/user/user-info-display.tsx
 - [x] SuccessDialog - packages/ui/src/components/user/success-dialog.tsx
+- [x] OrderCard - packages/ui/src/components/user/order-card.tsx
+- [x] DeleteOrderDialog - packages/ui/src/components/user/delete-order-dialog.tsx
 
 **Flights (32/40)**:
 

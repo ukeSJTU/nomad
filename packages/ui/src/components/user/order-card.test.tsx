@@ -1,17 +1,9 @@
-import type { OrderListItem } from "@nomad/ui/components/user";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import OrderCard from "./order-card";
-
-// Mock Next.js router
-const mockPush = vi.fn();
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-  }),
-}));
+import { UiProvider } from "../../platform";
+import { OrderCard } from "./order-card";
+import type { OrderListItem } from "./types";
 
 /**
  * @requirement REQ-O01
@@ -46,13 +38,26 @@ const createMockOrder = (
   ...overrides,
 });
 
+// Mock Link component
+const MockLink = ({ href, children, className, onClick }: any) => (
+  <a href={href} className={className} onClick={onClick}>
+    {children}
+  </a>
+);
+
+// Wrapper component with UiProvider
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <UiProvider Link={MockLink}>{children}</UiProvider>
+);
+
 /**
  * @requirement REQ-O01
  */
-describe("OrderCard Container Component", () => {
+describe("OrderCard Component", () => {
   const mockOnCheckChange = vi.fn();
   const mockOnDelete = vi.fn();
   const mockOnActionClick = vi.fn();
+  const mockOnOrderClick = vi.fn();
 
   const defaultProps = {
     order: createMockOrder(),
@@ -60,6 +65,7 @@ describe("OrderCard Container Component", () => {
     onCheckChange: mockOnCheckChange,
     onDelete: mockOnDelete,
     onActionClick: mockOnActionClick,
+    onOrderClick: mockOnOrderClick,
   };
 
   beforeEach(() => {
@@ -75,7 +81,7 @@ describe("OrderCard Container Component", () => {
      * @scenario 场景2
      */
     it("should render order card with basic information", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       // Check order number
       expect(screen.getByText("NMD20251118001")).toBeInTheDocument();
@@ -93,42 +99,48 @@ describe("OrderCard Container Component", () => {
     });
 
     it("should render delete button", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       const deleteButton = screen.getByRole("button", { name: "删除订单" });
       expect(deleteButton).toBeInTheDocument();
     });
 
     it("should render checkbox", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       const checkbox = screen.getByRole("checkbox");
       expect(checkbox).toBeInTheDocument();
     });
 
     it("should display correct order status for PENDING_PAYMENT", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       expect(screen.getByText("待支付")).toBeInTheDocument();
     });
 
     it("should display correct order status for CONFIRMED", () => {
       const order = createMockOrder({ status: "CONFIRMED" });
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText("已确认")).toBeInTheDocument();
     });
 
     it("should display correct order status for CANCELLED", () => {
       const order = createMockOrder({ status: "CANCELLED" });
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText("已取消")).toBeInTheDocument();
     });
 
     it("should display correct order status for REFUNDED", () => {
       const order = createMockOrder({ status: "REFUNDED" });
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText("已退款")).toBeInTheDocument();
     });
@@ -136,7 +148,7 @@ describe("OrderCard Container Component", () => {
 
   describe("Outbound Flight Information", () => {
     it("should display outbound flight details", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       // Check departure and arrival cities
       expect(screen.getByText(/北京 —/)).toBeInTheDocument();
@@ -151,7 +163,7 @@ describe("OrderCard Container Component", () => {
     });
 
     it("should display passenger names for outbound flight", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       expect(screen.getByText(/出行人：张三/)).toBeInTheDocument();
     });
@@ -160,7 +172,9 @@ describe("OrderCard Container Component", () => {
       const order = createMockOrder({
         passengerNames: ["张三", "李四", "王五"],
       });
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText(/出行人：张三、李四、王五/)).toBeInTheDocument();
     });
@@ -186,7 +200,9 @@ describe("OrderCard Container Component", () => {
         },
       });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       // Check for flight numbers to verify both flights are displayed
       expect(screen.getByText(/MU5186/)).toBeInTheDocument();
@@ -198,7 +214,7 @@ describe("OrderCard Container Component", () => {
     });
 
     it("should not display inbound flight section when null", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       // Should only have one flight number (outbound)
       expect(screen.getByText(/MU5186/)).toBeInTheDocument();
@@ -225,7 +241,9 @@ describe("OrderCard Container Component", () => {
         },
       });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       // Should show passenger names for both flights
       const passengerTexts = screen.getAllByText(/出行人：张三、李四/);
@@ -236,7 +254,7 @@ describe("OrderCard Container Component", () => {
   describe("User Interactions", () => {
     it("should call onCheckChange when checkbox is clicked", async () => {
       const user = userEvent.setup();
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       const checkbox = screen.getByRole("checkbox");
       await user.click(checkbox);
@@ -247,7 +265,9 @@ describe("OrderCard Container Component", () => {
 
     it("should call onCheckChange with false when unchecking", async () => {
       const user = userEvent.setup();
-      render(<OrderCard {...defaultProps} isChecked={true} />);
+      render(<OrderCard {...defaultProps} isChecked={true} />, {
+        wrapper: TestWrapper,
+      });
 
       const checkbox = screen.getByRole("checkbox");
       await user.click(checkbox);
@@ -258,7 +278,7 @@ describe("OrderCard Container Component", () => {
 
     it("should call onDelete when delete button is clicked", async () => {
       const user = userEvent.setup();
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       const deleteButton = screen.getByRole("button", { name: "删除订单" });
       await user.click(deleteButton);
@@ -267,14 +287,18 @@ describe("OrderCard Container Component", () => {
     });
 
     it("should show checkbox as checked when isChecked is true", () => {
-      render(<OrderCard {...defaultProps} isChecked={true} />);
+      render(<OrderCard {...defaultProps} isChecked={true} />, {
+        wrapper: TestWrapper,
+      });
 
       const checkbox = screen.getByRole("checkbox");
       expect(checkbox).toHaveAttribute("aria-checked", "true");
     });
 
     it("should show checkbox as unchecked when isChecked is false", () => {
-      render(<OrderCard {...defaultProps} isChecked={false} />);
+      render(<OrderCard {...defaultProps} isChecked={false} />, {
+        wrapper: TestWrapper,
+      });
 
       const checkbox = screen.getByRole("checkbox");
       expect(checkbox).toHaveAttribute("aria-checked", "false");
@@ -287,7 +311,9 @@ describe("OrderCard Container Component", () => {
         createdAt: "2025-11-18T14:30:45Z",
       });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText("2025-11-18")).toBeInTheDocument();
     });
@@ -301,7 +327,9 @@ describe("OrderCard Container Component", () => {
         },
       });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       // Check that the date is present (timezone may vary)
       expect(
@@ -312,14 +340,16 @@ describe("OrderCard Container Component", () => {
 
   describe("Price Display", () => {
     it("should display price with currency symbol", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       expect(screen.getByText("¥1000")).toBeInTheDocument();
     });
 
     it("should display different price amounts correctly", () => {
       const order = createMockOrder({ totalAmount: "2388.50" });
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText("¥2388.50")).toBeInTheDocument();
     });
@@ -327,14 +357,14 @@ describe("OrderCard Container Component", () => {
 
   describe("Accessibility", () => {
     it("should have accessible checkbox with proper id", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       const checkbox = screen.getByRole("checkbox");
       expect(checkbox).toHaveAttribute("id", "order-1");
     });
 
     it("should have accessible delete button", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       const deleteButton = screen.getByRole("button", { name: "删除订单" });
       expect(deleteButton).toBeInTheDocument();
@@ -347,7 +377,9 @@ describe("OrderCard Container Component", () => {
         orderNumber: "NMD202511181234567890ABCDEFGHIJ",
       });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(
         screen.getByText("NMD202511181234567890ABCDEFGHIJ")
@@ -360,7 +392,9 @@ describe("OrderCard Container Component", () => {
         passengerCount: 1,
       });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText(/出行人：独行侠/)).toBeInTheDocument();
     });
@@ -371,7 +405,9 @@ describe("OrderCard Container Component", () => {
         passengerCount: 5,
       });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(
         screen.getByText(/出行人：张三、李四、王五、赵六、孙七/)
@@ -381,7 +417,9 @@ describe("OrderCard Container Component", () => {
     it("should handle zero amount", () => {
       const order = createMockOrder({ totalAmount: "0" });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(screen.getByText("¥0")).toBeInTheDocument();
     });
@@ -391,7 +429,9 @@ describe("OrderCard Container Component", () => {
     it('should render "去付款" button for pending payment orders', () => {
       const order = createMockOrder({ status: "PENDING_PAYMENT" });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(
         screen.getByRole("button", { name: "去付款" })
@@ -401,7 +441,9 @@ describe("OrderCard Container Component", () => {
     it('should render "重发确认信息" button for confirmed orders', () => {
       const order = createMockOrder({ status: "CONFIRMED" });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(
         screen.getByRole("button", { name: "重发确认信息" })
@@ -411,7 +453,9 @@ describe("OrderCard Container Component", () => {
     it("should not render action button for cancelled orders", () => {
       const order = createMockOrder({ status: "CANCELLED" });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(
         screen.queryByRole("button", { name: "去付款" })
@@ -424,7 +468,9 @@ describe("OrderCard Container Component", () => {
     it("should not render action button for refunded orders", () => {
       const order = createMockOrder({ status: "REFUNDED" });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       expect(
         screen.queryByRole("button", { name: "去付款" })
@@ -438,7 +484,9 @@ describe("OrderCard Container Component", () => {
       const user = userEvent.setup();
       const order = createMockOrder({ status: "PENDING_PAYMENT" });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       const paymentButton = screen.getByRole("button", { name: "去付款" });
       await user.click(paymentButton);
@@ -450,7 +498,9 @@ describe("OrderCard Container Component", () => {
       const user = userEvent.setup();
       const order = createMockOrder({ status: "CONFIRMED" });
 
-      render(<OrderCard {...defaultProps} order={order} />);
+      render(<OrderCard {...defaultProps} order={order} />, {
+        wrapper: TestWrapper,
+      });
 
       const resendButton = screen.getByRole("button", {
         name: "重发确认信息",
@@ -463,7 +513,7 @@ describe("OrderCard Container Component", () => {
 
   describe("Navigation", () => {
     it("should render order number as a link", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       const orderLink = screen.getByRole("link", { name: "NMD20251118001" });
       expect(orderLink).toBeInTheDocument();
@@ -471,7 +521,7 @@ describe("OrderCard Container Component", () => {
     });
 
     it("should make CardContent clickable with proper link", () => {
-      render(<OrderCard {...defaultProps} />);
+      render(<OrderCard {...defaultProps} />, { wrapper: TestWrapper });
 
       // Find the link that wraps CardContent by checking parent elements
       const links = screen.getAllByRole("link");
@@ -486,7 +536,9 @@ describe("OrderCard Container Component", () => {
 
   describe("Hover State", () => {
     it("should have hover styles applied via className", () => {
-      const { container } = render(<OrderCard {...defaultProps} />);
+      const { container } = render(<OrderCard {...defaultProps} />, {
+        wrapper: TestWrapper,
+      });
 
       // Check if Card has hover transition classes
       const card = container.querySelector('[class*="transition"]');

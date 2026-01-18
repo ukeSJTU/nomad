@@ -6,6 +6,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@nomad/ui/components/primitives/tabs";
+import type { OrderListItem } from "@nomad/ui/components/user";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -13,7 +14,6 @@ import { resendOrderConfirmationAction } from "@/app/_actions/emails";
 import { deleteOrderAction } from "@/app/_actions/orders";
 import DeleteOrderDialog from "@/components/user/delete-order-dialog";
 import OrderCard from "@/components/user/order-card";
-import type { OrderListItem } from "@/types/dto";
 
 interface OrdersPageClientProps {
   orders: OrderListItem[];

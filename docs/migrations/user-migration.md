@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次4 (低优先级 - 应用已建立的表单和列表模式)
 > **组件总数**: 8
-> **状态**: 已完成 7 | 进行中 0 | 未开始 1
+> **状态**: 已完成 8 | 进行中 0 | 未开始 0
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -76,134 +76,44 @@ User 域负责用户个人信息管理,包括:
 - **测试**: `packages/ui/src/components/user/success-dialog.test.tsx`
 - **Story**: `apps/storybook/src/stories/user/success-dialog.stories.tsx`
 
-### 📋 未开始
-
----
-
-#### ./user/user-info-display.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/user/user-info-display.tsx`
-- 复杂度: 低
-- 优先级: P2
-- 批次: 4
-
-**依赖问题**
-
-- 待确认 (可能是纯 UI)
-
-**重构策略**
-
-```
-如果是纯展示组件:
-
-UI 职责:
-- 用户信息展示
-- 头像/昵称/性别/生日
-- 编辑按钮 (可选)
-
-Props:
-- user: {
-    avatar?: string;
-    nickname: string;
-    gender?: string;
-    birthday?: string;
-    email?: string;
-    phone?: string;
-  }
-- onEdit?: () => void
-
-适配器需求:
-- 无
-```
-
-**测试要点**
-
-- [ ] 信息显示
-- [ ] 编辑按钮
-
-**实现笔记**
-
-- 待实施时记录
-
----
-
 #### ./user/order-card.tsx
 
-**基本信息**
-
-- 路径: `apps/web/app/_components/user/order-card.tsx`
-- 复杂度: 低
-- 优先级: P2
-- 批次: 4
-
-**依赖问题**
-
-- [x] Next.js Link
-
-**重构策略**
-
-```
-容器职责:
-- 提供订单 view-model
-- 处理导航回调
-
-UI 职责:
-- 订单卡片渲染
-- 订单状态
-- 价格信息
-- 航班信息摘要
-- Link 适配器或 onClick 回调
-
-适配器需求:
-- LinkAdapter (如果使用 href)
-```
-
-**View Model 接口**
-参考 [ARCHITECTURE.md - OrderCard](../../ARCHITECTURE.md#ordercard)
-
-**测试要点**
-
-- [ ] 卡片渲染
-- [ ] 状态显示
-- [ ] 点击/导航
-
-**实现笔记**
-
-- 待实施时记录
-
----
+- **UI 组件**: `packages/ui/src/components/user/order-card.tsx`
+- **容器组件**: `apps/web/app/_components/user/order-card.tsx`
+- **测试**: `packages/ui/src/components/user/order-card.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/order-card.stories.tsx`
 
 #### ./user/delete-order-dialog.tsx
 
-**基本信息**
+- **UI 组件**: `packages/ui/src/components/user/delete-order-dialog.tsx`
+- **容器组件**: `apps/web/app/_components/user/delete-order-dialog.tsx`
+- **测试**: `packages/ui/src/components/user/delete-order-dialog.test.tsx`
+- **Story**: `apps/storybook/src/stories/user/delete-order-dialog.stories.tsx`
 
-- 路径: `apps/web/app/_components/user/delete-order-dialog.tsx`
-- 复杂度: 低
-- 优先级: P3
-- 批次: 4
+---
+
+## View Model 详细设计
 
 **依赖问题**
 
-- 待确认 (可能是纯 UI)
+- 无（纯 UI 组件）
 
 **重构策略**
 
 ```
-如果是纯展示组件:
+纯展示组件 - 已经很干净，只需迁移到 packages/ui:
 
 UI 职责:
 - 确认对话框
 - 警告文案
 - 确认/取消按钮
+- Loading 状态显示
 
 Props:
 - open: boolean
 - onOpenChange: (open: boolean) => void
 - onConfirm: () => void
-- orderNumber?: string
-- loading?: boolean
+- isLoading: boolean
 
 适配器需求:
 - 无
@@ -217,109 +127,11 @@ Props:
 
 **实现笔记**
 
-- 待实施时记录
-
----
-
-#### ./user/success-dialog.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/user/success-dialog.tsx`
-- 复杂度: 低
-- 优先级: P3
-- 批次: 4
-
-**依赖问题**
-
-- 待确认 (可能是纯 UI)
-
-**重构策略**
-
-```
-如果是纯展示组件:
-
-UI 职责:
-- 成功提示对话框
-- 成功图标
-- 成功消息
-- 确认/关闭按钮
-
-Props:
-- open: boolean
-- onOpenChange: (open: boolean) => void
-- title?: string
-- message?: string
-- onConfirm?: () => void
-
-适配器需求:
-- 无
-```
-
-**测试要点**
-
-- [ ] 对话框打开/关闭
-- [ ] 内容显示
-- [ ] 按钮交互
-
-**实现笔记**
-
-- 待实施时记录
+- 组件已经非常纯净，直接迁移即可
 
 ---
 
 ## 域级决策
-
-### 表单模式复用
-
-与 auth/security/passengers 表单保持一致:
-
-- 容器管理 zod schema
-- 错误消息通过 props 传递
-- UI 只负责渲染和显示错误
-
-### 地址列表交互
-
-设为默认、删除等操作:
-
-- 操作通过回调处理
-- 确认对话框在容器层管理
-- UI 只负责触发事件
-
-### 通用对话框模式
-
-success-dialog 和 delete-order-dialog:
-
-- 纯受控组件 (open/onOpenChange)
-- 标题和内容可配置
-- 操作通过回调处理
-
----
-
-## 迁移检查清单
-
-- [ ] 所有组件已迁移到 packages/ui
-- [ ] 容器组件在 apps/web 实现
-- [ ] 表单模式正确应用
-- [ ] LinkAdapter 在 order-card 中正确使用
-- [ ] 确认 user-info-form 和 user-info-edit-form 的区别
-- [ ] 单元测试覆盖 (Vitest + RTL)
-- [ ] 在 apps/demo 中验证可用性
-- [ ] 文档更新
-
----
-
-## 进度统计
-
-| 类别     | 总数  | 已完成 | 进行中 | 未开始 |
-| -------- | ----- | ------ | ------ | ------ |
-| 地址管理 | 2     | 0      | 0      | 2      |
-| 用户信息 | 3     | 0      | 0      | 3      |
-| 订单     | 1     | 0      | 0      | 1      |
-| 对话框   | 2     | 0      | 0      | 2      |
-| **总计** | **8** | **0**  | **0**  | **8**  |
-
----
 
 ## 下一步行动
 
@@ -338,3 +150,39 @@ success-dialog 和 delete-order-dialog:
 - [架构指南](../../ARCHITECTURE.md)
 - [总览](../../TODO.md)
 - **相关批次**: 批次1 (common Link 适配器)、批次2 (auth 表单模式)
+
+## 迁移检查清单
+
+- [x] 地址管理组件已迁移到 packages/ui
+- [x] 用户信息编辑组件已迁移
+- [x] 用户信息显示组件已迁移
+- [x] 成功对话框已迁移
+- [ ] 订单卡片需要迁移（使用 LinkAdapter）
+- [ ] 删除订单对话框需要迁移
+- [x] 容器组件在 apps/web 实现
+- [x] 表单模式正确应用
+- [x] 单元测试覆盖 (Vitest + RTL)
+- [x] Storybook stories 创建
+- [x] 文档更新
+
+---
+
+## 进度统计
+
+| 类别     | 总数  | 已完成 | 进行中 | 未开始 |
+| -------- | ----- | ------ | ------ | ------ | ------------- |
+| 地址管理 | 2     | 2      | 0      | 0      |
+| 用户信息 | 4     | 4      | 0      | 0      |
+| 订单     | 1     | 0      | 0      | 1      |
+| 对话框   | 1     | 0      | 0      | 1      |
+| **总计** | **8** | **6**  | **0**  | **2**  | ## 下一步行动 |
+
+1. ✅ 完成批次0 (适配层) - 已完成
+2. ✅ 完成 `address-form.tsx` 和 `address-list.tsx` - 已完成
+3. ✅ 完成 `user-info-edit-form.tsx` - 已完成
+4. ✅ 完成 `user-info-form.tsx` 和 `user-info-display.tsx` - 已完成
+5. ✅ 完成 `success-dialog.tsx` - 已完成
+6. 🔲 迁移 `delete-order-dialog.tsx` - 纯 UI，简单迁移
+7. 🔲 迁移 `order-card.tsx` - 需要使用 LinkAdapter
+
+**剩余 2 个组件，预计完成时间：1 小时**
