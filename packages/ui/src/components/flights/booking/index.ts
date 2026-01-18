@@ -5,6 +5,22 @@ export type {
 } from "./ancillary-selection";
 export { AncillarySelection } from "./ancillary-selection";
 export type {
+  ConfirmationBookingInfoAncillaryProps,
+  ConfirmationBookingInfoPassengerProps,
+  ConfirmationBookingInfoProps,
+} from "./confirmation-booking-info";
+export { ConfirmationBookingInfo } from "./confirmation-booking-info";
+export type {
+  ConfirmationFlightDetailsAirlineProps,
+  ConfirmationFlightDetailsAirportProps,
+  ConfirmationFlightDetailsFlightProps,
+  ConfirmationFlightDetailsProps,
+  ConfirmationFlightDetailsSeatClassProps,
+} from "./confirmation-flight-details";
+export { ConfirmationFlightDetails } from "./confirmation-flight-details";
+export type { ConfirmationSuccessHeaderProps } from "./confirmation-success-header";
+export { ConfirmationSuccessHeader } from "./confirmation-success-header";
+export type {
   ContactInfo,
   ContactInfoCardProps,
   ContactInfoValidationErrors,

@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 21 | 进行中 0 | 未开始 19
+> **状态**: 已完成 24 | 进行中 0 | 未开始 16
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -107,6 +107,30 @@ Flights 域是最大的域,包含航班业务的所有核心组件:
   - `apps/storybook/src/stories/flights/search/round-trip-selector.stories.tsx`
 - **工具函数**: `apps/web/src/lib/format/date-utils.ts` (getRelativeDateLabel, getWeekdayLabel)
 - **完成日期**: 2026-01-17
+
+#### ./flights/booking/confirmation-booking-info.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-booking-info.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-booking-info.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-booking-info.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-booking-info.stories.tsx`
+- **完成日期**: 2026-01-18
+
+#### ./flights/booking/confirmation-flight-details.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-flight-details.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-flight-details.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-flight-details.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-flight-details.stories.tsx`
+- **完成日期**: 2026-01-18
+
+#### ./flights/booking/confirmation-success-header.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-success-header.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-success-header.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-success-header.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-success-header.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ### 🚧 进行中
 
@@ -781,17 +805,18 @@ UI 职责:
 
 **组件列表**:
 
-- confirmation-booking-info.tsx
-- confirmation-flight-details.tsx
+- ✅ confirmation-booking-info.tsx
+- ✅ confirmation-flight-details.tsx
 - confirmation-notice-card.tsx
 - confirmation-payment-summary.tsx
-- confirmation-success-header.tsx
+- ✅ confirmation-success-header.tsx
 
 **基本信息**
 
 - 复杂度: 低
 - 优先级: P2
 - 批次: 3
+- **状态**: 部分完成 (3/5) - 2026-01-18
 
 **重构策略**
 
@@ -807,6 +832,141 @@ UI 职责:
 Props:
 - 各自的 view-model 数据
 ```
+
+#### ./flights/booking/confirmation-booking-info.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/flights/booking/confirmation-booking-info.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
+
+**依赖问题**
+
+- [x] getAncillaryServiceByCode 调用
+- [x] 无副作用
+
+**重构策略**
+
+```
+容器职责:
+- 调用 getAncillaryServiceByCode 获取增值服务详情
+- 转换价格类型 (number -> string)
+
+UI 职责:
+- 乘机人信息展示
+- 联系人信息展示
+- 增值服务列表展示
+```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-booking-info.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-booking-info.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-booking-info.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-booking-info.stories.tsx`
+
+**测试要点**
+
+- [x] 乘机人信息渲染
+- [x] 联系人信息渲染
+- [x] 增值服务列表渲染
+- [x] 无增值服务时不渲染该区域
+- [x] 多种证件类型支持
+
+---
+
+#### ./flights/booking/confirmation-flight-details.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/flights/booking/confirmation-flight-details.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
+
+**依赖问题**
+
+- [x] date-fns 格式化
+- [x] 日志记录
+
+**重构策略**
+
+```
+容器职责:
+- 格式化日期时间 (date-fns)
+- 日志记录 (createClientLogger)
+- 映射 ConfirmationPageFlight 到 UI props
+
+UI 职责:
+- 去程航班详情展示
+- 返程航班详情展示 (可选)
+- 航班号/航空公司/机型/舱位显示
+- 出发/到达信息显示
+```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-flight-details.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-flight-details.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-flight-details.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-flight-details.stories.tsx`
+
+**测试要点**
+
+- [x] 单程航班渲染
+- [x] 往返航班渲染
+- [x] 无返程时不渲染返程区域
+- [x] 不同舱位类型正确显示
+- [x] 无机型/航站楼信息时正确处理
+
+---
+
+#### ./flights/booking/confirmation-success-header.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/flights/booking/confirmation-success-header.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 批次: 3
+- **状态**: ✅ 已完成 (2026-01-18)
+
+**依赖问题**
+
+- [x] 无 Next.js 依赖
+- [x] 无副作用
+
+**重构策略**
+
+```
+纯展示组件:
+
+UI 职责:
+- 成功提示头部渲染
+- 订单号显示
+- 成功图标与样式
+
+容器职责:
+- 简单 re-export (无额外逻辑)
+```
+
+**迁移结果**
+
+- **UI 组件**: `packages/ui/src/components/flights/booking/confirmation-success-header.tsx`
+- **容器**: `apps/web/app/_components/flights/booking/confirmation-success-header.tsx`
+- **测试**: `packages/ui/src/components/flights/booking/confirmation-success-header.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/booking/confirmation-success-header.stories.tsx`
+
+**测试要点**
+
+- [x] 成功消息渲染
+- [x] 订单号渲染
+- [x] 成功状态样式
+- [x] 图标渲染
 
 ---
 
