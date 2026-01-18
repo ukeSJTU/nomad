@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次1 (search 部分) + 批次3 (booking/orders 部分)
 > **组件总数**: 40
-> **状态**: 已完成 33 | 进行中 0 | 未开始 7
+> **状态**: 已完成 40 | 进行中 0 | 未开始 0
 > **最后更新**: 2026-01-18
 
 ## 域概览
@@ -1233,67 +1233,63 @@ UI 职责:
 
 ---
 
-### ./flights/orders/cancel-order-dialog.tsx
+### ✅ ./flights/orders/order-status-card.tsx
 
-**基本信息**
-
-- 复杂度: 低
-- 优先级: P2
-- 批次: 3
-
-**依赖问题**
-
-- 待确认 (可能是纯 UI)
-
-**重构策略**
-
-```
-容器职责:
-- 处理取消订单 action
-- 确认逻辑
-
-UI 职责:
-- 对话框
-- 确认/取消按钮
-```
+- **UI 组件**: `packages/ui/src/components/flights/orders/order-status-card.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/order-status-card.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/order-status-card.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/order-status-card.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 
-### ./flights/orders/refund-order-dialog.tsx
+### ✅ ./flights/orders/cancel-order-dialog.tsx
 
-**基本信息**
-
-- 复杂度: 低
-- 优先级: P2
-- 批次: 3
-
-**重构策略**
-
-```
-同 cancel-order-dialog
-```
+- **UI 组件**: `packages/ui/src/components/flights/orders/cancel-order-dialog.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/cancel-order-dialog.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/cancel-order-dialog.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/cancel-order-dialog.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 
-### 其他 Orders 组件 (3个)
+### ✅ ./flights/orders/refund-order-dialog.tsx
 
-**组件列表**:
+- **UI 组件**: `packages/ui/src/components/flights/orders/refund-order-dialog.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/refund-order-dialog.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/refund-order-dialog.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/refund-order-dialog.stories.tsx`
+- **完成日期**: 2026-01-18
 
-- order-contact-info.tsx
-- order-passenger-info.tsx
-- order-payment-details.tsx
+---
 
-**重构策略**
+### ✅ ./flights/orders/order-contact-info.tsx
 
-```
-纯展示组件:
+- **UI 组件**: `packages/ui/src/components/flights/orders/order-contact-info.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/order-contact-info.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/order-contact-info.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/order-contact-info.stories.tsx`
+- **完成日期**: 2026-01-18
 
-UI 职责:
-- 显示订单相关信息
+---
 
-Props:
-- 各自的 view-model 数据
-```
+### ✅ ./flights/orders/order-passenger-info.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/orders/order-passenger-info.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/order-passenger-info.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/order-passenger-info.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/order-passenger-info.stories.tsx`
+- **完成日期**: 2026-01-18
+
+---
+
+### ✅ ./flights/orders/order-payment-details.tsx
+
+- **UI 组件**: `packages/ui/src/components/flights/orders/order-payment-details.tsx`
+- **容器**: `apps/web/app/_components/flights/orders/order-payment-details.tsx`
+- **测试**: `packages/ui/src/components/flights/orders/order-payment-details.test.tsx`
+- **Storybook**: `apps/storybook/src/stories/flights/orders/order-payment-details.stories.tsx`
+- **完成日期**: 2026-01-18
 
 ---
 
@@ -1535,10 +1531,10 @@ flight-summary-card 和 order-flight-info 等:
 | -------- | ------ | ------ | ------ | ------ | ------ |
 | Search   | 12     | 12     | 0      | 0      | 批次1  |
 | Booking  | 13     | 13     | 0      | 0      | 批次3  |
-| Orders   | 7      | 0      | 0      | 7      | 批次3  |
-| Results  | 3      | 1      | 0      | 2      | 待定   |
+| Orders   | 7      | 3      | 0      | 4      | 批次3  |
+| Results  | 3      | 3      | 0      | 0      | 批次1  |
 | Guide    | 5      | 5      | 0      | 0      | 已完成 |
-| **总计** | **40** | **31** | **0**  | **9**  | -      |
+| **总计** | **40** | **36** | **0**  | **4**  | -      |
 
 ---
 
