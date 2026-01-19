@@ -62,22 +62,28 @@ describe("PassengerForm", () => {
   it("shows loading state", () => {
     const onSubmit = vi.fn();
     const onCancel = vi.fn();
-    const form = useForm<PassengerFormData>({
-      defaultValues: {
-        name: "",
-        documentType: "id_card",
-        documentNumber: "",
-      },
-    });
 
-    render(
-      <PassengerForm
-        form={form}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        isLoading={true}
-      />
-    );
+    // Wrapper component to properly use hooks within React component context
+    function LoadingTestWrapper() {
+      const form = useForm<PassengerFormData>({
+        defaultValues: {
+          name: "",
+          documentType: "id_card",
+          documentNumber: "",
+        },
+      });
+
+      return (
+        <PassengerForm
+          form={form}
+          onSubmit={onSubmit}
+          onCancel={onCancel}
+          isLoading={true}
+        />
+      );
+    }
+
+    render(<LoadingTestWrapper />);
 
     expect(screen.getByText("保存中...")).toBeInTheDocument();
   });

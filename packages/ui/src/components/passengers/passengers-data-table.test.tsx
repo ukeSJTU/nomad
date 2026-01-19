@@ -99,6 +99,7 @@ describe("PassengersDataTable", () => {
     const onDelete = vi.fn();
     const onBatchDelete = vi.fn();
     const onAdd = vi.fn();
+    const onSearch = vi.fn();
 
     render(
       <PassengersDataTable
@@ -108,6 +109,7 @@ describe("PassengersDataTable", () => {
         onDelete={onDelete}
         onBatchDelete={onBatchDelete}
         onAdd={onAdd}
+        onSearch={onSearch}
         addButtonText="添加"
         searchButtonText="搜索"
       />
