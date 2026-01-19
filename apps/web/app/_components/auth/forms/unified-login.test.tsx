@@ -676,7 +676,7 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
       expect(screen.getByPlaceholderText("短信验证码")).toBeInTheDocument();
     });
 
-    it('should display "忘记密码" link in password login', () => {
+    it('should display "忘记密码" button in password login', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
       const onSendOtp = vi
@@ -692,17 +692,13 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
         />
       );
 
-      const forgotPasswordLink = screen.getByRole("link", {
+      const forgotPasswordButton = screen.getByRole("button", {
         name: "忘记密码",
       });
-      expect(forgotPasswordLink).toBeInTheDocument();
-      expect(forgotPasswordLink).toHaveAttribute(
-        "href",
-        "/auth/forgot-password"
-      );
+      expect(forgotPasswordButton).toBeInTheDocument();
     });
 
-    it('should display "免费注册" link in password login', () => {
+    it('should display "免费注册" button in password login', () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
       const onSendOtp = vi
@@ -718,12 +714,11 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
         />
       );
 
-      const signUpLink = screen.getByRole("link", { name: "免费注册" });
-      expect(signUpLink).toBeInTheDocument();
-      expect(signUpLink).toHaveAttribute("href", "/auth/sign-up");
+      const signUpButton = screen.getByRole("button", { name: "免费注册" });
+      expect(signUpButton).toBeInTheDocument();
     });
 
-    it("should display terms agreement text with links", () => {
+    it("should display terms agreement text with buttons", () => {
       const onPasswordSubmit = vi.fn().mockResolvedValue({ success: true });
       const onOtpSubmit = vi.fn().mockResolvedValue({ success: true });
       const onSendOtp = vi
@@ -741,15 +736,13 @@ describe("UnifiedLoginForm - Sequential Validation", () => {
 
       expect(screen.getByText(/阅读并同意Nomad的/)).toBeInTheDocument();
 
-      const termsLink = screen.getByRole("link", { name: "服务协议" });
-      expect(termsLink).toBeInTheDocument();
-      expect(termsLink).toHaveAttribute("href", "/terms");
+      const termsButton = screen.getByRole("button", { name: "服务协议" });
+      expect(termsButton).toBeInTheDocument();
 
-      const privacyLink = screen.getByRole("link", {
+      const privacyButton = screen.getByRole("button", {
         name: "个人信息保护政策",
       });
-      expect(privacyLink).toBeInTheDocument();
-      expect(privacyLink).toHaveAttribute("href", "/privacy");
+      expect(privacyButton).toBeInTheDocument();
     });
 
     it('should display "登 录" button', () => {

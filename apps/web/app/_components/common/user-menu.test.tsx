@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import UserMenu from "@/components/common/user-menu";
@@ -51,6 +52,7 @@ describe("UserMenu Container", () => {
     });
 
     it("should handle sign out action", async () => {
+      const user = userEvent.setup();
       mockUseSession.mockReturnValue({
         data: mockSession,
         isPending: false,
@@ -58,8 +60,13 @@ describe("UserMenu Container", () => {
 
       render(<UserMenu />);
 
-      const signOutButton = screen.getByText("退出登录");
-      signOutButton.click();
+      // Hover over the user menu trigger to open the hover card
+      const userMenuTrigger = screen.getByText("尊敬的用户");
+      await user.hover(userMenuTrigger);
+
+      // Wait for hover card to appear and find sign out button
+      const signOutButton = await screen.findByText("退出登录");
+      await user.click(signOutButton);
 
       // Wait for async action
       await new Promise(resolve => setTimeout(resolve, 0));

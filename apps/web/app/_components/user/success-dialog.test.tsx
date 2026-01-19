@@ -1,8 +1,7 @@
+import { SuccessDialog } from "@nomad/ui/components/user";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-
-import { SuccessDialog } from "@/components/user/success-dialog";
 
 describe("SuccessDialog Component", () => {
   const defaultProps = {
