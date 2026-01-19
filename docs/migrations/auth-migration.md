@@ -2,7 +2,7 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 8 | 进行中 0 | 未开始 4 | 不迁移 1
+> **状态**: 已完成 10 | 进行中 0 | 未开始 2 | 不迁移 1
 > **最后更新**: 2026-01-19
 
 ## 域概览
@@ -535,259 +535,150 @@ Props:
 
 ---
 
-### 🚧 进行中
-
-(暂无)
-
----
-
-### 📋 未开始
-
-#### ./auth/forms/unified-login.tsx
+#### ./auth/forms/verification-form.tsx
 
 **基本信息**
 
-- 路径: `apps/web/app/_components/auth/forms/unified-login.tsx`
-- 复杂度: 高
-- 优先级: P0 (关键路径)
-
-**依赖问题**
-
-- [x] Next.js Link (用于"忘记密码"链接)
-- [x] Server Action: signInWithPasswordAction, verifyOtpAction
-- [x] useEffect: 本地存储管理、倒计时
-- [x] react-hook-form + zod 表单校验
-- [x] Turnstile 验证组件
-
-**重构策略**
-
-```
-容器职责:
-- Schema 管理 (passwordLoginSchema / otpLoginSchema)
-- 表单提交与 Server Action 调用
-- OTP 倒计时定时器逻辑 (useOtpCountdown hook)
-- localStorage 读写 (倒计时持久化)
-- 错误处理和 toast 通知
-- Turnstile token 管理
-
-UI 职责 (packages/ui):
-- 渲染表单字段 (受控)
-- 显示验证错误
-- 根据 mode 显示/隐藏 password/OTP 区块
-- 倒计时显示
-- Link 适配器用于"忘记密码"
-- Turnstile widget 渲染 (props: onVerify 回调)
-
-适配器需求:
-- LinkAdapter (跳转到忘记密码页)
-```
-
-**View Model 接口**
-参考 [ARCHITECTURE.md - UnifiedLogin](../../ARCHITECTURE.md#unifiedlogin)
-
-**测试要点**
-
-- [ ] 模式切换 (password ↔ otp)
-- [ ] 表单验证错误显示
-- [ ] OTP 倒计时 UI (容器传入 mock 值)
-- [ ] 提交按钮禁用状态
-- [ ] 条款勾选状态
-- [ ] Turnstile 验证流程
-
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需要先完成 OTP 倒计时 hook 提取(可与 phone/email verification 共享)
-- [ ] Turnstile widget 需要平台抽象
-
----
-
-#### ./auth/forms/unified-signup.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/forms/unified-signup.tsx`
+- 路径: `packages/ui/src/components/auth/verification-form.tsx`
+- UI 组件: `packages/ui/src/components/auth/verification-form.tsx`
+- 测试: `packages/ui/src/components/auth/verification-form.test.tsx`
+- Storybook: `apps/storybook/src/stories/auth/verification-form.stories.tsx`
 - 复杂度: 中
-- 优先级: P1
-
-**依赖问题**
-
-- [x] Server Action: signupAction
-- [x] use_client
-
-**重构策略**
-
-```
-容器职责:
-- 调用 signup action
-- 错误处理
-- 成功后导航
-
-UI 职责:
-- 受控表单字段 (account, password)
-- 验证错误显示
-- 提交按钮与 loading 状态
-
-适配器需求:
-- 无
-```
-
-**测试要点**
-
-- [ ] 字段验证
-- [ ] 提交流程
-- [ ] 错误显示
-
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需确认表单验证是客户端还是仅服务端
-
----
-
-#### ./auth/forms/password-setup.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/forms/password-setup.tsx`
-- UI 组件: `packages/ui/src/components/auth/password-setup-form.tsx`
-- 测试: `packages/ui/src/components/auth/password-setup-form.test.tsx` (13 tests ✓)
-- Storybook: `apps/storybook/src/stories/auth/password-setup-form.stories.tsx`
-- 复杂度: 中
-- 优先级: P2
+- 优先级: P1 (被 unified-signup 依赖)
+- 完成日期: 2026-01-19
 
 **依赖解决方案**
 
 - ✅ react-hook-form + zod - 容器管理表单 schema 和验证
-- ✅ zxcvbn 密码强度检查 - 容器计算 strengthScore 并传递给 UI
+- ✅ OTP 倒计时 - 容器传入 countdown 状态
 
 **重构实现**
 
 ```
-容器职责 (apps/web):
-- 管理 react-hook-form 实例
-- 定义 passwordSetupSchema (zod)
-- 计算密码强度 (zxcvbn)
-- 处理表单提交
-- 日志记录
+容器职责:
+- 无 (纯 UI 组件，被 unified-signup 使用)
 
 UI 职责 (packages/ui):
-- 受控 password + confirmPassword 字段
-- 密码显示/隐藏切换
-- 实时密码要求验证显示
-- 密码强度指示器 (基于 strengthScore prop)
-- 可选的 maskedIdentifier 显示
-- 可选的帮助链接
+- 受控联系方式输入 (手机号/邮箱)
+- OTP 验证码输入 (复用 OtpInput)
+- 条款同意复选框
+- 根据 mode 显示不同的 label 和 placeholder
+- 提交按钮
 
 Props:
-- control: Control<PasswordSetupFormData>
-- errors: FieldErrors<PasswordSetupFormData>
+- mode: "phone" | "email"
+- control: Control<VerificationFormData>
+- errors: FieldErrors<VerificationFormData>
 - onSubmit: (e?: React.BaseSyntheticEvent) => void
-- passwordValue: string (用于实时要求验证)
-- strengthScore: number (0-4, 由 zxcvbn 计算)
+- onSendOtp: () => void
+- countdown: number
 - isLoading?: boolean
-- maskedIdentifier?: string
-- submitButtonText?: string
-- showHelpLink?: boolean
-- onHelpClick?: () => void
+- onTermsClick?: () => void
+- onPrivacyClick?: () => void
+- onEnterpriseClick?: () => void
 ```
 
 **测试覆盖**
 
-- ✅ 表单字段渲染
-- ✅ 密码显示/隐藏切换
-- ✅ 实时密码要求验证
-- ✅ 密码强度指示器 (弱/中/强)
-- ✅ 可选要求样式 (数字和特殊字符)
-- ✅ maskedIdentifier 显示
-- ✅ 自定义按钮文本
-- ✅ 帮助链接显示和回调
+- ✅ Phone/Email mode 渲染
+- ✅ Label 和 placeholder 根据 mode 切换
+- ✅ OTP 发送回调
+- ✅ 条款/隐私链接点击回调
 - ✅ Loading 状态
 - ✅ 表单提交
 
 **实现笔记**
 
-- 2026-01-18: 完成迁移，所有测试通过，构建成功
-- UI 组件完全受控，密码强度计算在容器层
-- 使用与 change-password-form 一致的模式
-- Storybook 展示多种密码强度状态
-- 可复用于注册和忘记密码流程
+- 2026-01-19: 完成迁移，所有测试通过，构建成功
+- 统一了 phone-verification 和 email-verification 的共同逻辑
+- 被 UnifiedSignupForm 作为内部组件使用
 
 ---
-
-### 🚧 进行中
-
-(暂无)
-
----
-
-### 📋 未开始
 
 #### ./auth/forms/unified-login.tsx
 
 **基本信息**
 
 - 路径: `apps/web/app/_components/auth/forms/unified-login.tsx`
+- UI 组件: `packages/ui/src/components/auth/unified-login-form.tsx`
+- 测试: `packages/ui/src/components/auth/unified-login-form.test.tsx` (27 tests ✓)
+- Storybook: `apps/storybook/src/stories/auth/unified-login-form.stories.tsx`
 - 复杂度: 高
 - 优先级: P0 (关键路径)
+- 完成日期: 2026-01-19
 
-**依赖问题**
+**依赖解决方案**
 
-- [x] Next.js Link (用于"忘记密码"链接)
-- [x] Server Action: signInWithPasswordAction, verifyOtpAction
-- [x] useEffect: 本地存储管理、倒计时
-- [x] react-hook-form + zod 表单校验
-- [x] Turnstile 验证组件
+- ✅ Next.js Link - 使用 onClick 回调 (onForgotPasswordClick, onRegisterClick)
+- ✅ Server Action - 容器调用 signInWithPasswordAction, verifyOtpAction
+- ✅ useEffect/localStorage - 容器使用 useOtpCountdown hook
+- ✅ react-hook-form + zod - 容器管理两个表单 (passwordForm, otpForm)
+- ✅ Turnstile - 容器保留 TurnstileWidget，不传递给 UI
 
-**重构策略**
+**重构实现**
 
 ```
-容器职责:
-- Schema 管理 (passwordLoginSchema / otpLoginSchema)
-- 表单提交与 Server Action 调用
-- OTP 倒计时定时器逻辑 (useOtpCountdown hook)
-- localStorage 读写 (倒计时持久化)
+容器职责 (apps/web):
+- 管理两个 react-hook-form 实例 (passwordForm, otpForm)
+- Schema 定义 (passwordLoginSchema, otpLoginSchema)
+- Server Action 调用 (signInWithPasswordAction, verifyOtpAction)
+- OTP 倒计时管理 (useOtpCountdown hook)
+- Turnstile CAPTCHA 集成
 - 错误处理和 toast 通知
-- Turnstile token 管理
+- 顺序验证逻辑 (validatePasswordSequentially, validateOtpSequentially)
+- 登录方法切换状态管理
 
 UI 职责 (packages/ui):
-- 渲染表单字段 (受控)
-- 显示验证错误
-- 根据 mode 显示/隐藏 password/OTP 区块
-- 倒计时显示
-- Link 适配器用于"忘记密码"
-- Turnstile widget 渲染 (props: onVerify 回调)
+- 根据 loginMethod 渲染 password 或 OTP 表单
+- 表单字段渲染 (账号、密码、OTP)
+- 模式切换按钮 (密码登录 ↔ 验证码登录)
+- 忘记密码链接 (onClick 回调)
+- 注册链接 (onClick 回调)
+- 条款同意复选框 (带 tooltip)
+- GitHub 登录按钮 (仅密码模式)
+- 错误消息显示
+- Loading 状态处理
 
-适配器需求:
-- LinkAdapter (跳转到忘记密码页)
+Props:
+- loginMethod: "password" | "otp"
+- onLoginMethodChange: (method: LoginMethod) => void
+- passwordForm: UseFormReturn<PasswordLoginFormData>
+- otpForm: UseFormReturn<OtpLoginFormData>
+- onPasswordSubmit: (e?: React.BaseSyntheticEvent) => void
+- onOtpSubmit: (e?: React.BaseSyntheticEvent) => void
+- onSendOtp: () => void
+- countdown: number
+- isVerifying?: boolean
+- isLoading?: boolean
+- currentError?: string
+- showTermsTooltip?: boolean
+- onForgotPasswordClick?: () => void
+- onRegisterClick?: () => void
+- onTermsClick?: () => void
+- onPrivacyClick?: () => void
+- onGithubLoginClick?: () => void
 ```
 
-**View Model 接口**
-参考 [ARCHITECTURE.md - UnifiedLogin](../../ARCHITECTURE.md#unifiedlogin)
+**测试覆盖**
 
-**测试要点**
-
-- [ ] 模式切换 (password ↔ otp)
-- [ ] 表单验证错误显示
-- [ ] OTP 倒计时 UI (容器传入 mock 值)
-- [ ] 提交按钮禁用状态
-- [ ] 条款勾选状态
-- [ ] Turnstile 验证流程
+- ✅ Password mode 渲染 (账号、密码字段)
+- ✅ OTP mode 渲染 (账号、OTP 字段)
+- ✅ 模式切换回调
+- ✅ 忘记密码链接 (仅密码模式显示)
+- ✅ 注册链接 (仅密码模式显示)
+- ✅ 条款复选框和 tooltip
+- ✅ GitHub 登录按钮 (仅密码模式)
+- ✅ 错误消息显示
+- ✅ Loading 状态禁用
+- ✅ 表单提交回调
 
 **实现笔记**
 
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需要先完成 OTP 倒计时 hook 提取(可与 phone/email verification 共享)
-- [ ] Turnstile widget 需要平台抽象
+- 2026-01-19: 完成迁移，27 测试通过，构建成功
+- 使用 MODE_CONFIG 对象管理两种模式的配置
+- 容器传递完整的 UseFormReturn 对象给 UI (不只是 control)
+- Turnstile widget 保留在容器层，不传递给 UI 组件
+- 使用分离的验证函数 (validatePasswordSequentially, validateOtpSequentially) 避免类型问题
 
 ---
 
@@ -796,46 +687,83 @@ UI 职责 (packages/ui):
 **基本信息**
 
 - 路径: `apps/web/app/_components/auth/forms/unified-signup.tsx`
+- UI 组件: `packages/ui/src/components/auth/unified-signup-form.tsx`
+- 测试: `packages/ui/src/components/auth/unified-signup-form.test.tsx` (14 tests ✓)
+- Storybook: `apps/storybook/src/stories/auth/unified-signup-form.stories.tsx`
 - 复杂度: 中
 - 优先级: P1
+- 完成日期: 2026-01-19
 
-**依赖问题**
+**依赖解决方案**
 
-- [x] Server Action: signupAction
-- [x] use_client
+- ✅ Server Action - 容器调用 sendVerifyOtpAction, validateOtpAction
+- ✅ useEffect/localStorage - 容器使用 useOtpCountdown hook (两个实例)
+- ✅ react-hook-form + zod - 容器管理两个表单 (phoneForm, emailForm)
+- ✅ Turnstile - 容器保留 TurnstileWidget，不传递给 UI
+- ✅ Router - 容器处理导航逻辑
 
-**重构策略**
+**重构实现**
 
 ```
-容器职责:
-- 调用 signup action
-- 错误处理
-- 成功后导航
+容器职责 (apps/web):
+- 管理两个 react-hook-form 实例 (phoneForm, emailForm)
+- Schema 定义 (phoneVerificationSchema, emailVerificationSchema)
+- Server Action 调用 (sendVerifyOtpAction, validateOtpAction)
+- 两个独立的 OTP 倒计时管理 (phoneCountdown, emailCountdown)
+- Turnstile CAPTCHA 集成
+- 验证类型识别 (phone vs email)
+- 错误处理和 toast 通知
+- 注册方法切换状态管理
+- 成功后导航到密码设置页面
 
-UI 职责:
-- 受控表单字段 (account, password)
-- 验证错误显示
-- 提交按钮与 loading 状态
+UI 职责 (packages/ui):
+- Tabs 组件切换 phone/email 注册方式
+- 复用 VerificationForm 组件渲染表单
+- Tab 禁用状态 (loading 时)
+- 条款/隐私链接
+- 企业注册链接
 
-适配器需求:
-- 无
+Props:
+- method: "phone" | "email"
+- onMethodChange: (method: SignupMethod) => void
+- phoneForm: UseFormReturn<VerificationFormData>
+- onPhoneSubmit: (e?: React.BaseSyntheticEvent) => void
+- onSendPhoneOtp: () => void
+- phoneCountdown: number
+- emailForm: UseFormReturn<VerificationFormData>
+- onEmailSubmit: (e?: React.BaseSyntheticEvent) => void
+- onSendEmailOtp: () => void
+- emailCountdown: number
+- isLoading?: boolean
+- onTermsClick?: () => void
+- onPrivacyClick?: () => void
+- onEnterpriseClick?: () => void
 ```
 
-**测试要点**
+**测试覆盖**
 
-- [ ] 字段验证
-- [ ] 提交流程
-- [ ] 错误显示
+- ✅ Phone mode tab active 状态
+- ✅ Email mode tab active 状态
+- ✅ Phone mode 特定 label 渲染
+- ✅ Email mode 特定 label 渲染
+- ✅ Tab 切换回调
+- ✅ 提交按钮渲染
+- ✅ 条款复选框渲染
+- ✅ 企业注册链接
+- ✅ Loading 状态禁用 tabs
+- ✅ 条款/隐私链接点击回调
 
 **实现笔记**
 
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需确认表单验证是客户端还是仅服务端
+- 2026-01-19: 完成迁移，14 测试通过，构建成功
+- UI 组件是 VerificationForm 的薄包装，添加 Tabs 切换
+- 复用已有的 VerificationForm 组件，避免重复代码
+- 容器传递完整的 UseFormReturn 对象给 UI
+- Turnstile widget 保留在容器层
 
 ---
+
+### 📋 未开始
 
 #### ./auth/forms/phone-verification.tsx
 
@@ -998,19 +926,20 @@ Link/Unlink 组件应有统一接口:
 
 | 类别          | 总数   | 已完成 | 进行中 | 未开始 | 不迁移 |
 | ------------- | ------ | ------ | ------ | ------ | ------ |
-| Forms         | 6      | 1      | 0      | 4      | 1      |
+| Forms         | 6      | 4      | 0      | 2      | 0      |
 | UI Components | 7      | 7      | 0      | 0      | 0      |
-| **总计**      | **13** | **8**  | **0**  | **4**  | **1**  |
+| **总计**      | **13** | **11** | **0**  | **2**  | **1**  |
 
 ---
 
 ## 下一步行动
 
-1. 完成批次0 (适配层) - 前置依赖
-2. 从 `otp-input.tsx` 开始 (最简单,可复用)
-3. 提取共享的 OTP 倒计时 hook
-4. 处理 `unified-login.tsx` (最高复杂度,建立模式)
-5. 将模式应用到其余表单
+1. ~~完成批次0 (适配层) - 前置依赖~~ ✅
+2. ~~从 `otp-input.tsx` 开始 (最简单,可复用)~~ ✅
+3. ~~提取共享的 OTP 倒计时 hook~~ ✅
+4. ~~处理 `unified-login.tsx` (最高复杂度,建立模式)~~ ✅
+5. ~~处理 `unified-signup.tsx`~~ ✅
+6. 将模式应用到剩余表单 (phone-verification, email-verification)
 
 ---
 

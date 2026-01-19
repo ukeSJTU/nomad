@@ -11,6 +11,18 @@ export type { SignUpModalProps } from "./sign-up-modal";
 export { SignUpModal } from "./sign-up-modal";
 export type { SocialAccountCardProps } from "./social-account-card";
 export { SocialAccountCard } from "./social-account-card";
+export type {
+  LoginMethod,
+  OtpLoginFormData,
+  PasswordLoginFormData,
+  UnifiedLoginFormProps,
+} from "./unified-login-form";
+export { UnifiedLoginForm } from "./unified-login-form";
+export type {
+  SignupMethod,
+  UnifiedSignupFormProps,
+} from "./unified-signup-form";
+export { UnifiedSignupForm } from "./unified-signup-form";
 export type { UnlinkButtonProps } from "./unlink-button";
 export { UnlinkButton } from "./unlink-button";
 export { UserSidebar } from "./user-sidebar";

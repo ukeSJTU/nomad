@@ -2,17 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  VerificationForm,
+  type SignupMethod,
+  UnifiedSignupForm,
   type VerificationFormData,
 } from "@nomad/ui/components/auth";
-import { Form } from "@nomad/ui/components/primitives/form";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@nomad/ui/components/primitives/tabs";
-import { cn } from "@nomad/ui/lib/utils";
 import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -30,7 +23,7 @@ import {
 
 import { type TurnstileInstance, TurnstileWidget } from "../turnstile";
 
-export interface UnifiedSignUpFormProps {
+export interface UnifiedSignUpProps {
   /** Callback when phone verification succeeds */
   onPhoneVerified: (
     data: PhoneVerificationData,
@@ -59,16 +52,46 @@ export interface UnifiedSignUpFormProps {
   isLoading?: boolean;
 
   /** Initial sign-up method */
-  initialMethod?: "phone" | "email";
+  initialMethod?: SignupMethod;
 
   /** Callback when method changes */
-  onMethodChange?: (method: "phone" | "email") => void;
+  onMethodChange?: (method: SignupMethod) => void;
+
+  /** Callback when terms link is clicked */
+  onTermsClick?: () => void;
+
+  /** Callback when privacy link is clicked */
+  onPrivacyClick?: () => void;
+
+  /** Callback when enterprise registration link is clicked */
+  onEnterpriseClick?: () => void;
 
   /** Custom className */
   className?: string;
 }
 
-export default function UnifiedSignUpForm({
+/**
+ * Smart container component for the unified signup form
+ *
+ * Handles all business logic including:
+ * - Form state management via react-hook-form
+ * - OTP countdown management for both phone and email
+ * - Turnstile CAPTCHA integration for OTP
+ * - Toast notifications for errors
+ *
+ * @example
+ * ```tsx
+ * <UnifiedSignUp
+ *   onPhoneVerified={handlePhoneVerified}
+ *   onEmailVerified={handleEmailVerified}
+ *   onSendPhoneOtp={handleSendPhoneOtp}
+ *   onSendEmailOtp={handleSendEmailOtp}
+ *   onTermsClick={() => window.open("/terms", "_blank")}
+ *   onPrivacyClick={() => window.open("/privacy", "_blank")}
+ * />
+ * ```
+ */
+export default function UnifiedSignUp({
   onPhoneVerified,
   onEmailVerified,
   onSendPhoneOtp,
@@ -76,9 +99,12 @@ export default function UnifiedSignUpForm({
   isLoading = false,
   initialMethod = "phone",
   onMethodChange,
+  onTermsClick,
+  onPrivacyClick,
+  onEnterpriseClick,
   className,
-}: UnifiedSignUpFormProps) {
-  const [_method, setMethod] = useState<"phone" | "email">(initialMethod);
+}: UnifiedSignUpProps) {
+  const [method, setMethod] = useState<SignupMethod>(initialMethod);
   const [isVerifying, setIsVerifying] = useState(false);
   const turnstileRef = useRef<TurnstileInstance>(null);
 
@@ -106,26 +132,35 @@ export default function UnifiedSignUpForm({
   const currentPhoneNumber = phoneForm.watch("contact");
   const currentEmail = emailForm.watch("contact");
 
-  const countdownKey = useMemo(() => {
-    if (_method === "phone" && currentPhoneNumber) {
+  // Phone countdown
+  const phoneCountdownKey = useMemo(() => {
+    if (currentPhoneNumber) {
       return buildOtpStorageKey("phone", currentPhoneNumber);
     }
+    return null;
+  }, [currentPhoneNumber]);
 
-    if (_method === "email" && currentEmail) {
+  const { countdown: phoneCountdown, start: startPhoneCountdown } =
+    useOtpCountdown({
+      storageKey: phoneCountdownKey,
+    });
+
+  // Email countdown
+  const emailCountdownKey = useMemo(() => {
+    if (currentEmail) {
       return buildOtpStorageKey("email", currentEmail);
     }
-
     return null;
-  }, [_method, currentEmail, currentPhoneNumber]);
+  }, [currentEmail]);
 
-  const { countdown, start: startCountdown } = useOtpCountdown({
-    storageKey: countdownKey,
-  });
+  const { countdown: emailCountdown, start: startEmailCountdown } =
+    useOtpCountdown({
+      storageKey: emailCountdownKey,
+    });
 
-  const handleMethodChange = (value: string) => {
-    const newMethod = value as "phone" | "email";
-    setMethod(newMethod);
-    onMethodChange?.(newMethod);
+  const handleMethodChange = (value: SignupMethod) => {
+    setMethod(value);
+    onMethodChange?.(value);
   };
 
   /**
@@ -163,10 +198,10 @@ export default function UnifiedSignUpForm({
       const result = await onSendPhoneOtp(currentPhoneNumber, fetchOptions);
 
       if (result.success) {
-        startCountdown();
+        startPhoneCountdown();
       } else {
         if (result.retryAfterSeconds) {
-          startCountdown(result.retryAfterSeconds);
+          startPhoneCountdown(result.retryAfterSeconds);
         }
         toast.error(result.error || "发送验证码失败，请重试");
       }
@@ -213,10 +248,10 @@ export default function UnifiedSignUpForm({
       const result = await onSendEmailOtp(currentEmail, fetchOptions);
 
       if (result.success) {
-        startCountdown();
+        startEmailCountdown();
       } else {
         if (result.retryAfterSeconds) {
-          startCountdown(result.retryAfterSeconds);
+          startEmailCountdown(result.retryAfterSeconds);
         }
         toast.error(result.error || "发送验证码失败，请重试");
       }
@@ -263,54 +298,30 @@ export default function UnifiedSignUpForm({
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <Tabs
-        defaultValue={initialMethod}
-        className="w-full"
-        onValueChange={handleMethodChange}
-      >
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="phone">手机注册</TabsTrigger>
-          <TabsTrigger value="email">邮箱注册</TabsTrigger>
-        </TabsList>
-
-        {/* Phone Verification Tab */}
-        <TabsContent value="phone">
-          <Form {...phoneForm}>
-            <VerificationForm
-              mode="phone"
-              control={phoneForm.control}
-              errors={phoneForm.formState.errors}
-              onSubmit={phoneForm.handleSubmit(handlePhoneSubmit)}
-              onSendOtp={handleSendPhoneOtp}
-              countdown={countdown}
-              isLoading={isLoading || isVerifying}
-            />
-          </Form>
-        </TabsContent>
-
-        {/* Email Verification Tab */}
-        <TabsContent value="email">
-          <Form {...emailForm}>
-            <VerificationForm
-              mode="email"
-              control={emailForm.control}
-              errors={emailForm.formState.errors}
-              onSubmit={emailForm.handleSubmit(handleEmailSubmit)}
-              onSendOtp={handleSendEmailOtp}
-              countdown={countdown}
-              isLoading={isLoading || isVerifying}
-            />
-          </Form>
-        </TabsContent>
-      </Tabs>
-
+    <>
+      <UnifiedSignupForm
+        method={method}
+        onMethodChange={handleMethodChange}
+        phoneForm={phoneForm}
+        onPhoneSubmit={phoneForm.handleSubmit(handlePhoneSubmit)}
+        onSendPhoneOtp={handleSendPhoneOtp}
+        phoneCountdown={phoneCountdown}
+        emailForm={emailForm}
+        onEmailSubmit={emailForm.handleSubmit(handleEmailSubmit)}
+        onSendEmailOtp={handleSendEmailOtp}
+        emailCountdown={emailCountdown}
+        isLoading={isLoading || isVerifying}
+        onTermsClick={onTermsClick}
+        onPrivacyClick={onPrivacyClick}
+        onEnterpriseClick={onEnterpriseClick}
+        className={className}
+      />
       {/* Turnstile Widget - invisible mode for OTP sending */}
       <TurnstileWidget
         ref={turnstileRef}
         action="signup-otp"
         size="invisible"
       />
-    </div>
+    </>
   );
 }
