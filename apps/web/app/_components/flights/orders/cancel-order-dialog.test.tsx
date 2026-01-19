@@ -1,8 +1,7 @@
+import { CancelOrderDialog } from "@nomad/ui/components/flights/orders";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-
-import { CancelOrderDialog } from "./cancel-order-dialog";
 
 /**
  * @requirement REQ-O04

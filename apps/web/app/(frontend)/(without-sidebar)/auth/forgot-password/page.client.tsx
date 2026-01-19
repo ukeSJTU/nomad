@@ -11,12 +11,12 @@ import {
   FormMessage,
 } from "@nomad/ui/components/primitives/form";
 import { Input } from "@nomad/ui/components/primitives/input";
+import { OtpInput } from "@nomad/ui/components/security/otp-input";
 import { CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import OtpInput from "@/components/auth/forms/otp-input";
 import PasswordSetupForm from "@/components/auth/forms/password-setup";
 import {
   type TurnstileInstance,
@@ -194,6 +194,7 @@ export default function ForgotPasswordPageClient() {
               onChange={setOtp}
               onSendOtp={handleSendOtp}
               countdown={countdown}
+              hasSent={countdown > 0}
               isLoading={isLoading}
               isVerifying={isVerifyingCaptcha}
               placeholder="6位数字验证码"

@@ -1,16 +1,13 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Input } from "@nomad/ui/components/primitives/input";
-import { Search } from "lucide-react";
+import { SearchBar as SearchBarUI } from "@nomad/ui/components/common";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = () => {
     if (searchQuery.trim()) {
       toast.success(`Searching for: ${searchQuery}`);
       // TODO: Implement actual search functionality
@@ -18,26 +15,10 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex w-full items-center">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="搜索任何旅游相关"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-9 rounded-r-none border-r-0"
-        />
-      </div>
-      <Button
-        type="submit"
-        size="icon"
-        variant="outline"
-        className="rounded-l-none shrink-0"
-      >
-        <Search className="size-4" />
-        <span className="sr-only">Search</span>
-      </Button>
-    </form>
+    <SearchBarUI
+      value={searchQuery}
+      onChange={setSearchQuery}
+      onSubmit={handleSearch}
+    />
   );
 }

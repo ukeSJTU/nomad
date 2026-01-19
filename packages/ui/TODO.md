@@ -1,1 +1,0 @@
-We need to add vitest with React-Testing-Library to test components in isolation. Only test non-primitive components here. Primitive components are installed from shadcn and should be guaranteed to work as expected.

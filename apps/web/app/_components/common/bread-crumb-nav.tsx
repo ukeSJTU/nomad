@@ -1,18 +1,14 @@
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@nomad/ui/components/primitives/breadcrumb";
-import Link from "next/link";
+  type BreadcrumbItem,
+  BreadcrumbNav as BreadcrumbNavUI,
+} from "@nomad/ui/components/common";
 
 /**
- * Breadcrumb Navigation Component
+ * Breadcrumb Navigation Container
  *
- * Displays a breadcrumb navigation trail for the order details page.
- * Uses semantic HTML (nav element) through the Breadcrumb component.
+ * Provides breadcrumb navigation for the order details page.
+ * This container is responsible for configuring the breadcrumb items
+ * specific to this page context.
  *
  * Navigation hierarchy:
  * - 我的携程 (My Ctrip) -> /home/info
@@ -20,39 +16,20 @@ import Link from "next/link";
  * - 订单详情 (Order Details) - Current page
  */
 export function BreadCrumbNav() {
-  return (
-    <nav aria-label="Breadcrumb Navigation" className="pt-4 pb-2 px-4">
-      <Breadcrumb>
-        <BreadcrumbList className="flex items-center gap-2 text-sm">
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link
-                href="/home/info"
-                className="text-primary hover:text-primary/80 transition-colors duration-200 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:rounded-sm font-medium"
-              >
-                我的携程
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="text-muted-foreground" />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link
-                href="/home/orders"
-                className="text-primary hover:text-primary/80 transition-colors duration-200 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:rounded-sm font-medium"
-              >
-                机票订单
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="text-muted-foreground" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-foreground font-semibold">
-              订单详情
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-    </nav>
-  );
+  const items: BreadcrumbItem[] = [
+    {
+      label: "我的携程",
+      href: "/home/info",
+    },
+    {
+      label: "机票订单",
+      href: "/home/orders",
+    },
+    {
+      label: "订单详情",
+      // No href - renders as current page
+    },
+  ];
+
+  return <BreadcrumbNavUI items={items} ariaLabel="Breadcrumb Navigation" />;
 }

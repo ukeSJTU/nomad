@@ -1,7 +1,6 @@
 "use client";
 
-import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
-import { Clock } from "lucide-react";
+import { PaymentCountdownTimer as PaymentCountdownTimerUI } from "@nomad/ui/components/flights/booking";
 import { useEffect, useState } from "react";
 
 interface PaymentCountdownTimerProps {
@@ -45,29 +44,14 @@ export function PaymentCountdownTimer({
     return () => clearInterval(timer);
   }, [timeLeft, onTimeLeftChange]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  const handleExpire = () => {
+    // Timer expired, already handled by onTimeLeftChange callback
   };
 
   return (
-    <Alert>
-      <AlertDescription>
-        <div className="flex items-center justify-between gap-4">
-          <Clock className="h-4 w-4" />
-          <span className="text-sm leading-relaxed">
-            请在最晚支付时间前完成支付，超时订单将自动取消
-          </span>
-          <span
-            className={`font-mono text-lg font-semibold shrink-0 ${
-              timeLeft <= 60 ? "text-destructive" : "text-secondary"
-            }`}
-          >
-            {formatTime(timeLeft)}
-          </span>
-        </div>
-      </AlertDescription>
-    </Alert>
+    <PaymentCountdownTimerUI
+      remainingSeconds={timeLeft}
+      onExpire={handleExpire}
+    />
   );
 }

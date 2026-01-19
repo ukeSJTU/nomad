@@ -85,6 +85,19 @@ export const emailVerificationSchema = z.object({
   agreedToTerms: termsAgreementSchema,
 });
 
+// Unified verification schemas using generic "contact" field
+export const phoneContactVerificationSchema = z.object({
+  contact: phoneNumberSchema,
+  otp: otpCodeSchema,
+  agreedToTerms: termsAgreementSchema,
+});
+
+export const emailContactVerificationSchema = z.object({
+  contact: emailSchema,
+  otp: otpCodeSchema,
+  agreedToTerms: termsAgreementSchema,
+});
+
 export const passwordSetupSchema = z
   .object({
     password: z
@@ -180,6 +193,12 @@ export type OtpLoginData = z.infer<typeof otpLoginSchema>;
 export type UnifiedLoginData = z.infer<typeof unifiedLoginSchema>;
 export type PhoneVerificationData = z.infer<typeof phoneVerificationSchema>;
 export type EmailVerificationData = z.infer<typeof emailVerificationSchema>;
+export type PhoneContactVerificationData = z.infer<
+  typeof phoneContactVerificationSchema
+>;
+export type EmailContactVerificationData = z.infer<
+  typeof emailContactVerificationSchema
+>;
 export type PasswordSetupData = z.infer<typeof passwordSetupSchema>;
 export type UpdatePhoneData = z.infer<typeof updatePhoneSchema>;
 export type UpdateEmailData = z.infer<typeof updateEmailSchema>;

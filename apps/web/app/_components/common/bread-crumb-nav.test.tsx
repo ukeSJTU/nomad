@@ -1,9 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-
 import { BreadCrumbNav } from "./bread-crumb-nav";
 
-describe("BreadCrumbNav", () => {
+describe("BreadCrumbNav Container", () => {
   it("renders all breadcrumb items with correct text", () => {
     render(<BreadCrumbNav />);
 

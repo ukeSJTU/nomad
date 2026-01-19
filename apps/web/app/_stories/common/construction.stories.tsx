@@ -1,6 +1,5 @@
+import { UnderConstruction } from "@nomad/ui/components/common";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-
-import UnderConstruction from "@/components/common/construction";
 
 const meta = {
   title: "Common/UnderConstruction",

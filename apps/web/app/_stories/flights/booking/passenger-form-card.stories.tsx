@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { useState } from "react";
-
 import {
   PassengerFormCard,
   type PassengerFormData,
-} from "@/components/flights/booking/passenger-form-card";
+  type SavedPassenger,
+} from "@nomad/ui/components/flights/booking";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 
 const meta: Meta<typeof PassengerFormCard> = {
   title: "Flights/Booking/PassengerFormCard",
@@ -19,25 +19,25 @@ export default meta;
 type Story = StoryObj<typeof PassengerFormCard>;
 
 // Mock saved passengers data
-const mockSavedPassengers = [
+const mockSavedPassengers: SavedPassenger[] = [
   {
     id: "1",
     name: "张三",
-    documentType: "id_card" as const,
+    documentType: "id_card",
     documentNumber: "110101199001011234",
     phone: "13800138000",
   },
   {
     id: "2",
     name: "李四",
-    documentType: "passport" as const,
+    documentType: "passport",
     documentNumber: "E12345678",
     phone: "13900139000",
   },
   {
     id: "3",
     name: "王五",
-    documentType: "id_card" as const,
+    documentType: "id_card",
     documentNumber: "110101199101011234",
     phone: null,
   },
@@ -51,7 +51,7 @@ function PassengerFormCardWrapper({
   savedPassengers,
 }: {
   initialPassengers: PassengerFormData[];
-  savedPassengers: typeof mockSavedPassengers;
+  savedPassengers: SavedPassenger[];
 }) {
   const [passengers, setPassengers] =
     useState<PassengerFormData[]>(initialPassengers);
@@ -113,6 +113,15 @@ function PassengerFormCardWrapper({
     }
   };
 
+  const showDeleteButton = (forms: PassengerFormData[]): boolean => {
+    if (forms.length === 1) {
+      return Boolean(
+        forms[0].name || forms[0].documentNumber || forms[0].phone
+      );
+    }
+    return true;
+  };
+
   return (
     <PassengerFormCard
       passengers={passengers}
@@ -122,6 +131,7 @@ function PassengerFormCardWrapper({
       onToggleSavedPassenger={handleToggleSavedPassenger}
       onRemovePassenger={handleRemovePassenger}
       onAddPassenger={handleAddPassenger}
+      showDeleteButton={showDeleteButton}
     />
   );
 }

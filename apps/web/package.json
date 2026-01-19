@@ -34,7 +34,7 @@
     "db:studio:test": "cross-env NODE_ENV=test drizzle-kit studio",
     "db:seed": "cross-env NODE_ENV=development tsx src/db/data/seed.runner.ts",
     "lint": "biome check --diagnostic-level=error . && pnpm lint:boundary",
-    "lint:fix": "biome check --write . && pnpm lint:boundary",
+    "lint:fix": "biome check --write .",
     "lint:boundary": "node scripts/check-app-boundary.mjs",
     "format": "biome check --write --linter-enabled=false . && prettier --write '**/*.{md,vue}' --ignore-path .prettierignore",
     "format:check": "biome check --linter-enabled=false . && prettier --check '**/*.{md,vue}' --ignore-path .prettierignore",

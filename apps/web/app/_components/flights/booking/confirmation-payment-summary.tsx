@@ -1,11 +1,10 @@
-import { Separator } from "@nomad/ui/components/primitives/separator";
+import {
+  ConfirmationPaymentSummary as ConfirmationPaymentSummaryUI,
+  type ConfirmationPaymentSummaryProps as ConfirmationPaymentSummaryUIProps,
+} from "@nomad/ui/components/flights/booking/confirmation-payment-summary";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
-import {
-  formatCurrencyWithoutSymbol,
-  getCurrencyValue,
-  parseCurrency,
-} from "@/lib/format";
+import { formatCurrencyWithoutSymbol } from "@/lib/format";
 
 interface ConfirmationPaymentSummaryProps {
   baseAmount: string;
@@ -27,36 +26,32 @@ export function ConfirmationPaymentSummary({
   totalAmount,
   payment,
 }: ConfirmationPaymentSummaryProps) {
+  const formattedBaseAmount = formatCurrencyWithoutSymbol(baseAmount);
+  const formattedAncillaryAmount = formatCurrencyWithoutSymbol(ancillaryAmount);
+  const formattedTotalAmount = formatCurrencyWithoutSymbol(totalAmount);
+
+  const formattedPaymentTime = payment
+    ? format(payment.createdAt, "yyyy-MM-dd HH:mm:ss", { locale: zhCN })
+    : undefined;
+
+  const uiPayment: ConfirmationPaymentSummaryUIProps["payment"] = payment
+    ? {
+        id: payment.id,
+        amount: payment.amount,
+        method: payment.method,
+        status: payment.status,
+        transactionId: payment.transactionId,
+        createdAt: payment.createdAt,
+      }
+    : null;
+
   return (
-    <div>
-      <div className="text-sm text-gray-500 mb-2">费用明细</div>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">机票费用</span>
-          <span>¥{formatCurrencyWithoutSymbol(baseAmount)}</span>
-        </div>
-        {getCurrencyValue(parseCurrency(ancillaryAmount)) > 0 && (
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">增值服务</span>
-            <span>¥{formatCurrencyWithoutSymbol(ancillaryAmount)}</span>
-          </div>
-        )}
-        <Separator />
-        <div className="flex items-center justify-between font-bold text-lg">
-          <span>实付金额</span>
-          <span className="text-orange-500">
-            ¥{formatCurrencyWithoutSymbol(totalAmount)}
-          </span>
-        </div>
-        {payment && (
-          <div className="text-xs text-gray-500">
-            支付时间：
-            {format(payment.createdAt, "yyyy-MM-dd HH:mm:ss", {
-              locale: zhCN,
-            })}
-          </div>
-        )}
-      </div>
-    </div>
+    <ConfirmationPaymentSummaryUI
+      baseAmount={formattedBaseAmount}
+      ancillaryAmount={formattedAncillaryAmount}
+      totalAmount={formattedTotalAmount}
+      payment={uiPayment}
+      formattedPaymentTime={formattedPaymentTime}
+    />
   );
 }

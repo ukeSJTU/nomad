@@ -1,10 +1,17 @@
+import type { OrderListItem } from "@nomad/ui/components/user";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { OrderListItem } from "@/types/dto";
-
 import OrderCard from "./order-card";
+
+// Mock Next.js router
+const mockPush = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
 
 /**
  * @requirement REQ-O01
@@ -42,7 +49,7 @@ const createMockOrder = (
 /**
  * @requirement REQ-O01
  */
-describe("OrderCard Component", () => {
+describe("OrderCard Container Component", () => {
   const mockOnCheckChange = vi.fn();
   const mockOnDelete = vi.fn();
   const mockOnActionClick = vi.fn();

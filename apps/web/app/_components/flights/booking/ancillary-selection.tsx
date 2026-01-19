@@ -1,22 +1,11 @@
 "use client";
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@nomad/ui/components/primitives/accordion";
+  type AncillaryCategory,
+  AncillarySelection as AncillarySelectionUI,
+} from "@nomad/ui/components/flights/booking";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@nomad/ui/components/primitives/card";
-import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
-import { Label } from "@nomad/ui/components/primitives/label";
-import { Car, Shield, Utensils } from "lucide-react";
-import {
-  type AncillaryService,
+  type AncillaryServiceCategory,
   getAncillaryServicesByCategory,
 } from "@/db/schema/ancillary";
 import { formatCurrency } from "@/lib/format";
@@ -41,10 +30,10 @@ export interface AncillarySelectionProps {
 }
 
 /**
- * AncillarySelection Component
+ * AncillarySelection Container Component
  *
- * Displays ancillary services (insurance, airport pickup, meals) in an accordion
- * with checkboxes for selection.
+ * Provides data and formatting logic for the ancillary selection UI.
+ * Fetches service data by category and formats prices.
  */
 export function AncillarySelection({
   selectedServices,
@@ -52,138 +41,30 @@ export function AncillarySelection({
   title = "选择增值服务",
   className,
 }: AncillarySelectionProps) {
-  const renderServiceOption = (service: AncillaryService) => {
-    const isSelected = selectedServices.includes(service.code);
-
-    return (
-      <Label
-        key={service.code}
-        className="flex items-start space-x-3 p-4 rounded-lg border hover:bg-accent/50 cursor-pointer transition-colors"
-      >
-        <Checkbox
-          id={service.code}
-          checked={isSelected}
-          onCheckedChange={() => onToggleService(service.code)}
-          onClick={e => e.stopPropagation()}
-          className="mt-1"
-        />
-        <div className="flex-1 space-y-1">
-          <Label
-            htmlFor={service.code}
-            className="text-base font-medium cursor-pointer"
-          >
-            {service.name}
-          </Label>
-          {service.description && (
-            <p className="text-sm text-muted-foreground">
-              {service.description}
-            </p>
-          )}
-        </div>
-        <div className="text-right">
-          <div className="text-lg font-bold text-secondary">
-            {formatCurrency(service.price)}
-          </div>
-        </div>
-      </Label>
-    );
-  };
-
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "INSURANCE":
-        return <Shield className="h-5 w-5" />;
-      case "AIRPORT_PICKUP":
-        return <Car className="h-5 w-5" />;
-      case "MEAL":
-        return <Utensils className="h-5 w-5" />;
-      default:
-        return null;
-    }
-  };
-
-  const getCategoryTitle = (category: string) => {
-    switch (category) {
-      case "INSURANCE":
-        return "旅行保险";
-      case "AIRPORT_PICKUP":
-        return "接送机服务";
-      case "MEAL":
-        return "机上餐食";
-      default:
-        return category;
-    }
-  };
+  // Fetch services by category from data source
+  const categories: AncillaryCategory[] = [
+    {
+      category: "INSURANCE" as AncillaryServiceCategory,
+      services: getAncillaryServicesByCategory("INSURANCE"),
+    },
+    {
+      category: "AIRPORT_PICKUP" as AncillaryServiceCategory,
+      services: getAncillaryServicesByCategory("AIRPORT_PICKUP"),
+    },
+    {
+      category: "MEAL" as AncillaryServiceCategory,
+      services: getAncillaryServicesByCategory("MEAL"),
+    },
+  ];
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Accordion
-          type="multiple"
-          className="w-full"
-          defaultValue={["insurance", "airport-pickup", "meal"]}
-        >
-          {/* Insurance Services */}
-          <AccordionItem value="insurance">
-            <AccordionTrigger>
-              <div className="flex items-center gap-2">
-                {getCategoryIcon("INSURANCE")}
-                <span className="font-semibold">
-                  {getCategoryTitle("INSURANCE")}
-                </span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-3">
-                {getAncillaryServicesByCategory("INSURANCE").map(service =>
-                  renderServiceOption(service)
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* Airport Pickup Services */}
-          <AccordionItem value="airport-pickup">
-            <AccordionTrigger>
-              <div className="flex items-center gap-2">
-                {getCategoryIcon("AIRPORT_PICKUP")}
-                <span className="font-semibold">
-                  {getCategoryTitle("AIRPORT_PICKUP")}
-                </span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-3">
-                {getAncillaryServicesByCategory("AIRPORT_PICKUP").map(service =>
-                  renderServiceOption(service)
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* Meal Services */}
-          <AccordionItem value="meal">
-            <AccordionTrigger>
-              <div className="flex items-center gap-2">
-                {getCategoryIcon("MEAL")}
-                <span className="font-semibold">
-                  {getCategoryTitle("MEAL")}
-                </span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-3">
-                {getAncillaryServicesByCategory("MEAL").map(service =>
-                  renderServiceOption(service)
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </CardContent>
-    </Card>
+    <AncillarySelectionUI
+      selectedServices={selectedServices}
+      onToggleService={onToggleService}
+      categories={categories}
+      formatPrice={formatCurrency}
+      title={title}
+      className={className}
+    />
   );
 }

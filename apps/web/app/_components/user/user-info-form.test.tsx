@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { UserInfoForm } from "@/components/user/user-info-form";
@@ -11,15 +12,48 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
 }));
 
-// Mock the child components
-vi.mock("@/components/user/user-info-display", () => ({
-  UserInfoDisplay: ({ onEdit }: { onEdit: () => void }) => (
-    <div data-testid="user-info-display">
-      <button onClick={onEdit}>编辑</button>
-    </div>
-  ),
+// Mock the UI components from @nomad/ui
+vi.mock("@nomad/ui/components/user", () => ({
+  UserInfoForm: ({
+    onEditStart,
+    onEditCancel,
+    onEditSuccess,
+    showSuccessDialog,
+    isEditMode,
+    editFormSlot,
+  }: {
+    onEditStart: () => void;
+    onEditCancel: () => void;
+    onEditSuccess: () => void;
+    showSuccessDialog: boolean;
+    isEditMode: boolean;
+    editFormSlot: React.ReactNode;
+  }) => {
+    // Simulate dialog closing behavior - when dialog becomes visible, auto-close after a tick
+    React.useEffect(() => {
+      if (showSuccessDialog) {
+        const timer = setTimeout(() => onEditSuccess(), 10);
+        return () => clearTimeout(timer);
+      }
+    }, [showSuccessDialog, onEditSuccess]);
+
+    return (
+      <div>
+        {!isEditMode && (
+          <div data-testid="user-info-display">
+            <button onClick={onEditStart}>编辑</button>
+          </div>
+        )}
+        {isEditMode && (
+          <div data-testid="user-info-edit-form">{editFormSlot}</div>
+        )}
+        {showSuccessDialog && <div data-testid="success-dialog">保存成功</div>}
+      </div>
+    );
+  },
 }));
 
+// Mock the edit form container
 vi.mock("@/components/user/user-info-edit-form", () => ({
   UserInfoEditForm: ({
     onCancel,
@@ -28,16 +62,11 @@ vi.mock("@/components/user/user-info-edit-form", () => ({
     onCancel: () => void;
     onSuccess: () => void;
   }) => (
-    <div data-testid="user-info-edit-form">
+    <div>
       <button onClick={onCancel}>取消</button>
       <button onClick={onSuccess}>保存</button>
     </div>
   ),
-}));
-
-vi.mock("@/components/user/success-dialog", () => ({
-  SuccessDialog: ({ open }: { open: boolean }) =>
-    open ? <div data-testid="success-dialog">保存成功</div> : null,
 }));
 
 /**

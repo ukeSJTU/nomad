@@ -1,0 +1,178 @@
+import { Separator } from "../../primitives/separator";
+
+export interface ConfirmationFlightDetailsAirlineProps {
+  id: string;
+  name: string;
+  iataCode: string;
+}
+
+export interface ConfirmationFlightDetailsAirportProps {
+  id: string;
+  name: string;
+  iataCode: string;
+}
+
+export interface ConfirmationFlightDetailsSeatClassProps {
+  id: string;
+  classType: "economy" | "business" | "first";
+}
+
+export interface ConfirmationFlightDetailsFlightProps {
+  id: string;
+  flightNumber: string;
+  departureDatetime: string;
+  arrivalDatetime: string;
+  departureTerminal?: string | null;
+  arrivalTerminal?: string | null;
+  aircraftType?: string | null;
+  airline: ConfirmationFlightDetailsAirlineProps;
+  departureAirport: ConfirmationFlightDetailsAirportProps;
+  arrivalAirport: ConfirmationFlightDetailsAirportProps;
+  seatClass: ConfirmationFlightDetailsSeatClassProps;
+}
+
+export interface ConfirmationFlightDetailsProps {
+  outboundFlight: ConfirmationFlightDetailsFlightProps;
+  inboundFlight?: ConfirmationFlightDetailsFlightProps | null;
+}
+
+// Seat class type mapping
+const SEAT_CLASS_MAP = {
+  economy: "经济舱",
+  business: "商务舱",
+  first: "头等舱",
+} as const;
+
+export function ConfirmationFlightDetails({
+  outboundFlight,
+  inboundFlight,
+}: ConfirmationFlightDetailsProps) {
+  return (
+    <div className="space-y-4">
+      {/* Outbound Flight Information */}
+      <div>
+        <div className="text-sm text-muted-foreground mb-3">
+          {inboundFlight ? "去程航班" : "航班信息"}
+        </div>
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="text-xs text-muted-foreground">航班号</div>
+              <div className="font-medium">{outboundFlight.flightNumber}</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">航空公司</div>
+              <div className="font-medium">{outboundFlight.airline.name}</div>
+            </div>
+            {outboundFlight.aircraftType && (
+              <div>
+                <div className="text-xs text-muted-foreground">机型</div>
+                <div className="font-medium">{outboundFlight.aircraftType}</div>
+              </div>
+            )}
+            <div>
+              <div className="text-xs text-muted-foreground">舱位</div>
+              <div className="font-medium">
+                {SEAT_CLASS_MAP[outboundFlight.seatClass.classType]}
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div className="text-xs text-muted-foreground mb-1">出发</div>
+              <div className="font-medium">
+                {outboundFlight.departureDatetime}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {outboundFlight.departureAirport.name}
+                {outboundFlight.departureTerminal &&
+                  ` ${outboundFlight.departureTerminal}`}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground mb-1">到达</div>
+              <div className="font-medium">
+                {outboundFlight.arrivalDatetime}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {outboundFlight.arrivalAirport.name}
+                {outboundFlight.arrivalTerminal &&
+                  ` ${outboundFlight.arrivalTerminal}`}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Inbound Flight Information */}
+      {inboundFlight && (
+        <>
+          <Separator />
+          <div>
+            <div className="text-sm text-muted-foreground mb-3">返程航班</div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-xs text-muted-foreground">航班号</div>
+                  <div className="font-medium">
+                    {inboundFlight.flightNumber}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">航空公司</div>
+                  <div className="font-medium">
+                    {inboundFlight.airline.name}
+                  </div>
+                </div>
+                {inboundFlight.aircraftType && (
+                  <div>
+                    <div className="text-xs text-muted-foreground">机型</div>
+                    <div className="font-medium">
+                      {inboundFlight.aircraftType}
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <div className="text-xs text-muted-foreground">舱位</div>
+                  <div className="font-medium">
+                    {SEAT_CLASS_MAP[inboundFlight.seatClass.classType]}
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">出发</div>
+                  <div className="font-medium">
+                    {inboundFlight.departureDatetime}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {inboundFlight.departureAirport.name}
+                    {inboundFlight.departureTerminal &&
+                      ` ${inboundFlight.departureTerminal}`}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">到达</div>
+                  <div className="font-medium">
+                    {inboundFlight.arrivalDatetime}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {inboundFlight.arrivalAirport.name}
+                    {inboundFlight.arrivalTerminal &&
+                      ` ${inboundFlight.arrivalTerminal}`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

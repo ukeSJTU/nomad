@@ -1,7 +1,7 @@
+import { CancelOrderDialog } from "@nomad/ui/components/flights/orders";
 import { Button } from "@nomad/ui/components/primitives/button";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
-import { CancelOrderDialog } from "@/components/flights/orders/cancel-order-dialog";
 
 const meta: Meta<typeof CancelOrderDialog> = {
   title: "Flights/Orders/CancelOrderDialog",

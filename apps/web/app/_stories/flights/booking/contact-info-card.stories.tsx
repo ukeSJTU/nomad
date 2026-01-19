@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { useState } from "react";
-
 import {
   type ContactInfo,
   ContactInfoCard,
   type ContactInfoValidationErrors,
-} from "@/components/flights/booking/contact-info-card";
+} from "@nomad/ui/components/flights/booking";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 
 const meta: Meta<typeof ContactInfoCard> = {
   title: "Flights/Booking/ContactInfoCard",

@@ -105,7 +105,7 @@ export const HappyPath: Story = {
     );
 
     // 5. Verify form is ready to submit
-    const submitButton = canvas.getByRole("button", { name: /确认修改/i });
+    const submitButton = canvas.getByRole("button", { name: /修改密码/i });
     await expect(submitButton).toBeEnabled();
 
     // 6. Submit form

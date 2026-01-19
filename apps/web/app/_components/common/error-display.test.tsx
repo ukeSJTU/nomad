@@ -1,18 +1,15 @@
 import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { ErrorDisplay } from "./error-display";
 
-// Mock next/link
-vi.mock("next/link", () => ({
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
-}));
+// Mock window.history.back
+const mockHistoryBack = vi.fn();
+Object.defineProperty(window, "history", {
+  value: { back: mockHistoryBack },
+  writable: true,
+});
 
 describe("ErrorDisplay Component", () => {
   describe("Rendering", () => {
@@ -86,6 +83,20 @@ describe("ErrorDisplay Component", () => {
 
       const backButton = screen.queryByRole("button", { name: "返回上一页" });
       expect(backButton).not.toBeInTheDocument();
+    });
+
+    it("should call window.history.back when back button is clicked", async () => {
+      const user = userEvent.setup();
+      mockHistoryBack.mockClear();
+
+      render(
+        <ErrorDisplay title="错误" message="消息" showBackButton={true} />
+      );
+
+      const backButton = screen.getByRole("button", { name: "返回上一页" });
+      await user.click(backButton);
+
+      expect(mockHistoryBack).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -1,8 +1,7 @@
+import { UserInfoDisplay } from "@nomad/ui/components/user";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-
-import { UserInfoDisplay } from "@/components/user/user-info-display";
 import type { UserInfo } from "@/types/dto";
 
 describe("UserInfoDisplay Component", () => {

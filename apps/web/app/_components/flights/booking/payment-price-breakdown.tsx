@@ -1,12 +1,4 @@
-import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@nomad/ui/components/primitives/card";
-import { Separator } from "@nomad/ui/components/primitives/separator";
-import { Plane } from "lucide-react";
+import { PaymentPriceBreakdown as PaymentPriceBreakdownUI } from "@nomad/ui/components/flights/booking";
 import { formatCurrency } from "@/lib/format";
 
 interface PaymentPriceBreakdownProps {
@@ -27,79 +19,20 @@ export function PaymentPriceBreakdown({
   userBalance,
 }: PaymentPriceBreakdownProps) {
   const balanceAfterPayment = parseFloat(userBalance) - parseFloat(totalAmount);
+  const isBalanceInsufficient = balanceAfterPayment < 0;
+  const showAncillary = parseFloat(ancillaryAmount) > 0;
 
   return (
-    <Card className="sticky top-4">
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Plane className="h-5 w-5" />
-          费用明细
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">订单号</span>
-            <span className="text-sm font-mono">{orderNumber}</span>
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">机票费用</span>
-            <span className="font-medium">{formatCurrency(baseAmount)}</span>
-          </div>
-
-          {parseFloat(ancillaryAmount) > 0 && (
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">增值服务</span>
-              <span className="font-medium">
-                {formatCurrency(ancillaryAmount)}
-              </span>
-            </div>
-          )}
-
-          <Separator />
-
-          <div className="flex items-center justify-between text-lg font-bold">
-            <span>应付金额</span>
-            <span className="text-orange-500">
-              {formatCurrency(totalAmount)}
-            </span>
-          </div>
-        </div>
-
-        {paymentMethod === "balance" && (
-          <>
-            <Separator />
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <div className="text-sm text-blue-900">
-                <div className="flex items-center justify-between mb-1">
-                  <span>账户余额</span>
-                  <span className="font-medium">
-                    {formatCurrency(userBalance)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>支付后余额</span>
-                  <span
-                    className={`font-medium ${
-                      balanceAfterPayment < 0 ? "text-red-600" : "text-blue-900"
-                    }`}
-                  >
-                    {formatCurrency(balanceAfterPayment.toFixed(2))}
-                  </span>
-                </div>
-              </div>
-            </div>
-            {balanceAfterPayment < 0 && (
-              <Alert variant="destructive">
-                <AlertDescription>余额不足，请充值后再支付</AlertDescription>
-              </Alert>
-            )}
-          </>
-        )}
-      </CardContent>
-    </Card>
+    <PaymentPriceBreakdownUI
+      orderNumber={orderNumber}
+      baseAmount={formatCurrency(baseAmount)}
+      ancillaryAmount={formatCurrency(ancillaryAmount)}
+      showAncillary={showAncillary}
+      totalAmount={formatCurrency(totalAmount)}
+      paymentMethod={paymentMethod}
+      userBalance={formatCurrency(userBalance)}
+      balanceAfterPayment={formatCurrency(balanceAfterPayment.toFixed(2))}
+      isBalanceInsufficient={isBalanceInsufficient}
+    />
   );
 }

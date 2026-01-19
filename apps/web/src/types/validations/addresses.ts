@@ -16,7 +16,7 @@ export const createAddressSchema = z.object({
   district: z.string().min(1, "请选择区县"),
   town: z.string().optional(),
   detailAddress: z.string().min(1, "请输入详细地址"),
-  isDefault: z.boolean().default(false),
+  isDefault: z.boolean().optional().default(false),
 });
 
 /**

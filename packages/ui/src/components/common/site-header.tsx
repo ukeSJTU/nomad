@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@nomad/ui/components/primitives/button";
 import {
   HoverCard,
@@ -8,33 +10,7 @@ import { Separator } from "@nomad/ui/components/primitives/separator";
 import { cn } from "@nomad/ui/lib/utils";
 import { useUiComponents } from "@nomad/ui/platform";
 import { Moon, Sun } from "lucide-react";
-import * as React from "react";
-
-type NavItem = {
-  label: string;
-  href?: string;
-  onClick?: () => void;
-  target?: string;
-  rel?: string;
-};
-
-type LogoProps = {
-  href?: string;
-  src: string;
-  alt: string;
-  label?: string;
-};
-
-type SiteHeaderProps = {
-  logo: LogoProps;
-  searchSlot?: React.ReactNode;
-  userMenuSlot?: React.ReactNode;
-  orderLinks?: NavItem[];
-  contactLink?: NavItem;
-  contactLines?: string[];
-  theme: "light" | "dark";
-  onToggleTheme: () => void;
-};
+import type { SiteHeaderProps } from "./types";
 
 export function SiteHeader({
   logo,

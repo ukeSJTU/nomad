@@ -1,10 +1,8 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@nomad/ui/components/primitives/card";
-import { Separator } from "@nomad/ui/components/primitives/separator";
+import type {
+  PaymentOrderSummaryAncillaryProps,
+  PaymentOrderSummaryFlightProps,
+} from "@nomad/ui/components/flights/booking";
+import { PaymentOrderSummary as PaymentOrderSummaryUI } from "@nomad/ui/components/flights/booking";
 import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
 import { PaymentPageOrder } from "@/types/dto";
 
@@ -28,103 +26,46 @@ const formatFlightDate = (datetime: Date) => {
   });
 };
 
+// Convert flight data to UI props
+const mapFlightToProps = (
+  flight: PaymentPageOrder["outboundFlight"]
+): PaymentOrderSummaryFlightProps => {
+  return {
+    flightNumber: flight.flightNumber,
+    airlineName: flight.airline.name,
+    departureDate: formatFlightDate(flight.departureDatetime),
+    departureTime: formatFlightTime(flight.departureDatetime),
+    departureAirport: flight.departureAirport.name,
+    arrivalTime: formatFlightTime(flight.arrivalDatetime),
+    arrivalAirport: flight.arrivalAirport.name,
+  };
+};
+
 export function PaymentOrderSummary({ order }: PaymentOrderSummaryProps) {
   // Get ancillary services details
-  const ancillaryServices = (order.ancillaryDetails || [])
+  const ancillaryServices: PaymentOrderSummaryAncillaryProps[] = (
+    order.ancillaryDetails || []
+  )
     .map(code => getAncillaryServiceByCode(code))
-    .filter(Boolean);
+    .filter((service): service is NonNullable<typeof service> => !!service)
+    .map(service => ({
+      name: service.name,
+      price: service.price.toString(),
+    }));
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">订单信息</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Outbound Flight Info */}
-        <div>
-          <div className="text-sm text-gray-500 mb-2">去程航班</div>
-          <div className="space-y-1">
-            <div className="font-medium">
-              {order.outboundFlight.flightNumber}{" "}
-              {order.outboundFlight.airline.name}
-            </div>
-            <div className="text-sm text-gray-600">
-              {formatFlightDate(order.outboundFlight.departureDatetime)}{" "}
-              {formatFlightTime(order.outboundFlight.departureDatetime)}{" "}
-              {order.outboundFlight.departureAirport.name} →{" "}
-              {formatFlightTime(order.outboundFlight.arrivalDatetime)}{" "}
-              {order.outboundFlight.arrivalAirport.name}
-            </div>
-          </div>
-        </div>
-
-        {/* Inbound Flight Info (if exists) */}
-        {order.inboundFlight && (
-          <>
-            <Separator />
-            <div>
-              <div className="text-sm text-gray-500 mb-2">返程航班</div>
-              <div className="space-y-1">
-                <div className="font-medium">
-                  {order.inboundFlight.flightNumber}{" "}
-                  {order.inboundFlight.airline.name}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {formatFlightDate(order.inboundFlight.departureDatetime)}{" "}
-                  {formatFlightTime(order.inboundFlight.departureDatetime)}{" "}
-                  {order.inboundFlight.departureAirport.name} →{" "}
-                  {formatFlightTime(order.inboundFlight.arrivalDatetime)}{" "}
-                  {order.inboundFlight.arrivalAirport.name}
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        <Separator />
-
-        {/* Passengers */}
-        <div>
-          <div className="text-sm text-gray-500 mb-2">乘机人</div>
-          {order.passengers.map((passenger, idx) => (
-            <div key={idx} className="text-sm">
-              {passenger.name} ({passenger.identityNumber})
-            </div>
-          ))}
-        </div>
-
-        <Separator />
-
-        {/* Contact */}
-        <div>
-          <div className="text-sm text-gray-500 mb-2">联系人</div>
-          <div className="text-sm space-y-1">
-            {order.contactPhone && <div>{order.contactPhone}</div>}
-            {order.contactEmail && <div>{order.contactEmail}</div>}
-          </div>
-        </div>
-
-        {/* Ancillary Services */}
-        {ancillaryServices.length > 0 && (
-          <>
-            <Separator />
-            <div>
-              <div className="text-sm text-gray-500 mb-2">增值服务</div>
-              <div className="space-y-1">
-                {ancillaryServices.map((service, idx) => (
-                  <div
-                    key={idx}
-                    className="text-sm flex items-center justify-between"
-                  >
-                    <span>{service?.name}</span>
-                    <span>¥{service?.price}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
+    <PaymentOrderSummaryUI
+      outboundFlight={mapFlightToProps(order.outboundFlight)}
+      inboundFlight={
+        order.inboundFlight ? mapFlightToProps(order.inboundFlight) : null
+      }
+      passengers={order.passengers.map(p => ({
+        name: p.name,
+        identityNumber: p.identityNumber,
+      }))}
+      contactPhone={order.contactPhone}
+      contactEmail={order.contactEmail}
+      ancillaryServices={ancillaryServices}
+    />
   );
 }

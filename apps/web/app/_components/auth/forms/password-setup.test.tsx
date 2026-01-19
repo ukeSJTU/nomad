@@ -2,20 +2,20 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import PasswordSetupForm from "./password-setup";
+import PasswordSetupFormContainer from "./password-setup";
 
 /**
  * @requirement REQ-U01
  * @requirement REQ-U02
  */
-describe("PasswordSetupForm", () => {
+describe("PasswordSetupFormContainer", () => {
   /**
    * @requirement REQ-U01
    * @scenario 场景1
    */
   it("should render all form fields correctly", () => {
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     expect(screen.getByLabelText("设置密码")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("请输入密码")).toBeInTheDocument();
@@ -29,7 +29,10 @@ describe("PasswordSetupForm", () => {
   it("should display masked identifier when provided", () => {
     const onSubmit = vi.fn();
     render(
-      <PasswordSetupForm onSubmit={onSubmit} maskedIdentifier="138****5678" />
+      <PasswordSetupFormContainer
+        onSubmit={onSubmit}
+        maskedIdentifier="138****5678"
+      />
     );
 
     expect(screen.getByText("138****5678")).toBeInTheDocument();
@@ -37,7 +40,7 @@ describe("PasswordSetupForm", () => {
 
   it("should show password requirements", () => {
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     expect(screen.getByText("8-20位字符")).toBeInTheDocument();
     expect(screen.getByText("包含至少一个大写字母")).toBeInTheDocument();
@@ -52,7 +55,7 @@ describe("PasswordSetupForm", () => {
   it("should show validation error for empty password", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     await user.type(
       screen.getByPlaceholderText("请再次输入密码"),
@@ -72,7 +75,7 @@ describe("PasswordSetupForm", () => {
   it("should show validation error for short password", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     await user.type(screen.getByPlaceholderText("请输入密码"), "Pass1");
     await user.type(screen.getByPlaceholderText("请再次输入密码"), "Pass1");
@@ -90,7 +93,7 @@ describe("PasswordSetupForm", () => {
   it("should show validation error when passwords do not match", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     await user.type(screen.getByPlaceholderText("请输入密码"), "Password123");
     await user.type(
@@ -111,7 +114,7 @@ describe("PasswordSetupForm", () => {
   it("should show validation error for password without uppercase letter", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     await user.type(screen.getByPlaceholderText("请输入密码"), "password123");
     await user.type(
@@ -131,7 +134,7 @@ describe("PasswordSetupForm", () => {
   it("should show validation error for password without lowercase letter", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     await user.type(screen.getByPlaceholderText("请输入密码"), "PASSWORD123");
     await user.type(
@@ -151,7 +154,7 @@ describe("PasswordSetupForm", () => {
   it("should call onSubmit with correct data when form is valid", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     await user.type(screen.getByPlaceholderText("请输入密码"), "Password123");
     await user.type(
@@ -171,7 +174,7 @@ describe("PasswordSetupForm", () => {
   it("should toggle password visibility when eye icon is clicked", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     const passwordInput = screen.getByPlaceholderText("请输入密码");
     expect(passwordInput).toHaveAttribute("type", "password");
@@ -185,7 +188,7 @@ describe("PasswordSetupForm", () => {
 
   it("should disable form when isLoading is true", () => {
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} isLoading={true} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} isLoading={true} />);
 
     expect(screen.getByRole("button", { name: "设置中..." })).toBeDisabled();
   });
@@ -193,7 +196,7 @@ describe("PasswordSetupForm", () => {
   it("should show validation error for password longer than 20 characters", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     const longPassword = "Password123456789012345"; // 25 characters
     await user.type(screen.getByPlaceholderText("请输入密码"), longPassword);
@@ -212,7 +215,7 @@ describe("PasswordSetupForm", () => {
   it("should show validation error for password without number", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     await user.type(screen.getByPlaceholderText("请输入密码"), "PasswordABC");
     await user.type(
@@ -230,7 +233,7 @@ describe("PasswordSetupForm", () => {
   it("should toggle confirm password visibility when eye icon is clicked", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     const confirmPasswordInput = screen.getByPlaceholderText("请再次输入密码");
     expect(confirmPasswordInput).toHaveAttribute("type", "password");
@@ -251,7 +254,7 @@ describe("PasswordSetupForm", () => {
   it("should update password requirements in real-time as user types", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     const passwordInput = screen.getByPlaceholderText("请输入密码");
 
@@ -301,7 +304,7 @@ describe("PasswordSetupForm", () => {
   it("should display password strength indicator", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     const passwordInput = screen.getByPlaceholderText("请输入密码");
 
@@ -335,7 +338,7 @@ describe("PasswordSetupForm", () => {
 
   it("should show optional requirements with different styling", () => {
     const onSubmit = vi.fn();
-    render(<PasswordSetupForm onSubmit={onSubmit} />);
+    render(<PasswordSetupFormContainer onSubmit={onSubmit} />);
 
     // Optional requirements should have gray text when not met
     expect(screen.getByText(/包含至少一个数字/)).toHaveClass(

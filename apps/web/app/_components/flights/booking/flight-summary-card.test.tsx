@@ -7,6 +7,9 @@ import { FlightSummaryCard } from "./flight-summary-card";
 
 /**
  * @requirement REQ-F05
+ *
+ * Container tests for FlightSummaryCard
+ * UI component tests are in packages/ui/src/components/flights/booking/flight-summary-card.test.tsx
  */
 // Mock flight data
 const mockOutboundFlight: PassengerPageFlight = {

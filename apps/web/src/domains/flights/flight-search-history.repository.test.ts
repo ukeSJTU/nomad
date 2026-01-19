@@ -121,7 +121,7 @@ describe("flight-search-history.repository", () => {
 
     expect(updated?.searchCount).toBe(2);
     expect(updated?.currentLowestPrice).toBe("900.00");
-    expect(new Date(updated!.lastSearchedAt).getTime()).toBeGreaterThan(
+    expect(new Date(updated?.lastSearchedAt).getTime()).toBeGreaterThan(
       new Date("2024-01-01T00:00:00Z").getTime()
     );
   });
