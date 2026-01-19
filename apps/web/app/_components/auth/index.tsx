@@ -5,10 +5,15 @@
  * and social account management.
  */
 
+export type {
+  VerificationFormData,
+  VerificationFormProps,
+  VerificationMode,
+} from "@nomad/ui/components/auth";
+// Re-export VerificationForm from packages/ui
+export { VerificationForm } from "@nomad/ui/components/auth";
 // Forms
-export { default as EmailVerificationForm } from "./forms/email-verification";
 export { default as PasswordSetupForm } from "./forms/password-setup";
-export { default as PhoneVerificationForm } from "./forms/phone-verification";
 export { default as UnifiedLoginForm } from "./forms/unified-login";
 export { default as UnifiedSignUpForm } from "./forms/unified-signup";
 

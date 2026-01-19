@@ -26,12 +26,12 @@
 | 域             | 组件数 | 已完成 | 进行中 | 未开始 | 跳过  | 批次    | 优先级 |
 | -------------- | ------ | ------ | ------ | ------ | ----- | ------- | ------ |
 | **Common**     | 12     | 11     | 0      | 0      | 1     | 批次1   | 高     |
-| **Auth**       | 13     | 8      | 0      | 5      | 0     | 批次2   | 高     |
+| **Auth**       | 13     | 8      | 0      | 4      | 1     | 批次2   | 高     |
 | **Flights**    | 40     | 40     | 0      | 0      | 0     | 批次1+3 | 中     |
 | **Passengers** | 4      | 4      | 0      | 0      | 0     | 批次3   | 低     |
 | **Security**   | 4      | 4      | 0      | 0      | 0     | 批次4   | 低     |
 | **User**       | 8      | 8      | 0      | 0      | 0     | 批次4   | 低     |
-| **总计**       | **81** | **76** | **0**  | **4**  | **1** | -       | -      |
+| **总计**       | **81** | **76** | **0**  | **4**  | **2** | -       | -      |
 
 **完成度**: 85.39% (76/89 可迁移组件)
 
@@ -76,7 +76,7 @@
 - [x] OrderCard - packages/ui/src/components/user/order-card.tsx
 - [x] DeleteOrderDialog - packages/ui/src/components/user/delete-order-dialog.tsx
 
-**Auth (8/13)**:
+**Auth (8/12 可迁移)**:
 
 - [x] UserSidebar - packages/ui/src/components/auth/user-sidebar.tsx
 - [x] OtpInput - packages/ui/src/components/security/otp-input.tsx
@@ -86,6 +86,7 @@
 - [x] SocialAccountCard - packages/ui/src/components/auth/social-account-card.tsx
 - [x] SignUpModal - packages/ui/src/components/auth/sign-up-modal.tsx
 - [x] RegistrationSuccess - packages/ui/src/components/auth/registration-success.tsx
+- [~] Turnstile - 不迁移 (平台集成组件，依赖 Cloudflare 服务)
 
 **Flights (32/40)**:
 
@@ -177,14 +178,14 @@
 
 **范围**:
 
-- **Auth** (13 组件): unified-login, unified-signup, password-setup, phone-verification, email-verification, otp-input, registration-success, sign-up-modal, social-account-card, link-button, unlink-button, user-sidebar, turnstile
+- **Auth** (12 可迁移组件): unified-login, unified-signup, password-setup, phone-verification, email-verification, otp-input, registration-success, sign-up-modal, social-account-card, link-button, unlink-button, user-sidebar
+- **不迁移**: turnstile (平台集成组件)
 
 **关键模式**:
 
 - 受控表单 (react-hook-form + zod 在容器)
 - useOtpCountdown 自定义 hook
 - 错误处理统一模式
-- Turnstile 平台抽象
 
 ---
 

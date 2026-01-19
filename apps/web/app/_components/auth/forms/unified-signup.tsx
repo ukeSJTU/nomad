@@ -1,5 +1,11 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  VerificationForm,
+  type VerificationFormData,
+} from "@nomad/ui/components/auth";
+import { Form } from "@nomad/ui/components/primitives/form";
 import {
   Tabs,
   TabsContent,
@@ -8,20 +14,21 @@ import {
 } from "@nomad/ui/components/primitives/tabs";
 import { cn } from "@nomad/ui/lib/utils";
 import { useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { OtpSendActionResult } from "@/app/_actions/auth";
 import { useOtpCountdown } from "@/hooks/use-otp-countdown";
 import { buildOtpStorageKey } from "@/lib/otp";
 import type { ActionResult } from "@/types/common";
 import type { FetchOptions } from "@/types/http";
-import type {
-  EmailVerificationData,
-  PhoneVerificationData,
+import {
+  type EmailVerificationData,
+  emailContactVerificationSchema,
+  type PhoneVerificationData,
+  phoneContactVerificationSchema,
 } from "@/types/validations";
 
 import { type TurnstileInstance, TurnstileWidget } from "../turnstile";
-import EmailVerificationForm from "./email-verification";
-import PhoneVerificationForm from "./phone-verification";
 
 export interface UnifiedSignUpFormProps {
   /** Callback when phone verification succeeds */
@@ -73,8 +80,32 @@ export default function UnifiedSignUpForm({
 }: UnifiedSignUpFormProps) {
   const [_method, setMethod] = useState<"phone" | "email">(initialMethod);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
-  const [currentEmail, setCurrentEmail] = useState("");
+  const turnstileRef = useRef<TurnstileInstance>(null);
+
+  // Phone form
+  const phoneForm = useForm<VerificationFormData>({
+    resolver: zodResolver(phoneContactVerificationSchema),
+    defaultValues: {
+      contact: "",
+      otp: "",
+      agreedToTerms: false,
+    },
+  });
+
+  // Email form
+  const emailForm = useForm<VerificationFormData>({
+    resolver: zodResolver(emailContactVerificationSchema),
+    defaultValues: {
+      contact: "",
+      otp: "",
+      agreedToTerms: false,
+    },
+  });
+
+  // Watch contact values for countdown key
+  const currentPhoneNumber = phoneForm.watch("contact");
+  const currentEmail = emailForm.watch("contact");
+
   const countdownKey = useMemo(() => {
     if (_method === "phone" && currentPhoneNumber) {
       return buildOtpStorageKey("phone", currentPhoneNumber);
@@ -86,10 +117,10 @@ export default function UnifiedSignUpForm({
 
     return null;
   }, [_method, currentEmail, currentPhoneNumber]);
+
   const { countdown, start: startCountdown } = useOtpCountdown({
     storageKey: countdownKey,
   });
-  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const handleMethodChange = (value: string) => {
     const newMethod = value as "phone" | "email";
@@ -103,6 +134,12 @@ export default function UnifiedSignUpForm({
   const handleSendPhoneOtp = async () => {
     if (!currentPhoneNumber) {
       toast.error("请先输入手机号");
+      return;
+    }
+
+    // Trigger validation for phone number field
+    const isValid = await phoneForm.trigger("contact");
+    if (!isValid) {
       return;
     }
 
@@ -150,6 +187,12 @@ export default function UnifiedSignUpForm({
       return;
     }
 
+    // Trigger validation for email field
+    const isValid = await emailForm.trigger("contact");
+    if (!isValid) {
+      return;
+    }
+
     setIsVerifying(true);
 
     try {
@@ -186,22 +229,34 @@ export default function UnifiedSignUpForm({
   };
 
   /**
-   * Handle phone verification form submission (no CAPTCHA - only for OTP send)
+   * Handle phone verification form submission
    */
-  const handlePhoneSubmit = async (data: PhoneVerificationData) => {
+  const handlePhoneSubmit = async (data: VerificationFormData) => {
     try {
-      await onPhoneVerified(data);
+      // Transform to the expected format
+      const verificationData: PhoneVerificationData = {
+        phoneNumber: data.contact,
+        otp: data.otp,
+        agreedToTerms: data.agreedToTerms,
+      };
+      await onPhoneVerified(verificationData);
     } catch {
       toast.error("验证失败，请重试");
     }
   };
 
   /**
-   * Handle email verification form submission (no CAPTCHA - only for OTP send)
+   * Handle email verification form submission
    */
-  const handleEmailSubmit = async (data: EmailVerificationData) => {
+  const handleEmailSubmit = async (data: VerificationFormData) => {
     try {
-      await onEmailVerified(data);
+      // Transform to the expected format
+      const verificationData: EmailVerificationData = {
+        email: data.contact,
+        otp: data.otp,
+        agreedToTerms: data.agreedToTerms,
+      };
+      await onEmailVerified(verificationData);
     } catch {
       toast.error("验证失败，请重试");
     }
@@ -221,24 +276,32 @@ export default function UnifiedSignUpForm({
 
         {/* Phone Verification Tab */}
         <TabsContent value="phone">
-          <PhoneVerificationForm
-            onSubmit={handlePhoneSubmit}
-            onSendOtp={handleSendPhoneOtp}
-            onPhoneChange={setCurrentPhoneNumber}
-            isLoading={isLoading || isVerifying}
-            countdown={countdown}
-          />
+          <Form {...phoneForm}>
+            <VerificationForm
+              mode="phone"
+              control={phoneForm.control}
+              errors={phoneForm.formState.errors}
+              onSubmit={phoneForm.handleSubmit(handlePhoneSubmit)}
+              onSendOtp={handleSendPhoneOtp}
+              countdown={countdown}
+              isLoading={isLoading || isVerifying}
+            />
+          </Form>
         </TabsContent>
 
         {/* Email Verification Tab */}
         <TabsContent value="email">
-          <EmailVerificationForm
-            onSubmit={handleEmailSubmit}
-            onSendOtp={handleSendEmailOtp}
-            onEmailChange={setCurrentEmail}
-            isLoading={isLoading || isVerifying}
-            countdown={countdown}
-          />
+          <Form {...emailForm}>
+            <VerificationForm
+              mode="email"
+              control={emailForm.control}
+              errors={emailForm.formState.errors}
+              onSubmit={emailForm.handleSubmit(handleEmailSubmit)}
+              onSendOtp={handleSendEmailOtp}
+              countdown={countdown}
+              isLoading={isLoading || isVerifying}
+            />
+          </Form>
         </TabsContent>
       </Tabs>
 

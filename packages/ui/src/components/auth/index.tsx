@@ -18,3 +18,9 @@ export type {
   UserSidebarMenuItem,
   UserSidebarProps,
 } from "./user-sidebar-types";
+export type {
+  VerificationFormData,
+  VerificationFormProps,
+  VerificationMode,
+} from "./verification-form";
+export { VerificationForm } from "./verification-form";

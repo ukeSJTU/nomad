@@ -2,8 +2,8 @@
 
 > **批次分配**: 批次2 (高优先级 - 受控表单模式建立)
 > **组件总数**: 13
-> **状态**: 已完成 8 | 进行中 0 | 未开始 5
-> **最后更新**: 2026-01-18
+> **状态**: 已完成 8 | 进行中 0 | 未开始 4 | 不迁移 1
+> **最后更新**: 2026-01-19
 
 ## 域概览
 
@@ -276,9 +276,270 @@ Props:
 - Storybook 展示多种状态 (默认、自定义文本、长文本等)
 - 两层测试覆盖: UI 层 (交互和渲染) + 容器层 (导航逻辑)
 
+---
+
+#### ./auth/link-button.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/link-button.tsx`
+- UI 组件: `packages/ui/src/components/auth/link-button.tsx`
+- 测试: `packages/ui/src/components/auth/link-button.test.tsx` + `apps/web/app/_components/auth/link-button.test.tsx`
+- Storybook: `apps/storybook/src/stories/auth/link-button.stories.tsx`
+- 复杂度: 中
+- 优先级: P2
+- 完成日期: 2026-01-18
+
+**依赖解决方案**
+
+- ✅ Server Action 保留在容器
+- ✅ OAuth 重定向保留在容器 (window.location)
+- ✅ 错误处理和 toast 保留在容器
+- ✅ UI 仅处理渲染和 loading 状态
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 调用 linkSocialAccountAction
+- 处理 OAuth 重定向 (window.location.href)
+- 错误处理和日志记录
+- Toast 通知
+- 管理 loading 状态
+
+UI 职责 (packages/ui):
+- 按钮渲染 (使用 Button 原语)
+- 显示 loading 状态 ("绑定中...")
+- 处理 disabled 状态
+- 接收 onClick 回调
+
+Props:
+- onClick: () => void
+- loading?: boolean
+- disabled?: boolean
+- className?: string
+```
+
+**测试覆盖**
+
+- ✅ 按钮渲染 (默认文本)
+- ✅ onClick 回调触发
+- ✅ Loading 状态显示和禁用
+- ✅ Disabled 状态
+- ✅ 自定义 className
+- ✅ 容器：成功 OAuth 重定向
+- ✅ 容器：错误处理和 toast
+- ✅ 容器：缺失 URL 处理
+- ✅ 容器：网络错误处理
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过 (UI 8 tests, 容器 6 tests)，构建成功
+- UI 组件完全受控，无副作用
+- 容器使用 useState 管理 loading 状态
+- OAuth 流程完全在容器内处理
+- Storybook 展示所有状态 (Default, Loading, Disabled, Interactive)
+
+---
+
+#### ./auth/unlink-button.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/unlink-button.tsx`
+- UI 组件: `packages/ui/src/components/auth/unlink-button.tsx`
+- 测试: `packages/ui/src/components/auth/unlink-button.test.tsx` + `apps/web/app/_components/auth/unlink-button.test.tsx`
+- Storybook: `apps/storybook/src/stories/auth/unlink-button.stories.tsx`
+- 复杂度: 中
+- 优先级: P2
+- 完成日期: 2026-01-18
+
+**依赖解决方案**
+
+- ✅ Server Action 保留在容器
+- ✅ useTransition hook 保留在容器
+- ✅ Toast 通知保留在容器
+- ✅ UI 仅处理渲染和 loading 状态
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 调用 unlinkAccountAction
+- 使用 useTransition 管理 isPending 状态
+- 处理成功/失败 toast 通知
+
+UI 职责 (packages/ui):
+- 按钮渲染 (使用 Button 原语)
+- 显示 loading 状态 ("解绑中...")
+- 处理 disabled 状态
+- 接收 onClick 回调
+
+Props:
+- onClick: () => void
+- loading?: boolean
+- disabled?: boolean
+- className?: string
+```
+
+**测试覆盖**
+
+- ✅ 按钮渲染 (默认文本)
+- ✅ onClick 回调触发
+- ✅ Loading 状态显示和禁用
+- ✅ Disabled 状态
+- ✅ 自定义 className
+- ✅ 容器：成功解绑和 toast
+- ✅ 容器：错误处理和 toast
+- ✅ 容器：loading 状态期间禁用
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过 (UI 8 tests, 容器 5 tests)，构建成功
+- UI 组件完全受控，无副作用
+- 容器使用 useTransition 管理异步状态
+- Server Action 调用完全在容器内处理
+- Storybook 展示所有状态 (Default, Loading, Disabled, Interactive)
+
+---
+
+#### ./auth/sign-up-modal.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/sign-up-modal.tsx` (已转为 re-export)
+- UI 组件: `packages/ui/src/components/auth/sign-up-modal.tsx`
+- 测试: `packages/ui/src/components/auth/sign-up-modal.test.tsx` (9 tests ✓)
+- Storybook: `apps/storybook/src/stories/auth/sign-up-modal.stories.tsx`
+- 复杂度: 低
+- 优先级: P2
+- 完成日期: 2026-01-18
+
+**依赖解决方案**
+
+- ✅ Next.js Link - 使用 `useUiComponents` 的 Link 适配器
+- ✅ 组件已是纯展示 - 无需容器逻辑，仅 re-export UI 组件
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 无 (组件已是纯 UI，直接 re-export)
+- 父组件负责控制 modal 打开状态
+- 父组件处理同意/不同意回调
+
+UI 职责 (packages/ui):
+- Modal 对话框渲染
+- 服务协议和隐私政策内容展示
+- 使用 Link 适配器渲染条款/隐私链接
+- 同意/不同意按钮
+- 联系邮箱链接
+
+Props:
+- open: boolean
+- onOpenChange: (open: boolean) => void
+- onAgree: () => void
+- onDisagree: () => void
+```
+
+**测试覆盖**
+
+- ✅ Modal 打开/关闭状态
+- ✅ 服务协议条款显示 (19项)
+- ✅ 隐私政策条款显示 (16项)
+- ✅ 条款和隐私链接渲染及属性
+- ✅ 联系邮箱链接
+- ✅ 同意按钮点击回调
+- ✅ 不同意按钮点击回调
+- ✅ 隐私政策描述文本
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过 (9 tests)，构建成功
+- 组件已是纯 UI 组件，无业务逻辑
+- 使用 `useUiComponents` 获取 Link 适配器
+- 容器仅为 re-export，无额外逻辑
+- Storybook 展示多种状态 (Default, Closed, Interactive)
+- 静态内容（服务条款、隐私政策条目）保留在组件内部
+
+---
+
+#### ./auth/forms/password-setup.tsx
+
+**基本信息**
+
+- 路径: `apps/web/app/_components/auth/forms/password-setup.tsx`
+- UI 组件: `packages/ui/src/components/auth/password-setup-form.tsx`
+- 测试: `packages/ui/src/components/auth/password-setup-form.test.tsx` (13 tests ✓)
+- Storybook: `apps/storybook/src/stories/auth/password-setup-form.stories.tsx`
+- 复杂度: 中
+- 优先级: P2
+- 完成日期: 2026-01-18
+
+**依赖解决方案**
+
+- ✅ react-hook-form + zod - 容器管理表单 schema 和验证
+- ✅ zxcvbn 密码强度检查 - 容器计算 strengthScore 并传递给 UI
+
+**重构实现**
+
+```
+容器职责 (apps/web):
+- 管理 react-hook-form 实例
+- 定义 passwordSetupSchema (zod)
+- 计算密码强度 (zxcvbn)
+- 处理表单提交
+- 日志记录
+
+UI 职责 (packages/ui):
+- 受控 password + confirmPassword 字段
+- 密码显示/隐藏切换
+- 实时密码要求验证显示
+- 密码强度指示器 (基于 strengthScore prop)
+- 可选的 maskedIdentifier 显示
+- 可选的帮助链接
+
+Props:
+- control: Control<PasswordSetupFormData>
+- errors: FieldErrors<PasswordSetupFormData>
+- onSubmit: (e?: React.BaseSyntheticEvent) => void
+- passwordValue: string (用于实时要求验证)
+- strengthScore: number (0-4, 由 zxcvbn 计算)
+- isLoading?: boolean
+- maskedIdentifier?: string
+- submitButtonText?: string
+- showHelpLink?: boolean
+- onHelpClick?: () => void
+```
+
+**测试覆盖**
+
+- ✅ 表单字段渲染
+- ✅ 密码显示/隐藏切换
+- ✅ 实时密码要求验证
+- ✅ 密码强度指示器 (弱/中/强)
+- ✅ 可选要求样式 (数字和特殊字符)
+- ✅ maskedIdentifier 显示
+- ✅ 自定义按钮文本
+- ✅ 帮助链接显示和回调
+- ✅ Loading 状态
+- ✅ 表单提交
+
+**实现笔记**
+
+- 2026-01-18: 完成迁移，所有测试通过，构建成功
+- UI 组件完全受控，密码强度计算在容器层
+- 使用与 change-password-form 一致的模式
+- Storybook 展示多种密码强度状态
+- 可复用于注册和忘记密码流程
+
+---
+
 ### 🚧 进行中
 
 (暂无)
+
+---
 
 ### 📋 未开始
 
@@ -474,36 +735,37 @@ Props:
 
 - 路径: `apps/web/app/_components/auth/forms/unified-login.tsx`
 - 复杂度: 高
-- 优先级: P1
+- 优先级: P0 (关键路径)
 
 **依赖问题**
 
-- [x] Server Action: loginAction + sendOTPAction
-- [x] react-hook-form + zod
-- [x] Turnstile widget (第三方)
-- [x] use_client
+- [x] Next.js Link (用于"忘记密码"链接)
+- [x] Server Action: signInWithPasswordAction, verifyOtpAction
+- [x] useEffect: 本地存储管理、倒计时
+- [x] react-hook-form + zod 表单校验
+- [x] Turnstile 验证组件
 
 **重构策略**
 
 ```
 容器职责:
-- 管理登录模式状态 (password | otp)
-- OTP 倒计时 hook 调用
-- 验证码发送 action
-- 登录提交 action
-- 错误处理与显示
-- 表单 schema 管理
+- Schema 管理 (passwordLoginSchema / otpLoginSchema)
+- 表单提交与 Server Action 调用
+- OTP 倒计时定时器逻辑 (useOtpCountdown hook)
+- localStorage 读写 (倒计时持久化)
+- 错误处理和 toast 通知
+- Turnstile token 管理
 
-UI 职责:
-- 模式切换 UI (password ↔ otp)
-- 受控表单字段
-- OTP 输入和发送按钮
-- Turnstile widget (由容器注入或作为 children)
-- 条款勾选框
-- 提交按钮与 loading 状态
+UI 职责 (packages/ui):
+- 渲染表单字段 (受控)
+- 显示验证错误
+- 根据 mode 显示/隐藏 password/OTP 区块
+- 倒计时显示
+- Link 适配器用于"忘记密码"
+- Turnstile widget 渲染 (props: onVerify 回调)
 
 适配器需求:
-- 无 (但 Turnstile 可能需要 Provider 支持)
+- LinkAdapter (跳转到忘记密码页)
 ```
 
 **View Model 接口**
@@ -572,14 +834,6 @@ UI 职责:
 **阻塞问题**
 
 - [ ] 需确认表单验证是客户端还是仅服务端
-
-- [ ] 密码匹配验证
-- [ ] 密码强度指示器
-- [ ] 显示/隐藏切换
-
-**实现笔记**
-
-- 待实施时记录
 
 ---
 
@@ -676,286 +930,27 @@ UI 职责:
 
 ---
 
-#### ./auth/registration-success.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/registration-success.tsx`
-- 复杂度: 低
-- 优先级: P2
-
-**依赖问题**
-
-- [x] Next.js router (导航)
-- [x] use_client
-
-**重构策略**
-
-```
-容器职责:
-- 处理导航回调
-
-UI 职责:
-- 成功消息显示
-- 图标/插图
-- CTA 按钮
-
-Props:
-- title?: string
-- description?: string
-- actions: Array<{
-    label: string
-    onClick: () => void
-    variant?: 'default' | 'outline'
-  }>
-
-适配器需求:
-- 无 (通过 onClick 回调处理导航)
-```
-
-**测试要点**
-
-- [ ] 内容显示
-- [ ] 按钮点击事件
-
-**实现笔记**
-
-- 待实施时记录
-
----
-
-#### ./auth/sign-up-modal.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/sign-up-modal.tsx` (已转为 re-export)
-- UI 组件: `packages/ui/src/components/auth/sign-up-modal.tsx`
-- 测试: `packages/ui/src/components/auth/sign-up-modal.test.tsx` (9 tests ✓)
-- Storybook: `apps/storybook/src/stories/auth/sign-up-modal.stories.tsx`
-- 复杂度: 低
-- 优先级: P2
-
-**依赖解决方案**
-
-- ✅ Next.js Link - 使用 `useUiComponents` 的 Link 适配器
-- ✅ 组件已是纯展示 - 无需容器逻辑，仅 re-export UI 组件
-
-**重构实现**
-
-```
-容器职责 (apps/web):
-- 无 (组件已是纯 UI，直接 re-export)
-- 父组件负责控制 modal 打开状态
-- 父组件处理同意/不同意回调
-
-UI 职责 (packages/ui):
-- Modal 对话框渲染
-- 服务协议和隐私政策内容展示
-- 使用 Link 适配器渲染条款/隐私链接
-- 同意/不同意按钮
-- 联系邮箱链接
-
-Props:
-- open: boolean
-- onOpenChange: (open: boolean) => void
-- onAgree: () => void
-- onDisagree: () => void
-```
-
-**测试覆盖**
-
-- ✅ Modal 打开/关闭状态
-- ✅ 服务协议条款显示 (19项)
-- ✅ 隐私政策条款显示 (16项)
-- ✅ 条款和隐私链接渲染及属性
-- ✅ 联系邮箱链接
-- ✅ 同意按钮点击回调
-- ✅ 不同意按钮点击回调
-- ✅ 隐私政策描述文本
-
-**实现笔记**
-
-- 2026-01-18: 完成迁移，所有测试通过 (9 tests)，构建成功
-- 组件已是纯 UI 组件，无业务逻辑
-- 使用 `useUiComponents` 获取 Link 适配器
-- 容器仅为 re-export，无额外逻辑
-- Storybook 展示多种状态 (Default, Closed, Interactive)
-- 静态内容（服务条款、隐私政策条目）保留在组件内部
-
----
-
-#### ./auth/link-button.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/link-button.tsx`
-- UI 组件: `packages/ui/src/components/auth/link-button.tsx`
-- 测试: `packages/ui/src/components/auth/link-button.test.tsx` + `apps/web/app/_components/auth/link-button.test.tsx`
-- Storybook: `apps/storybook/src/stories/auth/link-button.stories.tsx`
-- 复杂度: 中
-- 优先级: P2
-
-**依赖解决方案**
-
-- ✅ Server Action 保留在容器
-- ✅ OAuth 重定向保留在容器 (window.location)
-- ✅ 错误处理和 toast 保留在容器
-- ✅ UI 仅处理渲染和 loading 状态
-
-**重构实现**
-
-```
-容器职责 (apps/web):
-- 调用 linkSocialAccountAction
-- 处理 OAuth 重定向 (window.location.href)
-- 错误处理和日志记录
-- Toast 通知
-- 管理 loading 状态
-
-UI 职责 (packages/ui):
-- 按钮渲染 (使用 Button 原语)
-- 显示 loading 状态 ("绑定中...")
-- 处理 disabled 状态
-- 接收 onClick 回调
-
-Props:
-- onClick: () => void
-- loading?: boolean
-- disabled?: boolean
-- className?: string
-```
-
-**测试覆盖**
-
-- ✅ 按钮渲染 (默认文本)
-- ✅ onClick 回调触发
-- ✅ Loading 状态显示和禁用
-- ✅ Disabled 状态
-- ✅ 自定义 className
-- ✅ 容器：成功 OAuth 重定向
-- ✅ 容器：错误处理和 toast
-- ✅ 容器：缺失 URL 处理
-- ✅ 容器：网络错误处理
-
-**实现笔记**
-
-- 2026-01-18: 完成迁移，所有测试通过 (UI 8 tests, 容器 6 tests)，构建成功
-- UI 组件完全受控，无副作用
-- 容器使用 useState 管理 loading 状态
-- OAuth 流程完全在容器内处理
-- Storybook 展示所有状态 (Default, Loading, Disabled, Interactive)
-
----
-
-#### ./auth/unlink-button.tsx
-
-**基本信息**
-
-- 路径: `apps/web/app/_components/auth/unlink-button.tsx`
-- UI 组件: `packages/ui/src/components/auth/unlink-button.tsx`
-- 测试: `packages/ui/src/components/auth/unlink-button.test.tsx` + `apps/web/app/_components/auth/unlink-button.test.tsx`
-- Storybook: `apps/storybook/src/stories/auth/unlink-button.stories.tsx`
-- 复杂度: 中
-- 优先级: P2
-
-**依赖解决方案**
-
-- ✅ Server Action 保留在容器
-- ✅ useTransition hook 保留在容器
-- ✅ Toast 通知保留在容器
-- ✅ UI 仅处理渲染和 loading 状态
-
-**重构实现**
-
-```
-容器职责 (apps/web):
-- 调用 unlinkAccountAction
-- 使用 useTransition 管理 isPending 状态
-- 处理成功/失败 toast 通知
-
-UI 职责 (packages/ui):
-- 按钮渲染 (使用 Button 原语)
-- 显示 loading 状态 ("解绑中...")
-- 处理 disabled 状态
-- 接收 onClick 回调
-
-Props:
-- onClick: () => void
-- loading?: boolean
-- disabled?: boolean
-- className?: string
-```
-
-**测试覆盖**
-
-- ✅ 按钮渲染 (默认文本)
-- ✅ onClick 回调触发
-- ✅ Loading 状态显示和禁用
-- ✅ Disabled 状态
-- ✅ 自定义 className
-- ✅ 容器：成功解绑和 toast
-- ✅ 容器：错误处理和 toast
-- ✅ 容器：loading 状态期间禁用
-
-**实现笔记**
-
-- 2026-01-18: 完成迁移，所有测试通过 (UI 8 tests, 容器 5 tests)，构建成功
-- UI 组件完全受控，无副作用
-- 容器使用 useTransition 管理异步状态
-- Server Action 调用完全在容器内处理
-- Storybook 展示所有状态 (Default, Loading, Disabled, Interactive)
-
----
+### ⏭️ 不迁移
 
 #### ./auth/turnstile.tsx
 
 **基本信息**
 
 - 路径: `apps/web/app/_components/auth/turnstile.tsx`
-- 复杂度: 未知 (需要读取组件代码)
-- 优先级: P1 (被 unified-login 依赖)
+- 复杂度: 低
+- 优先级: N/A (不迁移)
 
-**依赖问题**
+**不迁移原因**
 
-- 待确认
+此组件是**平台集成组件**，而非纯 UI 组件，不适合迁移到 packages/ui：
 
-**重构策略**
+1. **依赖环境变量** - 使用 `process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY`，这是 Next.js 特定的环境变量机制
+2. **依赖外部服务** - 核心功能是与 Cloudflare Turnstile 服务集成，没有真实 site key 和服务连接，组件无法有意义地运行
+3. **无法在 Storybook/demo 中测试** - 没有 Cloudflare 服务支持，组件在隔离环境中无法展示任何有价值的功能
+4. **已是薄封装** - 组件只是对 `@marsidev/react-turnstile` 的简单包装，没有复杂的 UI 逻辑需要分离
+5. **其他平台有不同方案** - 移动端或其他平台可能使用完全不同的验证机制（如生物识别、设备认证等）
 
-```
-如果此组件封装第三方脚本:
-
-容器职责:
-- 加载 Turnstile 脚本
-- 管理 token 状态
-- 处理验证回调
-
-UI 职责:
-- 渲染 widget 容器
-- 传递回调
-
-Props:
-- siteKey: string
-- onVerify: (token: string) => void
-- onError?: (error: Error) => void
-- onExpire?: () => void
-
-适配器需求:
-- 可能需要平台特定的加载器抽象
-```
-
-**测试要点**
-
-- [ ] Widget 渲染
-- [ ] 验证回调
-
-**实现笔记**
-
-- 待实施时记录
-
-**阻塞问题**
-
-- [ ] 需要读取组件以了解实现
-- [ ] 可能需要平台特定加载器抽象
+**保留位置**: `apps/web/app/_components/auth/turnstile.tsx` (作为 Next.js 平台特定的基础设施组件)
 
 ---
 
@@ -1001,11 +996,11 @@ Link/Unlink 组件应有统一接口:
 
 ## 进度统计
 
-| 类别          | 总数   | 已完成 | 进行中 | 未开始 |
-| ------------- | ------ | ------ | ------ | ------ |
-| Forms         | 6      | 0      | 0      | 6      |
-| UI Components | 7      | 7      | 0      | 0      |
-| **总计**      | **13** | **7**  | **0**  | **6**  |
+| 类别          | 总数   | 已完成 | 进行中 | 未开始 | 不迁移 |
+| ------------- | ------ | ------ | ------ | ------ | ------ |
+| Forms         | 6      | 1      | 0      | 4      | 1      |
+| UI Components | 7      | 7      | 0      | 0      | 0      |
+| **总计**      | **13** | **8**  | **0**  | **4**  | **1**  |
 
 ---
 
