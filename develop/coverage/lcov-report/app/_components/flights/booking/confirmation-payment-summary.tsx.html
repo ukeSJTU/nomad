@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/39</span>
+                <span class='fraction'>0/35</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/39</span>
+                <span class='fraction'>0/35</span>
             </div>
         
             
@@ -120,12 +120,10 @@
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -144,20 +142,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -168,6 +152,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -182,19 +171,19 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { Separator } from "@nomad/ui/components/primitives/separator";<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import {<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+  ConfirmationPaymentSummary as ConfirmationPaymentSummaryUI,
+  type ConfirmationPaymentSummaryProps as ConfirmationPaymentSummaryUIProps,
+} from "@nomad/ui/components/flights/booking/confirmation-payment-summary";
 <span class="cstat-no" title="statement not covered" >import { format } from "date-fns";</span>
 <span class="cstat-no" title="statement not covered" >import { zhCN } from "date-fns/locale";</span>
-<span class="cstat-no" title="statement not covered" >import {</span>
-  formatCurrencyWithoutSymbol,
-  getCurrencyValue,
-  parseCurrency,
-} from "@/lib/format";
+<span class="cstat-no" title="statement not covered" >import { formatCurrencyWithoutSymbol } from "@/lib/format";</span>
 &nbsp;
 interface ConfirmationPaymentSummaryProps {
   baseAmount: string;
@@ -216,37 +205,33 @@ interface ConfirmationPaymentSummaryProps {
 <span class="cstat-no" title="statement not covered" >  totalAmount,</span>
 <span class="cstat-no" title="statement not covered" >  payment,</span>
 <span class="cstat-no" title="statement not covered" >}: ConfirmationPaymentSummaryProps) {</span>
+<span class="cstat-no" title="statement not covered" >  const formattedBaseAmount = formatCurrencyWithoutSymbol(baseAmount);</span>
+<span class="cstat-no" title="statement not covered" >  const formattedAncillaryAmount = formatCurrencyWithoutSymbol(ancillaryAmount);</span>
+<span class="cstat-no" title="statement not covered" >  const formattedTotalAmount = formatCurrencyWithoutSymbol(totalAmount);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  const formattedPaymentTime = payment</span>
+<span class="cstat-no" title="statement not covered" >    ? format(payment.createdAt, "yyyy-MM-dd HH:mm:ss", { locale: zhCN })</span>
+<span class="cstat-no" title="statement not covered" >    : undefined;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  const uiPayment: ConfirmationPaymentSummaryUIProps["payment"] = payment</span>
+<span class="cstat-no" title="statement not covered" >    ? {</span>
+<span class="cstat-no" title="statement not covered" >        id: payment.id,</span>
+<span class="cstat-no" title="statement not covered" >        amount: payment.amount,</span>
+<span class="cstat-no" title="statement not covered" >        method: payment.method,</span>
+<span class="cstat-no" title="statement not covered" >        status: payment.status,</span>
+<span class="cstat-no" title="statement not covered" >        transactionId: payment.transactionId,</span>
+<span class="cstat-no" title="statement not covered" >        createdAt: payment.createdAt,</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    : null;</span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="text-sm text-gray-500 mb-2"&gt;费用明细&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="space-y-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="flex items-center justify-between text-sm"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;span className="text-gray-600"&gt;机票费用&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;span&gt;¥{formatCurrencyWithoutSymbol(baseAmount)}&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >        {getCurrencyValue(parseCurrency(ancillaryAmount)) &gt; 0 &amp;&amp; (</span>
-<span class="cstat-no" title="statement not covered" >          &lt;div className="flex items-center justify-between text-sm"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;span className="text-gray-600"&gt;增值服务&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;span&gt;¥{formatCurrencyWithoutSymbol(ancillaryAmount)}&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
-        )}
-<span class="cstat-no" title="statement not covered" >        &lt;Separator /&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="flex items-center justify-between font-bold text-lg"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;span&gt;实付金额&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;span className="text-orange-500"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            ¥{formatCurrencyWithoutSymbol(totalAmount)}</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >        {payment &amp;&amp; (</span>
-<span class="cstat-no" title="statement not covered" >          &lt;div className="text-xs text-gray-500"&gt;</span>
-            支付时间：
-<span class="cstat-no" title="statement not covered" >            {format(payment.createdAt, "yyyy-MM-dd HH:mm:ss", {</span>
-<span class="cstat-no" title="statement not covered" >              locale: zhCN,</span>
-<span class="cstat-no" title="statement not covered" >            })}</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
-        )}
-<span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;ConfirmationPaymentSummaryUI</span>
+<span class="cstat-no" title="statement not covered" >      baseAmount={formattedBaseAmount}</span>
+<span class="cstat-no" title="statement not covered" >      ancillaryAmount={formattedAncillaryAmount}</span>
+<span class="cstat-no" title="statement not covered" >      totalAmount={formattedTotalAmount}</span>
+<span class="cstat-no" title="statement not covered" >      payment={uiPayment}</span>
+<span class="cstat-no" title="statement not covered" >      formattedPaymentTime={formattedPaymentTime}</span>
+<span class="cstat-no" title="statement not covered" >    /&gt;</span>
   );
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
@@ -256,7 +241,7 @@ interface ConfirmationPaymentSummaryProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-18T05:39:46.185Z
+                at 2026-01-19T06:55:08.192Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
