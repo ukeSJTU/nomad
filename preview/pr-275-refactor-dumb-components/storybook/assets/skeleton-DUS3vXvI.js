@@ -1,1 +1,0 @@
-import{j as t}from"./iframe-BY6WQ8rl.js";import{a as n}from"./createLucideIcon-DhaeV68V.js";function s({className:e,...o}){return t.jsx("div",{"data-slot":"skeleton",className:n("bg-accent animate-pulse rounded-md",e),...o})}s.__docgenInfo={description:"",methods:[],displayName:"Skeleton"};export{s as S};
