@@ -1,8 +1,8 @@
 "use client";
 
-import { Badge } from "@nomad/ui/components/primitives/badge";
-import { Card } from "@nomad/ui/components/primitives/card";
-import { cn } from "@nomad/ui/lib/utils";
+import { Badge } from "@ukesjtu/nomad-ui/components/primitives/badge";
+import { Card } from "@ukesjtu/nomad-ui/components/primitives/card";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 import { ArrowLeftRight, ArrowRight } from "lucide-react";
 
 import type { SearchHistoryCardProps } from "./types";

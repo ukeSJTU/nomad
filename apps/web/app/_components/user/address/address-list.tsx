@@ -3,7 +3,7 @@
 import {
   type AddressListItem,
   AddressList as AddressListUI,
-} from "@nomad/ui/components/user/address";
+} from "@ukesjtu/nomad-ui/components/user/address";
 import { useState } from "react";
 import { toast } from "sonner";
 import {

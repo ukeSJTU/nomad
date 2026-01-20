@@ -9,7 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@nomad/ui/components/primitives/alert-dialog";
+} from "@ukesjtu/nomad-ui/components/primitives/alert-dialog";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

@@ -1,5 +1,5 @@
-import { UnderConstruction } from "@nomad/ui/components/common";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { UnderConstruction } from "@ukesjtu/nomad-ui/components/common";
 
 const meta = {
   title: "Common/UnderConstruction",

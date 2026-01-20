@@ -1,6 +1,6 @@
 "use client";
 
-import { SiteHeader } from "@nomad/ui/components/common/site-header";
+import { SiteHeader } from "@ukesjtu/nomad-ui/components/common/site-header";
 import { useTheme } from "next-themes";
 import SearchBar from "@/components/common/search-bar";
 import UserMenu from "@/components/common/user-menu";

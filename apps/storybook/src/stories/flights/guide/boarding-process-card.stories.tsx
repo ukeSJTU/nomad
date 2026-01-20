@@ -1,5 +1,5 @@
-import { BoardingProcessCard } from "@nomad/ui/components/flights/guide";
 import type { Meta, StoryObj } from "@storybook/react";
+import { BoardingProcessCard } from "@ukesjtu/nomad-ui/components/flights/guide";
 
 const meta = {
   title: "Flights/Guide/BoardingProcessCard",

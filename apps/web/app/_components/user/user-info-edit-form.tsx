@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@nomad/ui/components/primitives/form";
-import { UserInfoEditForm as UserInfoEditFormUI } from "@nomad/ui/components/user";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
+import { UserInfoEditForm as UserInfoEditFormUI } from "@ukesjtu/nomad-ui/components/user";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { updateUserInfoAction } from "@/app/_actions";

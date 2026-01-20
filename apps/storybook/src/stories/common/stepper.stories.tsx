@@ -1,6 +1,6 @@
-import { Stepper } from "@nomad/ui/components/common";
-import { Button } from "@nomad/ui/components/primitives/button";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Stepper } from "@ukesjtu/nomad-ui/components/common";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import { useState } from "react";
 
 const meta = {

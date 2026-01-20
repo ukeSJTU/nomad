@@ -3,7 +3,7 @@
 import {
   type OrderFlightInfoFlightData,
   OrderFlightInfo as OrderFlightInfoUI,
-} from "@nomad/ui/components/flights/orders";
+} from "@ukesjtu/nomad-ui/components/flights/orders";
 import type { OrderDetailFull } from "@/types/dto";
 
 export type OrderFlightInfoProps = {

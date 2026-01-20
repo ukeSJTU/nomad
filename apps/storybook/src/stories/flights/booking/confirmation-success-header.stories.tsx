@@ -1,5 +1,5 @@
-import { ConfirmationSuccessHeader } from "@nomad/ui/components/flights/booking";
 import type { Meta, StoryObj } from "@storybook/react";
+import { ConfirmationSuccessHeader } from "@ukesjtu/nomad-ui/components/flights/booking";
 
 const meta = {
   title: "Flights/Booking/ConfirmationSuccessHeader",

@@ -12,7 +12,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(dirname, "./src"),
-      "@nomad/ui": path.resolve(dirname, "../../packages/ui/src"),
+      "@ukesjtu/nomad-ui": path.resolve(dirname, "../../packages/ui/src"),
     },
   },
   test: {

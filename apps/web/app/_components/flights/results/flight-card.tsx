@@ -2,7 +2,7 @@ import {
   FlightCard as FlightCardUi,
   type FlightCardProps as FlightCardUiProps,
   type SeatClassOption,
-} from "@nomad/ui/components/flights/results";
+} from "@ukesjtu/nomad-ui/components/flights/results";
 import { formatCurrency } from "@/lib/format";
 
 export type { SeatClassOption };

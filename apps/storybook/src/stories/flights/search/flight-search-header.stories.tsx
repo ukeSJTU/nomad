@@ -1,6 +1,6 @@
-import type { CityData } from "@nomad/ui/components/flights/search";
-import { FlightSearchHeader } from "@nomad/ui/components/flights/search";
 import type { Meta, StoryObj } from "@storybook/react";
+import type { CityData } from "@ukesjtu/nomad-ui/components/flights/search";
+import { FlightSearchHeader } from "@ukesjtu/nomad-ui/components/flights/search";
 import { fn } from "storybook/test";
 
 const meta = {

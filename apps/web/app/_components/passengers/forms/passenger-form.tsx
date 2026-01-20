@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PassengerForm as PassengerFormUI } from "@nomad/ui/components/passengers";
+import { PassengerForm as PassengerFormUI } from "@ukesjtu/nomad-ui/components/passengers";
 import { useForm } from "react-hook-form";
 import {
   type PassengerFormData,

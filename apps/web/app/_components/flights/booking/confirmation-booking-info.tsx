@@ -1,4 +1,4 @@
-import { ConfirmationBookingInfo as UiConfirmationBookingInfo } from "@nomad/ui/components/flights/booking";
+import { ConfirmationBookingInfo as UiConfirmationBookingInfo } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
 import { IdentityType } from "@/types/dto";
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@nomad/ui/components/primitives/form";
-import { AddressForm } from "@nomad/ui/components/user/address";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
+import { AddressForm } from "@ukesjtu/nomad-ui/components/user/address";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";

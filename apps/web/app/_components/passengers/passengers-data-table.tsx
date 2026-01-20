@@ -1,6 +1,6 @@
 "use client";
 
-import { PassengersDataTable as PassengersDataTableUI } from "@nomad/ui/components/passengers";
+import { PassengersDataTable as PassengersDataTableUI } from "@ukesjtu/nomad-ui/components/passengers";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { PassengerDTO } from "@/types/dto";

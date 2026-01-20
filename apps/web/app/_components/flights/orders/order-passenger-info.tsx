@@ -1,4 +1,4 @@
-import { OrderPassengerInfo as OrderPassengerInfoUI } from "@nomad/ui/components/flights/orders";
+import { OrderPassengerInfo as OrderPassengerInfoUI } from "@ukesjtu/nomad-ui/components/flights/orders";
 import type { OrderDetailFull } from "@/types/dto";
 
 import { getIdentityTypeName } from "./utils";

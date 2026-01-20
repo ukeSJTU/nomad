@@ -3,7 +3,7 @@
 import {
   OrderCard as OrderCardUI,
   type OrderListItem,
-} from "@nomad/ui/components/user";
+} from "@ukesjtu/nomad-ui/components/user";
 import { useRouter } from "next/navigation";
 
 export interface OrderCardProps {
@@ -20,7 +20,7 @@ export interface OrderCardProps {
  * OrderCard Container Component
  *
  * @description
- * Container component that wraps the UI component from @nomad/ui.
+ * Container component that wraps the UI component from @ukesjtu/nomad-ui.
  * Handles Next.js-specific navigation logic.
  *
  * @remarks

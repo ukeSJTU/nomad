@@ -1,5 +1,5 @@
-import { ErrorDisplay } from "@nomad/ui/components/common";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { ErrorDisplay } from "@ukesjtu/nomad-ui/components/common";
 import { ERROR_CONFIGS } from "@/config/errors";
 
 const meta = {

@@ -1,8 +1,8 @@
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import {
   OrderFlightInfo,
   type OrderFlightInfoFlightData,
-} from "@nomad/ui/components/flights/orders";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+} from "@ukesjtu/nomad-ui/components/flights/orders";
 
 const meta = {
   title: "Flights/Orders/OrderFlightInfo",

@@ -1,11 +1,11 @@
 "use client";
 
-import { AppSidebar as AppSidebarUI } from "@nomad/ui/components/common/app-sidebar";
+import { AppSidebar as AppSidebarUI } from "@ukesjtu/nomad-ui/components/common/app-sidebar";
 import type {
   MenuItem,
   SubItem,
-} from "@nomad/ui/components/common/app-sidebar-types";
-import { Sidebar } from "@nomad/ui/components/primitives/sidebar";
+} from "@ukesjtu/nomad-ui/components/common/app-sidebar-types";
+import { Sidebar } from "@ukesjtu/nomad-ui/components/primitives/sidebar";
 import {
   Album,
   Building2,

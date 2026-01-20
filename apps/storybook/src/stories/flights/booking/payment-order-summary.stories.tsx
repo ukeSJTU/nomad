@@ -1,5 +1,5 @@
-import { PaymentOrderSummary } from "@nomad/ui/components/flights/booking";
 import type { Meta, StoryObj } from "@storybook/react";
+import { PaymentOrderSummary } from "@ukesjtu/nomad-ui/components/flights/booking";
 
 const meta: Meta<typeof PaymentOrderSummary> = {
   title: "Flights/Booking/PaymentOrderSummary",

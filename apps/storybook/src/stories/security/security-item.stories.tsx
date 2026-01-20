@@ -1,5 +1,5 @@
-import { SecurityItem } from "@nomad/ui/components/security";
 import type { Meta, StoryObj } from "@storybook/react";
+import { SecurityItem } from "@ukesjtu/nomad-ui/components/security";
 
 const meta = {
   title: "Security/SecurityItem",

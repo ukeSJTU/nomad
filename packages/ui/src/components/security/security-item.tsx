@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Card } from "@nomad/ui/components/primitives/card";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Card } from "@ukesjtu/nomad-ui/components/primitives/card";
 import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import { useUiComponents } from "../../platform";
 

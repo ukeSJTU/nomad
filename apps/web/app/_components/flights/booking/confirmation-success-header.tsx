@@ -1,4 +1,4 @@
-import { ConfirmationSuccessHeader as UiConfirmationSuccessHeader } from "@nomad/ui/components/flights/booking";
+import { ConfirmationSuccessHeader as UiConfirmationSuccessHeader } from "@ukesjtu/nomad-ui/components/flights/booking";
 
 interface ConfirmationSuccessHeaderProps {
   orderNumber: string;

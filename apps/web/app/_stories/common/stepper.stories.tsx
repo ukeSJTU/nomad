@@ -1,5 +1,5 @@
-import { Button } from "@nomad/ui/components/primitives/button";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import { useState } from "react";
 import { Stepper } from "@/components/common/stepper";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Input } from "@nomad/ui/components/primitives/input";
-import { cn } from "@nomad/ui/lib/utils";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 
 export interface OtpInputProps {
   /** Current OTP value */

@@ -1,6 +1,6 @@
 "use client";
 
-import { RegistrationSuccess as RegistrationSuccessUI } from "@nomad/ui/components/auth";
+import { RegistrationSuccess as RegistrationSuccessUI } from "@ukesjtu/nomad-ui/components/auth";
 import { useRouter } from "next/navigation";
 
 export interface RegistrationSuccessProps {

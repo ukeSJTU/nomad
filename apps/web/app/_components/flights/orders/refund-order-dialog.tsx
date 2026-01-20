@@ -1,4 +1,4 @@
-import { RefundOrderDialog as RefundOrderDialogUI } from "@nomad/ui/components/flights/orders";
+import { RefundOrderDialog as RefundOrderDialogUI } from "@ukesjtu/nomad-ui/components/flights/orders";
 
 export type RefundOrderDialogProps = {
   open: boolean;

@@ -5,7 +5,7 @@
     "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "paths": {
       "@/*": ["./src/*"],
-      "@nomad/ui/*": ["../../packages/ui/src/*"]
+      "@ukesjtu/nomad-ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [

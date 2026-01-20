@@ -1,7 +1,6 @@
-import type { FlightSummaryCardFlightProps } from "@nomad/ui/components/flights/booking";
-
-import { FlightSummaryCard } from "@nomad/ui/components/flights/booking";
 import type { Meta, StoryObj } from "@storybook/react";
+import type { FlightSummaryCardFlightProps } from "@ukesjtu/nomad-ui/components/flights/booking";
+import { FlightSummaryCard } from "@ukesjtu/nomad-ui/components/flights/booking";
 
 const meta: Meta<typeof FlightSummaryCard> = {
   title: "Flights/Booking/FlightSummaryCard",

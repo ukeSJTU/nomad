@@ -1,6 +1,6 @@
-import type { AncillaryCategory } from "@nomad/ui/components/flights/booking";
-import { AncillarySelection } from "@nomad/ui/components/flights/booking";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { AncillaryCategory } from "@ukesjtu/nomad-ui/components/flights/booking";
+import { AncillarySelection } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { useState } from "react";
 
 // Mock data

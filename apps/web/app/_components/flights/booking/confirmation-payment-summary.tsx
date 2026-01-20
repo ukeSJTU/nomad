@@ -1,7 +1,7 @@
 import {
   ConfirmationPaymentSummary as ConfirmationPaymentSummaryUI,
   type ConfirmationPaymentSummaryProps as ConfirmationPaymentSummaryUIProps,
-} from "@nomad/ui/components/flights/booking/confirmation-payment-summary";
+} from "@ukesjtu/nomad-ui/components/flights/booking/confirmation-payment-summary";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { formatCurrencyWithoutSymbol } from "@/lib/format";

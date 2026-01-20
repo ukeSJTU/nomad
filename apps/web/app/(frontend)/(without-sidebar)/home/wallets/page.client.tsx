@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/primitives/card";
+} from "@ukesjtu/nomad-ui/components/primitives/card";
 import {
   Form,
   FormControl,
@@ -16,8 +16,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
+} from "@ukesjtu/nomad-ui/components/primitives/form";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
 import { Wallet } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";

@@ -1,5 +1,5 @@
-import { Calendar } from "@nomad/ui/components/primitives/calendar";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Calendar } from "@ukesjtu/nomad-ui/components/primitives/calendar";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 

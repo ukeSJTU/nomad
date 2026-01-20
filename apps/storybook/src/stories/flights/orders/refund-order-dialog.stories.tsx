@@ -1,5 +1,5 @@
-import { RefundOrderDialog } from "@nomad/ui/components/flights/orders";
 import type { Meta, StoryObj } from "@storybook/react";
+import { RefundOrderDialog } from "@ukesjtu/nomad-ui/components/flights/orders";
 import { fn } from "storybook/test";
 
 const meta = {

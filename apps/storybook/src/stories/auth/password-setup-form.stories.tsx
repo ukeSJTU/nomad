@@ -1,6 +1,6 @@
-import { PasswordSetupForm } from "@nomad/ui/components/auth";
-import { Form } from "@nomad/ui/components/primitives/form";
 import type { Meta, StoryObj } from "@storybook/react";
+import { PasswordSetupForm } from "@ukesjtu/nomad-ui/components/auth";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
 import { useForm } from "react-hook-form";
 import { fn } from "storybook/test";
 import zxcvbn from "zxcvbn";

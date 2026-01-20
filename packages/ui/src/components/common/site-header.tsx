@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@nomad/ui/components/primitives/hover-card";
-import { Separator } from "@nomad/ui/components/primitives/separator";
-import { cn } from "@nomad/ui/lib/utils";
-import { useUiComponents } from "@nomad/ui/platform";
+} from "@ukesjtu/nomad-ui/components/primitives/hover-card";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
+import { useUiComponents } from "@ukesjtu/nomad-ui/platform";
 import { Moon, Sun } from "lucide-react";
 import type { SiteHeaderProps } from "./types";
 

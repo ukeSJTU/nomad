@@ -14,7 +14,7 @@
       "@/app/*": ["./app/*"],
       "@/*": ["./src/*"],
       "@/tests/*": ["./tests/*"],
-      "@nomad/ui/*": ["../../packages/ui/src/*"]
+      "@ukesjtu/nomad-ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [

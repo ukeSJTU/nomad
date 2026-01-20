@@ -1,9 +1,9 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import type {
   ContactInfo,
   ContactInfoValidationErrors,
-} from "@nomad/ui/components/flights/booking";
-import { ContactInfoCard } from "@nomad/ui/components/flights/booking";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/flights/booking";
+import { ContactInfoCard } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { useState } from "react";
 
 const meta = {

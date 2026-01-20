@@ -5,8 +5,8 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/primitives/tabs";
-import type { OrderListItem } from "@nomad/ui/components/user";
+} from "@ukesjtu/nomad-ui/components/primitives/tabs";
+import type { OrderListItem } from "@ukesjtu/nomad-ui/components/user";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";

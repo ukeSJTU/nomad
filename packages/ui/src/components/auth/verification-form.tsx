@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Checkbox } from "@ukesjtu/nomad-ui/components/primitives/checkbox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
-import { OtpInput } from "@nomad/ui/components/security/otp-input";
+} from "@ukesjtu/nomad-ui/components/primitives/form";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
+import { OtpInput } from "@ukesjtu/nomad-ui/components/security/otp-input";
 import type { Control, FieldErrors } from "react-hook-form";
 
 /**

@@ -1,22 +1,22 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Checkbox } from "@ukesjtu/nomad-ui/components/primitives/checkbox";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
+} from "@ukesjtu/nomad-ui/components/primitives/form";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@nomad/ui/components/primitives/tooltip";
-import { OtpInput } from "@nomad/ui/components/security/otp-input";
-import { cn } from "@nomad/ui/lib/utils";
+} from "@ukesjtu/nomad-ui/components/primitives/tooltip";
+import { OtpInput } from "@ukesjtu/nomad-ui/components/security/otp-input";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 import { AlertCircle, Github } from "lucide-react";
 import type { UseFormReturn } from "react-hook-form";
 

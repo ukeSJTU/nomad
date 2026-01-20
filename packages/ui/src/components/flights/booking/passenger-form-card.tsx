@@ -1,22 +1,22 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/primitives/card";
-import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
-import { Input } from "@nomad/ui/components/primitives/input";
-import { Label } from "@nomad/ui/components/primitives/label";
+} from "@ukesjtu/nomad-ui/components/primitives/card";
+import { Checkbox } from "@ukesjtu/nomad-ui/components/primitives/checkbox";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
+import { Label } from "@ukesjtu/nomad-ui/components/primitives/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@nomad/ui/components/primitives/select";
+} from "@ukesjtu/nomad-ui/components/primitives/select";
 import { Plus, X } from "lucide-react";
 
 export interface PassengerFormData {

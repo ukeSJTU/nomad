@@ -3,7 +3,7 @@
 import {
   type AncillaryCategory,
   AncillarySelection as AncillarySelectionUI,
-} from "@nomad/ui/components/flights/booking";
+} from "@ukesjtu/nomad-ui/components/flights/booking";
 import {
   type AncillaryServiceCategory,
   getAncillaryServicesByCategory,

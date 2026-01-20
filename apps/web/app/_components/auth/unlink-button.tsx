@@ -1,6 +1,6 @@
 "use client";
 
-import { UnlinkButton as UnlinkButtonUI } from "@nomad/ui/components/auth/unlink-button";
+import { UnlinkButton as UnlinkButtonUI } from "@ukesjtu/nomad-ui/components/auth/unlink-button";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { unlinkAccountAction } from "@/app/_actions/auth";

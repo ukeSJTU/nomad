@@ -1,5 +1,5 @@
-import { DateDisplay } from "@nomad/ui/components/flights/search";
 import type { Meta, StoryObj } from "@storybook/react";
+import { DateDisplay } from "@ukesjtu/nomad-ui/components/flights/search";
 
 const mockGetRelativeDateLabel = (date: Date, today: Date): string => {
   const daysDiff = Math.floor(

@@ -1,6 +1,6 @@
-import type { UserSidebarMenuItem } from "@nomad/ui/components/auth";
-import { UserSidebar } from "@nomad/ui/components/auth";
 import type { Meta, StoryObj } from "@storybook/react";
+import type { UserSidebarMenuItem } from "@ukesjtu/nomad-ui/components/auth";
+import { UserSidebar } from "@ukesjtu/nomad-ui/components/auth";
 import { fn } from "storybook/test";
 
 const meta = {

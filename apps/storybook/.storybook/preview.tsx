@@ -1,10 +1,10 @@
-import { UiProvider } from "@nomad/ui/platform";
 import type { Preview } from "@storybook/react";
+import { UiProvider } from "@ukesjtu/nomad-ui/platform";
 import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 
-// Import global CSS from @nomad/ui
-import "@nomad/ui/styles/globals.css";
+// Import global CSS from @ukesjtu/nomad-ui
+import "@ukesjtu/nomad-ui/styles/globals.css";
 
 // Import system fonts (replaces next/font)
 import "../src/lib/fonts.css";

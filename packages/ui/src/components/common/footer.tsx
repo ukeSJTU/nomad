@@ -1,7 +1,7 @@
 // Uses useUiComponents to render framework adapters; keep on client side.
 "use client";
 
-import { useUiComponents } from "@nomad/ui/platform";
+import { useUiComponents } from "@ukesjtu/nomad-ui/platform";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();

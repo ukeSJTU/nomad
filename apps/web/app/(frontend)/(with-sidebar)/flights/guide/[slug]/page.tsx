@@ -5,19 +5,19 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@nomad/ui/components/primitives/breadcrumb";
+} from "@ukesjtu/nomad-ui/components/primitives/breadcrumb";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/primitives/card";
+} from "@ukesjtu/nomad-ui/components/primitives/card";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/primitives/tabs";
+} from "@ukesjtu/nomad-ui/components/primitives/tabs";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAirportByIataCodeAction } from "@/actions/airport-guide";

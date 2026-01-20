@@ -1,15 +1,15 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
-import { Label } from "@nomad/ui/components/primitives/label";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Checkbox } from "@ukesjtu/nomad-ui/components/primitives/checkbox";
+import { Label } from "@ukesjtu/nomad-ui/components/primitives/label";
 import {
   Select,
   SelectContent,
   SelectTrigger,
   SelectValue,
-} from "@nomad/ui/components/primitives/select";
-import { Separator } from "@nomad/ui/components/primitives/separator";
+} from "@ukesjtu/nomad-ui/components/primitives/select";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
 import {
   Armchair,
   ArrowDownAZ,

@@ -1,6 +1,6 @@
 "use client";
 
-import { UserMenu as UserMenuUI } from "@nomad/ui/components/common/user-menu";
+import { UserMenu as UserMenuUI } from "@ukesjtu/nomad-ui/components/common/user-menu";
 import { useRouter } from "next/navigation";
 import { signOutAction } from "@/app/_actions/auth";
 import { useClientSession } from "@/hooks/use-client-session";

@@ -1,6 +1,6 @@
 "use client";
 
-import { UserInfoForm as UserInfoFormUI } from "@nomad/ui/components/user";
+import { UserInfoForm as UserInfoFormUI } from "@ukesjtu/nomad-ui/components/user";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { UserInfo } from "@/types/dto";

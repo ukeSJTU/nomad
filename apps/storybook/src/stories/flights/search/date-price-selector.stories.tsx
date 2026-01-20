@@ -1,5 +1,5 @@
-import { DatePriceSelector } from "@nomad/ui/components/flights/search/date-price-selector";
 import type { Meta, StoryObj } from "@storybook/react";
+import { DatePriceSelector } from "@ukesjtu/nomad-ui/components/flights/search/date-price-selector";
 import { fn } from "storybook/test";
 
 const meta = {

@@ -1,14 +1,14 @@
-import { Separator } from "@nomad/ui/components/primitives/separator";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/primitives/tabs";
+} from "@ukesjtu/nomad-ui/components/primitives/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@nomad/ui/components/primitives/tooltip";
+} from "@ukesjtu/nomad-ui/components/primitives/tooltip";
 import { Clock } from "lucide-react";
 import type { CityData } from "./types";
 

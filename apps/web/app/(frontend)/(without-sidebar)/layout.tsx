@@ -1,4 +1,4 @@
-import { Toaster } from "@nomad/ui/components/primitives/sonner";
+import { Toaster } from "@ukesjtu/nomad-ui/components/primitives/sonner";
 import { type ReactNode } from "react";
 import { Footer, Header } from "@/components/common";
 

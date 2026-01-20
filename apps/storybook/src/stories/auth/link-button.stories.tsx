@@ -1,5 +1,5 @@
-import { LinkButton } from "@nomad/ui/components/auth";
 import type { Meta, StoryObj } from "@storybook/react";
+import { LinkButton } from "@ukesjtu/nomad-ui/components/auth";
 import { fn } from "storybook/test";
 
 const meta = {

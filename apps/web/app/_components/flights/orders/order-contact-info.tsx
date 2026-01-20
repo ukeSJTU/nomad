@@ -1,4 +1,4 @@
-import { OrderContactInfo as OrderContactInfoUI } from "@nomad/ui/components/flights/orders";
+import { OrderContactInfo as OrderContactInfoUI } from "@ukesjtu/nomad-ui/components/flights/orders";
 import type { OrderDetailFull } from "@/types/dto";
 
 export type OrderContactInfoProps = {

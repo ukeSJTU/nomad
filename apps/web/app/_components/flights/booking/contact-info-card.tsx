@@ -4,7 +4,7 @@ import {
   type ContactInfo,
   ContactInfoCard as ContactInfoCardUI,
   type ContactInfoValidationErrors,
-} from "@nomad/ui/components/flights/booking";
+} from "@ukesjtu/nomad-ui/components/flights/booking";
 import { emailSchema, phoneNumberSchema } from "@/types/validations";
 
 export type { ContactInfo, ContactInfoValidationErrors };

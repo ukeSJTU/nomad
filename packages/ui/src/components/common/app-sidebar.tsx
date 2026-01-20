@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@nomad/ui/components/primitives/hover-card";
-import { Separator } from "@nomad/ui/components/primitives/separator";
+} from "@ukesjtu/nomad-ui/components/primitives/hover-card";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -18,8 +18,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
   useSidebar,
-} from "@nomad/ui/components/primitives/sidebar";
-import { cn } from "@nomad/ui/lib/utils";
+} from "@ukesjtu/nomad-ui/components/primitives/sidebar";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 import { Menu } from "lucide-react";
 import type { AppSidebarProps, MenuItem } from "./app-sidebar-types";
 

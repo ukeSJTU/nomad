@@ -1,5 +1,5 @@
-import { OtpInput } from "@nomad/ui/components/security/otp-input";
 import type { Meta, StoryObj } from "@storybook/react";
+import { OtpInput } from "@ukesjtu/nomad-ui/components/security/otp-input";
 import { useState } from "react";
 import { fn } from "storybook/test";
 

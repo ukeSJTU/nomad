@@ -51,7 +51,7 @@ const config: StorybookConfig = {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...config.resolve.alias,
-      "@nomad/ui": join(__dirname, "../../../packages/ui/src"),
+      "@ukesjtu/nomad-ui": join(__dirname, "../../../packages/ui/src"),
       // Temporary alias to apps/web until component migration is complete
       "@/components": join(__dirname, "../../../apps/web/app/_components"),
       "@/config": join(__dirname, "../../../apps/web/src/config"),

@@ -6,7 +6,7 @@ import {
   type OtpLoginFormData,
   type PasswordLoginFormData,
   UnifiedLoginForm,
-} from "@nomad/ui/components/auth";
+} from "@ukesjtu/nomad-ui/components/auth";
 import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";

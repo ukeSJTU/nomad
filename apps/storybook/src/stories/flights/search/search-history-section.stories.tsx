@@ -1,5 +1,5 @@
-import { SearchHistorySection } from "@nomad/ui/components/flights/search";
 import type { Meta, StoryObj } from "@storybook/react";
+import { SearchHistorySection } from "@ukesjtu/nomad-ui/components/flights/search";
 
 const meta = {
   title: "Flights/Search/SearchHistorySection",

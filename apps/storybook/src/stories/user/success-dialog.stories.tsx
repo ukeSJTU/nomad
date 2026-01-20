@@ -1,5 +1,5 @@
-import { SuccessDialog } from "@nomad/ui/components/user";
 import type { Meta, StoryObj } from "@storybook/react";
+import { SuccessDialog } from "@ukesjtu/nomad-ui/components/user";
 import { fn } from "storybook/test";
 
 const meta = {

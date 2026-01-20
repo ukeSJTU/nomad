@@ -11,7 +11,7 @@ vi.mock("@/app/_actions", () => ({
 }));
 
 // Mock the UI component from packages/ui
-vi.mock("@nomad/ui/components/user", () => ({
+vi.mock("@ukesjtu/nomad-ui/components/user", () => ({
   UserInfoEditForm: vi.fn(
     ({ control, errors, onSubmit, onCancel, isLoading, errorMessage }) => (
       <div data-testid="user-info-edit-form">

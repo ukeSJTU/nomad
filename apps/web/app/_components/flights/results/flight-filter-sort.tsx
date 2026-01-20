@@ -6,7 +6,7 @@ import {
   type SeatClassType,
   type SortOption,
   type TimeRange,
-} from "@nomad/ui/components/flights/results/flight-filter-sort";
+} from "@ukesjtu/nomad-ui/components/flights/results/flight-filter-sort";
 import { useMemo, useState } from "react";
 import type { FlightSearchResult } from "@/types/dto";
 

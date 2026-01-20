@@ -1,6 +1,6 @@
-import { CancelOrderDialog } from "@nomad/ui/components/flights/orders";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { CancelOrderDialog } from "@ukesjtu/nomad-ui/components/flights/orders";
 import { describe, expect, it, vi } from "vitest";
 
 /**

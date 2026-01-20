@@ -1,5 +1,5 @@
-import { PaymentMethodSelector } from "@nomad/ui/components/flights/booking";
 import type { Meta, StoryObj } from "@storybook/react";
+import { PaymentMethodSelector } from "@ukesjtu/nomad-ui/components/flights/booking";
 
 const meta = {
   title: "Flights/Booking/PaymentMethodSelector",

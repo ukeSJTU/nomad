@@ -3,7 +3,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/primitives/card";
+} from "@ukesjtu/nomad-ui/components/primitives/card";
 import type { FlightCardProps } from "../results/flight-card";
 import { FlightCard } from "../results/flight-card";
 

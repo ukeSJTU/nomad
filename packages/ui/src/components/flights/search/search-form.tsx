@@ -1,16 +1,16 @@
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Label } from "@nomad/ui/components/primitives/label";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Label } from "@ukesjtu/nomad-ui/components/primitives/label";
 import {
   RadioGroup,
   RadioGroupItem,
-} from "@nomad/ui/components/primitives/radio-group";
+} from "@ukesjtu/nomad-ui/components/primitives/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@nomad/ui/components/primitives/select";
+} from "@ukesjtu/nomad-ui/components/primitives/select";
 import { Search } from "lucide-react";
 import type { SearchFormProps } from "./types";
 

@@ -1,6 +1,9 @@
-import { Form } from "@nomad/ui/components/primitives/form";
-import { UserInfoEditForm, UserInfoForm } from "@nomad/ui/components/user";
 import type { Meta, StoryObj } from "@storybook/react";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
+import {
+  UserInfoEditForm,
+  UserInfoForm,
+} from "@ukesjtu/nomad-ui/components/user";
 import { useForm } from "react-hook-form";
 import { fn } from "storybook/test";
 

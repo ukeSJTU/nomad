@@ -1,8 +1,8 @@
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import {
   OrderStatusCard,
   type OrderStatusCardData,
-} from "@nomad/ui/components/flights/orders";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+} from "@ukesjtu/nomad-ui/components/flights/orders";
 import storyLogger from "@/infra/logging/storybook-logger";
 
 const meta = {

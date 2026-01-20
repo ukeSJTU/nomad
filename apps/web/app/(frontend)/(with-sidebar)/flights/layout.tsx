@@ -4,7 +4,7 @@ import {
   Tabs,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/primitives/tabs";
+} from "@ukesjtu/nomad-ui/components/primitives/tabs";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function FlightsLayout({

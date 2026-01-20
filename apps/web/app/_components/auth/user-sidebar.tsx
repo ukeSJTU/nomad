@@ -1,7 +1,7 @@
 "use client";
 
-import type { UserSidebarMenuItem } from "@nomad/ui/components/auth";
-import { UserSidebar as UserSidebarUI } from "@nomad/ui/components/auth";
+import type { UserSidebarMenuItem } from "@ukesjtu/nomad-ui/components/auth";
+import { UserSidebar as UserSidebarUI } from "@ukesjtu/nomad-ui/components/auth";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 

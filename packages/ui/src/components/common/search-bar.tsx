@@ -1,5 +1,5 @@
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Input } from "@nomad/ui/components/primitives/input";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
 import { Search } from "lucide-react";
 
 export interface SearchBarProps {

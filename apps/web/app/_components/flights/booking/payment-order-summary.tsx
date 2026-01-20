@@ -1,8 +1,8 @@
 import type {
   PaymentOrderSummaryAncillaryProps,
   PaymentOrderSummaryFlightProps,
-} from "@nomad/ui/components/flights/booking";
-import { PaymentOrderSummary as PaymentOrderSummaryUI } from "@nomad/ui/components/flights/booking";
+} from "@ukesjtu/nomad-ui/components/flights/booking";
+import { PaymentOrderSummary as PaymentOrderSummaryUI } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { getAncillaryServiceByCode } from "@/db/schema/ancillary";
 import { PaymentPageOrder } from "@/types/dto";
 

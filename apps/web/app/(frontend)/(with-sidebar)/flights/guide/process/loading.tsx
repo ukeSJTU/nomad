@@ -1,4 +1,4 @@
-import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
+import { Skeleton } from "@ukesjtu/nomad-ui/components/primitives/skeleton";
 
 export default function BoardingProcessLoading() {
   return (

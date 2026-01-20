@@ -1,7 +1,7 @@
 import {
   type BreadcrumbItem,
   BreadcrumbNav as BreadcrumbNavUI,
-} from "@nomad/ui/components/common";
+} from "@ukesjtu/nomad-ui/components/common";
 
 /**
  * Breadcrumb Navigation Container

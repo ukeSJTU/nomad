@@ -1,4 +1,4 @@
-import { WeatherCard as WeatherCardUI } from "@nomad/ui/components/flights/guide";
+import { WeatherCard as WeatherCardUI } from "@ukesjtu/nomad-ui/components/flights/guide";
 
 export function WeatherCard() {
   // TODO: Replace with actual weather data from API

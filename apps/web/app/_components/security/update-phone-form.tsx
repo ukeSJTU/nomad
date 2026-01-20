@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@nomad/ui/components/primitives/form";
-import { UpdatePhoneForm } from "@nomad/ui/components/security";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
+import { UpdatePhoneForm } from "@ukesjtu/nomad-ui/components/security";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { type UpdatePhoneData, updatePhoneSchema } from "@/types/validations";

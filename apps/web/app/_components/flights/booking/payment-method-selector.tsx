@@ -1,6 +1,6 @@
 "use client";
 
-import { PaymentMethodSelector as PaymentMethodSelectorUI } from "@nomad/ui/components/flights/booking";
+import { PaymentMethodSelector as PaymentMethodSelectorUI } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { formatCurrency } from "@/lib/format";
 
 interface PaymentMethodSelectorProps {

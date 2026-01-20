@@ -1,8 +1,8 @@
 import {
   SidebarInset,
   SidebarProvider,
-} from "@nomad/ui/components/primitives/sidebar";
-import { Toaster } from "@nomad/ui/components/primitives/sonner";
+} from "@ukesjtu/nomad-ui/components/primitives/sidebar";
+import { Toaster } from "@ukesjtu/nomad-ui/components/primitives/sonner";
 import { type ReactNode, Suspense } from "react";
 import { Footer, Header, MainSidebar } from "@/components/common";
 

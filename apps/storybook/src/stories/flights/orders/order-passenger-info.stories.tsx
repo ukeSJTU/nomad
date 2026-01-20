@@ -1,5 +1,5 @@
-import { OrderPassengerInfo } from "@nomad/ui/components/flights/orders";
 import type { Meta, StoryObj } from "@storybook/react";
+import { OrderPassengerInfo } from "@ukesjtu/nomad-ui/components/flights/orders";
 
 const meta = {
   title: "Flights/Orders/OrderPassengerInfo",
