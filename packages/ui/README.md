@@ -31,7 +31,7 @@ Within this monorepo, use the workspace reference:
 ```json
 {
   "dependencies": {
-    "@nomad/ui": "workspace:*"
+    "@ukesjtu/nomad-ui": "workspace:*"
   }
 }
 ```

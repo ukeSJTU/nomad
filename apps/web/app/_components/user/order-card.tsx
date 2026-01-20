@@ -20,7 +20,7 @@ export interface OrderCardProps {
  * OrderCard Container Component
  *
  * @description
- * Container component that wraps the UI component from @nomad/ui.
+ * Container component that wraps the UI component from @ukesjtu/nomad-ui.
  * Handles Next.js-specific navigation logic.
  *
  * @remarks

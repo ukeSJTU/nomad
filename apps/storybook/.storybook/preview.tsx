@@ -3,7 +3,7 @@ import { UiProvider } from "@ukesjtu/nomad-ui/platform";
 import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 
-// Import global CSS from @nomad/ui
+// Import global CSS from @ukesjtu/nomad-ui
 import "@ukesjtu/nomad-ui/styles/globals.css";
 
 // Import system fonts (replaces next/font)

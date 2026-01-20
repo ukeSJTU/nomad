@@ -7,7 +7,7 @@ import {
  * Delete Order Confirmation Dialog Component (Container)
  *
  * @description
- * Container component that wraps the UI component from @nomad/ui.
+ * Container component that wraps the UI component from @ukesjtu/nomad-ui.
  * This component can add Next.js-specific logic or state management if needed.
  *
  * @remarks

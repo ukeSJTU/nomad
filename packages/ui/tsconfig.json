@@ -3,7 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "paths": {
-      "@nomad/ui/*": ["./src/*"]
+      "@ukesjtu/nomad-ui/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],

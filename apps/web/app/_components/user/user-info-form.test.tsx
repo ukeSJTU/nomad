@@ -12,7 +12,7 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
 }));
 
-// Mock the UI components from @nomad/ui
+// Mock the UI components from @ukesjtu/nomad-ui
 vi.mock("@ukesjtu/nomad-ui/components/user", () => ({
   UserInfoForm: ({
     onEditStart,

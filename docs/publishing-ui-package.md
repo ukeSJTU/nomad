@@ -91,7 +91,7 @@ Within this monorepo, continue using workspace reference:
 ```json
 {
   "dependencies": {
-    "@nomad/ui": "workspace:*"
+    "@ukesjtu/nomad-ui": "workspace:*"
   }
 }
 ```

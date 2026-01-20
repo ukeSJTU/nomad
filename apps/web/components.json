@@ -14,7 +14,7 @@
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils",
-    "ui": "@nomad/ui/components",
+    "ui": "@ukesjtu/nomad-ui/components",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

@@ -1,7 +1,7 @@
 /**
  * Flight Card Skeleton - Container
  *
- * Re-exports the FlightCardSkeleton component from @nomad/ui.
+ * Re-exports the FlightCardSkeleton component from @ukesjtu/nomad-ui.
  * This is a pure UI component with no business logic or Next.js dependencies.
  */
 

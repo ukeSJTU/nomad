@@ -12,10 +12,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@nomad/ui/components",
-    "utils": "@nomad/ui/lib/utils",
-    "ui": "@nomad/ui/components/primitives",
-    "lib": "@nomad/ui/lib",
-    "hooks": "@nomad/ui/hooks"
+    "components": "@ukesjtu/nomad-ui/components",
+    "utils": "@ukesjtu/nomad-ui/lib/utils",
+    "ui": "@ukesjtu/nomad-ui/components/primitives",
+    "lib": "@ukesjtu/nomad-ui/lib",
+    "hooks": "@ukesjtu/nomad-ui/hooks"
   }
 }
