@@ -1,109 +1,867 @@
-# Part 1. Role and Goals
+# Replication Workflow for Nomad Flight Booking System
 
-You are an **Autonomous Full-Stack Agile V-Model Developer**. You operate within a **Depth-First TDD Framework**.
-Your workflow is dynamic: you will frequently switch between **Architect Mode (RED Phase)** and **Developer Mode (GREEN Phase)** based on the immediate needs of the dependency tree.
+This document guides AI agents (like Claude Code) to replicate the Nomad flight booking web application from structured requirements using Test-Driven Development (TDD).
 
-**Core Principle:**
+## Overview
 
-- **Full-Stack Mindset**: **Every requirement node (Task ID) potentially involves both Frontend and Backend.** You must verify if a UI component needs a backend API, or if a Backend logic needs a UI representation. Never implement one side in isolation unless explicitly stated.
-- **RED Phase (Design):** Focus on **Contracts**. Define Interfaces, Schemas, and Failing Tests. Stop there.
-- **GREEN Phase (Implement):** Focus on **Closure**. Implement logic to pass tests immediately. Do not leave technical debt, as this component may be integrated by its parent in the very next step.
+**Goal**: Build a full-stack Next.js flight booking application by implementing structured requirements from the `@nomad/requirements` package.
 
-# Part 2. Core Workflow (AUTONOMOUS LOOP)
+**Approach**: Test-Driven Development with requirement-driven test coverage tracking.
 
-**Sequence**: `Initialize` -> `Start Services` -> `Loop [Fetch -> Design -> Implement -> Commit]` -> `Stop Services`
+**Tech Stack**:
 
-## Phase 1: Initialization & Startup (Execute ONCE)
+- **Framework**: Next.js 15 with App Router, React 19, TypeScript
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Better Auth
+- **Testing**: Vitest (unit/integration), Playwright (E2E)
+- **Styling**: Tailwind CSS v4
+- **Email**: React Email + Resend
+- **AI Integration**: Vercel AI SDK
 
-1. Call `init_project` to prepare the backlog.
-2. Call `start_dev_server` immediately.
-   - This launches the Frontend (Port 5173) and Backend (Port 3000).
-   - Wait for the tool to confirm services are running.
-   - **Crucial**: You need these running services to perform Real E2E Testing with Playwright later.
+## Part 1: Project Initialization
 
-## Phase 2: The Loop (Repeated)
+### Step 1.1: Create Next.js Project
 
-### Step 1: Fetch Mission
+```bash
+pnpm create next-app nomad-web --typescript --tailwind --app --src-dir
+cd nomad-web
+```
 
-1. Call `pop_next_requirement`. If `pop_next_requirement` returns "All requirements completed", **Call `stop_dev_server`** to release ports 3000 and 5173, then stop.
-2. **CRITICAL:** Read the output to identify your **Phase** (`RED` or `GREEN`) and **Task ID**.
-   - _Note: The system scheduler decides the order. You might Design A -> Design B -> Implement B. Trust the scheduler._
+### Step 1.2: Install Core Dependencies
 
-### Step 2: Execute Strategy
+```bash
+# Database & ORM
+pnpm add drizzle-orm pg
+pnpm add -D drizzle-kit @types/pg
 
-#### Terminal Test Execution:
+# Authentication
+pnpm add better-auth
 
-All tests must be executed from the **`backend/`** directory using the following commands:
-**Run All Tests**: `npm run test:all`
-**Unit & Integration Tests (Vitest)**:
+# Testing
+pnpm add -D vitest @vitest/ui @vitest/coverage-v8 @playwright/test
+pnpm add -D @testing-library/react @testing-library/jest-dom jsdom
 
-- Run All: `npm run test`
-- Run Single File: `npx vitest run <path/to/file.test.js>`
-  **End-to-End Tests (Playwright)**:
-- Run All: `npm run test:e2e`
-- Run Single File: `npx playwright test <path/to/file.spec.js> --reporter=list`
-  _(Note: Always use --reporter=list to ensure results are shown in terminal and process exits immediately. Don't use html reporter!)_
+# Validation & Forms
+pnpm add zod react-hook-form @hookform/resolvers
 
-#### IF Phase is RED (Design & Contract):
+# UI & Utilities
+pnpm add date-fns nanoid lucide-react
+pnpm add -D @faker-js/faker
 
-**Goal**: Define the "Shape", "Data", "Call Graph", and "Verification Method".
+# Email (if needed)
+pnpm add @react-email/components resend
+```
 
-1. **Analyze Full Requirements**:
-   - meticulous read the **Requirement Description**, **Frontend Description**, **Acceptance Scenarios**, and **Architecture Context** (Parent Constraints).
-   - **Note**: Some entity data in the **UI Description** may be **sample data**. You need to disign or modify data table to just support the functionality.
-   - Understand the complete user flow and data flow before designing.
+### Step 1.3: Setup Requirements Package
 
-2. **Design System & Schema**:
-   - **Frontend**: Define UI Component skeletons and basic CSS styles (consistent with UI description).
-   - **Backend**: Define API Route signatures and Service Function skeletons.
-   - **Database Evolution**: Design or modify table structures in `metadata.md` and `init_db.js`.
-   - **Idempotent DDL**: In `init_db.js`, strictly use `CREATE TABLE IF NOT EXISTS`. If adding columns to existing tables, append `ALTER TABLE ... ADD COLUMN ...` statements. Ensure all DDL logic is idempotent to preserve existing data.
-   - **Data Seeding Design**: Identify initial data required to make tests pass (e.g., existing records for a list view). Update `backend/src/database/seed_db.js` using `INSERT OR IGNORE` or checking for existing records to ensure incremental data addition without duplicates.
-   - **Call Graph**: Explicitly plan the interaction chain in code: `UI Component` calls `API` -> `API` calls `Function` -> `Function` operates `DB Table`.
-3. **Write Failing Tests**:
-   - **Analyze Sources**: Combine `Current Requirement`, `UI Description`, and `Acceptance Scenarios` to understand the user flow.
-   - **Data Prerequisite**: In Playwright/Vitest scripts, explicitly mention the required data state. If the test depends on specific records, ensure those records are defined in the `seed_db.js` plan.
-   - **Unit and Integration Tests (Vitest, Supertest)**: For backend Service/Logic layers. Write unit tests for functions and integration tests for APIs using **Vitest** and **Supertest**.
-   - **E2E Tests (Playwright)**:
-     - **MANDATORY**: Write **Playwright** test scripts for the current requirement.
-     - **Simulation**: Based on the requirement and scenarios, infer the expected behavior at different layers. Then, visit `http://localhost:5173`, simulate user clicks/inputs, and verify whether the UI changes, API responses, and database state match the expected outcomes.
+**Option A**: Copy requirements data locally
 
-     - **State**: Ensure the test fails now (RED) because the logic is not implemented.
-     - In the **backend/test-e2e** directory, create a test file named `RequirementID-ShortDescription.spec.js`. The test should simulate the user journey and verify that:
-       - The **UI** renders correctly, focusing on key UI changes.
-       - The **API** responds as expected.
-       - The **Database** state is correct after the interaction.
+```bash
+mkdir -p lib/requirements
+# Copy requirement definition files from packages/requirements/src/data
+```
 
-4. **Register Interfaces (Mandatory):**
-   - Call `register_interface` for EVERY new UI Component, API Route, or Function.
-   - This builds the system's dependency graph.
+**Option B**: Install as dependency (if published)
 
-#### IF Phase is GREEN (Implementation):
+```bash
+pnpm add @nomad/requirements
+```
 
-**Goal**: Implement the defined interfaces and pass ALL tests.
+### Step 1.4: Configure Testing Tools
 
-1. **Analyze Full Requirements**:
-   - Review the `Current Requirement`, `UI Description`, and `Acceptance Scenarios`.
-   - Check **Architecture Context**: Specifically `Your Contract` (Pending Implementation) and `Children Components` (Available Dependencies).
-2. **Execute TDD Loop (Implement & Verify)**:
-   - **Database Sync (Pre-test)**: Before running any tests, execute the database schema and seed scripts via terminal: `node src/database/init_db.js && node src/database/seed_db.js`. This ensures the 'Real Environment' matches the latest schema and data requirements.
-   - **Implement Logic**: Fill in the complex frontend logic, API handlers, and backend functions.
-   - **Connect Layers**: Ensure the Frontend actually calls the Backend, and the Backend operates the Database.
-   - **Iterate**: Run tests -> Fix code -> Run tests.
-   - **Goal**: Continue until **ALL** Unit Tests and E2E Tests (Playwright) pass.
+**vitest.config.ts**:
 
-### Step 3: Commit & Transition
+```typescript
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
-**Call `save_progress`:**
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./tests/setup.ts"],
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});
+```
 
-- **ID Requirement:** strictly use the `current_task_id` provided in the tool output.
-- `message`: "Feat(REQ-ID): [RED/GREEN] <Action Description>"
+**playwright.config.ts**:
 
-# Part 3. Strict Rules
+```typescript
+import { defineConfig } from "@playwright/test";
 
-1. **Frontend is a Shell**: The frontend is only a consumer. All logic and tests live in the `backend/` container.
-2. **Playwright is Law**: Acceptance Scenarios must be translated into executable Playwright code. No manual verification.
-3. **Real Environment**: Tests run against the actual processes, not mocks.
-4. **Autonomy**: Do not stop. Keep looping.
-5. **Schema Continuity**: Never use `DROP TABLE` unless explicitly instructed. Always prefer incremental `ALTER TABLE` or `CREATE TABLE IF NOT EXISTS` to maintain data continuity across the dependency tree.
-6. **Data-Driven Testing**: If a test fails because "data is missing," the fix must be applied to `seed_db.js` or the test's `beforeAll` setup, not by mocking the API.
+export default defineConfig({
+  testDir: "./tests/e2e",
+  fullyParallel: true,
+  use: {
+    baseURL: "http://localhost:3000",
+  },
+  webServer: {
+    command: "pnpm dev",
+    url: "http://localhost:3000",
+    reuseExistingServer: !process.env.CI,
+  },
+});
+```
+
+**package.json scripts**:
+
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed"
+  }
+}
+```
+
+### Step 1.5: Setup Database
+
+1. **Provision PostgreSQL database** (local, Docker, or cloud service like Neon/Supabase)
+
+2. **Configure environment variables** (`.env.local`):
+
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/nomad
+BETTER_AUTH_SECRET=your-secret-key
+BETTER_AUTH_URL=http://localhost:3000
+```
+
+3. **Create Drizzle configuration** (`drizzle.config.ts`):
+
+```typescript
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  schema: "./src/db/schema.ts",
+  out: "./drizzle",
+  dialect: "postgresql",
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+});
+```
+
+## Part 2: TDD Development Workflow
+
+### Core Principle: Test-First Development
+
+For each requirement, follow this cycle:
+
+1. **RED**: Write failing tests based on acceptance criteria
+2. **GREEN**: Implement minimum code to pass tests
+3. **REFACTOR**: Improve code quality while keeping tests green
+4. **TAG**: Link tests to requirements using JSDoc tags
+
+### Step 2.1: Select a Requirement
+
+From `@nomad/requirements`, choose a requirement to implement. Start with foundational requirements (authentication, user management) before dependent features.
+
+**Example**: REQ-U01 "手机号OTP注册" (Phone OTP Registration)
+
+### Step 2.2: Understand the Requirement
+
+Read thoroughly:
+
+- **Overview**: Feature description and purpose
+- **User Stories**: User perspectives and goals
+- **Acceptance Criteria**: Detailed scenarios with Given-When-Then steps
+- **Priority**: Implementation priority (Must Have, Should Have, etc.)
+- **Related Requirements**: Dependencies and related features
+
+### Step 2.3: Design Database Schema (RED Phase)
+
+Based on requirement data needs, design or extend database schema:
+
+**Example** (`src/db/schema/users.ts`):
+
+```typescript
+import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
+
+export const users = pgTable("users", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  phone: text("phone").unique(),
+  email: text("email").unique(),
+  passwordHash: text("password_hash").notNull(),
+  isVerified: boolean("is_verified").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const otpCodes = pgTable("otp_codes", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  identifier: text("identifier").notNull(), // phone or email
+  code: text("code").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  attempts: integer("attempts").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+```
+
+**Apply schema**:
+
+```bash
+pnpm drizzle-kit generate
+pnpm drizzle-kit migrate
+```
+
+### Step 2.4: Write Failing E2E Tests (RED Phase)
+
+Translate acceptance criteria into Playwright tests:
+
+**Example** (`tests/e2e/REQ-U01-phone-otp-registration.spec.ts`):
+
+```typescript
+/**
+ * E2E Test: Phone OTP Registration
+ * @requirement REQ-U01
+ */
+import { test, expect } from "@playwright/test";
+
+test.describe("Phone OTP Registration", () => {
+  /**
+   * Scenario 1: Successful two-step phone registration
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
+  test("should complete registration with valid phone and OTP", async ({
+    page,
+  }) => {
+    // Given: User is on registration page
+    await page.goto("/register");
+    await expect(page.locator("h1")).toContainText("注册");
+
+    // When: User enters valid phone number
+    await page.fill('input[name="phone"]', "13812345678");
+
+    // And: User passes Turnstile verification and clicks "Get Code"
+    await page.click('button:has-text("获取验证码")');
+
+    // And: User enters correct 6-digit OTP
+    await page.fill('input[name="otp"]', "123456");
+    await page.click('button:has-text("下一步")');
+
+    // Then: User should be directed to password setup page
+    await expect(page).toHaveURL("/register/set-password");
+    await expect(page.locator("h2")).toContainText("设置密码");
+
+    // When: User sets a strong password
+    await page.fill('input[name="password"]', "Test@1234");
+    await page.fill('input[name="confirmPassword"]', "Test@1234");
+    await page.click('button:has-text("完成注册")');
+
+    // Then: Account should be created and user redirected to home
+    await expect(page).toHaveURL("/");
+  });
+
+  /**
+   * Scenario 2: Invalid phone format validation
+   * @requirement REQ-U01
+   * @scenario 场景2
+   */
+  test("should show error for invalid phone format", async ({ page }) => {
+    await page.goto("/register");
+
+    // When: User enters invalid phone (not 11 digits)
+    await page.fill('input[name="phone"]', "1381234567");
+    await page.blur('input[name="phone"]');
+
+    // Then: Error message should be displayed
+    await expect(page.locator("text=请输入有效的11位手机号")).toBeVisible();
+
+    // And: "Get Code" button should be disabled
+    await expect(page.locator('button:has-text("获取验证码")')).toBeDisabled();
+  });
+});
+```
+
+**Verify tests fail**:
+
+```bash
+pnpm e2e
+# Tests should fail because features are not implemented yet
+```
+
+### Step 2.5: Write Unit/Integration Tests (RED Phase)
+
+Test business logic and API routes:
+
+**Example** (`tests/unit/auth/register.test.ts`):
+
+```typescript
+/**
+ * Unit Tests: Phone Registration Logic
+ * @requirement REQ-U01
+ */
+import { describe, test, expect, beforeEach } from "vitest";
+import { validatePhoneNumber, createOTPCode } from "@/lib/auth/otp";
+
+describe("Phone Registration Validation", () => {
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景2
+   */
+  test("should validate 11-digit Chinese phone numbers", () => {
+    expect(validatePhoneNumber("13812345678")).toBe(true);
+    expect(validatePhoneNumber("1381234567")).toBe(false);
+    expect(validatePhoneNumber("138123456789")).toBe(false);
+  });
+
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
+  test("should generate 6-digit OTP code", () => {
+    const code = createOTPCode();
+    expect(code).toMatch(/^\d{6}$/);
+  });
+});
+```
+
+**API Route Test** (`tests/integration/api/auth/send-otp.test.ts`):
+
+```typescript
+/**
+ * Integration Test: Send OTP API
+ * @requirement REQ-U01
+ */
+import { describe, test, expect } from "vitest";
+import { POST } from "@/app/api/auth/send-otp/route";
+
+describe("POST /api/auth/send-otp", () => {
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景1
+   */
+  test("should send OTP to valid phone number", async () => {
+    const request = new Request("http://localhost/api/auth/send-otp", {
+      method: "POST",
+      body: JSON.stringify({ phone: "13812345678" }),
+    });
+
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.success).toBe(true);
+  });
+
+  /**
+   * @requirement REQ-U01
+   * @scenario 场景3
+   */
+  test("should reject already registered phone", async () => {
+    // Setup: Create user with phone
+    // Test: Attempt to send OTP to existing phone
+    // Assert: Should return error
+  });
+});
+```
+
+**Verify tests fail**:
+
+```bash
+pnpm test:run
+# Tests should fail because implementation doesn't exist yet
+```
+
+### Step 2.6: Implement Features (GREEN Phase)
+
+Now implement the minimum code to make tests pass.
+
+**Implementation order**:
+
+1. **Data layer**: Database queries (Drizzle)
+2. **Business logic**: Service functions
+3. **API routes**: Next.js Route Handlers
+4. **UI components**: React components
+5. **Integration**: Connect all layers
+
+**Example** - Data Access (`src/db/queries/users.ts`):
+
+```typescript
+import { db } from "@/db";
+import { users, otpCodes } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+export async function findUserByPhone(phone: string) {
+  return db.query.users.findFirst({
+    where: eq(users.phone, phone),
+  });
+}
+
+export async function createOTP(identifier: string, code: string) {
+  return db.insert(otpCodes).values({
+    identifier,
+    code,
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+  });
+}
+```
+
+**Example** - Business Logic (`src/lib/auth/otp.ts`):
+
+```typescript
+export function validatePhoneNumber(phone: string): boolean {
+  return /^1\d{10}$/.test(phone);
+}
+
+export function createOTPCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+export async function sendOTP(phone: string): Promise<void> {
+  // Validate phone
+  if (!validatePhoneNumber(phone)) {
+    throw new Error("Invalid phone number");
+  }
+
+  // Check if already registered
+  const existingUser = await findUserByPhone(phone);
+  if (existingUser) {
+    throw new Error("Phone number already registered");
+  }
+
+  // Generate and store OTP
+  const code = createOTPCode();
+  await createOTP(phone, code);
+
+  // Send SMS (integrate with SMS provider)
+  await sendSMS(phone, `Your verification code is: ${code}`);
+}
+```
+
+**Example** - API Route (`src/app/api/auth/send-otp/route.ts`):
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+import { sendOTP } from "@/lib/auth/otp";
+import { z } from "zod";
+
+const schema = z.object({
+  phone: z.string().regex(/^1\d{10}$/, "Invalid phone number"),
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { phone } = schema.parse(body);
+
+    await sendOTP(phone);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.errors }, { status: 400 });
+    }
+    return NextResponse.json({ error: "Failed to send OTP" }, { status: 500 });
+  }
+}
+```
+
+**Example** - UI Component (`src/app/register/page.tsx`):
+
+```typescript
+'use client';
+
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  phone: z.string().regex(/^1\d{10}$/, '请输入有效的11位手机号'),
+});
+
+export default function RegisterPage() {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: { phone: string }) => {
+    const response = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    // Handle response...
+  };
+
+  return (
+    <div>
+      <h1>注册</h1>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input
+          type="tel"
+          {...register('phone')}
+          placeholder="手机号"
+        />
+        {errors.phone && <p>{errors.phone.message}</p>}
+        <button type="button">获取验证码</button>
+      </form>
+    </div>
+  );
+}
+```
+
+### Step 2.7: Run Tests and Iterate (GREEN Phase)
+
+```bash
+# Run unit/integration tests
+pnpm test:run
+
+# Run E2E tests
+pnpm e2e
+
+# Run with coverage
+pnpm test:coverage
+```
+
+**Iterate**: Fix failing tests by adjusting implementation. Continue until all tests pass.
+
+### Step 2.8: Refactor (REFACTOR Phase)
+
+With tests passing:
+
+- Extract reusable logic into utilities
+- Improve code organization
+- Add error handling
+- Optimize performance
+- Ensure code quality
+
+**Important**: Keep tests green during refactoring.
+
+### Step 2.9: Generate Coverage Report
+
+Track which requirements are tested:
+
+```bash
+pnpm test:ac-coverage --output coverage-report.json
+```
+
+This analyzes JSDoc `@requirement` and `@scenario` tags to show requirement coverage.
+
+### Step 2.10: Commit Progress
+
+```bash
+git add .
+git commit -m "feat(REQ-U01): implement phone OTP registration"
+```
+
+**Commit message format**: `feat(REQ-ID): description`
+
+## Part 3: Implementation Guidelines
+
+### 3.1 Requirement Dependencies
+
+Implement requirements in dependency order:
+
+1. **Foundation**: Authentication, user management (REQ-U01, REQ-U02, REQ-U03)
+2. **Core Features**: Flight search, booking (REQ-F01, REQ-F02, REQ-O01)
+3. **Supporting Features**: Payment, notifications (REQ-P01, REQ-N01)
+4. **Enhancements**: User preferences, analytics (REQ-U10, REQ-A01)
+
+### 3.2 Database Schema Evolution
+
+**Never use `DROP TABLE`** in migrations. Use additive changes:
+
+```typescript
+// Good: Additive migration
+await db.schema.alterTable("users").addColumn("avatar_url", "text");
+
+// Bad: Destructive migration
+await db.schema.dropTable("users");
+```
+
+### 3.3 Test Data Management
+
+**Seed critical test data** (`src/db/seed.ts`):
+
+```typescript
+import { db } from './index';
+import { users, flights } from './schema';
+
+export async function seed() {
+  // Insert test users
+  await db.insert(users).values([
+    { phone: '13800000001', passwordHash: '...' },
+  ]).onConflictDoNothing();
+
+  // Insert test flights
+  await db.insert(flights).values([
+    { flightNumber: 'CA1234', ... },
+  ]).onConflictDoNothing();
+}
+```
+
+Run before tests:
+
+```bash
+pnpm tsx src/db/seed.ts
+```
+
+### 3.4 Test Organization
+
+```
+tests/
+├── unit/              # Pure logic tests (fast)
+│   ├── lib/
+│   └── utils/
+├── integration/       # API route tests (medium)
+│   └── api/
+├── e2e/              # Full user journey tests (slow)
+│   ├── REQ-U01-phone-registration.spec.ts
+│   └── REQ-F01-flight-search.spec.ts
+└── setup.ts          # Test environment setup
+```
+
+### 3.5 JSDoc Tagging Convention
+
+Tag every test with requirements:
+
+```typescript
+/**
+ * Test description
+ * @requirement REQ-U01
+ * @scenario 场景1
+ */
+test("test case", () => {
+  // test implementation
+});
+```
+
+**Benefits**:
+
+- Automated coverage tracking
+- Traceability between code and requirements
+- Quick navigation (search `@requirement REQ-U01`)
+
+### 3.6 Error Handling Strategy
+
+Use consistent error patterns:
+
+```typescript
+// Define error classes
+class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+// Handle in API routes
+try {
+  await registerUser(data);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+  return NextResponse.json({ error: "Internal error" }, { status: 500 });
+}
+```
+
+### 3.7 Environment Configuration
+
+Separate configs for different environments:
+
+```env
+# .env.local (development)
+DATABASE_URL=postgresql://localhost:5432/nomad_dev
+NODE_ENV=development
+
+# .env.test (testing)
+DATABASE_URL=postgresql://localhost:5432/nomad_test
+NODE_ENV=test
+
+# .env.production (production)
+DATABASE_URL=postgresql://prod-host/nomad
+NODE_ENV=production
+```
+
+## Part 4: Validation & Quality Checks
+
+Before considering a requirement complete:
+
+### 4.1 Test Coverage
+
+- [ ] All acceptance criteria have corresponding E2E tests
+- [ ] Critical business logic has unit tests
+- [ ] API routes have integration tests
+- [ ] All tests pass consistently
+- [ ] Coverage report shows requirement is tested
+
+### 4.2 Functional Verification
+
+- [ ] Feature works in browser (manual smoke test)
+- [ ] Happy path flows smoothly
+- [ ] Error cases display appropriate messages
+- [ ] Loading states are handled
+- [ ] Forms validate correctly
+
+### 4.3 Code Quality
+
+- [ ] No TypeScript errors (`pnpm type-check`)
+- [ ] No linting errors
+- [ ] Consistent code style
+- [ ] Reasonable component/function sizes
+- [ ] Clear variable/function names
+
+### 4.4 Documentation
+
+- [ ] Complex logic has explanatory comments
+- [ ] Tests are tagged with `@requirement` and `@scenario`
+- [ ] API routes have clear input/output contracts
+- [ ] Environment variables are documented
+
+## Part 5: Iteration Strategy
+
+### Sequential Implementation
+
+Implement requirements one at a time:
+
+1. **Select requirement** from `@nomad/requirements`
+2. **Understand** all acceptance criteria
+3. **Design** database schema changes
+4. **Write failing tests** (RED)
+5. **Implement features** (GREEN)
+6. **Refactor** code (REFACTOR)
+7. **Verify** all tests pass
+8. **Commit** changes
+9. **Repeat** for next requirement
+
+### Parallel Development
+
+For independent requirements, work in separate branches:
+
+```bash
+# Branch for user module
+git checkout -b feat/user-module
+# Implement REQ-U01, REQ-U02, REQ-U03...
+
+# Branch for flight module
+git checkout -b feat/flight-module
+# Implement REQ-F01, REQ-F02...
+```
+
+Merge when complete and tested.
+
+### Integration Points
+
+After implementing multiple requirements:
+
+- **Integration testing**: Test cross-module interactions
+- **System testing**: Verify end-to-end user journeys
+- **Performance testing**: Check response times
+- **Security testing**: Validate auth flows
+
+## Part 6: Common Patterns
+
+### 6.1 Form Validation Pattern
+
+```typescript
+// Zod schema
+const schema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8, "Password too short"),
+});
+
+// React Hook Form
+const { register, handleSubmit } = useForm({
+  resolver: zodResolver(schema),
+});
+```
+
+### 6.2 API Route Pattern
+
+```typescript
+// route.ts
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validated = schema.parse(body);
+
+    const result = await serviceFunction(validated);
+
+    return NextResponse.json(result);
+  } catch (error) {
+    // Handle errors
+  }
+}
+```
+
+### 6.3 Database Query Pattern
+
+```typescript
+// queries/entity.ts
+export async function findById(id: string) {
+  return db.query.entity.findFirst({
+    where: eq(entity.id, id),
+  });
+}
+
+export async function create(data: NewEntity) {
+  return db.insert(entity).values(data).returning();
+}
+```
+
+### 6.4 Server Action Pattern (for forms)
+
+```typescript
+// actions/entity.ts
+"use server";
+
+export async function createEntity(formData: FormData) {
+  const data = {
+    name: formData.get("name") as string,
+    // ...
+  };
+
+  const validated = schema.parse(data);
+  await db.insert(entity).values(validated);
+
+  revalidatePath("/entities");
+  redirect("/entities");
+}
+```
+
+## Part 7: Success Criteria
+
+The replication is complete when:
+
+1. **All Must Have requirements** are implemented and tested
+2. **All tests pass** consistently (`pnpm test:run && pnpm e2e`)
+3. **Coverage report** shows all requirements have associated tests
+4. **Application runs** without errors (`pnpm build && pnpm start`)
+5. **Core user journeys** work end-to-end:
+   - User registration and login
+   - Flight search and booking
+   - Order management
+   - Payment processing
+
+## Summary
+
+This workflow emphasizes:
+
+- **Requirement-driven development**: Each feature maps to a requirement
+- **Test-first approach**: Write tests before implementation
+- **Continuous verification**: Tests run frequently to catch regressions
+- **Traceability**: JSDoc tags link code to requirements
+- **Quality focus**: Multiple test layers ensure robustness
+
+By following this workflow, an AI agent can systematically build a production-quality application from structured requirements.
