@@ -1,5 +1,5 @@
-import { Toaster } from "@nomad/ui/components/primitives/sonner";
-import { UiProvider } from "@nomad/ui/platform";
+import { Toaster } from "@ukesjtu/nomad-ui/components/primitives/sonner";
+import { UiProvider } from "@ukesjtu/nomad-ui/platform";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";

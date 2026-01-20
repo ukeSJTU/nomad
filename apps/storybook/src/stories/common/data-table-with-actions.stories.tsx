@@ -1,12 +1,12 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   type BatchAction,
   type ColumnDefinition,
   DataTableWithActions,
   type RowAction,
-} from "@nomad/ui/components/common/data-table-with-actions";
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Input } from "@nomad/ui/components/primitives/input";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/common/data-table-with-actions";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
 import { useState } from "react";
 
 interface User {

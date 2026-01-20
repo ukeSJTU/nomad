@@ -9,4 +9,4 @@ export {
   type DataTableWithActionsProps,
   type PaginationConfig,
   type RowAction,
-} from "@nomad/ui/components/common/data-table-with-actions";
+} from "@ukesjtu/nomad-ui/components/common/data-table-with-actions";

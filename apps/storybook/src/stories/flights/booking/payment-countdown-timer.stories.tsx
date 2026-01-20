@@ -1,5 +1,5 @@
-import { PaymentCountdownTimer } from "@nomad/ui/components/flights/booking";
 import type { Meta, StoryObj } from "@storybook/react";
+import { PaymentCountdownTimer } from "@ukesjtu/nomad-ui/components/flights/booking";
 
 const meta: Meta<typeof PaymentCountdownTimer> = {
   title: "Flights/Booking/PaymentCountdownTimer",

@@ -1,4 +1,4 @@
-import { ConfirmationFlightDetails as UiConfirmationFlightDetails } from "@nomad/ui/components/flights/booking";
+import { ConfirmationFlightDetails as UiConfirmationFlightDetails } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { createClientLogger } from "@/infra/logging/client-logger";

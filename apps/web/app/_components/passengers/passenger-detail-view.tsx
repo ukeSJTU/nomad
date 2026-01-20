@@ -1,4 +1,4 @@
-import { PassengerDetailView as PassengerDetailViewUI } from "@nomad/ui/components/passengers";
+import { PassengerDetailView as PassengerDetailViewUI } from "@ukesjtu/nomad-ui/components/passengers";
 import { formatDateString } from "@/lib/format";
 import type { PassengerDetailData } from "@/types/dto";
 

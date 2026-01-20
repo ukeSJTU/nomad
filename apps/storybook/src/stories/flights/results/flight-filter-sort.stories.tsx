@@ -1,10 +1,10 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type AirlineOption,
   FlightFilterSort,
   type FlightFilters,
   type SortOption,
-} from "@nomad/ui/components/flights/results";
-import type { Meta, StoryObj } from "@storybook/react-vite";
+} from "@ukesjtu/nomad-ui/components/flights/results";
 import { useState } from "react";
 
 const meta = {

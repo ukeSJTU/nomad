@@ -1,6 +1,6 @@
 "use client";
 
-import { LinkButton as LinkButtonUI } from "@nomad/ui/components/auth/link-button";
+import { LinkButton as LinkButtonUI } from "@ukesjtu/nomad-ui/components/auth/link-button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { linkSocialAccountAction } from "@/app/_actions/auth";

@@ -1,6 +1,6 @@
-import type { OrderListItem } from "@nomad/ui/components/user";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { OrderListItem } from "@ukesjtu/nomad-ui/components/user";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import OrderCard from "./order-card";

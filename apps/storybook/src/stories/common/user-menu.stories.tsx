@@ -1,5 +1,5 @@
-import { UserMenu } from "@nomad/ui/components/common/user-menu";
 import type { Meta, StoryObj } from "@storybook/react";
+import { UserMenu } from "@ukesjtu/nomad-ui/components/common/user-menu";
 
 const meta = {
   title: "Common/UserMenu",

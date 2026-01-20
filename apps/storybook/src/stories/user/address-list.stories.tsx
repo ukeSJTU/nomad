@@ -1,9 +1,9 @@
-import { Form } from "@nomad/ui/components/primitives/form";
+import type { Meta, StoryObj } from "@storybook/react";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
 import {
   AddressList,
   type AddressListItem,
-} from "@nomad/ui/components/user/address";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/user/address";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { fn } from "storybook/test";

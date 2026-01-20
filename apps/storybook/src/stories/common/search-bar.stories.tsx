@@ -1,5 +1,5 @@
-import { SearchBar } from "@nomad/ui/components/common";
 import type { Meta, StoryObj } from "@storybook/react";
+import { SearchBar } from "@ukesjtu/nomad-ui/components/common";
 import { useState } from "react";
 
 const meta = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchHistorySection } from "@nomad/ui/components/flights/search";
+import { SearchHistorySection } from "@ukesjtu/nomad-ui/components/flights/search";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

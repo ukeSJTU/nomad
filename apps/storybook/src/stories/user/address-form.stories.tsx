@@ -1,6 +1,6 @@
-import { Form } from "@nomad/ui/components/primitives/form";
-import { AddressForm } from "@nomad/ui/components/user/address";
 import type { Meta, StoryObj } from "@storybook/react";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
+import { AddressForm } from "@ukesjtu/nomad-ui/components/user/address";
 import { useForm } from "react-hook-form";
 import { fn } from "storybook/test";
 

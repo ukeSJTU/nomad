@@ -1,7 +1,7 @@
 import {
   type DeleteOrderDialogProps,
   DeleteOrderDialog as DeleteOrderDialogUI,
-} from "@nomad/ui/components/user";
+} from "@ukesjtu/nomad-ui/components/user";
 
 /**
  * Delete Order Confirmation Dialog Component (Container)

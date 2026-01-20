@@ -5,7 +5,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@nomad/ui/components/primitives/breadcrumb";
+} from "@ukesjtu/nomad-ui/components/primitives/breadcrumb";
 import { getPopularAirportsAction } from "@/actions/airport-guide";
 import { AirportList, GuideSidebar } from "@/components/flights";
 

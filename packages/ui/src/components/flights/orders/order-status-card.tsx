@@ -1,6 +1,12 @@
-import { Alert, AlertDescription } from "@nomad/ui/components/primitives/alert";
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Card, CardContent } from "@nomad/ui/components/primitives/card";
+import {
+  Alert,
+  AlertDescription,
+} from "@ukesjtu/nomad-ui/components/primitives/alert";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import {
+  Card,
+  CardContent,
+} from "@ukesjtu/nomad-ui/components/primitives/card";
 import { AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react";
 
 export type OrderStatus =

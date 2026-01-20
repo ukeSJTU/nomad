@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Skeleton } from "@nomad/ui/components/primitives/skeleton";
-import { cn } from "@nomad/ui/lib/utils";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Skeleton } from "@ukesjtu/nomad-ui/components/primitives/skeleton";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // ============================================================

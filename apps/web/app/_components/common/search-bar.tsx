@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchBar as SearchBarUI } from "@nomad/ui/components/common";
+import { SearchBar as SearchBarUI } from "@ukesjtu/nomad-ui/components/common";
 import { useState } from "react";
 import { toast } from "sonner";
 

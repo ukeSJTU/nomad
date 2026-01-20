@@ -1,7 +1,7 @@
 import {
   type AirportListProps,
   AirportList as AirportListUI,
-} from "@nomad/ui/components/flights/guide";
+} from "@ukesjtu/nomad-ui/components/flights/guide";
 
 export function AirportList({
   title,

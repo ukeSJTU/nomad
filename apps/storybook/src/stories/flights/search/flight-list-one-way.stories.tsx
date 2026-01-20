@@ -1,6 +1,6 @@
-import type { FlightCardProps } from "@nomad/ui/components/flights/results";
-import { FlightListOneWay } from "@nomad/ui/components/flights/search";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { FlightCardProps } from "@ukesjtu/nomad-ui/components/flights/results";
+import { FlightListOneWay } from "@ukesjtu/nomad-ui/components/flights/search";
 
 const meta = {
   title: "Flights/Search/FlightListOneWay",

@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@nomad/ui/components/primitives/form";
-import { ChangePasswordForm } from "@nomad/ui/components/security";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
+import { ChangePasswordForm } from "@ukesjtu/nomad-ui/components/security";
 import { useForm } from "react-hook-form";
 import {
   type ChangePasswordData,

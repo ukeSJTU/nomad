@@ -1,4 +1,4 @@
-import "@nomad/ui/globals.css";
+import "@ukesjtu/nomad-ui/globals.css";
 import "./globals.css";
 
 import { type ReactNode } from "react";

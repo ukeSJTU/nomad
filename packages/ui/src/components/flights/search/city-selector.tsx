@@ -1,19 +1,19 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@nomad/ui/components/primitives/dropdown-menu";
-import { Separator } from "@nomad/ui/components/primitives/separator";
+} from "@ukesjtu/nomad-ui/components/primitives/dropdown-menu";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/primitives/tabs";
+} from "@ukesjtu/nomad-ui/components/primitives/tabs";
 import { useMemo, useState } from "react";
 import type { CityData } from "./types";
 

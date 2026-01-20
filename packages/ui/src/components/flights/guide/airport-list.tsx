@@ -1,7 +1,7 @@
 "use client";
 
-import { AirportListProps } from "@nomad/ui/components/flights/guide/types";
-import { useUiComponents } from "@nomad/ui/platform";
+import { AirportListProps } from "@ukesjtu/nomad-ui/components/flights/guide/types";
+import { useUiComponents } from "@ukesjtu/nomad-ui/platform";
 
 export function AirportList({
   title,

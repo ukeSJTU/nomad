@@ -1,5 +1,5 @@
-import { DestinationGuide } from "@nomad/ui/components/flights/guide";
 import type { Meta, StoryObj } from "@storybook/react";
+import { DestinationGuide } from "@ukesjtu/nomad-ui/components/flights/guide";
 
 const meta = {
   title: "Flights/Guide/DestinationGuide",

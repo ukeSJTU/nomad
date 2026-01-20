@@ -5,7 +5,7 @@ import {
   type SignupMethod,
   UnifiedSignupForm,
   type VerificationFormData,
-} from "@nomad/ui/components/auth";
+} from "@ukesjtu/nomad-ui/components/auth";
 import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";

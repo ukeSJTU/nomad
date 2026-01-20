@@ -4,10 +4,13 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@nomad/ui/components/primitives/avatar";
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Card, CardContent } from "@nomad/ui/components/primitives/card";
-import { cn } from "@nomad/ui/lib/utils";
+} from "@ukesjtu/nomad-ui/components/primitives/avatar";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import {
+  Card,
+  CardContent,
+} from "@ukesjtu/nomad-ui/components/primitives/card";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 

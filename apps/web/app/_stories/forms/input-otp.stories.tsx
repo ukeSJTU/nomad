@@ -1,10 +1,10 @@
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@nomad/ui/components/primitives/input-otp";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+} from "@ukesjtu/nomad-ui/components/primitives/input-otp";
 import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useState } from "react";
 

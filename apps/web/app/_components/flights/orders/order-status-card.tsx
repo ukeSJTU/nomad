@@ -3,7 +3,7 @@
 import {
   OrderStatusCard as OrderStatusCardUI,
   type OrderStatusCardProps as OrderStatusCardUIProps,
-} from "@nomad/ui/components/flights/orders";
+} from "@ukesjtu/nomad-ui/components/flights/orders";
 import { useEffect, useState } from "react";
 import type { OrderStatusCardData } from "@/types/dto";
 

@@ -8,4 +8,4 @@
 export {
   FlightCardSkeleton,
   type FlightCardSkeletonProps,
-} from "@nomad/ui/components/flights/results";
+} from "@ukesjtu/nomad-ui/components/flights/results";

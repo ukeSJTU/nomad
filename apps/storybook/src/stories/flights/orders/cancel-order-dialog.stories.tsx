@@ -1,6 +1,6 @@
-import { CancelOrderDialog } from "@nomad/ui/components/flights/orders";
-import { Button } from "@nomad/ui/components/primitives/button";
 import type { Meta, StoryObj } from "@storybook/react";
+import { CancelOrderDialog } from "@ukesjtu/nomad-ui/components/flights/orders";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import { useState } from "react";
 
 const meta: Meta<typeof CancelOrderDialog> = {

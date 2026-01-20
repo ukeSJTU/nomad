@@ -7,8 +7,8 @@
 
 "use client";
 
-import type { FlightCardProps } from "@nomad/ui/components/flights/results";
-import { FlightListOneWay as FlightListOneWayUi } from "@nomad/ui/components/flights/search";
+import type { FlightCardProps } from "@ukesjtu/nomad-ui/components/flights/results";
+import { FlightListOneWay as FlightListOneWayUi } from "@ukesjtu/nomad-ui/components/flights/search";
 import { useRouter } from "next/navigation";
 import { FLIGHT_UI_TEXT } from "@/config/ui";
 import {

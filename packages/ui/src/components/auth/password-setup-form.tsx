@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
+} from "@ukesjtu/nomad-ui/components/primitives/form";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
 import { Check, Eye, EyeOff, X } from "lucide-react";
 import { useState } from "react";
 import type { Control, FieldErrors } from "react-hook-form";

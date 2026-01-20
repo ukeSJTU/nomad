@@ -1,5 +1,5 @@
-import { AirportWeather } from "@nomad/ui/components/flights/guide";
 import type { Meta, StoryObj } from "@storybook/react";
+import { AirportWeather } from "@ukesjtu/nomad-ui/components/flights/guide";
 
 const meta = {
   title: "Flights/Guide/AirportWeather",

@@ -1,6 +1,6 @@
-import { SuccessDialog } from "@nomad/ui/components/user";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { SuccessDialog } from "@ukesjtu/nomad-ui/components/user";
 import { describe, expect, it, vi } from "vitest";
 
 describe("SuccessDialog Component", () => {

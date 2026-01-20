@@ -13,7 +13,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 // Mock the UI components from @nomad/ui
-vi.mock("@nomad/ui/components/user", () => ({
+vi.mock("@ukesjtu/nomad-ui/components/user", () => ({
   UserInfoForm: ({
     onEditStart,
     onEditCancel,

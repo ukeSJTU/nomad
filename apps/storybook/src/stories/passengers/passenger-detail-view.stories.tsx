@@ -1,8 +1,8 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   type PassengerDetailData,
   PassengerDetailView,
-} from "@nomad/ui/components/passengers";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/passengers";
 
 const mockPassenger: PassengerDetailData = {
   name: "张三",

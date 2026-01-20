@@ -5,7 +5,7 @@ import {
   PassengerFormCard as PassengerFormCardUI,
   type PassengerFormData,
   type SavedPassenger,
-} from "@nomad/ui/components/flights/booking";
+} from "@ukesjtu/nomad-ui/components/flights/booking";
 import { shouldShowDeleteButton } from "@/hooks/use-passenger-forms";
 
 export type { PassengerFormData, SavedPassenger };

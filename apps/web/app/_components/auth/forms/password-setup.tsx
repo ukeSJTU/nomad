@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   PasswordSetupForm,
   type PasswordSetupFormData,
-} from "@nomad/ui/components/auth";
-import { Form } from "@nomad/ui/components/primitives/form";
+} from "@ukesjtu/nomad-ui/components/auth";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
 import { useForm } from "react-hook-form";
 import zxcvbn from "zxcvbn";
 import { createClientLogger } from "@/infra/logging/client-logger";

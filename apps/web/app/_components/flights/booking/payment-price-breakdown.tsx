@@ -1,4 +1,4 @@
-import { PaymentPriceBreakdown as PaymentPriceBreakdownUI } from "@nomad/ui/components/flights/booking";
+import { PaymentPriceBreakdown as PaymentPriceBreakdownUI } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { formatCurrency } from "@/lib/format";
 
 interface PaymentPriceBreakdownProps {

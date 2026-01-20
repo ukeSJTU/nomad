@@ -1,19 +1,19 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
+} from "@ukesjtu/nomad-ui/components/primitives/form";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
 import {
   RadioGroup,
   RadioGroupItem,
-} from "@nomad/ui/components/primitives/radio-group";
-import { Separator } from "@nomad/ui/components/primitives/separator";
+} from "@ukesjtu/nomad-ui/components/primitives/radio-group";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
 import type { Control, FieldErrors } from "react-hook-form";
 
 /**

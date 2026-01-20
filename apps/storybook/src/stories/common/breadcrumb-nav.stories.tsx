@@ -1,5 +1,5 @@
-import { BreadcrumbNav } from "@nomad/ui/components/common";
 import type { Meta, StoryObj } from "@storybook/react";
+import { BreadcrumbNav } from "@ukesjtu/nomad-ui/components/common";
 
 const meta = {
   title: "Common/BreadcrumbNav",

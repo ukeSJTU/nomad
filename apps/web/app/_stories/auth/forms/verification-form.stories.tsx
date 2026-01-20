@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import {
   VerificationForm,
   type VerificationFormData,
-} from "@nomad/ui/components/auth";
-import { Form } from "@nomad/ui/components/primitives/form";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+} from "@ukesjtu/nomad-ui/components/auth";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";

@@ -1,6 +1,6 @@
-import type { CityData } from "@nomad/ui/components/flights/search";
-import { CityInput } from "@nomad/ui/components/flights/search";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { CityData } from "@ukesjtu/nomad-ui/components/flights/search";
+import { CityInput } from "@ukesjtu/nomad-ui/components/flights/search";
 import { useState } from "react";
 
 // Mock city data for Storybook

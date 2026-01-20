@@ -4,7 +4,7 @@
  * Container component that wraps the UI component and provides formatting logic
  */
 
-import { FlightSearchHeader as FlightSearchHeaderUI } from "@nomad/ui/components/flights/search";
+import { FlightSearchHeader as FlightSearchHeaderUI } from "@ukesjtu/nomad-ui/components/flights/search";
 import { FLIGHT_UI_TEXT, ROUND_TRIP_STEPS } from "@/config/ui";
 import { formatDateWithWeekday, formatTime } from "@/lib/format";
 import type { CityData } from "@/types/dto";

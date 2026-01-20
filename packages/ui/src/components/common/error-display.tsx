@@ -4,8 +4,8 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@nomad/ui/components/primitives/alert";
-import { Button } from "@nomad/ui/components/primitives/button";
+} from "@ukesjtu/nomad-ui/components/primitives/alert";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   Card,
   CardContent,
@@ -13,8 +13,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/primitives/card";
-import { useUiComponents } from "@nomad/ui/platform";
+} from "@ukesjtu/nomad-ui/components/primitives/card";
+import { useUiComponents } from "@ukesjtu/nomad-ui/platform";
 import { AlertCircle, AlertTriangle, XCircle } from "lucide-react";
 
 export type ErrorType = "warning" | "error" | "info";

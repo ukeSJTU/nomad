@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import { Trash2 } from "lucide-react";
 
 import { SearchHistoryCard } from "./search-history-card";

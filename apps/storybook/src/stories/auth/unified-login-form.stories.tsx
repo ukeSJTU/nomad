@@ -1,10 +1,10 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   type LoginMethod,
   type OtpLoginFormData,
   type PasswordLoginFormData,
   UnifiedLoginForm,
-} from "@nomad/ui/components/auth";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { fn } from "storybook/test";

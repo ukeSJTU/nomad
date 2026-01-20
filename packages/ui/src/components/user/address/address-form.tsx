@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Checkbox } from "@nomad/ui/components/primitives/checkbox";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { Checkbox } from "@ukesjtu/nomad-ui/components/primitives/checkbox";
 import {
   FormControl,
   FormDescription,
@@ -9,8 +9,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@nomad/ui/components/primitives/form";
-import { Input } from "@nomad/ui/components/primitives/input";
+} from "@ukesjtu/nomad-ui/components/primitives/form";
+import { Input } from "@ukesjtu/nomad-ui/components/primitives/input";
 import { Loader2 } from "lucide-react";
 import type { Control, FieldErrors } from "react-hook-form";
 

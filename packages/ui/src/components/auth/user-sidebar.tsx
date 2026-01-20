@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@nomad/ui/components/primitives/collapsible";
+} from "@ukesjtu/nomad-ui/components/primitives/collapsible";
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
 import type {

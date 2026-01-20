@@ -1,7 +1,7 @@
 "use client";
 
-import { SiteHeader } from "@nomad/ui/components/common/site-header";
-import { UiProvider } from "@nomad/ui/platform";
+import { SiteHeader } from "@ukesjtu/nomad-ui/components/common/site-header";
+import { UiProvider } from "@ukesjtu/nomad-ui/platform";
 import {
   Img,
   interpolate,

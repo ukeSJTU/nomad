@@ -20,7 +20,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@nomad/ui": "workspace:*",
+    "@ukesjtu/nomad-ui": "workspace:*",
     "@remotion/cli": "4.0.375",
     "@remotion/lambda": "4.0.375",
     "@remotion/paths": "4.0.375",

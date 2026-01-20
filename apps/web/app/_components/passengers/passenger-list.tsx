@@ -1,6 +1,6 @@
 "use client";
 
-import { PassengerList as PassengerListUI } from "@nomad/ui/components/passengers";
+import { PassengerList as PassengerListUI } from "@ukesjtu/nomad-ui/components/passengers";
 import type { PassengerDTO } from "@/types/dto";
 
 interface PassengerListProps {

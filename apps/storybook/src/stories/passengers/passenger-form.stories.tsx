@@ -1,8 +1,8 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   PassengerForm,
   type PassengerFormData,
-} from "@nomad/ui/components/passengers";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/passengers";
 import { useForm } from "react-hook-form";
 import { fn } from "storybook/test";
 

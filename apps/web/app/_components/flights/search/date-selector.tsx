@@ -3,7 +3,7 @@
 import {
   OneWaySelector,
   RoundTripSelector,
-} from "@nomad/ui/components/flights/search";
+} from "@ukesjtu/nomad-ui/components/flights/search";
 import { type TripType, useDateSelector } from "@/hooks/use-date-selector";
 import { getRelativeDateLabel, getWeekdayLabel } from "@/lib/format/date-utils";
 

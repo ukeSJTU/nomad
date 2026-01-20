@@ -1,1 +1,1 @@
-export { default } from "@nomad/ui/postcss.config";
+export { default } from "@ukesjtu/nomad-ui/postcss.config";

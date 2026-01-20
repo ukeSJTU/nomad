@@ -1,5 +1,5 @@
-import { OneWaySelector } from "@nomad/ui/components/flights/search";
 import type { Meta, StoryObj } from "@storybook/react";
+import { OneWaySelector } from "@ukesjtu/nomad-ui/components/flights/search";
 import { useState } from "react";
 
 const mockGetRelativeDateLabel = (date: Date, today: Date): string => {

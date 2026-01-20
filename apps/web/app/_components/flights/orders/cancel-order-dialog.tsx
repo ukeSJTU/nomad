@@ -1,2 +1,2 @@
-export type { CancelOrderDialogProps } from "@nomad/ui/components/flights/orders";
-export { CancelOrderDialog } from "@nomad/ui/components/flights/orders";
+export type { CancelOrderDialogProps } from "@ukesjtu/nomad-ui/components/flights/orders";
+export { CancelOrderDialog } from "@ukesjtu/nomad-ui/components/flights/orders";

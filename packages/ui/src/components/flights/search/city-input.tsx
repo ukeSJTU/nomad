@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import { ArrowLeftRight } from "lucide-react";
 import { useState } from "react";
 import { CitySelector } from "./city-selector";

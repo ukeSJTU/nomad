@@ -9,9 +9,9 @@ export type {
   VerificationFormData,
   VerificationFormProps,
   VerificationMode,
-} from "@nomad/ui/components/auth";
+} from "@ukesjtu/nomad-ui/components/auth";
 // Re-export VerificationForm from packages/ui
-export { VerificationForm } from "@nomad/ui/components/auth";
+export { VerificationForm } from "@ukesjtu/nomad-ui/components/auth";
 // Forms
 export { default as PasswordSetupForm } from "./forms/password-setup";
 export { default as UnifiedLoginForm } from "./forms/unified-login";

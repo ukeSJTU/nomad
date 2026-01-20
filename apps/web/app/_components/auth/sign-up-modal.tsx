@@ -1,2 +1,2 @@
-export type { SignUpModalProps } from "@nomad/ui/components/auth";
-export { SignUpModal } from "@nomad/ui/components/auth";
+export type { SignUpModalProps } from "@ukesjtu/nomad-ui/components/auth";
+export { SignUpModal } from "@ukesjtu/nomad-ui/components/auth";

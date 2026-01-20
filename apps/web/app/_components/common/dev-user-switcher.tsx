@@ -19,11 +19,11 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@nomad/ui/components/primitives/avatar";
-import { Badge } from "@nomad/ui/components/primitives/badge";
-import { Button } from "@nomad/ui/components/primitives/button";
-import { ScrollArea } from "@nomad/ui/components/primitives/scroll-area";
-import { Separator } from "@nomad/ui/components/primitives/separator";
+} from "@ukesjtu/nomad-ui/components/primitives/avatar";
+import { Badge } from "@ukesjtu/nomad-ui/components/primitives/badge";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
+import { ScrollArea } from "@ukesjtu/nomad-ui/components/primitives/scroll-area";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
 import {
   Sheet,
   SheetContent,
@@ -31,7 +31,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@nomad/ui/components/primitives/sheet";
+} from "@ukesjtu/nomad-ui/components/primitives/sheet";
 import { Loader2, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import {

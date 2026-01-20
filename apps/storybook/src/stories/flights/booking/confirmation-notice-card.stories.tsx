@@ -1,5 +1,5 @@
-import { ConfirmationNoticeCard } from "@nomad/ui/components/flights/booking/confirmation-notice-card";
 import type { Meta, StoryObj } from "@storybook/react";
+import { ConfirmationNoticeCard } from "@ukesjtu/nomad-ui/components/flights/booking/confirmation-notice-card";
 
 const meta: Meta<typeof ConfirmationNoticeCard> = {
   title: "Flights/Booking/ConfirmationNoticeCard",

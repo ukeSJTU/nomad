@@ -1,8 +1,8 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   PassengerList,
   type PassengerListItem,
-} from "@nomad/ui/components/passengers";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/passengers";
 import { fn } from "storybook/test";
 
 const mockPassengers: PassengerListItem[] = [

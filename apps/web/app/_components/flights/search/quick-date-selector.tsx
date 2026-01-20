@@ -3,7 +3,7 @@
 import {
   DatePriceSelector,
   type DatePriceSelectorProps,
-} from "@nomad/ui/components/flights/search";
+} from "@ukesjtu/nomad-ui/components/flights/search";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { getQuickDatePrices } from "@/app/_actions/quick-date-prices";

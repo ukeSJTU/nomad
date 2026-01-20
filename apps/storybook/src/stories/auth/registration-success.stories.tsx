@@ -1,5 +1,5 @@
-import { RegistrationSuccess } from "@nomad/ui/components/auth";
 import type { Meta, StoryObj } from "@storybook/react";
+import { RegistrationSuccess } from "@ukesjtu/nomad-ui/components/auth";
 import { fn } from "storybook/test";
 
 const meta = {

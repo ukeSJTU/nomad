@@ -1,5 +1,5 @@
-import type { UnderConstructionProps } from "@nomad/ui/components/common";
-import { UnderConstruction } from "@nomad/ui/components/common";
+import type { UnderConstructionProps } from "@ukesjtu/nomad-ui/components/common";
+import { UnderConstruction } from "@ukesjtu/nomad-ui/components/common";
 
 export default function UnderConstructionContainer(
   props: UnderConstructionProps

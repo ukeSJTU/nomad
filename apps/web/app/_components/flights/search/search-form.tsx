@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchForm as SearchFormUI } from "@nomad/ui/components/flights/search";
+import { SearchForm as SearchFormUI } from "@ukesjtu/nomad-ui/components/flights/search";
 import { useEffect, useRef, useState } from "react";
 import type { CityData } from "@/types/dto";
 

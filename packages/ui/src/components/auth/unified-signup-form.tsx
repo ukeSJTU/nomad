@@ -1,13 +1,13 @@
 "use client";
 
-import { Form } from "@nomad/ui/components/primitives/form";
+import { Form } from "@ukesjtu/nomad-ui/components/primitives/form";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@nomad/ui/components/primitives/tabs";
-import { cn } from "@nomad/ui/lib/utils";
+} from "@ukesjtu/nomad-ui/components/primitives/tabs";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 import type { UseFormReturn } from "react-hook-form";
 import {
   VerificationForm,

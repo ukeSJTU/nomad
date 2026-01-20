@@ -1,4 +1,4 @@
-import { AirportGuide } from "@nomad/ui/components/flights/guide";
+import { AirportGuide } from "@ukesjtu/nomad-ui/components/flights/guide";
 
 export function AirportSidebar() {
   const links = [

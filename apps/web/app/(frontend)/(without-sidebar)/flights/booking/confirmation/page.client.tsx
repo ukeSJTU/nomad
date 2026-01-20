@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@nomad/ui/components/primitives/button";
+import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@nomad/ui/components/primitives/card";
-import { Separator } from "@nomad/ui/components/primitives/separator";
+} from "@ukesjtu/nomad-ui/components/primitives/card";
+import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";
 import { FileText, Home, Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {

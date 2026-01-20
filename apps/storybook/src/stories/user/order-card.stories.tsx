@@ -1,6 +1,6 @@
-import type { OrderListItem } from "@nomad/ui/components/user";
-import { OrderCard } from "@nomad/ui/components/user";
 import type { Meta, StoryObj } from "@storybook/react";
+import type { OrderListItem } from "@ukesjtu/nomad-ui/components/user";
+import { OrderCard } from "@ukesjtu/nomad-ui/components/user";
 import { fn } from "storybook/test";
 
 // Mock order data

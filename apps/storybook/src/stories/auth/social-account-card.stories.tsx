@@ -1,9 +1,9 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   LinkButton,
   SocialAccountCard,
   UnlinkButton,
-} from "@nomad/ui/components/auth";
-import type { Meta, StoryObj } from "@storybook/react";
+} from "@ukesjtu/nomad-ui/components/auth";
 import { fn } from "storybook/test";
 
 const meta = {

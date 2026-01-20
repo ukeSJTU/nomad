@@ -1,6 +1,6 @@
 "use client";
 
-import { PaymentCountdownTimer as PaymentCountdownTimerUI } from "@nomad/ui/components/flights/booking";
+import { PaymentCountdownTimer as PaymentCountdownTimerUI } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { useEffect, useState } from "react";
 
 interface PaymentCountdownTimerProps {

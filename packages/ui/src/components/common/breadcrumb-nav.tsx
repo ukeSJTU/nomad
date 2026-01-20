@@ -7,9 +7,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@nomad/ui/components/primitives/breadcrumb";
-import { cn } from "@nomad/ui/lib/utils";
-import { useUiComponents } from "@nomad/ui/platform";
+} from "@ukesjtu/nomad-ui/components/primitives/breadcrumb";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
+import { useUiComponents } from "@ukesjtu/nomad-ui/platform";
 
 export interface BreadcrumbItem {
   /**

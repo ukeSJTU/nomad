@@ -1,9 +1,9 @@
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import {
   PassengerFormCard,
   type PassengerFormData,
   type SavedPassenger,
-} from "@nomad/ui/components/flights/booking";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+} from "@ukesjtu/nomad-ui/components/flights/booking";
 import { useState } from "react";
 
 const meta: Meta<typeof PassengerFormCard> = {

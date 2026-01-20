@@ -1,4 +1,4 @@
-import { FlightSummaryCard as UiFlightSummaryCard } from "@nomad/ui/components/flights/booking";
+import { FlightSummaryCard as UiFlightSummaryCard } from "@ukesjtu/nomad-ui/components/flights/booking";
 import { formatCurrency, formatDateWithWeekday } from "@/lib/format";
 import type { PassengerPageFlight } from "@/types/dto";
 

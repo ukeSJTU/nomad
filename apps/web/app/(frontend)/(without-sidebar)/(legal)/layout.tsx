@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@nomad/ui/lib/utils";
+import { cn } from "@ukesjtu/nomad-ui/lib/utils";
 import { FileText, Scale, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

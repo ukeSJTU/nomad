@@ -3,11 +3,11 @@
 import {
   ErrorDisplay as ErrorDisplayUI,
   type ErrorDisplayProps as ErrorDisplayUIProps,
-} from "@nomad/ui/components/common";
+} from "@ukesjtu/nomad-ui/components/common";
 
 type ErrorDisplayProps = ErrorDisplayUIProps;
 
-export type { ErrorType } from "@nomad/ui/components/common";
+export type { ErrorType } from "@ukesjtu/nomad-ui/components/common";
 
 export function ErrorDisplay({ showBackButton, ...props }: ErrorDisplayProps) {
   const handleBackClick = () => {

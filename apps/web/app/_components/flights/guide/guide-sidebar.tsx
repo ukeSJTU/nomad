@@ -1,4 +1,4 @@
-import { DestinationGuide } from "@nomad/ui/components/flights/guide";
+import { DestinationGuide } from "@ukesjtu/nomad-ui/components/flights/guide";
 
 export function GuideSidebar() {
   // TODO: Replace with actual weather data from API
