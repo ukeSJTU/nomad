@@ -1,1 +1,0 @@
-import{r as n,j as s}from"./iframe-CrLPMyef.js";const r=n.createContext({Link:({href:t,children:e,...o})=>s.jsx("a",{href:t,...o,children:e}),Image:({src:t,alt:e,...o})=>s.jsx("img",{src:t,alt:e,...o})});function a(){return n.useContext(r)}export{a as u};
