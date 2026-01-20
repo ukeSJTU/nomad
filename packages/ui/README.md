@@ -1,10 +1,32 @@
-# @nomad/ui
+# @ukesjtu/nomad-ui
 
-Shared UI component library for Nomad applications, based on shadcn/ui.
+A comprehensive UI component library built with React, Radix UI, and Tailwind CSS.
 
-## Installation
+> **Note**: This is the internal package for the Nomad monorepo. For usage in external projects, see the [Publishing Guide](../../docs/publishing-ui-package.md).
 
-This package is part of the Nomad monorepo. Add it to your app:
+## Development
+
+### Adding New Components
+
+```bash
+pnpm dlx shadcn@latest add <component-name>
+```
+
+### Running Tests
+
+```bash
+pnpm test
+```
+
+### Type Checking
+
+```bash
+pnpm type-check
+```
+
+## Internal Usage (Monorepo)
+
+Within this monorepo, use the workspace reference:
 
 ```json
 {
@@ -14,34 +36,10 @@ This package is part of the Nomad monorepo. Add it to your app:
 }
 ```
 
-## Usage
+## External Usage
 
-### Import Components
+See [Publishing Guide](../../docs/publishing-ui-package.md) for installation and usage in external projects.
 
-```tsx
-import { Button } from "@nomad/ui/components/primitives/button";
-import { Card } from "@nomad/ui/components/primitives/card";
-```
+## License
 
-### Import Styles
-
-In your root layout:
-
-```tsx
-import "@nomad/ui/globals.css";
-```
-
-### PostCSS Config
-
-```javascript
-export { default } from "@nomad/ui/postcss.config";
-```
-
-## Adding New Components
-
-From the ui package directory:
-
-```bash
-cd packages/ui
-pnpm dlx shadcn@latest add <component-name>
-```
+MIT
