@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
     "paths": {
       "@ukesjtu/nomad-ui/*": ["./src/*"]
     }
