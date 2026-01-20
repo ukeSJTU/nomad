@@ -1,0 +1,29 @@
+# Test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+tests/
+coverage/
+.vitest/
+
+# Development files
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Build artifacts
+.turbo/
+.next/
+dist/
+node_modules/
+
+# Config files that shouldn't be published
+tsconfig.tsbuildinfo
+vitest.config.mts
+components.json
+
+# Documentation (already in files array)
+*.md
+!README.md
