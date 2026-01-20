@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/123</span>
+                <span class='fraction'>0/125</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/123</span>
+                <span class='fraction'>0/125</span>
             </div>
         
             
@@ -252,7 +252,14 @@
 <a name='L187'></a><a href='#L187'>187</a>
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -270,14 +277,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -289,6 +292,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -363,6 +374,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -458,26 +472,30 @@
 &nbsp;
 "use client";
 &nbsp;
+<span class="cstat-no" title="statement not covered" >import {</span>
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@ukesjtu/nomad-ui/components/primitives/avatar";
+<span class="cstat-no" title="statement not covered" >import { Badge } from "@ukesjtu/nomad-ui/components/primitives/badge";</span>
+<span class="cstat-no" title="statement not covered" >import { Button } from "@ukesjtu/nomad-ui/components/primitives/button";</span>
+<span class="cstat-no" title="statement not covered" >import { ScrollArea } from "@ukesjtu/nomad-ui/components/primitives/scroll-area";</span>
+<span class="cstat-no" title="statement not covered" >import { Separator } from "@ukesjtu/nomad-ui/components/primitives/separator";</span>
+<span class="cstat-no" title="statement not covered" >import {</span>
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@ukesjtu/nomad-ui/components/primitives/sheet";
 <span class="cstat-no" title="statement not covered" >import { Loader2, Users } from "lucide-react";</span>
 <span class="cstat-no" title="statement not covered" >import { useEffect, useState } from "react";</span>
-&nbsp;
 <span class="cstat-no" title="statement not covered" >import {</span>
   type DevUserListResult,
   getAllUsersForDevAction,
   switchUserAction,
 } from "@/actions/dev-tools";
-<span class="cstat-no" title="statement not covered" >import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";</span>
-<span class="cstat-no" title="statement not covered" >import { Badge } from "@/components/ui/badge";</span>
-<span class="cstat-no" title="statement not covered" >import { Button } from "@/components/ui/button";</span>
-<span class="cstat-no" title="statement not covered" >import { ScrollArea } from "@/components/ui/scroll-area";</span>
-<span class="cstat-no" title="statement not covered" >import { Separator } from "@/components/ui/separator";</span>
-<span class="cstat-no" title="statement not covered" >import {</span>
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 <span class="cstat-no" title="statement not covered" >import { useClientSession } from "@/hooks/use-client-session";</span>
 <span class="cstat-no" title="statement not covered" >import { createClientLogger } from "@/infra/logging/client-logger";</span>
 <span class="cstat-no" title="statement not covered" >import { getInitials } from "@/lib/format";</span>
@@ -553,6 +571,9 @@ type User = Extract&lt;DevUserListResult, { success: true }&gt;["users"][number]
 <span class="cstat-no" title="statement not covered" >      &lt;SheetContent side="right" className="w-[400px] sm:w-[540px]"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;SheetHeader&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;SheetTitle&gt;Switch User&lt;/SheetTitle&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;SheetDescription&gt;</span>
+            Select a user to switch to for development testing
+<span class="cstat-no" title="statement not covered" >          &lt;/SheetDescription&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/SheetHeader&gt;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        &lt;Separator className="my-4" /&gt;</span>
@@ -637,7 +658,7 @@ type User = Extract&lt;DevUserListResult, { success: true }&gt;["users"][number]
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-29T05:37:46.914Z
+                at 2026-01-20T12:09:59.662Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

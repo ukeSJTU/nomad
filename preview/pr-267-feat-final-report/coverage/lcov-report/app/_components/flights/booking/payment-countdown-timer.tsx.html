@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/54</span>
+                <span class='fraction'>0/39</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/54</span>
+                <span class='fraction'>0/39</span>
             </div>
         
             
@@ -120,28 +120,9 @@
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a>
-<a name='L70'></a><a href='#L70'>70</a>
-<a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -186,22 +167,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -213,10 +179,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use client";
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { Clock } from "lucide-react";</span>
+<span class="cstat-no" title="statement not covered" >import { PaymentCountdownTimer as PaymentCountdownTimerUI } from "@ukesjtu/nomad-ui/components/flights/booking";</span>
 <span class="cstat-no" title="statement not covered" >import { useEffect, useState } from "react";</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >import { Alert, AlertDescription } from "@/components/ui/alert";</span>
 &nbsp;
 interface PaymentCountdownTimerProps {
   paymentDeadline: Date;
@@ -259,30 +223,15 @@ interface PaymentCountdownTimerProps {
 <span class="cstat-no" title="statement not covered" >    return () =&gt; clearInterval(timer);</span>
 <span class="cstat-no" title="statement not covered" >  }, [timeLeft, onTimeLeftChange]);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  const formatTime = (seconds: number) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const mins = Math.floor(seconds / 60);</span>
-<span class="cstat-no" title="statement not covered" >    const secs = seconds % 60;</span>
-<span class="cstat-no" title="statement not covered" >    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;</span>
+<span class="cstat-no" title="statement not covered" >  const handleExpire = () =&gt; {</span>
+    // Timer expired, already handled by onTimeLeftChange callback
 <span class="cstat-no" title="statement not covered" >  };</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;Alert&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;AlertDescription&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="flex items-center justify-between gap-4"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;Clock className="h-4 w-4" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;span className="text-sm leading-relaxed"&gt;</span>
-            请在最晚支付时间前完成支付，超时订单将自动取消
-<span class="cstat-no" title="statement not covered" >          &lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;span</span>
-<span class="cstat-no" title="statement not covered" >            className={`font-mono text-lg font-semibold shrink-0 ${</span>
-<span class="cstat-no" title="statement not covered" >              timeLeft &lt;= 60 ? "text-destructive" : "text-secondary"</span>
-<span class="cstat-no" title="statement not covered" >            }`}</span>
-          &gt;
-<span class="cstat-no" title="statement not covered" >            {formatTime(timeLeft)}</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/AlertDescription&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/Alert&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;PaymentCountdownTimerUI</span>
+<span class="cstat-no" title="statement not covered" >      remainingSeconds={timeLeft}</span>
+<span class="cstat-no" title="statement not covered" >      onExpire={handleExpire}</span>
+<span class="cstat-no" title="statement not covered" >    /&gt;</span>
   );
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
@@ -292,7 +241,7 @@ interface PaymentCountdownTimerProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-29T05:37:47.029Z
+                at 2026-01-20T12:09:59.752Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
