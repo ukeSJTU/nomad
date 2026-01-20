@@ -16,3 +16,25 @@
 
 # Ensure package manager lockfiles are not modified
 pnpm-lock.yaml text eol=lf
+
+# Files to exclude from git archive (for submission packages)
+# These files won't be included when running `git archive`
+.github/ export-ignore
+.devcontainer/ export-ignore
+.vscode/ export-ignore
+.husky/ export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.dockerignore export-ignore
+*.log export-ignore
+coverage/ export-ignore
+.turbo/ export-ignore
+.next/ export-ignore
+dist/ export-ignore
+out/ export-ignore
+build/ export-ignore
+storybook-static/ export-ignore
+.env.* export-ignore
+.DS_Store export-ignore
+DEVCONTAINER.md export-ignore
+CONTRIBUTING.md export-ignore
